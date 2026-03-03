@@ -67,13 +67,14 @@ export default function MapView({ onPin }: Props) {
       })
       mapRef.current = map
 
-      // Stadia Maps dark tiles — no API key required for development
+      // CartoDB dark tiles — free, no API key, dark theme
       L.tileLayer(
-        "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
         {
           attribution:
-            '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          maxZoom: 18,
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+          maxZoom: 19,
+          subdomains: "abcd",
         }
       ).addTo(map)
 
