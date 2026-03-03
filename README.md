@@ -71,11 +71,14 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
 ## Status
 
 - [x] Research complete (jurisdiction mapping, tenders, RTI, UX)
-- [ ] Bengaluru ward boundaries loaded
-- [ ] Core map + ward card
-- [ ] Tender scraper (KPPP)
-- [ ] RTI generator
-- [ ] WhatsApp share cards
+- [x] FastAPI backend — PostGIS ward model, `/pin` endpoint, city config loader
+- [x] Ward loader script — downloads datameet GeoJSON, upserts into PostGIS
+- [x] Next.js frontend — Leaflet map, ward overlay, pin-to-ward card
+- [ ] Deployment — Fly.io (API) + Cloudflare Pages (web)
+- [ ] Bengaluru ward data loaded into production DB
+- [ ] Tender scraper (KPPP, GitHub Actions weekly)
+- [ ] RTI generator (5 templates, PDF output)
+- [ ] WhatsApp share cards (OG image per ward)
 - [ ] kaun.city live
 
 ---
