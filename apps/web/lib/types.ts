@@ -119,6 +119,27 @@ export interface Department {
   handles: string | null
 }
 
+export interface WardStats {
+  assembly_constituency: string
+  total_population: number | null
+  total_area_sqkm: number | null
+  total_households: number | null
+  total_road_length_km: number | null
+  total_lakes: number | null
+  total_parks: number | null
+  total_playgrounds: number | null
+  total_govt_schools: number | null
+  total_police_stations: number | null
+  total_fire_stations: number | null
+  total_bus_stops: number | null
+  total_bus_routes: number | null
+  total_streetlights: number | null
+  avg_population_density: number | null
+  ward_count: number | null
+  data_year: number
+  source: string
+}
+
 /** Subset of GeoJSON feature properties from datameet BBMP.geojson */
 export interface WardProperties {
   KGISWardNo: number

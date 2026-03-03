@@ -1,0 +1,200 @@
+Ward_No,Ward Name,BBMP Zone Name,Assembly Constituency Name,MP Constituency,Population (2011),Area (sq km),Households # (Census 2011),Road Length (kms),Lakes #,Lake area (sq m),Parks #,Park area (sq m),Playgrounds #,Playground area (sq m),Govt Schools #,Police Stations #,Fire stations #,Bus Stops #,BMTC TTMC #,Streetlights #,Police stn,BBMP Division,BBMP Sub Division,Population density 2011 (persons / sq km),Decadal popn growth rate % 2011/2001,Decadal Households growth rate 2011/2001 %,Lake name,Bus routes #
+1,Kempegowda Ward,Yelahanka,Yelahanka,Chikballapur,34783,10.9,8647,86,2,1441486,3,5899.74,0,0,4,1,0,35,0,2379,Yelahanka,Yelahanka,Yelahanka,"3,182",59.10%,72.60%,"Shivanahalli,Yelahanka",136
+2,Chowdeswari Ward,Yelahanka,Yelahanka,Chikballapur,36602,6.5,9506,72,2,416208,6,11181.39,0,0,6,0,0,19,0,2508,,Yelahanka,Yelahanka,"5,635",86.50%,111.00%,"Puttenahalli,Harohalli",81
+3,Atturu,Yelahanka,Yelahanka,Chikballapur,58129,8.8,14605,169,2,307428,30,98281.4,4,40131,7,1,0,31,1,4227,Yelahanka Setellite Town,Yelahanka,Yelahanka,"6,606",142.00%,171.30%,"Chikkabettahalli,Attur",106
+4,Yelahanka Satellite Town,Yelahanka,Yelahanka,Chikballapur,41986,4.6,10583,86,2,172663,26,153858.29,2,10652,4,2,0,21,0,3626,"Yelahanka, Yelahanka New Town",Yelahanka,Yelahanka,"9,224",62.90%,70.30%,"Shivanahalli,Allalasandra",158
+5,Jakkuru,Yelahanka,Byatarayanapura,Bangalore North,52025,23.5,12387,349,10,1283652,17,33158.45,1,1442,14,1,0,78,1,4351,Sampigehalli,Byatarayanapura,Byatarayanapura,"2,215",148.20%,168.80%,"Venkateshapura,Chokkanahalli,Jakkuru - Sampigehalli,Agrahara,Thirumalenahalli,Bellahalli,Srinivasapura,Kogilu,Kattigenahalli,Palanahalli",50
+6,Thanisandra,Yelahanka,Byatarayanapura,Bangalore North,71855,10,16470,235,1,444273,22,80829.49,1,1847,9,1,0,42,0,5022,KG Halli,Byatarayanapura,Byatarayanapura,"7,161",252.20%,301.90%,Rachenahalli,93
+7,Byatarayanapura,Yelahanka,Byatarayanapura,Bangalore North,72154,10,18691,144,2,308438,30,115449.12,4,19031,8,1,1,59,1,2620,Amruthahalli,Byatarayanapura,Byatarayanapura,"7,198",129.80%,151.30%,"Nagavara,Amruthalli",219
+8,Kodigehalli,Yelahanka,Byatarayanapura,Bangalore North,47546,3.8,12036,84,1,545611,23,166993.94,5,25810,3,0,0,16,0,2365,,Byatarayanapura,Byatarayanapura,"12,369",119.80%,134.50%,Hebbal,158
+9,Vidyaranyapura,Yelahanka,Byatarayanapura,Bangalore North,57195,9.9,14448,130,2,74162,37,125965.64,6,71225,2,2,0,24,0,2903,"Kodigehalli, Vidyaranyapura",Byatarayanapura,Vidyaranyapura,"5,753",147.20%,165.50%,"Narasipura,Narasipura (Tindlu)",55
+10,Dodda Bommasandra,Yelahanka,Byatarayanapura,Bangalore North,36396,4.2,8379,51,1,446760,17,111413.55,1,48071,1,0,0,33,0,1735,,Byatarayanapura,Vidyaranyapura,"8,673",68.20%,66.60%,Dodda Bommasandra,122
+11,Kuvempu Nagar,Yelahanka,Byatarayanapura,Bangalore North,37128,7.1,8519,95,1,238723,13,35070.75,0,0,7,1,0,23,0,2039,Gangammana Gudi,Byatarayanapura,Vidyaranyapura,"5,207",46.80%,53.20%,Shingapura,71
+12,Shettihalli,Dasarahalli,Dasarahalli,Bangalore North,61071,8.1,15530,144,2,238123,8,42283.17,1,426,5,0,0,45,0,3193,,Dasarahalli,Shetty halli,"7,521",115.70%,131.10%,"Kammagondanahalli,Abbigere",107
+13,Mallasandra,Dasarahalli,Dasarahalli,Bangalore North,41482,1.3,11221,40,1,46615,5,11825.01,1,964,3,0,0,1,0,1613,,Dasarahalli,Shetty halli,"31,753",58.00%,93.20%,Mallasandra - Guddekere,1
+14,Bagalakunte,Dasarahalli,Dasarahalli,Bangalore North,65113,4.3,17117,123,0,0,8,20434.85,3,44675,3,0,0,26,0,3469,,Dasarahalli,T.Dasarahalli,"15,203",130.00%,137.00%,,159
+15,T Dasarahalli,Dasarahalli,Dasarahalli,Bangalore North,33042,0.9,8849,29,0,0,0,0,0,0,3,0,0,5,1,1364,,Dasarahalli,T.Dasarahalli,"37,474",26.80%,32.10%,,194
+16,Jalahalli,Rajarajeshwari,Rajarajeswari Nagar,Bangalore North,37959,5.2,9191,36,0,0,21,177049,5,64023,4,1,0,33,1,1899,Jalahalli,Yeshwanthpura,Yeshwanthpura,"7,354",30.70%,37.30%,,122
+17,J P Park,Rajarajeshwari,Rajarajeswari Nagar,Bangalore North,49610,2,12553,52,1,302001,4,359434.43,1,5432,2,0,0,18,0,1878,,Yeshwanthpura,Yeshwanthpura,"24,203",41.00%,54.10%,JP Park (Matthikere),118
+18,Radhakrishna Temple Ward,East,Hebbal,Bangalore North,35122,1.9,9058,54,1,80474,29,74683.61,2,9799,1,1,0,18,0,2217,Sanjay Nagar,Hebbal,Hebbal,"18,014",36.30%,48.20%,Gedlahalli,54
+19,Sanjaya Nagar,East,Hebbal,Bangalore North,32491,1.5,8153,44,0,0,21,37718.13,3,9231,2,0,0,9,0,1720,,Hebbal,Hebbal,"21,096",34.40%,45.10%,,29
+20,Ganga Nagar,East,Hebbal,Bangalore North,27361,2.3,6592,31,0,0,7,9386.52,3,15535,2,0,0,23,0,1647,,Hebbal,Hebbal,"12,096",4.20%,13.80%,,207
+21,Hebbala,East,Hebbal,Bangalore North,32516,1.2,8181,36,0,0,10,13100.59,4,13277,3,1,0,10,0,1489,Hebbal,Hebbal,Hebbal,"26,455",34.60%,43.40%,,45
+22,Vishwanath Nagenahalli,East,Hebbal,Bangalore North,51592,1.5,12704,51,0,0,0,0,4,10540,4,0,0,8,0,2886,,Hebbal,J.C. Nagar,"34,772",100.80%,117.60%,,14
+23,Nagavara,East,Sarvagna Nagar,Bangalore Central,60483,2.1,12295,65,0,0,0,0,0,0,7,0,0,14,0,768,,Sarvajna Nagar,HBR Layout,"29,205",71.50%,89.50%,,67
+24,HBR Layout,East,Sarvagna Nagar,Bangalore Central,58967,4.6,13612,119,1,91057,11,33641.57,1,4808,5,1,0,33,1,1043,Hennur,Sarvajna Nagar,HBR Layout,"12,717",83.40%,108.00%,Kacharakanahalli,145
+25,Horamavu,Mahadevapura,K.R. Puram,Bangalore North,95368,17.5,23999,341,5,972443,6,35194.28,3,16129,13,2,0,57,1,4004,"Ramamurhy Nagar, Kothanur",K.R.Puram,Horamaavu,"5,437",238.60%,288.00%,"Horamavu,Chellakere,Horamavu Agara,Kallakere,Nagaresewara Nagenhalli",141
+26,Ramamurthy Nagar,Mahadevapura,K.R. Puram,Bangalore North,47358,7.3,11674,144,0,0,2,3879.96,1,855,5,0,0,26,0,3042,,K.R.Puram,Horamaavu,"6,523",115.30%,143.50%,,41
+27,Banasavadi,East,Sarvagna Nagar,Bangalore Central,51268,3.4,12922,101,1,79263,17,112570.79,3,23604,4,1,1,31,0,2727,Banasawadi,Sarvajna Nagar,Maruthi Seva Nagar,"14,940",60.20%,75.60%,Channasandra - 2,78
+28,Kammanahalli,East,Sarvagna Nagar,Bangalore Central,47074,1,11479,43,2,79942,2,3783.78,3,10665,1,0,0,9,0,1427,,Sarvajna Nagar,Maruthi Seva Nagar,"45,494",35.20%,46.30%,"Lingarajapura,Byataguntepalya",47
+29,Kacharkanahalli,East,Sarvagna Nagar,Bangalore Central,33588,1.7,8700,55,0,0,4,12951.95,0,0,1,0,0,25,0,1671,,Sarvajna Nagar,Maruthi Seva Nagar,"19,916",15.70%,28.40%,,78
+30,Kadugondanahalli,East,Sarvagna Nagar,Bangalore Central,45748,0.7,9758,32,0,0,3,5235.53,0,0,2,0,0,8,0,1561,,Sarvajna Nagar,HBR Layout,"65,514",31.30%,49.70%,,45
+31,Kushal Nagar,East,Pulakeshi Nagar (SC),Bangalore North,41936,0.6,8192,28,0,0,1,596.1,0,0,3,0,0,12,0,993,,Pulikeshi Nagar,K.G. Halli,"65,064",23.20%,35.20%,,46
+32,Kaval Bairasandra,East,Pulakeshi Nagar (SC),Bangalore North,39334,1.6,9540,50,0,0,4,7208.17,1,3664,1,0,0,17,0,1881,,Pulikeshi Nagar,K.G. Halli,"24,771",48.20%,56.80%,,42
+33,Manorayana Palya,East,Hebbal,Bangalore North,47926,0.8,10572,33,0,0,1,2710.87,2,1996,4,1,0,5,0,1804,RT Nagar,Hebbal,J.C. Nagar,"59,123",37.80%,48.40%,,52
+34,Gangenahalli,East,Hebbal,Bangalore North,24308,1.1,6058,20,0,0,2,17153.05,0,0,2,0,0,13,0,1889,,Hebbal,J.C. Nagar,"22,226",-2.60%,3.90%,,128
+35,Aramane Nagara,West,Malleshwaram,Bangalore North,36738,7.5,8825,57,1,138784,22,1150100.84,4,42436,1,1,0,46,0,2670,Sadashiva Nagar,Malleshwaram,Mattikere,"4,919",20.90%,33.30%,Sankey's Tank,509
+36,Mattikere,West,Malleshwaram,Bangalore North,37036,0.9,9592,32,0,0,8,10283.15,3,3650,4,0,0,8,0,2484,,Malleshwaram,Mattikere,"41,069",3.20%,11.80%,,116
+37,Yeshwanthpura,Rajarajeshwari,Rajarajeswari Nagar,Bangalore North,41107,0.8,10326,25,0,0,3,2123.13,1,8251,3,0,0,5,0,990,,Yeshwanthpura,Yeshwanthpura,"53,039",14.30%,28.60%,,24
+38,HMT Ward,Rajarajeshwari,Rajarajeswari Nagar,Bangalore North,36879,5.2,9524,74,0,0,14,53534.3,2,9804,2,1,0,34,0,1845,Peenya,Yeshwanthpura,Goraguntepalya,"7,053",23.90%,31.70%,,297
+39,Chokkasandra,Dasarahalli,Dasarahalli,Bangalore North,59289,3.8,16537,75,1,63616,13,44551.24,1,7498,4,1,0,31,0,2088,Peenya,Hegganahalli,Peenya Industrial Town,"15,752",96.90%,106.40%,Dasarahalli,139
+40,Dodda Bidarakallu,Rajarajeshwari,Yeshwantpura,Bangalore North,72794,12.9,19506,282,3,227210,17,62276.02,5,30159,9,0,0,55,0,3589,,Kengeri,Herohalli,"5,649",276.20%,309.60%,"Lingadeeranahalli,Handrahalli,Doddabidarakallu",196
+41,Peenya Industrial Area,Dasarahalli,Dasarahalli,Bangalore North,57814,5.5,15805,90,2,269105,9,33736.14,0,0,5,0,1,34,0,2518,,Hegganahalli,Peenya Industrial Town,"10,423",110.50%,121.20%,"Narasappanahalli,Nallakadirenahalli",92
+42,Lakshmi Devi Nagar,Rajarajeshwari,Rajarajeswari Nagar,Bangalore North,41352,1.5,10620,36,0,0,4,17282.07,3,9673,3,1,0,16,0,2354,RMC Yard,Yeshwanthpura,Goraguntepalya,"27,325",61.70%,71.00%,,119
+43,Nandini Layout,West,Mahalakshmi Layout,Bangalore North,51200,1.4,13291,49,0,0,24,82807.54,3,13394,1,1,0,21,0,2864,Nandini Layout,Mahalakshmi Layout,Mahalakshmi Layout,"36,191",49.20%,57.90%,,41
+44,Marappana Palya,West,Mahalakshmi Layout,Bangalore North,40212,2,10051,52,0,0,11,25569.19,2,7278,2,0,1,13,0,1303,,Mahalakshmi Layout,Mahalakshmi Layout,"19,785",18.30%,28.50%,,235
+45,Malleshwaram,West,Malleshwaram,Bangalore North,34196,1.8,8503,34,0,0,4,13706.6,0,0,4,1,0,26,0,1673,Yeshwanth Pura,Malleshwaram,Mattikere,"18,939",-5.90%,0.20%,,319
+46,Jayachamarajendra Nagar,East,Hebbal,Bangalore North,31449,0.9,7696,29,0,0,8,16200.7,1,10075,3,0,0,14,0,2280,,Hebbal,J.C. Nagar,"35,246",2.30%,14.50%,,95
+47,Devara Jeevanahalli,East,Pulakeshi Nagar (SC),Bangalore North,42135,1.4,8941,28,0,0,4,8179.71,1,1709,2,0,0,6,0,1116,,Pulikeshi Nagar,Pulikeshi Nagar,"30,833",25.80%,35.20%,,36
+48,Muneshwara Nagar,East,Pulakeshi Nagar (SC),Bangalore North,35814,0.5,7419,21,0,0,1,742.8,1,4742,5,0,0,0,0,666,,Pulikeshi Nagar,K.G. Halli,"74,511",17.40%,26.90%,,3
+49,Lingarajapura,East,Sarvagna Nagar,Bangalore Central,37955,0.9,8850,36,0,0,6,11588.55,1,9713,4,0,0,7,0,1312,,Sarvajna Nagar,Maruthi Seva Nagar,"43,274",17.20%,29.70%,,50
+50,Benniganahalli,East,C.V. Ramannagar (SC),Bangalore Central,49094,4.9,12384,64,1,28748,36,105644.64,0,0,5,1,0,30,1,2103,Baiyappanahalli,C.V.Raman Nagar,C.V.Raman Nagar,"9,980",53.50%,67.40%,B Channasandra,258
+51,Vijnanapura,Mahadevapura,K.R. Puram,Bangalore North,46159,2.1,11087,55,0,0,7,11927.75,1,3809,2,0,0,11,0,1847,,K.R.Puram,Horamaavu,"22,464",31.60%,42.50%,,69
+52,KR Puram,Mahadevapura,K.R. Puram,Bangalore North,35168,4.8,8961,83,3,332124,9,12806.52,1,8851,3,1,0,14,0,2453,Krishnarajapuram,K.R.Puram,K.R.Puram,"7,308",32.80%,52.80%,"Kavudenahalli,Vengaiah / K.R.Puram,Bhattarahalli",127
+53,Basavanapura,Mahadevapura,K.R. Puram,Bangalore North,48585,6.3,11936,126,3,206069,7,4816.87,1,5086,7,0,0,8,1,2213,,K.R.Puram,K.R.Puram,"7,740",120.70%,134.00%,"Dyavasandra,Basavanapura,Seegehalli",110
+54,Hudi,Mahadevapura,Mahadevapura,Bangalore Central,50191,15,12579,197,3,296464,7,20559.83,0,0,13,0,1,41,0,3478,,Mahadevapura,Hoodi,"3,349",142.50%,168.20%,"Sadara mangala,Hoodi Kere -2,Jimkenahalli",229
+55,Devasandra,Mahadevapura,K.R. Puram,Bangalore North,33946,3.5,8638,45,4,138527,1,46959.59,0,0,6,1,0,15,0,890,Mahadevapura,K.R.Puram,K.R.Puram,"9,754",53.90%,69.70%,"Mahadevapura,Gangashetty Kere,Vijanapura,Vijinapura - 42",250
+56,A Narayanapura,Mahadevapura,K.R. Puram,Bangalore North,43443,2.1,11039,52,2,141307,1,3232.73,1,4734,4,0,0,7,0,2994,,K.R.Puram,HAL. Airport,"20,286",47.70%,62.30%,"B Narayanapura,KR Puram ( BEML Kere)",257
+57,C.V. Raman Nagar,East,C.V. Ramannagar (SC),Bangalore Central,58815,3.6,16710,67,1,143548,2,1391.3,1,3302,5,0,0,20,0,1639,,C.V.Raman Nagar,C.V.Raman Nagar,"16,379",97.60%,125.80%,Kaggadasapura,216
+58,New Tippa Sandra,East,C.V. Ramannagar (SC),Bangalore Central,43983,3.4,12200,68,1,28811,10,32901.02,1,12550,4,1,0,18,0,2127,Jeevan Bima Nagar,C.V.Raman Nagar,C.V.Raman Nagar,"13,085",27.20%,44.60%,Kelegena Byrasandra,44
+59,Maruthi Seva Nagar,East,Sarvagna Nagar,Bangalore Central,40362,2.4,10113,45,1,46330,6,12103.5,4,25490,6,0,0,9,0,1747,,Sarvajna Nagar,Maruthi Seva Nagar,"16,942",12.70%,26.50%,Byappanahalli,102
+60,Sagayara Puram,East,Pulakeshi Nagar (SC),Bangalore North,35334,0.8,7340,26,0,0,2,10828.66,4,26207,3,0,0,16,0,1017,,Pulikeshi Nagar,K.G. Halli,"45,792",1.30%,16.80%,,113
+61,SK Garden,East,Pulakeshi Nagar (SC),Bangalore North,38050,1.3,7941,26,0,0,4,7971.2,1,5465,4,1,0,5,0,803,DJ Halli,Pulikeshi Nagar,Pulikeshi Nagar,"29,129",12.10%,26.50%,,72
+62,Ramaswamy Palya,East,Shivaji Nagar,Bangalore Central,34394,0.8,7530,24,0,0,4,79966.23,0,0,5,1,0,3,0,1418,JC Nagar,Shivaji Nagar,Vasanth Nagar,"41,334",6.20%,14.50%,,11
+63,Jaya Mahal,East,Shivaji Nagar,Bangalore Central,21728,1.4,4808,34,0,0,12,159743.29,0,0,2,0,0,36,0,2728,,Shivaji Nagar,Vasanth Nagar,"14,986",-9.70%,4.20%,,275
+64,Raj Mahal Guttahalli,West,Malleshwaram,Bangalore North,31118,0.7,7641,24,0,0,8,12855.25,2,10927,2,1,0,7,0,1951,Vyallkaval,Malleshwaram,Malleshwaram,"43,530",-8.40%,-1.00%,,134
+65,Kadu Malleshwara Ward,West,Malleshwaram,Bangalore North,35609,1.4,9823,32,0,0,9,37858.9,3,22652,6,1,0,19,0,1278,Malleshwaram,Malleshwaram,Malleshwaram,"26,086",4.60%,15.70%,,278
+66,Subramanya Nagar,West,Malleshwaram,Bangalore North,35709,0.9,9383,28,0,0,6,26920.05,1,18968,2,1,0,12,0,1983,Subramanya Nagar,Malleshwaram,Malleshwaram,"37,919",2.40%,10.00%,,114
+67,Nagapura,West,Mahalakshmi Layout,Bangalore North,34574,1.8,8667,47,0,0,25,63498.46,3,15374,1,0,0,30,0,2535,,Mahalakshmi Layout,Naagapura,"19,260",-2.80%,6.90%,,137
+68,Mahalakshmipuram,West,Mahalakshmi Layout,Bangalore North,44615,0.9,11563,33,0,0,10,28541.61,1,2197,3,1,0,7,0,2380,Mahalakshmi Layout,Mahalakshmi Layout,Mahalakshmi Layout,"47,275",24.00%,33.00%,,43
+69,Laggere,Rajarajeshwari,Rajarajeswari Nagar,Bangalore North,57077,1.6,15178,55,0,0,0,0,6,11766,2,0,0,11,0,3579,,Rajarajeshwari Nagar,Laggere,"36,245",125.00%,137.40%,,39
+70,Rajagopal Nagar,Dasarahalli,Dasarahalli,Bangalore North,61479,2.2,17262,67,0,0,2,4476.28,1,3110,4,1,0,5,0,2210,Rajagopal Nagar,Hegganahalli,Hegganahalli,"28,249",114.90%,134.50%,,56
+71,Hegganahalli,Dasarahalli,Dasarahalli,Bangalore North,66314,1.8,18438,56,0,0,2,2943.19,1,6508,6,0,0,13,0,1895,,Hegganahalli,Hegganahalli,"37,639",114.70%,133.00%,,167
+72,Herohalli,Rajarajeshwari,Yeshwantpura,Bangalore North,62272,7.8,16215,184,3,362593,27,110037.05,4,24500,4,0,0,59,1,3561,,Kengeri,Herohalli,"8,035",216.60%,240.00%,"Mallathahalli,Vishwanedum,Herohalli",146
+73,Kottegepalya,Rajarajeshwari,Rajarajeswari Nagar,Bangalore North,68922,5.8,17739,139,1,12508,22,64783.08,3,9000,1,0,0,61,1,5009,,Rajarajeshwari Nagar,Laggere,"11,784",136.80%,148.70%,Nagarabhavi,246
+74,Shakthi Ganapathi Nagar,West,Mahalakshmi Layout,Bangalore North,43844,0.7,11074,28,1,35048,4,14165.96,1,744,3,0,0,11,0,1174,,Mahalakshmi Layout,Mahalakshmi Layout,"62,558",27.00%,37.40%,Shivanahalli (Agrahara Dasarahalli),31
+75,Shankar Matt,West,Mahalakshmi Layout,Bangalore North,48734,1.1,12433,40,0,0,16,34953.63,1,499,1,0,0,8,0,2119,,Mahalakshmi Layout,Naagapura,"44,963",36.60%,48.60%,,34
+76,Gayithri Nagar,West,Malleshwaram,Bangalore North,33236,0.6,8489,28,0,0,3,16947.71,1,1335,0,0,0,9,0,1457,,Malleshwaram,Malleshwaram,"51,465",-6.10%,0.90%,,64
+77,Dattatreya Temple Ward,West,Gandhi Nagar,Bangalore Central,33388,0.7,8325,25,0,0,2,2370.79,1,2957,2,1,0,5,0,1854,Malleshwaram,Gandhi Nagar,Gandhi Nagar,"46,485",-2.50%,4.40%,,261
+78,Pulakeshi Nagar,East,Pulakeshi Nagar (SC),Bangalore North,28835,1.7,6595,41,0,0,11,64726.89,5,35789,3,0,0,31,0,2278,,Pulikeshi Nagar,Pulikeshi Nagar,"16,761",2.40%,13.00%,,152
+79,Sarvagna Nagar,East,C.V. Ramannagar (SC),Bangalore Central,37291,3.6,9052,52,1,58784,7,40254.93,1,1058,4,1,0,16,0,1008,Frazer Town,C.V.Raman Nagar,C.V.Raman Nagar,"10,218",6.70%,17.10%,Kadirena Palya (Binnamangala),234
+80,Hoysala Nagar,East,C.V. Ramannagar (SC),Bangalore Central,35228,2.1,8877,51,0,0,17,67642.01,4,32099,0,1,0,19,1,2955,Indira Nagar,C.V.Raman Nagar,Jeevanbheema Nagar,"17,131",-1.80%,11.60%,,264
+81,Vijnana Nagar,Mahadevapura,K.R. Puram,Bangalore North,57062,5.7,15419,106,2,246964,4,9079.55,1,2315,3,0,0,17,0,2261,,K.R.Puram,HAL. Airport,"9,935",130.50%,165.30%,"Vibhuthipura,Mahadevapura",64
+82,Garudachar palya,Mahadevapura,Mahadevapura,Bangalore Central,49631,6.8,13453,70,4,193053,4,17193.93,0,0,6,0,0,23,1,3663,,Mahadevapura,Hoodi,"7,316",137.20%,154.90%,"Pattandur agrahara Kere - 124,Garudacharpalya ( Gopala),Hoodi (Giddanakere),Garudacharpalya ( Achanakere)",165
+83,Kadugodi,Mahadevapura,Mahadevapura,Bangalore Central,43942,11.2,11423,101,1,40073,5,43598.85,0,0,7,2,0,29,1,3377,Kadugodi,Mahadevapura,White Field,"3,934",97.90%,122.80%,Pattandur agrahara Kere - 54,186
+84,Hagadur,Mahadevapura,Mahadevapura,Bangalore Central,50556,12.6,13419,154,3,250263,18,66851.51,3,10654,2,2,0,33,0,2845,Whitefield,Mahadevapura,White Field,"4,003",95.10%,124.10%,"Siddapura,Sheelavanthana Kere,Nallurahalli",108
+85,Dodda Nekkundi,Mahadevapura,Mahadevapura,Bangalore Central,63083,12,17755,155,5,695188,28,75082.02,3,15656,0,0,0,34,0,3997,,Mahadevapura,Hoodi,"5,270",186.50%,235.80%,"Munnekolala,Chinnappanahalli,Kundalahalli,Doddanekkundi,Sonnenahalli",195
+86,Marathahalli,Mahadevapura,Mahadevapura,Bangalore Central,39768,3.1,11051,53,0,0,1,9987.51,0,0,6,1,0,10,0,1461,HAL,Mahadevapura,Maarathahalli,"12,679",76.80%,107.30%,,191
+87,HAL Airport,Mahadevapura,K.R. Puram,Bangalore North,39926,6.8,10044,41,0,0,11,71105.52,0,0,3,1,0,26,0,2455,HAL,K.R.Puram,HAL. Airport,"5,888",20.70%,35.20%,,150
+88,Jeevanbhima Nagar,East,C.V. Ramannagar (SC),Bangalore Central,38251,1.9,9741,47,0,0,7,21565.77,0,0,4,0,0,16,0,1618,,C.V.Raman Nagar,Jeevanbheema Nagar,"20,286",5.80%,17.50%,,145
+89,Jogupalya,East,Shanthi Nagar,Bangalore Central,33793,0.9,8806,30,0,0,3,4910.3,4,26657,0,1,0,2,0,2501,Halasuru Gate,Shanti Nagar,Dommalooru,"37,452",-2.40%,8.40%,,68
+90,Halsoor,East,Shivaji Nagar,Bangalore Central,35090,1.7,7771,34,1,438884,9,75990.61,1,2142,4,0,0,9,0,2576,,Shivaji Nagar,Shivaji Nagar,"20,803",-2.20%,10.10%,Ulsoor,257
+91,Bharathi Nagar,East,Shivaji Nagar,Bangalore Central,32689,0.8,7074,30,0,0,2,3610.27,0,0,2,1,0,5,0,1659,Bharathi Nagar,Shivaji Nagar,Shivaji Nagar,"41,815",0.20%,13.40%,,191
+92,Shivaji Nagar,East,Shivaji Nagar,Bangalore Central,37506,0.4,7276,22,0,0,1,702.84,0,0,3,1,0,2,0,1631,Shivaji Nagar,Shivaji Nagar,Shivaji Nagar,"87,856",4.90%,22.00%,,30
+93,Vasanth Nagar,East,Shivaji Nagar,Bangalore Central,22815,3.1,5304,47,0,0,12,555682.41,5,19944,7,1,1,31,0,1595,High Grounds,Shivaji Nagar,Vasanth Nagar,"7,286",-11.00%,-3.40%,,507
+94,Gandhi Nagar,West,Gandhi Nagar,Bangalore Central,31208,1.9,6599,38,0,0,18,137209.8,5,53516,6,2,0,16,0,1909,"Upperpet, Seshadripuram",Gandhi Nagar,Gandhi Nagar,"16,334",-11.60%,-3.90%,,969
+95,Subhash Nagar,West,Gandhi Nagar,Bangalore Central,37693,1.3,8711,27,0,0,6,40208.26,1,15784,3,0,0,13,0,1191,,Gandhi Nagar,Gandhi Nagar,"28,599",6.40%,21.50%,,496
+96,Okalipuram,West,Gandhi Nagar,Bangalore Central,38110,0.8,8693,21,0,0,4,17544.52,1,1927,3,0,0,9,0,1433,,Gandhi Nagar,Gandhi Nagar,"46,279",6.20%,16.70%,,259
+97,Dayananda Nagar,West,Rajaji Nagar,Bangalore Central,35721,0.4,8253,20,0,0,2,1577.1,3,9090,3,0,0,7,0,1162,,Rajajinagar,Srirama Mandir,"80,035",3.30%,14.50%,,13
+98,Prakash Nagar,West,Rajaji Nagar,Bangalore Central,32913,0.6,8276,20,0,0,2,46826.65,1,2886,4,0,0,4,0,904,,Rajajinagar,Srirama Mandir,"57,730",-7.20%,1.20%,,136
+99,Rajaji Nagar,West,Rajaji Nagar,Bangalore Central,33084,0.9,8398,27,0,0,8,19480.05,2,8346,1,1,0,13,0,1367,Rajaji Nagar,Rajajinagar,Rajajinagar,"38,388",-0.40%,11.10%,,118
+100,Basaveshwara Nagar,West,Rajaji Nagar,Bangalore Central,30333,0.8,7495,26,1,62606,3,21279.54,5,26494,1,0,0,8,0,1155,,Rajajinagar,Rajajinagar,"36,191",12.30%,21.90%,Sane guruvanahalli,39
+101,Kamakshipalya,West,Rajaji Nagar,Bangalore Central,30051,0.9,7482,28,1,11822,5,20814.83,2,10491,2,1,0,15,0,1561,Kamakshipalya,Rajajinagar,Rajajinagar,"33,135",16.70%,27.90%,Kamakshi Palya,190
+102,Vrisahbhavathi Nagar,West,Mahalakshmi Layout,Bangalore North,50893,1,13443,40,0,0,2,3853.89,1,894,3,0,0,2,0,1163,,Mahalakshmi Layout,Naagapura,"51,187",48.20%,63.70%,,166
+103,Kaveripura,South,Govindaraja Nagar,Bangalore South,53532,1.7,14168,48,1,23481,10,38257.51,1,676,2,0,0,8,0,1971,,Govindaraj Nagar,Govindaraj Nagar,"32,357",51.80%,62.90%,Malagala,201
+104,Govindaraja Nagar,South,Govindaraja Nagar,Bangalore South,26873,0.8,6678,26,0,0,10,18191.33,6,20865,1,0,0,7,0,1067,,Govindaraj Nagar,Govindaraj Nagar,"34,956",4.30%,13.80%,,259
+105,Agrahara Dasarahalli,South,Govindaraja Nagar,Bangalore South,28355,0.8,7192,28,0,0,9,27897.08,0,0,1,1,0,8,0,1381,Basaveshwara Nagar,Govindaraj Nagar,Govindaraj Nagar,"35,597",5.60%,15.30%,,253
+106,Dr.Raj Kumar Ward,South,Govindaraja Nagar,Bangalore South,24181,1,6077,30,0,0,17,52755.86,2,9693,1,0,1,12,0,1475,,Govindaraj Nagar,Govindaraj Nagar,"24,492",-2.30%,6.50%,,246
+107,Shiva Nagar,West,Rajaji Nagar,Bangalore Central,36461,0.8,9260,28,0,0,4,14886.63,3,5135,1,0,0,16,0,1035,,Rajajinagar,Rajajinagar,"46,943",1.30%,8.60%,,74
+108,Sri Rama Mandir Ward,West,Rajaji Nagar,Bangalore Central,33866,1.1,8156,33,0,0,11,25237.43,4,15345,4,0,0,9,0,2032,,Rajajinagar,Srirama Mandir,"31,973",0.80%,9.70%,,128
+109,Chickpete,West,Gandhi Nagar,Bangalore Central,33292,0.7,6842,38,0,0,0,0,0,0,2,1,0,1,0,1030,Chickpet,Gandhi Nagar,Chikpet,"46,929",-1.20%,10.60%,,269
+110,Sampangiram Nagar,East,Shivaji Nagar,Bangalore Central,27504,4.4,6423,58,0,0,10,816445.8,3,119431,6,6,0,89,0,2018,"SR Nagar, Halasuru Gate, Cubbon Park, MS Building, Commercial Steet, Bowring Hospital",Shivaji Nagar,Vasanth Nagar,"6,185",-17.00%,-7.40%,,1197
+111,Shantala Nagar,East,Shanthi Nagar,Bangalore Central,22995,4,5493,61,0,0,12,265578.87,9,276291,1,1,1,55,0,1547,Ashok Nagar,Shanti Nagar,Shanti Nagar,"5,745",-23.90%,-13.90%,,516
+112,Domlur,East,Shanthi Nagar,Bangalore Central,30638,1.7,7844,51,0,0,43,104809.89,1,8426,3,0,0,16,1,1971,,Shanti Nagar,Dommalooru,"17,557",-11.70%,-4.30%,,157
+113,Konena Agrahara,East,C.V. Ramannagar (SC),Bangalore Central,38108,2.1,10725,47,1,34340,7,485242.71,2,11604,2,0,0,9,0,2373,,C.V.Raman Nagar,Jeevanbheema Nagar,"17,919",29.90%,48.00%,Konena agrahara,133
+114,Agaram,East,Shanthi Nagar,Bangalore Central,36916,11,7734,35,0,0,7,20401.37,1,4182,3,0,0,22,0,1109,,Shanti Nagar,Dommalooru,"3,345",3.60%,12.10%,,506
+115,Vannar Pet,East,Shanthi Nagar,Bangalore Central,37060,0.8,8466,30,0,0,16,37818.75,4,21981,1,1,0,13,0,962,Viveka Nagar,Shanti Nagar,Dommalooru,"48,898",4.30%,12.50%,,42
+116,Nilasandra,East,Shanthi Nagar,Bangalore Central,48534,0.5,10743,30,0,0,0,0,0,0,7,0,0,3,0,987,,Shanti Nagar,Shanti Nagar,"94,287",33.80%,46.00%,,21
+117,Shanthi Nagar,East,Shanthi Nagar,Bangalore Central,42095,2.7,9465,43,0,0,3,25979.14,2,13867,2,0,0,21,1,1137,,Shanti Nagar,Shanti Nagar,"15,494",15.60%,24.30%,,248
+118,Sudham Nagar,South,Chickpet,Bangalore South,28784,1,5953,30,0,0,4,11278.72,0,0,4,1,0,7,0,1435,Kalasipalyam,Chikpete,Kempegowda Nagar,"28,586",-10.60%,0.30%,,575
+119,Dharmaraya Swamy Temple,South,Chickpet,Bangalore South,27076,1.1,5485,41,0,0,5,28726.3,0,0,1,1,0,16,0,1731,Silver Jubilee Park,Chikpete,Kempegowda Nagar,"24,561",-18.40%,-11.10%,,1061
+120,Cottonpete,West,Gandhi Nagar,Bangalore Central,37344,0.8,8652,26,0,0,4,20489.1,0,0,2,1,0,3,0,972,Cottonpete,Gandhi Nagar,Chikpet,"49,463",2.10%,14.00%,,203
+121,Binni Pete,West,Gandhi Nagar,Bangalore Central,37354,0.8,9061,27,0,0,2,3678.16,1,5237,1,2,0,6,0,698,"KP Agrahara, Magadi Road",Gandhi Nagar,Chikpet,"48,081",10.00%,24.20%,,173
+122,Kempapura Agrahara,South,Vijaya Nagar,Bangalore South,40032,0.4,10051,16,0,0,1,4697.69,0,0,1,0,0,2,0,637,,Vijay Nagar,Vijay Nagar,"1,13,291",18.70%,32.30%,,51
+123,Vijaya Nagar,South,Vijaya Nagar,Bangalore South,40331,0.7,9943,27,0,0,15,25178.8,3,13535,1,0,0,6,0,1636,,Vijay Nagar,Vijay Nagar,"55,298",11.80%,22.70%,,137
+124,Hosahalli,South,Vijaya Nagar,Bangalore South,37347,0.9,9068,33,0,0,12,24233.63,2,2441,1,0,0,6,0,1328,,Vijay Nagar,Vijay Nagar,"42,373",16.30%,24.70%,,50
+125,Marenahalli,South,Govindaraja Nagar,Bangalore South,21171,0.7,5423,23,0,0,15,25411.83,1,523,0,1,0,10,0,660,Vijayanagar,Govindaraj Nagar,Govindaraj Nagar,"30,709",5.50%,15.50%,,119
+126,Maruthi Mandir Ward,South,Govindaraja Nagar,Bangalore South,29319,0.8,7716,26,0,0,14,22641.61,0,0,2,0,0,8,0,1850,,Govindaraj Nagar,Chandra Layout,"37,155",34.60%,46.70%,,126
+127,Mudalapalya,South,Govindaraja Nagar,Bangalore South,43729,1,11125,37,0,0,6,11138.22,2,3682,3,0,0,8,0,1989,,Govindaraj Nagar,Chandra Layout,"45,077",78.60%,64.60%,,35
+128,Nagarabhavi,South,Govindaraja Nagar,Bangalore South,35780,1.6,8255,45,0,0,27,59631.9,1,1148,8,1,0,28,0,2613,Chandra Layout,Govindaraj Nagar,Chandra Layout,"22,406",76.50%,84.80%,,65
+129,Jnana Bharathi Ward,Rajarajeshwari,Rajarajeswari Nagar,Bangalore North,68132,11.9,17410,233,1,26961,99,284158.15,6,21880,9,1,0,76,0,5476,Jnana Bharathi,Rajarajeshwari Nagar,Rajarajeshwari Nagar,"5,743",163.20%,187.90%,Srigandhada kavalu,380
+130,Ullalu,Rajarajeshwari,Yeshwantpura,Bangalore North,58199,8.7,14511,235,3,322706,47,125594.46,10,39300,4,0,0,42,0,4874,,Kengeri,Kengeri,"6,688",186.20%,208.70%,"Gandhinagara ( Hosakere),Dubasipalya (Valagerahalli),Ullalu",69
+131,Nayandahalli,South,Govindaraja Nagar,Bangalore South,42785,2.1,10285,40,1,50838,8,24020.12,1,2142,2,0,0,10,0,1573,,Govindaraj Nagar,Chandra Layout,"20,860",87.00%,98.10%,Nayandahalli,202
+132,Attiguppe,South,Vijaya Nagar,Bangalore South,41487,1.4,10576,46,0,0,40,81136.01,3,6485,0,0,0,23,1,2327,,Vijay Nagar,Gaali Anjaneya Temple,"29,971",54.80%,72.00%,,127
+133,Hampi Nagar,South,Vijaya Nagar,Bangalore South,35113,1.1,8456,38,0,0,26,109500.03,1,4638,5,0,0,11,0,1581,,Vijay Nagar,Gaali Anjaneya Temple,"31,659",15.70%,25.50%,,173
+134,Bapuji Nagar,South,Vijaya Nagar,Bangalore South,49484,0.7,10647,23,0,0,1,1701.55,2,3051,3,0,0,2,0,997,,Vijay Nagar,Vijay Nagar,"72,549",36.60%,45.40%,,205
+135,Padarayanapura,West,Chamarajpet,Bangalore Central,37599,0.3,7273,13,0,0,2,1113.78,1,940,0,0,0,0,0,865,,Chamarajpete,Jagajeevanram Nagar,"1,18,059",6.80%,17.00%,,8
+136,Jagajivanaram Nagar,West,Chamarajpet,Bangalore Central,38639,0.6,7751,20,0,0,3,24712.35,2,12734,3,1,0,5,0,950,JJ Nagar,Chamarajpete,Jagajeevanram Nagar,"60,762",14.50%,22.20%,,212
+137,Rayapuram,West,Chamarajpet,Bangalore Central,36039,0.4,7549,16,0,0,2,15994.01,3,3495,4,0,0,5,0,952,,Chamarajpete,Jagajeevanram Nagar,"81,770",9.40%,26.90%,,213
+138,Chelavadi Palya,West,Chamarajpet,Bangalore Central,24801,0.4,4896,14,0,0,0,0,0,0,8,0,0,8,0,656,,Chamarajpete,Jagajeevanram Nagar,"62,762",-2.00%,5.10%,,220
+139,KR Market,West,Chamarajpet,Bangalore Central,29344,0.8,5903,26,0,0,2,2071.95,0,0,9,2,0,10,0,1098,"Victoria Hospital, City Market",Chamarajpete,Chamarajpete,"36,068",2.90%,7.60%,,470
+140,Chamraja Pet,West,Chamarajpet,Bangalore Central,32213,1,7500,34,0,0,4,14484.13,2,11541,3,2,0,21,0,2137,"Central, Chamarajpet",Chamarajpete,Chamarajpete,"30,976",-3.50%,5.30%,,431
+141,Azad Nagar,West,Chamarajpet,Bangalore Central,38825,0.7,9246,26,0,0,5,10985.35,1,22255,2,0,1,4,0,1284,,Chamarajpete,Chamarajpete,"57,539",8.60%,20.30%,,88
+142,Sunkenahalli,South,Chickpet,Bangalore South,34666,1.5,8643,50,0,0,11,64956.52,1,46755,3,1,0,14,0,1621,Kempegowda nagar,Chikpete,Kempegowda Nagar,"23,137",-4.10%,3.40%,,229
+143,Vishveshwara Puram,South,Chickpet,Bangalore South,32462,2.5,7361,52,0,0,5,641027.76,1,561,2,1,0,32,0,1563,Shankarapuram,Chikpete,Kempegowda Nagar,"13,186",-10.10%,-2.50%,,490
+144,Siddapura,South,Chickpet,Bangalore South,34879,0.7,7396,15,0,0,2,6153.28,2,3383,5,0,0,4,0,1225,,Chikpete,Hombegowda Nagar,"52,299",8.30%,14.60%,,330
+145,Hombegowda Nagar,South,Chickpet,Bangalore South,38309,1.4,8948,36,0,0,7,21661.76,1,11309,5,1,0,17,0,1820,Wilson Garden,Chikpete,Hombegowda Nagar,"27,202",5.10%,16.40%,,379
+146,Lakkasandra,South,B.T.M. Layout,Bangalore South,30667,1.3,7229,29,0,0,3,5845.58,1,27536,0,0,1,17,0,1150,,BTM Layout,BTM Layout,"23,689",8.40%,21.80%,,317
+147,Adugodi,South,B.T.M. Layout,Bangalore South,34299,1.6,8236,31,0,0,3,7985.17,2,52217,2,1,0,7,0,1645,Adugodi,BTM Layout,Koramangala,"21,559",14.50%,26.00%,,61
+148,Ejipura,South,B.T.M. Layout,Bangalore South,47004,1.9,12575,48,0,0,4,41156.48,0,0,9,0,0,17,1,1555,,BTM Layout,Koramangala,"25,093",61.50%,84.00%,,68
+149,Varthur,Mahadevapura,Mahadevapura,Bangalore Central,54625,28.3,14256,202,7,2380141,2,5099.53,0,0,11,1,0,65,0,2952,Varthur,Mahadevapura,White Field,"1,929",117.90%,160.20%,"Chikkabellandur,Gunjuru Moji,Gunjuru Karmelaram,Gunjuru Palya,Panathur Kere - 38,Panathur Kere - 48,Varthur",115
+150,Bellanduru,Mahadevapura,Mahadevapura,Bangalore Central,80180,26.4,22368,249,11,4254612,43,105226.65,0,0,3,1,1,76,0,4984,Airport,Mahadevapura,Maarathahalli,"3,041",290.60%,374.50%,"Haralur,Junnasandra,Kasavanahalli,Doddakannelli,Kaikondanahalli,Ambalipura Melena Kere,Ambalipura Kelagena Kere,Soul Kere,Bhoganahalli,Devarabeesaranahalli,Bellandur",246
+151,Koramangala,South,B.T.M. Layout,Bangalore South,38316,3.7,9719,71,1,39421,24,106228.99,2,24561,1,1,0,37,0,2447,Koramangala,BTM Layout,Koramangala,"10,323",8.40%,17.10%,Mesthripalya,266
+152,Suddagunte Palya,South,B.T.M. Layout,Bangalore South,39997,1.7,10933,38,1,34894,5,66388.68,0,0,6,0,0,14,0,1645,,BTM Layout,BTM Layout,"23,063",11.40%,31.00%,Tavarekere,293
+153,Jaya Nagar,South,Chickpet,Bangalore South,38151,2.5,8427,47,1,47634,13,278469.24,1,447,1,2,0,18,0,1940,"Basavanagudi, Siddapura",Chikpete,Hombegowda Nagar,"15,288",6.10%,17.80%,Bairasandra/Chikkapete,493
+154,Basavanagudi,South,Basavanagudi,Bangalore South,32640,1.2,8624,38,0,0,6,82110.53,3,13073,3,1,0,14,0,2099,Thyagaraja Nagar,Basavanagudi,Basavanagudi,"28,071",-9.40%,-2.70%,,153
+155,Hanumanth Nagar,South,Basavanagudi,Bangalore South,36982,1,9483,30,1,142074,11,174614.82,0,0,1,0,0,6,0,1571,,Basavanagudi,Basavanagudi,"37,440",5.50%,13.10%,Kempambudikere,69
+156,Sri Nagar,South,Basavanagudi,Bangalore South,41379,0.8,10574,29,0,0,3,15020.35,1,9970,2,0,0,11,0,1302,,Basavanagudi,Girinagar,"51,685",14.80%,22.70%,,74
+157,Gali Anjenaya Temple Ward,South,Vijaya Nagar,Bangalore South,34653,1.1,8668,34,0,0,3,9604.91,0,0,5,1,0,7,0,1225,Byatarayanapura,Vijay Nagar,Gaali Anjaneya Temple,"30,439",27.10%,36.70%,,98
+158,Deepanjali Nagar,South,Vijaya Nagar,Bangalore South,45928,2.1,11676,50,1,14831,13,49701.82,2,1273,8,0,0,18,0,1819,,Vijay Nagar,Gaali Anjaneya Temple,"21,980",48.50%,59.50%,Deepanjali Kere,287
+159,Kengeri,Rajarajeshwari,Yeshwantpura,Bangalore North,40771,5.1,10168,99,1,100808,27,121034.87,4,17072,4,0,0,34,1,4712,,Kengeri,Kengeri,"7,980",63.90%,74.40%,Kengeri,173
+160,Raja Rajeshawari Nagar,Rajarajeshwari,Rajarajeswari Nagar,Bangalore North,56897,11.1,14408,223,6,372956,48,258269.69,10,63285,2,1,0,81,1,5870,Rajarajeshwari Nagar,Rajarajeshwari Nagar,Rajarajeshwari Nagar,"5,112",144.40%,160.90%,"Bheemanakatte Kunte (Arehalli - 1),Bovimaranahalli,Halagevaderahalli,Pattanagere/Kenchenahalli,Hosakerehalli,Gundopanth",205
+161,Hosakerehalli,South,Padmanaba Nagar,Bangalore South,46805,1.3,12122,46,0,0,6,10857.73,1,1636,0,1,0,18,0,1906,Girinagar,Padmanabh Nagar,Padmanabh Nagar,"34,776",120.90%,137.60%,,70
+162,Giri Nagar,South,Basavanagudi,Bangalore South,43195,1.8,11180,55,0,0,9,40892.4,2,7112,1,0,0,23,0,2138,,Basavanagudi,Girinagar,"24,537",23.70%,33.40%,,95
+163,Katriguppe,South,Basavanagudi,Bangalore South,45572,1.1,11997,38,0,0,7,11275.15,2,5579,0,0,0,14,0,1421,,Basavanagudi,Girinagar,"41,071",27.50%,35.50%,,88
+164,Vidya Peeta Ward,South,Basavanagudi,Bangalore South,43483,1.2,11425,42,0,0,9,18661.4,3,47870,0,2,0,14,1,1758,"CK Achukattu, Hanumanth Nagar",Basavanagudi,Basavanagudi,"35,279",25.90%,39.20%,,88
+165,Ganesh Mandir Ward,South,Padmanaba Nagar,Bangalore South,25998,1.6,6472,45,0,0,12,55496.99,2,7391,2,1,1,16,0,1660,Banasankari,Padmanabh Nagar,Padmanabh Nagar,"15,979",12.50%,21.00%,,111
+166,Kari Sandra,South,Padmanaba Nagar,Bangalore South,27040,1.1,6492,31,1,64024,3,6474.54,2,19210,2,0,0,24,1,1910,,Padmanabh Nagar,Banashankari,"24,444",-10.50%,3.30%,Karisandra,274
+167,Yediyur,South,Padmanaba Nagar,Bangalore South,32756,1.2,8455,41,1,48006,7,39981.46,3,5656,0,0,0,15,1,1650,,Padmanabh Nagar,Banashankari,"26,683",-5.30%,3.70%,Yadiyuru,262
+168,Pattabhi Ram Nagar,South,Jaya Nagar,Bangalore South,28353,1.7,7163,43,0,0,22,143122.14,4,25276,3,1,0,19,0,1970,Jayanagar,Jayanagar,Jayanagar,"16,438",-8.50%,1.60%,,315
+169,Byra Sandra,South,Jaya Nagar,Bangalore South,32066,0.9,7423,26,0,0,6,74419.84,0,0,2,1,0,5,1,2100,Tilak Nagar,Jayanagar,Jayanagar,"36,971",4.70%,15.10%,,117
+170,Jaya Nagar East,South,Jaya Nagar,Bangalore South,33927,1,7961,29,0,0,16,19433.78,1,3102,3,0,0,15,0,1390,,Jayanagar,Jayanagar,"32,869",10.00%,22.50%,,236
+171,Gurappana Palya,South,Jaya Nagar,Bangalore South,48991,0.7,10513,24,0,0,1,2582.31,0,0,3,0,0,6,0,1440,,Jayanagar,Jayanagar,"72,068",36.70%,53.90%,,168
+172,Madivala,South,B.T.M. Layout,Bangalore South,42624,1.2,11517,41,0,0,6,16992.96,0,0,3,0,0,14,0,1418,,BTM Layout,BTM Layout,"36,612",21.20%,41.30%,,116
+173,Jakka Sandra,South,B.T.M. Layout,Bangalore South,33521,1.5,9040,34,0,0,6,39423.63,1,1555,5,1,0,13,0,1386,Madivala,BTM Layout,Koramangala,"22,020",39.20%,59.70%,,316
+174,HSR Layout,Bommanahalli,Bommana Halli,Bangalore South,63033,7.1,16847,141,2,437845,39,251459.85,6,29784,3,1,0,52,1,4737,HSR Layout,Bommanahalli,Bommanahalli,"8,879",154.70%,182.90%,"Venkoji Rao,Ibbaluru",297
+175,Bommanahalli,Bommanahalli,Bommana Halli,Bangalore South,43585,1.8,11368,49,0,0,1,2491.58,1,2847,3,0,0,16,0,2243,,Bommanahalli,Bommanahalli,"23,819",79.30%,92.80%,,95
+176,BTM Layout,South,B.T.M. Layout,Bangalore South,52250,2.1,14540,64,0,0,20,74005.24,4,28324,2,2,0,13,0,2450,Mico Layout,BTM Layout,BTM Layout,"24,688",51.70%,77.10%,,235
+177,JP Nagar,South,Jaya Nagar,Bangalore South,28846,1.8,7566,48,1,193938,22,51484.18,5,17302,1,1,0,24,0,1660,JP Nagar,Jayanagar,J.P Nagar,"15,915",1.20%,14.00%,Doresanipalaya,262
+178,Sarakki,South,Jaya Nagar,Bangalore South,31034,1.3,7985,39,0,0,16,44893.78,3,28577,1,0,0,18,0,1910,,Jayanagar,J.P Nagar,"23,305",16.20%,28.30%,,138
+179,Shakambari Narar,South,Jaya Nagar,Bangalore South,25871,1.9,6537,41,0,0,12,79555.72,2,26199,5,0,0,26,0,1625,,Jayanagar,J.P Nagar,"13,946",11.30%,19.80%,,289
+180,Banashankari Temple Ward,South,Padmanaba Nagar,Bangalore South,42171,0.7,9461,28,0,0,3,3144.91,0,0,3,0,0,9,0,1522,,Padmanabh Nagar,Banashankari,"61,696",24.00%,32.10%,,215
+181,Kumara Swamy Layout,South,Padmanaba Nagar,Bangalore South,47182,1.8,11881,60,0,0,23,95893.52,3,8167,2,1,0,30,0,1915,KS Layout,Padmanabh Nagar,Banashankari,"25,514",33.30%,44.00%,,115
+182,Padmanabha Nagar,South,Padmanaba Nagar,Bangalore South,41037,1.7,10771,53,2,37449,14,39498.18,9,35028,0,0,0,11,0,1805,,Padmanabh Nagar,Padmanabh Nagar,"24,311",61.20%,75.60%,"Gowdanapalya (Kadirenahalli),Chikka kallasandra",79
+183,Chikkala Sandra,South,Padmanaba Nagar,Bangalore South,43364,1.1,11403,39,1,21469,6,12062.41,1,3984,7,0,0,11,0,2050,,Padmanabh Nagar,Padmanabh Nagar,"39,948",75.70%,87.80%,Ittamadu,34
+184,Uttarahalli,Bommanahalli,Bangalore South,Bangalore South,57209,9.9,14675,215,5,239386,78,287792.93,4,16824,2,1,0,39,1,5158,Subramanyapura,Bengaluru South,Uttarahalli,"5,759",161.90%,176.30%,"Gubbalalu,Subramanya Kere,Dorekere,Uttarahalli,Arehalli - 2 & 3",58
+185,Yelchenahalli,Bommanahalli,Bangalore South,Bangalore South,46943,1.6,11338,51,2,37519,5,12927.42,0,0,1,0,0,11,0,3260,,Bengaluru South,Uttarahalli,"29,234",67.70%,85.70%,"Yelachenahalli/Annapanahalli,Nandhi Shettappa",115
+186,Jaraganahalli,Bommanahalli,Bommana Halli,Bangalore South,38294,1.3,9818,37,1,278640,1,7017.14,3,8364,3,0,0,6,0,1422,,Bommanahalli,Arakere,"29,756",64.40%,77.20%,Sarakki/Jaraganahalli/Puttenahalli,124
+187,Puttenahalli,Bommanahalli,Bommana Halli,Bangalore South,49207,2.9,13230,65,1,38415,3,5665.11,4,33687,1,0,0,11,0,1587,,Bommanahalli,Arakere,"17,137",139.50%,171.90%,Puttenahalli,35
+188,Bilekhalli,Bommanahalli,Bommana Halli,Bangalore South,49884,4.3,13186,72,2,1017126,14,48088.71,2,13078,1,0,0,15,0,3290,,Bommanahalli,Arakere,"11,721",121.60%,143.90%,"Madivala,Bilekahalli",121
+189,Honga Sandra,Bommanahalli,Bommana Halli,Bangalore South,68554,2.1,18192,61,0,0,3,6692.48,0,0,3,0,0,16,0,1729,,Bommanahalli,Bommanahalli,"32,066",197.30%,219.60%,,196
+190,Mangammana Palya,Bommanahalli,Bommana Halli,Bangalore South,65890,3.5,16903,83,3,144197,6,31832.02,0,0,4,0,0,15,0,1487,,Bommanahalli,Bommanahalli,"18,956",140.60%,162.10%,"Garvebhavi Palya,Haralakunte/Somasandra,Mangammana Palya",178
+191,Singa Sandra,Bommanahalli,Bommana Halli,Bangalore South,71004,9.7,18214,179,6,381818,35,108861.87,1,14641,12,1,0,29,0,3075,Parappana Agrahara,Bengaluru South,Begur,"7,283",231.60%,241.50%,"Kodige Singasandra,Konnapana agrahara,Parappana agrahara,Singasandra,Kudlu Doddakere,Kudlu Chikkere",169
+192,Begur,Bommanahalli,Bangalore South,Bangalore South,80037,19,21322,280,12,916699,20,48995.2,2,25884,4,0,0,54,0,3427,,Bengaluru South,Begur,"4,216",315.00%,389.30%,"Chikka Kammanahalli,Kammanahalli,Subedarana Kere,Swarnakunte Gudde Kere,Kalena Agrahara,Chowdeswari/Beratana agrahara,Yelanahalli,Basapura - 2,Basapura - 1,Begur,Chikka Begur,Chikka Basavanapura",280
+193,Arakere,Bommanahalli,Bommana Halli,Bangalore South,58355,6.6,15272,155,3,566818,13,53099.33,4,16512,4,1,0,31,0,4163,Hulimavu,Bommanahalli,Arakere,"8,810",133.40%,157.10%,"Hulimavu,Nyanappanahalli,Arekere",104
+194,Gottigere,Bommanahalli,Bangalore South,Bangalore South,51911,7.4,13457,176,3,208118,39,84135.34,2,10716,2,0,0,38,0,3978,,Bengaluru South,Kottanooru,"7,049",141.20%,165.20%,"Gottigere,Subbarayana Kere,Kottanuru",107
+195,Konankunte,Bommanahalli,Bangalore South,Bangalore South,57335,3.4,14984,94,1,58062,21,57224.58,3,18599,9,0,0,19,0,3857,,Bengaluru South,Kottanooru,"16,761",184.10%,212.90%,Chunchaghatta,50
+196,Anjanapura,Bommanahalli,Bangalore South,Bangalore South,45608,11.4,11049,234,3,140237,37,154613.61,2,11092,3,0,0,37,0,3771,,Bengaluru South,Kottanooru,"3,997",116.40%,135.10%,"Gollahalli,Kembathanahalli,Alahalli/Anjanapura",38
+197,Vasanthpura,Bommanahalli,Bangalore South,Bangalore South,62057,5.7,16079,143,5,133549,34,93634.9,6,23352,15,0,0,47,0,4605,,Bengaluru South,Uttarahalli,"10,852",153.10%,167.70%,"Doddakallasandra,Vasanthapura (Janaradhana) Kere,Konanakunte,Kalyanikunte,Devarakere",168
+198,Hemmigepura,Rajarajeshwari,Yeshwantpura,Bangalore North,50440,30.5,12687,453,10,502342,94,534311.71,6,55534,0,1,0,82,1,6802,Kengeri,Kengeri,Kengeri,"1,652",107.50%,138.80%,"Talaghattapura,Byappanapalya Kunte,Lingadheeranahalli,H Gollahalli,Sompura,Varahasandra,Gattigere Palya (Sompura),Konasandra,Busegowdanakere,Mylasandra (sunnakallu palya )",267
+,Total,,,,"84,43,675",709.49,"21,01,831","13,483",192,"2,53,49,105","2,377","1,34,15,243",390,"26,00,834",684,103,12,"3,974",27,"4,21,113",,,,"11,901",44.6,,,"34,670"

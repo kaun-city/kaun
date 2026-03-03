@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { CommunityFact, Department, PinResult, RedditPost, WardProfile } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchDepartments, submitFact, voteFact } from "@/lib/api"
+import type { CommunityFact, Department, PinResult, RedditPost, WardProfile, WardStats } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchDepartments, fetchWardStats, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -10,7 +10,7 @@ interface Props {
   onClose: () => void
 }
 
-type Tab = "who" | "money" | "report"
+type Tab = "who" | "money" | "stats" | "report"
 
 const PARTY_COLORS: Record<string, string> = {
   INC: "#19AAED",
@@ -297,6 +297,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [buzzLoading, setBuzzLoading] = useState(false)
   const [extraFacts, setExtraFacts] = useState<CommunityFact[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
+  const [wardStats, setWardStats] = useState<WardStats | null>(null)
 
   useEffect(() => {
     setTab("who")
@@ -306,6 +307,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setBuzzLoading(false)
     setExtraFacts([])
     setDepartments([])
+    setWardStats(null)
   }, [result?.ward_no])
 
   useEffect(() => {
@@ -315,6 +317,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
     fetchWardProfile(result.ward_no, result.city_id, result.assembly_constituency ?? undefined)
       .then((p) => { setProfile(p); setProfileLoading(false) })
   }, [result, profile, profileLoading])
+
+  useEffect(() => {
+    if (tab !== "stats" || wardStats || !result?.assembly_constituency) return
+    fetchWardStats(result.assembly_constituency).then(setWardStats)
+  }, [tab, wardStats, result?.assembly_constituency])
 
   useEffect(() => {
     if (tab !== "report" || departments.length > 0) return
@@ -347,6 +354,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const TABS: { id: Tab; label: string }[] = [
     { id: "who",    label: "Who" },
     { id: "money",  label: "Money" },
+    { id: "stats",  label: "Area" },
     { id: "report", label: "Report" },
   ]
 
@@ -582,6 +590,103 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     </a>
                   ))}
                 </div>
+              )}
+            </div>
+          )}
+
+          {/* ══ AREA STATS TAB ══ */}
+          {tab === "stats" && (
+            <div className="space-y-4">
+              {!wardStats ? (
+                <p className="text-white/30 text-sm animate-pulse">Loading area data...</p>
+              ) : wardStats.ward_count === 0 ? (
+                <p className="text-white/30 text-sm">No data available for this constituency</p>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between">
+                    <p className="text-white/50 text-xs uppercase tracking-wider">
+                      {wardStats.assembly_constituency} constituency
+                    </p>
+                    <span className="text-white/20 text-[10px]">Census {wardStats.data_year}</span>
+                  </div>
+
+                  {/* Population card */}
+                  <div className="rounded-xl bg-white/5 p-4 space-y-3">
+                    <p className="text-white/50 text-xs uppercase tracking-wider">Population</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <p className="text-2xl font-bold text-white">{wardStats.total_population?.toLocaleString('en-IN') ?? '—'}</p>
+                        <p className="text-white/30 text-xs">People</p>
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-white">{wardStats.total_households?.toLocaleString('en-IN') ?? '—'}</p>
+                        <p className="text-white/30 text-xs">Households</p>
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-[#FF9933]">{wardStats.avg_population_density?.toLocaleString('en-IN') ?? '—'}</p>
+                        <p className="text-white/30 text-xs">per km²</p>
+                      </div>
+                    </div>
+                    {wardStats.total_area_sqkm && (
+                      <p className="text-white/20 text-xs">Area: {wardStats.total_area_sqkm} km²</p>
+                    )}
+                  </div>
+
+                  {/* Infrastructure grid */}
+                  <div className="rounded-xl bg-white/5 p-4 space-y-3">
+                    <p className="text-white/50 text-xs uppercase tracking-wider">Infrastructure</p>
+                    <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                      {[
+                        { icon: "🛣️", label: "Road length", value: wardStats.total_road_length_km ? `${wardStats.total_road_length_km} km` : null },
+                        { icon: "💡", label: "Streetlights", value: wardStats.total_streetlights?.toLocaleString('en-IN') },
+                        { icon: "🚏", label: "Bus stops", value: wardStats.total_bus_stops?.toLocaleString('en-IN') },
+                        { icon: "🚌", label: "Bus routes", value: wardStats.total_bus_routes?.toLocaleString('en-IN') },
+                        { icon: "🏫", label: "Govt schools", value: wardStats.total_govt_schools?.toLocaleString('en-IN') },
+                        { icon: "👮", label: "Police stations", value: wardStats.total_police_stations?.toLocaleString('en-IN') },
+                        { icon: "🚒", label: "Fire stations", value: wardStats.total_fire_stations?.toLocaleString('en-IN') },
+                      ].filter(s => s.value).map((s) => (
+                        <div key={s.label} className="flex items-center gap-2">
+                          <span className="text-base">{s.icon}</span>
+                          <div>
+                            <p className="text-white text-sm font-semibold">{s.value}</p>
+                            <p className="text-white/30 text-[10px]">{s.label}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Green spaces */}
+                  {(wardStats.total_lakes || wardStats.total_parks || wardStats.total_playgrounds) ? (
+                    <div className="rounded-xl bg-white/5 p-4 space-y-3">
+                      <p className="text-white/50 text-xs uppercase tracking-wider">Green Spaces</p>
+                      <div className="grid grid-cols-3 gap-3">
+                        {wardStats.total_lakes ? (
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-blue-400">{wardStats.total_lakes}</p>
+                            <p className="text-white/30 text-xs">Lakes</p>
+                          </div>
+                        ) : null}
+                        {wardStats.total_parks ? (
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-green-400">{wardStats.total_parks}</p>
+                            <p className="text-white/30 text-xs">Parks</p>
+                          </div>
+                        ) : null}
+                        {wardStats.total_playgrounds ? (
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-yellow-400">{wardStats.total_playgrounds}</p>
+                            <p className="text-white/30 text-xs">Playgrounds</p>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <p className="text-white/15 text-[10px] text-center">
+                    Source: {wardStats.source} · {wardStats.ward_count} wards in this constituency
+                  </p>
+                </>
               )}
             </div>
           )}

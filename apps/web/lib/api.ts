@@ -6,7 +6,7 @@
  * No separate API server.
  */
 
-import type { CommunityFact, PinResult, RedditPost, WardProfile } from "./types"
+import type { CommunityFact, PinResult, RedditPost, WardProfile, WardStats } from "./types"
 import { rpc, query, insert } from "./supabase"
 
 /**
@@ -154,6 +154,16 @@ export async function voteFact(
   await rpc("increment_fact_counter", { p_fact_id: factId, p_column: col })
 
   return { ok: true, corroboration_count: 0, trust_level: "unverified", already_voted: false }
+}
+
+/**
+ * Fetch ward/constituency statistics (population, infrastructure, etc.)
+ */
+export async function fetchWardStats(assemblyConstituency: string): Promise<WardStats | null> {
+  const data = await rpc<WardStats>("ward_stats_by_ac", {
+    p_assembly_constituency: assemblyConstituency,
+  })
+  return data
 }
 
 /**
