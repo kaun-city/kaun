@@ -99,7 +99,7 @@ async def load_city(city_id: str, source: str | None = None) -> None:
     # 2. Create tables if they don't exist
     async with engine.begin() as conn:
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(lambda c: Base.metadata.create_all(c, checkfirst=True))
 
     # 3. Upsert wards
     inserted = 0

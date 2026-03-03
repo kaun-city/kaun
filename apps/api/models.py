@@ -37,8 +37,8 @@ class Ward(Base):
 
     __table_args__ = (
         UniqueConstraint("city_id", "ward_no", name="uq_ward_city_no"),
-        # Spatial index — essential for ST_Contains performance
-        Index("idx_wards_geom", "geom", postgresql_using="gist"),
+        # Note: GeoAlchemy2 creates the GIST spatial index automatically.
+        # No need to define it here — doing so causes a duplicate on create_all.
     )
 
     def __repr__(self) -> str:
