@@ -283,9 +283,9 @@ BENGALURU_MPS = [
 SAMPLE_TENDERS = [
     {
         "city_id": "bengaluru",
-        "ward_no": 67,  # Koramangala 6th Block (Mahadevapura zone)
+        "ward_no": 186,  # Koramangala (BTM Layout AC)
         "kppp_id": "KPPP-GBA-2024-01892",
-        "title": "Resurfacing of 80 Feet Road, Koramangala 6th Block, Ward 67",
+        "title": "Resurfacing of 80 Feet Road, Koramangala 6th Block",
         "department": "GBA",
         "contractor_name": "Shree Constructions Pvt Ltd",
         "contractor_blacklisted": False,
@@ -297,7 +297,7 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 67,
+        "ward_no": 186,  # Koramangala
         "kppp_id": "KPPP-GBA-2024-02341",
         "title": "Stormwater drain repair and desilting, Koramangala Inner Ring Road",
         "department": "GBA",
@@ -311,7 +311,7 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 67,
+        "ward_no": 186,  # Koramangala
         "kppp_id": "KPPP-GBA-2025-00134",
         "title": "LED streetlight installation, Koramangala 6th Block lanes",
         "department": "GBA",
@@ -325,9 +325,9 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 149,  # Yelahanka New Town
+        "ward_no": 5,  # Yelahanka Satellite Town (Yelahanka AC)
         "kppp_id": "KPPP-GBA-2024-01567",
-        "title": "Development of footpaths, Yelahanka New Town Main Road",
+        "title": "Development of footpaths, Yelahanka Main Road",
         "department": "GBA",
         "contractor_name": "Karnataka Road Works",
         "contractor_blacklisted": False,
@@ -339,7 +339,7 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 75,  # Jayanagar
+        "ward_no": 194,  # Jayanagar (Jayanagar AC)
         "kppp_id": "KPPP-GBA-2024-03102",
         "title": "Renovation of park and walking track, Jayanagar 4th Block",
         "department": "GBA",
@@ -353,7 +353,7 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 85,  # Indiranagar / CV Raman Nagar
+        "ward_no": 119,  # Indiranagar (C V Raman Nagar AC)
         "kppp_id": "KPPP-GBA-2025-00289",
         "title": "Road widening and median development, Indiranagar 100 Feet Road",
         "department": "GBA",
