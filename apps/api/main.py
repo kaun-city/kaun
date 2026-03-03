@@ -18,7 +18,7 @@ from sqlalchemy import text  # noqa: F401 — used in lifespan
 from .config import get_settings
 from .database import engine
 from .models import Base
-from .routers import buzz, community, pin, ward_profile, wards
+from .routers import buzz, community, departments, pin, ward_profile, wards
 from .schemas import HealthResponse
 
 logging.basicConfig(level=logging.INFO)
@@ -59,6 +59,7 @@ app.include_router(wards.router)
 app.include_router(buzz.router)
 app.include_router(ward_profile.router)
 app.include_router(community.router)
+app.include_router(departments.router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["meta"])
