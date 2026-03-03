@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { CommunityFact, Department, PinResult, RedditPost, WardProfile, WardStats } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchDepartments, fetchWardStats, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -298,6 +298,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [extraFacts, setExtraFacts] = useState<CommunityFact[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
   const [wardStats, setWardStats] = useState<WardStats | null>(null)
+  const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
+  const [budget, setBudget] = useState<BudgetSummary | null>(null)
 
   useEffect(() => {
     setTab("who")
@@ -308,6 +310,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setExtraFacts([])
     setDepartments([])
     setWardStats(null)
+    setPropertyTax(null)
+    setBudget(null)
   }, [result?.ward_no])
 
   useEffect(() => {
@@ -319,9 +323,15 @@ export default function WardCard({ result, loading, onClose }: Props) {
   }, [result, profile, profileLoading])
 
   useEffect(() => {
-    if (tab !== "stats" || wardStats || !result?.assembly_constituency) return
-    fetchWardStats(result.assembly_constituency).then(setWardStats)
-  }, [tab, wardStats, result?.assembly_constituency])
+    if (tab !== "stats" || !result?.assembly_constituency) return
+    if (!wardStats) fetchWardStats(result.assembly_constituency).then(setWardStats)
+    if (!propertyTax) fetchPropertyTax(result.assembly_constituency).then(setPropertyTax)
+  }, [tab, wardStats, propertyTax, result?.assembly_constituency])
+
+  useEffect(() => {
+    if (tab !== "money" || budget) return
+    fetchBudgetSummary("2020-21").then(setBudget)
+  }, [tab, budget])
 
   useEffect(() => {
     if (tab !== "report" || departments.length > 0) return
@@ -523,7 +533,40 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
           {/* ══ MONEY TAB ══ */}
           {tab === "money" && (
-            <div className="px-5 py-4 max-h-[28rem] overflow-y-auto">
+            <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-4">
+              {/* City-wide Budget */}
+              {budget && (
+                <div className="rounded-xl bg-white/5 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-white/50 text-xs uppercase tracking-wider">BBMP Budget {budget.financial_year}</p>
+                    <span className="text-white/20 text-[10px]">City-wide</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-green-400 text-xl font-bold">₹{budget.total_receipts_lakh ? Math.round(budget.total_receipts_lakh / 100).toLocaleString('en-IN') : '—'} Cr</p>
+                      <p className="text-white/30 text-xs">Revenue</p>
+                    </div>
+                    <div>
+                      <p className="text-red-400 text-xl font-bold">₹{budget.total_payments_lakh ? Math.round(budget.total_payments_lakh / 100).toLocaleString('en-IN') : '—'} Cr</p>
+                      <p className="text-white/30 text-xs">Expenditure</p>
+                    </div>
+                  </div>
+                  {budget.top_expenditures && budget.top_expenditures.length > 0 && (
+                    <div className="space-y-1.5 pt-2 border-t border-white/5">
+                      <p className="text-white/30 text-[10px] uppercase tracking-wider">Top expenditures</p>
+                      {budget.top_expenditures.slice(0, 8).map((item, i) => (
+                        <div key={i} className="flex items-center justify-between gap-2">
+                          <p className="text-white/60 text-xs truncate flex-1">{item.description}</p>
+                          <p className="text-[#FF9933] text-xs font-mono shrink-0">₹{Math.round(item.amount_lakh / 100).toLocaleString('en-IN')} Cr</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-white/15 text-[10px]">Source: opencity.in/BBMP Budget</p>
+                </div>
+              )}
+
+              {/* Tenders */}
               {profileLoading && !profile ? (
                 <div className="space-y-3">
                   {[1,2,3].map(i => (
@@ -682,6 +725,25 @@ export default function WardCard({ result, loading, onClose }: Props) {
                       </div>
                     </div>
                   ) : null}
+
+                  {/* Property Tax */}
+                  {propertyTax && propertyTax.years && propertyTax.years.length > 0 && (
+                    <div className="rounded-xl bg-white/5 p-4 space-y-3">
+                      <p className="text-white/50 text-xs uppercase tracking-wider">Property Tax Collected</p>
+                      {propertyTax.years.map((yr) => (
+                        <div key={yr.financial_year} className="flex items-center justify-between">
+                          <div>
+                            <p className="text-white text-sm font-mono">{yr.financial_year}</p>
+                            <p className="text-white/30 text-[10px]">{yr.total_applications?.toLocaleString('en-IN')} properties · {yr.ward_count} wards</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[#FF9933] text-lg font-bold">₹{(yr.total_collection_lakh / 100).toFixed(0)} Cr</p>
+                            <p className="text-white/20 text-[10px]">₹{yr.total_collection_lakh.toLocaleString('en-IN')} lakh</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   <p className="text-white/15 text-[10px] text-center">
                     Source: {wardStats.source} · {wardStats.ward_count} wards in this constituency

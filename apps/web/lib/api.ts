@@ -6,7 +6,7 @@
  * No separate API server.
  */
 
-import type { CommunityFact, PinResult, RedditPost, WardProfile, WardStats } from "./types"
+import type { BudgetSummary, CommunityFact, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats } from "./types"
 import { rpc, query, insert } from "./supabase"
 
 /**
@@ -164,6 +164,24 @@ export async function fetchWardStats(assemblyConstituency: string): Promise<Ward
     p_assembly_constituency: assemblyConstituency,
   })
   return data
+}
+
+/**
+ * Fetch property tax collections for an assembly constituency.
+ */
+export async function fetchPropertyTax(assemblyConstituency: string): Promise<PropertyTaxData | null> {
+  return await rpc<PropertyTaxData>("property_tax_by_ac", {
+    p_assembly_constituency: assemblyConstituency,
+  })
+}
+
+/**
+ * Fetch BBMP budget summary.
+ */
+export async function fetchBudgetSummary(financialYear = "2020-21"): Promise<BudgetSummary | null> {
+  return await rpc<BudgetSummary>("budget_summary", {
+    p_financial_year: financialYear,
+  })
 }
 
 /**

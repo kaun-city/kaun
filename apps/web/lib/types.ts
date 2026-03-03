@@ -119,6 +119,38 @@ export interface Department {
   handles: string | null
 }
 
+export interface PropertyTaxYear {
+  financial_year: string
+  total_collection_lakh: number
+  total_applications: number
+  ward_count: number
+}
+
+export interface PropertyTaxData {
+  assembly_constituency: string
+  years: PropertyTaxYear[]
+}
+
+export interface BudgetDept {
+  department: string
+  amount_lakh: number
+  type: string
+}
+
+export interface BudgetItem {
+  department: string
+  description: string
+  amount_lakh: number
+}
+
+export interface BudgetSummary {
+  financial_year: string
+  total_receipts_lakh: number | null
+  total_payments_lakh: number | null
+  departments: BudgetDept[] | null
+  top_expenditures: BudgetItem[] | null
+}
+
 export interface WardStats {
   assembly_constituency: string
   total_population: number | null
