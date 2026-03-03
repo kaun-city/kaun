@@ -99,8 +99,24 @@ export interface PinResult {
   ward_name: string | null
   zone: string | null
   assembly_constituency: string | null
-  agencies: Agency[]
-  primary_agency: Agency | null
+  agencies?: Agency[]
+  primary_agency?: Agency | null
+}
+
+export interface Department {
+  id: number
+  city_id: string
+  short: string
+  name: string
+  alt_names: string | null
+  category: string
+  description: string | null
+  website: string | null
+  complaint_url: string | null
+  helpline: string | null
+  toll_free: string | null
+  email: string | null
+  handles: string | null
 }
 
 /** Subset of GeoJSON feature properties from datameet BBMP.geojson */

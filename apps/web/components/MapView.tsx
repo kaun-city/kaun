@@ -10,7 +10,7 @@
 import { useEffect, useRef, useState } from "react"
 import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
 import type { PinResult } from "@/lib/types"
-import { dropPin } from "@/lib/api"
+import { pinLookup } from "@/lib/api"
 
 const BENGALURU_CENTER: [number, number] = [12.9716, 77.5946]
 const BENGALURU_GEOJSON_URL =
@@ -126,7 +126,7 @@ export default function MapView({ onPin }: Props) {
 
         onPinRef.current(null, lat, lng) // signal loading state
 
-        const result = await dropPin(lat, lng)
+        const result = await pinLookup(lat, lng)
         onPinRef.current(result, lat, lng)
       })
     })

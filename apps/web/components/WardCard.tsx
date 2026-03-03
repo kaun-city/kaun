@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { CommunityFact, PinResult, RedditPost, WardProfile } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, submitFact, voteFact } from "@/lib/api"
+import type { CommunityFact, Department, PinResult, RedditPost, WardProfile } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchDepartments, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -296,6 +296,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [buzz, setBuzz] = useState<RedditPost[] | null>(null)
   const [buzzLoading, setBuzzLoading] = useState(false)
   const [extraFacts, setExtraFacts] = useState<CommunityFact[]>([])
+  const [departments, setDepartments] = useState<Department[]>([])
 
   useEffect(() => {
     setTab("who")
@@ -304,6 +305,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setBuzz(null)
     setBuzzLoading(false)
     setExtraFacts([])
+    setDepartments([])
   }, [result?.ward_no])
 
   useEffect(() => {
@@ -313,6 +315,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
     fetchWardProfile(result.ward_no, result.city_id, result.assembly_constituency ?? undefined)
       .then((p) => { setProfile(p); setProfileLoading(false) })
   }, [result, profile, profileLoading])
+
+  useEffect(() => {
+    if (tab !== "report" || departments.length > 0) return
+    fetchDepartments().then(d => setDepartments(d as Department[]))
+  }, [tab, departments.length])
 
   useEffect(() => {
     if (tab !== "money" || !result?.found || !result.ward_name) return
@@ -592,23 +599,22 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 Right to Information Act, 2005 · Rs. 10 fee · 30-day response
               </p>
               <div className="pt-2 space-y-2">
-                <p className="text-white/30 text-xs uppercase tracking-wider">File a Complaint</p>
-                <a href="https://sampark.karnataka.gov.in" target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                  <div>
-                    <p className="text-white text-sm font-medium">Sampark Karnataka</p>
-                    <p className="text-white/30 text-xs">Universal grievance portal · all agencies</p>
-                  </div>
-                  <span className="text-[#FF9933] text-sm font-mono font-semibold">1902</span>
-                </a>
-                {result.agencies.filter((a) => a.complaint_url).map((agency) => (
-                  <a key={agency.short} href={agency.complaint_url!} target="_blank" rel="noopener noreferrer"
+                <p className="text-white/30 text-xs uppercase tracking-wider">Government Agencies & Helplines</p>
+                {departments.filter(d => d.complaint_url || d.toll_free || d.helpline).map((dept) => (
+                  <a key={dept.short} href={dept.complaint_url || dept.website || "#"} target="_blank" rel="noopener noreferrer"
                     className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                    <div>
-                      <p className="text-white text-sm font-medium">{agency.short}</p>
-                      <p className="text-white/30 text-xs">{agency.name}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-sm font-medium">{dept.short}</p>
+                      <p className="text-white/30 text-xs truncate">{dept.name}</p>
                     </div>
-                    <span className="text-white/30 text-xs">&rarr;</span>
+                    <div className="text-right shrink-0 ml-2">
+                      {dept.toll_free && (
+                        <span className="text-[#FF9933] text-sm font-mono font-semibold">{dept.toll_free}</span>
+                      )}
+                      {!dept.toll_free && dept.helpline && (
+                        <span className="text-white/40 text-xs font-mono">{dept.helpline}</span>
+                      )}
+                    </div>
                   </a>
                 ))}
               </div>
