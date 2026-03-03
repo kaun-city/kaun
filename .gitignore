@@ -7,3 +7,11 @@ node_modules/
 dist/
 .DS_Store
 *.log
+
+# Python venv
+.venv/
+venv/
+
+# Test files
+test_*.py
+*.py.bak
