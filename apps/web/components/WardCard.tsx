@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, submitFact, voteFact } from "@/lib/api"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -300,6 +300,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [wardStats, setWardStats] = useState<WardStats | null>(null)
   const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
   const [budget, setBudget] = useState<BudgetSummary | null>(null)
+  const [unknowns, setUnknowns] = useState<{ total_questions: number; answered: number; unanswered: Array<{ category: string; subject: string; field: string; prompt: string; icon: string; priority: number }> } | null>(null)
+  const [showAddFor, setShowAddFor] = useState<{ category: string; subject: string; field: string; prompt: string } | null>(null)
 
   useEffect(() => {
     setTab("who")
@@ -312,6 +314,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setWardStats(null)
     setPropertyTax(null)
     setBudget(null)
+    setUnknowns(null)
+    setShowAddFor(null)
   }, [result?.ward_no])
 
   useEffect(() => {
@@ -321,6 +325,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
     fetchWardProfile(result.ward_no, result.city_id, result.assembly_constituency ?? undefined)
       .then((p) => { setProfile(p); setProfileLoading(false) })
   }, [result, profile, profileLoading])
+
+  useEffect(() => {
+    if (!result?.ward_no || unknowns) return
+    fetchWardUnknowns(result.ward_no).then(setUnknowns)
+  }, [result?.ward_no, unknowns])
 
   useEffect(() => {
     if (tab !== "stats" || !result?.assembly_constituency) return
@@ -426,6 +435,32 @@ export default function WardCard({ result, loading, onClose }: Props) {
           {tab === "who" && (
             <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-4">
 
+              {/* Knowledge Score */}
+              {unknowns && (
+                <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-white/50 text-xs uppercase tracking-wider">Community Knowledge</p>
+                    <span className="text-white/40 text-xs font-mono">{unknowns.answered}/{unknowns.total_questions}</span>
+                  </div>
+                  <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${Math.max(2, (unknowns.answered / unknowns.total_questions) * 100)}%`,
+                        background: unknowns.answered === 0 ? '#ef4444' : unknowns.answered < unknowns.total_questions / 2 ? '#f59e0b' : '#22c55e',
+                      }}
+                    />
+                  </div>
+                  <p className="text-white/25 text-[10px]">
+                    {unknowns.answered === 0
+                      ? "Nobody has contributed data about this ward yet. Be the first."
+                      : unknowns.unanswered?.length
+                        ? `${unknowns.unanswered.length} things still unknown. Help fill the gaps.`
+                        : "This ward is fully mapped by the community! 🎉"}
+                  </p>
+                </div>
+              )}
+
               {/* Governance alert */}
               {profile?.governance_alert && (
                 <div className="flex gap-2.5 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
@@ -519,8 +554,79 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   </div>
                 )}
 
-                {/* Add what you know */}
-                {profile && result.ward_no && (
+                {/* Unanswered questions — the civic Wikipedia prompts */}
+                {unknowns && unknowns.unanswered && unknowns.unanswered.length > 0 && (
+                  <div className="space-y-2 pt-2">
+                    <p className="text-white/30 text-xs uppercase tracking-wider">Help fill the gaps</p>
+                    {unknowns.unanswered.slice(0, showAddFor ? 3 : 6).map((q) => (
+                      <button
+                        key={`${q.category}-${q.subject}-${q.field}`}
+                        onClick={() => setShowAddFor(q)}
+                        className={`w-full text-left p-2.5 rounded-lg transition-colors ${
+                          showAddFor?.field === q.field && showAddFor?.subject === q.subject
+                            ? 'bg-[#FF9933]/10 border border-[#FF9933]/30'
+                            : 'bg-white/[0.03] hover:bg-white/[0.06] border border-transparent'
+                        }`}
+                      >
+                        <span className="text-sm mr-2">{q.icon}</span>
+                        <span className="text-white/50 text-xs">{q.prompt}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Quick answer form for selected question */}
+                {showAddFor && result.ward_no && (
+                  <div className="rounded-xl bg-[#FF9933]/5 border border-[#FF9933]/20 p-3 space-y-2">
+                    <p className="text-white/60 text-xs">{showAddFor.prompt}</p>
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault()
+                        const form = e.target as HTMLFormElement
+                        const input = form.elements.namedItem("answer") as HTMLInputElement
+                        if (!input.value.trim()) return
+                        const token = typeof window !== "undefined"
+                          ? sessionStorage.getItem("kaun_voter_token") || (() => { const t = crypto.randomUUID(); sessionStorage.setItem("kaun_voter_token", t); return t })()
+                          : null
+                        const res = await submitFact({
+                          city_id: result.city_id,
+                          ward_no: result.ward_no!,
+                          category: showAddFor!.category,
+                          subject: showAddFor!.subject,
+                          field: showAddFor!.field,
+                          value: input.value.trim(),
+                          source_type: "community",
+                          contributor_token: token ?? undefined,
+                        })
+                        if (res?.fact) {
+                          handleNewFact(res.fact)
+                          setShowAddFor(null)
+                          setUnknowns(null) // refresh unknowns
+                          input.value = ""
+                        }
+                      }}
+                      className="flex gap-2"
+                    >
+                      <input
+                        name="answer"
+                        type="text"
+                        placeholder="Type what you know..."
+                        className="flex-1 bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white text-xs placeholder:text-white/20 focus:outline-none focus:border-[#FF9933]/50"
+                        autoFocus
+                      />
+                      <button
+                        type="submit"
+                        className="bg-[#FF9933] text-black text-xs font-semibold px-4 py-2 rounded-lg hover:bg-[#FF9933]/80 transition-colors shrink-0"
+                      >
+                        Share
+                      </button>
+                    </form>
+                    <button onClick={() => setShowAddFor(null)} className="text-white/20 text-[10px] hover:text-white/40">cancel</button>
+                  </div>
+                )}
+
+                {/* Generic add fact form (for custom contributions) */}
+                {!showAddFor && profile && result.ward_no && (
                   <AddFactForm
                     wardNo={result.ward_no}
                     cityId={result.city_id}

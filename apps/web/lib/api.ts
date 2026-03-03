@@ -167,6 +167,43 @@ export async function fetchWardStats(assemblyConstituency: string): Promise<Ward
 }
 
 /**
+ * Fetch unanswered questions for a ward — the "what's unknown" prompts.
+ */
+export async function fetchWardUnknowns(wardNo: number, cityId = "bengaluru") {
+  return await rpc<{
+    ward_no: number
+    total_questions: number
+    answered: number
+    unanswered: Array<{
+      category: string
+      subject: string
+      field: string
+      prompt: string
+      icon: string
+      priority: number
+    }>
+  }>("ward_unknowns", { p_ward_no: wardNo, p_city_id: cityId })
+}
+
+/**
+ * Fetch recent community activity across the city.
+ */
+export async function fetchRecentActivity(limit = 20) {
+  return await rpc<Array<{
+    type: string
+    ward_no: number
+    ward_name: string
+    category: string
+    subject: string
+    field: string
+    value: string
+    corroborations: number
+    created_at: string
+    trust_level: string
+  }>>("recent_activity", { p_limit: limit })
+}
+
+/**
  * Fetch property tax collections for an assembly constituency.
  */
 export async function fetchPropertyTax(assemblyConstituency: string): Promise<PropertyTaxData | null> {
