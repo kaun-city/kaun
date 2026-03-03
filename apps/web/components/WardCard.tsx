@@ -69,20 +69,27 @@ export default function WardCard({ result, loading, onClose }: Props) {
               className="flex items-center justify-between py-2.5 px-3 rounded-lg bg-white/5"
             >
               <div>
-                <p className="text-white text-sm font-medium">{agency.short}</p>
+                {agency.website ? (
+                  <a
+                    href={agency.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white text-sm font-medium hover:text-[#FF9933] transition-colors"
+                  >
+                    {agency.short} &rarr;
+                  </a>
+                ) : (
+                  <p className="text-white text-sm font-medium">{agency.short}</p>
+                )}
                 <p className="text-white/40 text-xs leading-snug">{agency.name}</p>
               </div>
               {agency.helpline && (
-                <a
-                  href={`tel:${agency.helpline}`}
-                  className="
-                    text-[#FF9933] text-sm font-mono font-semibold
-                    hover:underline focus:outline-none
-                  "
-                  aria-label={`Call ${agency.name} helpline`}
+                <span
+                  className="text-[#FF9933] text-sm font-mono font-semibold"
+                  title="Helpline number"
                 >
                   {agency.helpline}
-                </a>
+                </span>
               )}
             </div>
           ))}
