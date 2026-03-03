@@ -9,7 +9,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
-import type { WardProperties, PinResult } from "@/lib/types"
+import type { PinResult } from "@/lib/types"
 import { dropPin } from "@/lib/api"
 
 const BENGALURU_CENTER: [number, number] = [12.9716, 77.5946]
@@ -37,10 +37,20 @@ export default function MapView({ onPin }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
+  const onPinRef = useRef(onPin)
   const [loading, setLoading] = useState(true)
+
+  // Keep the ref current without re-running map setup
+  useEffect(() => { onPinRef.current = onPin }, [onPin])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
+
+    // Guard against hot-reload leaving a stale Leaflet instance on the DOM node
+    const container = containerRef.current as HTMLDivElement & { _leaflet_id?: number }
+    if (container._leaflet_id) {
+      delete container._leaflet_id
+    }
 
     // Leaflet CSS — must load after mount
     const link = document.createElement("link")
@@ -114,10 +124,10 @@ export default function MapView({ onPin }: Props) {
           marker = L.marker([lat, lng], { icon: pinIcon }).addTo(map)
         }
 
-        onPin(null, lat, lng) // signal loading state
+        onPinRef.current(null, lat, lng) // signal loading state
 
         const result = await dropPin(lat, lng)
-        onPin(result, lat, lng)
+        onPinRef.current(result, lat, lng)
       })
     })
 
@@ -125,7 +135,7 @@ export default function MapView({ onPin }: Props) {
       mapRef.current?.remove()
       mapRef.current = null
     }
-  }, [onPin])
+  }, []) // empty — map initialises once, onPin updates via ref
 
   return (
     <div className="relative w-full h-full">
