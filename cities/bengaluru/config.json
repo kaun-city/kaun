@@ -1,0 +1,87 @@
+{
+  "id": "bengaluru",
+  "name": "Bengaluru",
+  "aliases": ["Bangalore", "BLR", "BBMP"],
+  "country": "IN",
+  "state": "Karnataka",
+  "language_primary": "kn",
+  "language_secondary": "en",
+  "ward_count": 243,
+  "ward_boundary_source": "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson",
+  "ward_boundary_license": "CC BY-SA 2.5 IN",
+
+  "agencies": {
+    "roads_local": {
+      "name": "Greater Bengaluru Authority",
+      "short": "GBA",
+      "formerly": "BBMP",
+      "helpline": "1533",
+      "website": "https://bbmp.gov.in",
+      "rti_address": "Public Information Officer, GBA Zonal Office, {zone}, Bengaluru"
+    },
+    "water": {
+      "name": "Bangalore Water Supply and Sewerage Board",
+      "short": "BWSSB",
+      "helpline": "1916",
+      "website": "https://bwssb.gov.in",
+      "rti_address": "Public Information Officer, BWSSB, Cauvery Bhavan, Bengaluru - 560009"
+    },
+    "electricity": {
+      "name": "Bangalore Electricity Supply Company",
+      "short": "BESCOM",
+      "helpline": "1912",
+      "website": "https://bescom.karnataka.gov.in",
+      "rti_address": "Public Information Officer, BESCOM, K.R. Circle, Bengaluru - 560001"
+    },
+    "traffic": {
+      "name": "Bengaluru Traffic Police",
+      "short": "BTP",
+      "helpline": "103",
+      "website": "https://ksp.karnataka.gov.in",
+      "rti_address": "Public Information Officer, DCP Traffic, Bengaluru City Police"
+    },
+    "roads_arterial": {
+      "name": "Bangalore Development Authority",
+      "short": "BDA",
+      "helpline": null,
+      "website": "https://bda.karnataka.gov.in",
+      "rti_address": "Public Information Officer, BDA, T.T. Nagar, Bengaluru - 560032"
+    }
+  },
+
+  "jurisdiction_resolver": {
+    "pothole": "roads_local",
+    "road_repair": "roads_local",
+    "footpath": "roads_local",
+    "streetlight": "roads_local",
+    "garbage": "roads_local",
+    "park": "roads_local",
+    "drain_stormwater": "roads_local",
+    "water_supply": "water",
+    "sewage": "water",
+    "electricity": "electricity",
+    "traffic_signal": "traffic",
+    "road_arterial": "roads_arterial"
+  },
+
+  "tender_sources": [
+    {
+      "name": "KPPP",
+      "url": "https://kppp.karnataka.gov.in",
+      "api": "https://kppp.karnataka.gov.in/supplier-registration-service/v1/api/portal-service/works/search-eproc-tenders",
+      "ward_extraction": "regex",
+      "notes": "Undocumented REST API. Ward number extractable from tender title ~65% of time."
+    }
+  ],
+
+  "rti": {
+    "fee_inr": 10,
+    "fee_bpl": 0,
+    "response_days": 30,
+    "first_appeal_days": 30,
+    "portal": null,
+    "notes": "Karnataka state govt bodies. Fee via IPO/DD/Court fee stamp. No online portal for state-level RTI."
+  },
+
+  "data_notes": "BBMP dissolved Sept 2025, replaced by Greater Bengaluru Authority (GBA) + 5 city corporations. Ward boundaries (243 wards, 2022 delimitation) remain valid. Officer directory not publicly available — requires RTI or manual compilation."
+}
