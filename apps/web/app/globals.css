@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --saffron: #FF9933;
+  --bg: #0A0A0A;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow: hidden;
+  background: var(--bg);
+  color: white;
+}
+
+/* Leaflet overrides — keep map controls on brand */
+.leaflet-control-zoom a {
+  background-color: #1a1a1a !important;
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.leaflet-control-zoom a:hover {
+  background-color: #2a2a2a !important;
+}
+.leaflet-control-attribution {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+.leaflet-control-attribution a {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Ward card slide-up animation */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.25s ease-out forwards;
+}
