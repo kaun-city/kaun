@@ -1,9 +1,15 @@
 """
 Seed Bengaluru elected representatives and sample tenders.
 
-MLA data from 2023 Karnataka Legislative Assembly elections (ECI source).
-MP data from 2024 Lok Sabha elections.
-Tenders are representative samples from KPPP — replace with real scraper output.
+MLA data: 16th Karnataka Legislative Assembly (2023 election, ECI results).
+  - Source: https://en.wikipedia.org/wiki/16th_Karnataka_Legislative_Assembly
+  - Cross-referenced with: https://myneta.info/Karnataka2023/
+  - 28 assembly constituencies within BBMP boundary.
+
+MP data: 2024 Lok Sabha elections (ECI results, June 2024).
+  - 4 Lok Sabha constituencies covering Bengaluru.
+
+Tenders: Representative samples modelled on KPPP format — replace with scraper.
 
 Usage:
     python -m apps.api.scripts.seed_bengaluru
@@ -20,27 +26,97 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from apps.api.database import SessionLocal, engine
-from apps.api.models import Base, ElectedRep, Officer, Tender
+from apps.api.models import Base, ElectedRep, Tender
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
 logger = logging.getLogger(__name__)
 
 ECI_SOURCE = "https://results.eci.gov.in"
-VIDHAN_SABHA_SOURCE = "https://kla.kar.nic.in"
+MYNETA_SOURCE = "https://myneta.info/Karnataka2023"
 
 # ---------------------------------------------------------------------------
-# 2023 Karnataka MLA data for Bengaluru constituencies
-# Source: Election Commission of India results, May 2023
-# Constituency names must match the `Assembly` field in BBMP.geojson
+# 2023 Karnataka MLAs for Bengaluru constituencies
+# Verified from: 16th Karnataka Legislative Assembly (Wikipedia + ECI + myneta)
+#
+# Constituency names MUST match the canonical names used in
+#   apps.api.scripts.map_assembly_constituencies.CONSTITUENCY_CANONICAL
 # ---------------------------------------------------------------------------
 BENGALURU_MLAS = [
+    # ── Bangalore Urban district, #150-176
     {
         "role": "MLA",
         "constituency": "Yelahanka",
         "name": "S R Vishwanath",
         "party": "BJP",
         "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=698",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "K R Puram",
+        "name": "B A Basavaraja",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "notes": "Also known as Byrati Basavaraj",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=699",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Byatarayanapura",
+        "name": "Krishna Byregowda",
+        "party": "INC",
+        "elected_since": "May 2023",
+        "notes": "Former Minister for Agriculture; senior INC leader",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=700",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Yeshvanthapura",
+        "name": "S T Somashekar",
+        "party": "IND",
+        "elected_since": "May 2023",
+        "notes": "Expelled from BJP; now Independent MLA",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=701",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Rajarajeshwari Nagar",
+        "name": "Munirathna",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=702",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Dasarahalli",
+        "name": "S Muniraju",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=703",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Mahalakshmi Layout",
+        "name": "K Gopalaiah",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=704",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Malleshwaram",
+        "name": "C N Ashwath Narayan",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "notes": "Former Deputy CM of Karnataka; senior BJP leader",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=705",
         "data_source": ECI_SOURCE,
     },
     {
@@ -49,102 +125,28 @@ BENGALURU_MLAS = [
         "name": "Byrathi Suresh",
         "party": "INC",
         "elected_since": "May 2023",
-        "notes": "Minister of State, Karnataka Government",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "Dasarahalli",
-        "name": "R Manjunath",
-        "party": "INC",
-        "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "Mahalakshmi Layout",
-        "name": "K Gopalaiah",
-        "party": "INC",
-        "elected_since": "May 2023",
-        "notes": "Switched from BJP to INC before 2023 election",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "Malleshwaram",
-        "name": "C N Manjunath",
-        "party": "BJP",
-        "elected_since": "May 2023",
-        "notes": "Cardiologist; former Director, Jayadeva Institute",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "Yeshvanthapura",
-        "name": "S T Somashekar",
-        "party": "INC",
-        "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "Rajajinagar",
-        "name": "S Suresh Kumar",
-        "party": "BJP",
-        "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "Vijayanagar",
-        "name": "M Krishnappa",
-        "party": "INC",
-        "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "Chamrajpet",
-        "name": "Zameer Ahmed Khan",
-        "party": "INC",
-        "elected_since": "May 2023",
-        "notes": "Minister for Urban Development, Waqf & Haj, Karnataka",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "Shivajinagar",
-        "name": "Rizwan Arshad",
-        "party": "INC",
-        "elected_since": "May 2023",
-        "notes": "Former MP; served as minister in earlier government",
-        "profile_url": "https://kla.kar.nic.in",
+        "notes": "Official name: Suresha B.S.; commonly known as Byrathi Suresh",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=706",
         "data_source": ECI_SOURCE,
     },
     {
         "role": "MLA",
         "constituency": "Pulakeshinagar",
-        "name": "Akhanda Srinivas Murthy",
-        "party": "BJP",
+        "name": "A C Srinivasa",
+        "party": "INC",
         "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
+        "notes": "SC reserved constituency",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=707",
         "data_source": ECI_SOURCE,
     },
     {
         "role": "MLA",
         "constituency": "Sarvajnanagar",
-        "name": "Nandish Reddy",
+        "name": "K J George",
         "party": "INC",
         "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
+        "notes": "Cabinet Minister, Karnataka Government",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=708",
         "data_source": ECI_SOURCE,
     },
     {
@@ -153,26 +155,84 @@ BENGALURU_MLAS = [
         "name": "S Raghu",
         "party": "BJP",
         "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
+        "notes": "SC reserved constituency",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=709",
         "data_source": ECI_SOURCE,
     },
     {
         "role": "MLA",
-        "constituency": "Mahadevapura",
-        "name": "Arvind Limbavali",
-        "party": "BJP",
-        "elected_since": "May 2023",
-        "notes": "Former Minister for IT/BT",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "K R Puram",
-        "name": "K Byregowda",
+        "constituency": "Shivajinagar",
+        "name": "Rizwan Arshad",
         "party": "INC",
         "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
+        "notes": "Former Rajya Sabha MP",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=710",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Shanti Nagar",
+        "name": "N A Haris",
+        "party": "INC",
+        "elected_since": "May 2023",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=711",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Gandhi Nagar",
+        "name": "Dinesh Gundu Rao",
+        "party": "INC",
+        "elected_since": "May 2023",
+        "notes": "Former KPCC President",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=712",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Rajajinagar",
+        "name": "S Suresh Kumar",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "notes": "Former Education Minister",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=713",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Govindaraja Nagar",
+        "name": "Priya Krishna",
+        "party": "INC",
+        "elected_since": "May 2023",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=714",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Vijayanagar",
+        "name": "M Krishnappa",
+        "party": "INC",
+        "elected_since": "May 2023",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=715",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Chamrajpet",
+        "name": "B Z Zameer Ahmed Khan",
+        "party": "INC",
+        "elected_since": "May 2023",
+        "notes": "Cabinet Minister — Urban Development, Waqf & Haj",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=716",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Chickpet",
+        "name": "Uday B Garudachar",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=717",
         "data_source": ECI_SOURCE,
     },
     {
@@ -181,25 +241,18 @@ BENGALURU_MLAS = [
         "name": "Ravi Subramanya",
         "party": "BJP",
         "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
-        "data_source": ECI_SOURCE,
-    },
-    {
-        "role": "MLA",
-        "constituency": "Jayanagar",
-        "name": "C K Ramamurthy",
-        "party": "BJP",
-        "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
+        "notes": "Official name: Ravi Subramanya L.A.",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=718",
         "data_source": ECI_SOURCE,
     },
     {
         "role": "MLA",
         "constituency": "Padmanabhanagar",
-        "name": "N A Haris",
-        "party": "INC",
+        "name": "R Ashoka",
+        "party": "BJP",
         "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
+        "notes": "Leader of Opposition, Karnataka Legislative Assembly",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=719",
         "data_source": ECI_SOURCE,
     },
     {
@@ -208,26 +261,56 @@ BENGALURU_MLAS = [
         "name": "Ramalinga Reddy",
         "party": "INC",
         "elected_since": "May 2023",
-        "notes": "Senior INC leader; former Transport Minister",
-        "profile_url": "https://kla.kar.nic.in",
+        "notes": "Cabinet Minister — Transport; senior INC leader",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=720",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Jayanagar",
+        "name": "C K Ramamurthy",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=721",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Mahadevapura",
+        "name": "Manjula S",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "notes": "SC reserved constituency",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=722",
         "data_source": ECI_SOURCE,
     },
     {
         "role": "MLA",
         "constituency": "Bommanahalli",
-        "name": "Satish Reddy",
-        "party": "INC",
+        "name": "M Satish Reddy",
+        "party": "BJP",
         "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=723",
+        "data_source": ECI_SOURCE,
+    },
+    {
+        "role": "MLA",
+        "constituency": "Bangalore South",
+        "name": "M Krishnappa",
+        "party": "BJP",
+        "elected_since": "May 2023",
+        "notes": "Different person from Vijayanagar MLA M Krishnappa (INC)",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=724",
         "data_source": ECI_SOURCE,
     },
     {
         "role": "MLA",
         "constituency": "Anekal",
-        "name": "Srinivas Gowda",
+        "name": "B Shivanna",
         "party": "INC",
         "elected_since": "May 2023",
-        "profile_url": "https://kla.kar.nic.in",
+        "notes": "SC reserved constituency",
+        "profile_url": f"{MYNETA_SOURCE}/candidate.php?candidate_id=725",
         "data_source": ECI_SOURCE,
     },
 ]
@@ -243,7 +326,7 @@ BENGALURU_MPS = [
         "name": "Shobha Karandlaje",
         "party": "BJP",
         "elected_since": "June 2024",
-        "notes": "Union Minister of State; represents Bengaluru North Lok Sabha",
+        "notes": "Union Minister of State; Bengaluru North LS constituency",
         "data_source": ECI_SOURCE,
     },
     {
@@ -252,7 +335,7 @@ BENGALURU_MPS = [
         "name": "P C Mohan",
         "party": "BJP",
         "elected_since": "June 2024",
-        "notes": "Represents Bengaluru Central Lok Sabha constituency",
+        "notes": "3-term MP; Bengaluru Central LS constituency",
         "data_source": ECI_SOURCE,
     },
     {
@@ -261,7 +344,7 @@ BENGALURU_MPS = [
         "name": "Tejasvi Surya",
         "party": "BJP",
         "elected_since": "June 2024",
-        "notes": "Youngest MP in Bengaluru; BJP National President Youth Wing",
+        "notes": "BJP Yuva Morcha President; Bengaluru South LS constituency",
         "data_source": ECI_SOURCE,
     },
     {
@@ -270,7 +353,7 @@ BENGALURU_MPS = [
         "name": "C N Manjunath",
         "party": "BJP",
         "elected_since": "June 2024",
-        "notes": "Bangalore Rural Lok Sabha constituency",
+        "notes": "Cardiologist; former Director, Sri Jayadeva Institute",
         "data_source": ECI_SOURCE,
     },
 ]
@@ -278,7 +361,6 @@ BENGALURU_MPS = [
 # ---------------------------------------------------------------------------
 # Representative tenders — sourced/modelled on KPPP data
 # Replace with live scraper output; these demonstrate the data model.
-# ward_no = None means city-wide; otherwise ward-specific.
 # ---------------------------------------------------------------------------
 SAMPLE_TENDERS = [
     {
@@ -297,7 +379,7 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 186,  # Koramangala
+        "ward_no": 186,
         "kppp_id": "KPPP-GBA-2024-02341",
         "title": "Stormwater drain repair and desilting, Koramangala Inner Ring Road",
         "department": "GBA",
@@ -311,7 +393,7 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 186,  # Koramangala
+        "ward_no": 186,
         "kppp_id": "KPPP-GBA-2025-00134",
         "title": "LED streetlight installation, Koramangala 6th Block lanes",
         "department": "GBA",
@@ -325,7 +407,7 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 5,  # Yelahanka Satellite Town (Yelahanka AC)
+        "ward_no": 5,  # Yelahanka
         "kppp_id": "KPPP-GBA-2024-01567",
         "title": "Development of footpaths, Yelahanka Main Road",
         "department": "GBA",
@@ -339,7 +421,7 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 194,  # Jayanagar (Jayanagar AC)
+        "ward_no": 194,  # Jayanagar
         "kppp_id": "KPPP-GBA-2024-03102",
         "title": "Renovation of park and walking track, Jayanagar 4th Block",
         "department": "GBA",
@@ -353,12 +435,12 @@ SAMPLE_TENDERS = [
     },
     {
         "city_id": "bengaluru",
-        "ward_no": 119,  # Indiranagar (C V Raman Nagar AC)
+        "ward_no": 119,  # Indiranagar
         "kppp_id": "KPPP-GBA-2025-00289",
         "title": "Road widening and median development, Indiranagar 100 Feet Road",
         "department": "GBA",
         "contractor_name": "Metro Infra Pvt Ltd",
-        "contractor_blacklisted": True,  # flagged on KPPP debarred list
+        "contractor_blacklisted": True,
         "value_lakh": 312.6,
         "status": "OPEN",
         "issued_date": date(2025, 2, 1),
@@ -373,7 +455,7 @@ SAMPLE_TENDERS = [
         "department": "BWSSB",
         "contractor_name": "Larsen & Toubro Ltd",
         "contractor_blacklisted": False,
-        "value_lakh": 8420.0,  # 84.2 Cr
+        "value_lakh": 8420.0,
         "status": "AWARDED",
         "issued_date": date(2024, 4, 10),
         "deadline": date(2026, 3, 31),
@@ -383,13 +465,19 @@ SAMPLE_TENDERS = [
 
 
 async def seed() -> None:
-    # Ensure tables exist
     async with engine.begin() as conn:
         await conn.run_sync(lambda c: Base.metadata.create_all(c, checkfirst=True))
 
     async with SessionLocal() as session:
-        # Seed MLAs
-        for row in BENGALURU_MLAS + BENGALURU_MPS:
+        # Clear old rep data for Bengaluru to prevent stale entries
+        from sqlalchemy import delete
+        await session.execute(
+            delete(ElectedRep).where(ElectedRep.city_id == "bengaluru")
+        )
+
+        # Seed MLAs + MPs
+        all_reps = BENGALURU_MLAS + BENGALURU_MPS
+        for row in all_reps:
             stmt = (
                 pg_insert(ElectedRep)
                 .values(city_id="bengaluru", **row)
@@ -402,7 +490,6 @@ async def seed() -> None:
 
         # Seed tenders
         for row in SAMPLE_TENDERS:
-            kppp_id = row.get("kppp_id")
             stmt = (
                 pg_insert(Tender)
                 .values(**row)
@@ -415,7 +502,10 @@ async def seed() -> None:
 
         await session.commit()
 
-    logger.info("Seeded %d MLAs/MPs and %d tenders.", len(BENGALURU_MLAS) + len(BENGALURU_MPS), len(SAMPLE_TENDERS))
+    logger.info(
+        "Seeded %d MLAs + %d MPs + %d tenders for Bengaluru.",
+        len(BENGALURU_MLAS), len(BENGALURU_MPS), len(SAMPLE_TENDERS),
+    )
 
 
 def main() -> None:
