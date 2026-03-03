@@ -17,6 +17,7 @@
       "formerly": "BBMP",
       "helpline": "1533",
       "website": "https://bbmp.gov.in",
+      "complaint_url": "https://bbmpgov.sahaaya.in",
       "rti_address": "Public Information Officer, GBA Zonal Office, {zone}, Bengaluru"
     },
     "water": {
@@ -24,6 +25,7 @@
       "short": "BWSSB",
       "helpline": "1916",
       "website": "https://bwssb.gov.in",
+      "complaint_url": "https://bwssb.gov.in/content/complaints",
       "rti_address": "Public Information Officer, BWSSB, Cauvery Bhavan, Bengaluru - 560009"
     },
     "electricity": {
@@ -31,6 +33,7 @@
       "short": "BESCOM",
       "helpline": "1912",
       "website": "https://bescom.karnataka.gov.in",
+      "complaint_url": "https://bescom.karnataka.gov.in/page/Online-Services/Complaint/en",
       "rti_address": "Public Information Officer, BESCOM, K.R. Circle, Bengaluru - 560001"
     },
     "traffic": {
@@ -38,6 +41,7 @@
       "short": "BTP",
       "helpline": "103",
       "website": "https://ksp.karnataka.gov.in",
+      "complaint_url": "https://ksp.karnataka.gov.in/page/Citizen-Services/Grievance/en",
       "rti_address": "Public Information Officer, DCP Traffic, Bengaluru City Police"
     },
     "roads_arterial": {
@@ -45,6 +49,7 @@
       "short": "BDA",
       "helpline": null,
       "website": "https://bda.karnataka.gov.in",
+      "complaint_url": "https://bda.karnataka.gov.in",
       "rti_address": "Public Information Officer, BDA, T.T. Nagar, Bengaluru - 560032"
     }
   },

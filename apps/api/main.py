@@ -17,7 +17,7 @@ from sqlalchemy import text
 
 from .config import get_settings
 from .database import engine
-from .routers import pin, wards
+from .routers import buzz, pin, ward_profile, wards
 from .schemas import HealthResponse
 
 logging.basicConfig(level=logging.INFO)
@@ -52,6 +52,8 @@ app.add_middleware(
 
 app.include_router(pin.router)
 app.include_router(wards.router)
+app.include_router(buzz.router)
+app.include_router(ward_profile.router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["meta"])

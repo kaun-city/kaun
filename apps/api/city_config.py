@@ -50,6 +50,7 @@ def get_all_agencies(city_id: str) -> list[Agency]:
                 short=agency_data["short"],
                 helpline=agency_data.get("helpline"),
                 website=agency_data.get("website"),
+                complaint_url=agency_data.get("complaint_url"),
             )
         )
     return agencies
@@ -78,4 +79,5 @@ def resolve_agency(city_id: str, issue_type: str) -> Agency | None:
         short=agency_data["short"],
         helpline=agency_data.get("helpline"),
         website=agency_data.get("website"),
+        complaint_url=agency_data.get("complaint_url"),
     )

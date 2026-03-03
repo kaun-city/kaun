@@ -19,6 +19,7 @@ class Agency(BaseModel):
     short: str
     helpline: str | None = None
     website: str | None = None
+    complaint_url: str | None = None
 
 
 # ---------------------------------------------------------------------------
