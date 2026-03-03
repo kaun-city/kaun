@@ -112,3 +112,59 @@ FROM community_facts
 WHERE community_facts.city_id = $1::VARCHAR AND community_facts.ward_no = $2::INTEGER AND community_facts.is_active = true ORDER BY community_facts.corroboration_count DESC, community_facts.created_at DESC
 INFO:sqlalchemy.engine.Engine:[generated in 0.00044s] ('bengaluru', 186)
 INFO:sqlalchemy.engine.Engine:ROLLBACK
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:
+                SELECT
+                    ward_no,
+                    ward_name,
+                    zone,
+                    assembly_constituency
+                FROM wards
+                WHERE
+                    city_id = $1
+                    AND ST_Contains(
+                        geom,
+                        ST_SetSRID(ST_Point($2, $3), 4326)
+                    )
+                LIMIT 1
+                
+INFO:sqlalchemy.engine.Engine:[generated in 0.00048s] ('bengaluru', 77.67745971679689, 12.917902675001255)
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:SELECT elected_reps.id, elected_reps.city_id, elected_reps.role, elected_reps.constituency, elected_reps.name, elected_reps.party, elected_reps.elected_since, elected_reps.photo_url, elected_reps.phone, elected_reps.email, elected_reps.profile_url, elected_reps.notes, elected_reps.data_source 
+FROM elected_reps 
+WHERE elected_reps.city_id = $1::VARCHAR AND elected_reps.constituency = $2::VARCHAR
+INFO:sqlalchemy.engine.Engine:[cached since 588.6s ago] ('bengaluru', 'Mahadevapura')
+INFO:sqlalchemy.engine.Engine:SELECT officers.id, officers.city_id, officers.ward_no, officers.department, officers.role, officers.name, officers.phone, officers.source, officers.updated_at 
+FROM officers 
+WHERE officers.city_id = $1::VARCHAR AND officers.ward_no = $2::INTEGER
+INFO:sqlalchemy.engine.Engine:[cached since 588.6s ago] ('bengaluru', 116)
+INFO:sqlalchemy.engine.Engine:SELECT tenders.id, tenders.city_id, tenders.ward_no, tenders.kppp_id, tenders.title, tenders.department, tenders.contractor_name, tenders.contractor_blacklisted, tenders.value_lakh, tenders.status, tenders.issued_date, tenders.deadline, tenders.source_url, tenders.scraped_at 
+FROM tenders 
+WHERE tenders.city_id = $1::VARCHAR AND tenders.ward_no = $2::INTEGER ORDER BY tenders.issued_date DESC 
+ LIMIT $3::INTEGER
+INFO:sqlalchemy.engine.Engine:[cached since 588.6s ago] ('bengaluru', 116, 10)
+INFO:sqlalchemy.engine.Engine:SELECT community_facts.id, community_facts.city_id, community_facts.ward_no, community_facts.category, community_facts.subject, community_facts.field, community_facts.value, community_facts.source_type, community_facts.source_url, community_facts.source_note, community_facts.corroboration_count, community_facts.dispute_count, community_facts.contributor_token, community_facts.is_active, community_facts.created_at, community_facts.last_corroborated_at 
+FROM community_facts 
+WHERE community_facts.city_id = $1::VARCHAR AND community_facts.ward_no = $2::INTEGER AND community_facts.is_active = true ORDER BY community_facts.corroboration_count DESC, community_facts.created_at DESC
+INFO:sqlalchemy.engine.Engine:[cached since 588.6s ago] ('bengaluru', 116)
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:SELECT elected_reps.id, elected_reps.city_id, elected_reps.role, elected_reps.constituency, elected_reps.name, elected_reps.party, elected_reps.elected_since, elected_reps.photo_url, elected_reps.phone, elected_reps.email, elected_reps.profile_url, elected_reps.notes, elected_reps.data_source 
+FROM elected_reps 
+WHERE elected_reps.city_id = $1::VARCHAR AND elected_reps.constituency = $2::VARCHAR
+INFO:sqlalchemy.engine.Engine:[cached since 1271s ago] ('bengaluru', 'Mahadevapura')
+INFO:sqlalchemy.engine.Engine:SELECT officers.id, officers.city_id, officers.ward_no, officers.department, officers.role, officers.name, officers.phone, officers.source, officers.updated_at 
+FROM officers 
+WHERE officers.city_id = $1::VARCHAR AND officers.ward_no = $2::INTEGER
+INFO:sqlalchemy.engine.Engine:[cached since 1271s ago] ('bengaluru', 151)
+INFO:sqlalchemy.engine.Engine:SELECT tenders.id, tenders.city_id, tenders.ward_no, tenders.kppp_id, tenders.title, tenders.department, tenders.contractor_name, tenders.contractor_blacklisted, tenders.value_lakh, tenders.status, tenders.issued_date, tenders.deadline, tenders.source_url, tenders.scraped_at 
+FROM tenders 
+WHERE tenders.city_id = $1::VARCHAR AND tenders.ward_no = $2::INTEGER ORDER BY tenders.issued_date DESC 
+ LIMIT $3::INTEGER
+INFO:sqlalchemy.engine.Engine:[cached since 1271s ago] ('bengaluru', 151, 10)
+INFO:sqlalchemy.engine.Engine:SELECT community_facts.id, community_facts.city_id, community_facts.ward_no, community_facts.category, community_facts.subject, community_facts.field, community_facts.value, community_facts.source_type, community_facts.source_url, community_facts.source_note, community_facts.corroboration_count, community_facts.dispute_count, community_facts.contributor_token, community_facts.is_active, community_facts.created_at, community_facts.last_corroborated_at 
+FROM community_facts 
+WHERE community_facts.city_id = $1::VARCHAR AND community_facts.ward_no = $2::INTEGER AND community_facts.is_active = true ORDER BY community_facts.corroboration_count DESC, community_facts.created_at DESC
+INFO:sqlalchemy.engine.Engine:[cached since 1271s ago] ('bengaluru', 151)
+INFO:sqlalchemy.engine.Engine:ROLLBACK
