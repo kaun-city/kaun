@@ -13,11 +13,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import text
+from sqlalchemy import text  # noqa: F401 — used in lifespan
 
 from .config import get_settings
 from .database import engine
-from .routers import buzz, pin, ward_profile, wards
+from .models import Base
+from .routers import buzz, community, pin, ward_profile, wards
 from .schemas import HealthResponse
 
 logging.basicConfig(level=logging.INFO)
@@ -27,8 +28,11 @@ settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Log startup info. Dispose engine on shutdown."""
+    """Create tables on startup (idempotent). Dispose engine on shutdown."""
     logger.info("Kaun API starting (env=%s)", settings.app_env)
+    async with engine.begin() as conn:
+        await conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
+        await conn.run_sync(lambda c: Base.metadata.create_all(c, checkfirst=True))
     yield
     await engine.dispose()
     logger.info("Kaun API shut down")
@@ -54,6 +58,7 @@ app.include_router(pin.router)
 app.include_router(wards.router)
 app.include_router(buzz.router)
 app.include_router(ward_profile.router)
+app.include_router(community.router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["meta"])

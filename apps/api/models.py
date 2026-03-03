@@ -8,8 +8,8 @@ Requires PostgreSQL with the PostGIS extension enabled:
 from datetime import date, datetime
 
 from geoalchemy2 import Geometry
-from sqlalchemy import Boolean, Date, DateTime, Float, Index, Integer, String, Text, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from .database import Base
@@ -138,3 +138,101 @@ class Tender(Base):
 
     def __repr__(self) -> str:
         return f"<Tender ward={self.ward_no} title={self.title[:40]!r} val={self.value_lakh}L>"
+
+
+# ---------------------------------------------------------------------------
+# Community / Civic Wikipedia
+# ---------------------------------------------------------------------------
+
+class CommunityFact(Base):
+    """
+    A user-submitted claim about civic data for a ward.
+
+    This is the core of the "civic Wikipedia" — citizens contribute what they
+    know (officer names, phone numbers, issue statuses, etc.) and others
+    corroborate it with a +1 to signal "I can verify this."
+
+    Trust tiers (shown in UI):
+      - source_type = "official"  → green "Govt source" badge
+      - source_type = "rti"       → blue "RTI sourced" badge
+      - source_type = "community" + corroboration_count >= 5 → amber "Community verified"
+      - source_type = "community" + corroboration_count < 5  → grey "Unverified"
+      - dispute_count > corroboration_count → "Disputed" warning
+    """
+
+    __tablename__ = "community_facts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    city_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    ward_no: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
+
+    # What type of fact is this?
+    # "officer" | "tender_update" | "issue" | "contact" | "info"
+    category: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+
+    # Fine-grained subject: "gba_ward_officer" | "bwssb_ae" | "pothole_status" etc.
+    subject: Mapped[str] = mapped_column(String(128), nullable=False)
+
+    # The specific field being claimed: "name" | "phone" | "email" | "note" etc.
+    field: Mapped[str] = mapped_column(String(64), nullable=False)
+
+    # The actual value
+    value: Mapped[str] = mapped_column(Text, nullable=False)
+
+    # Where did this come from?
+    # "community" | "rti" | "official" | "news"
+    source_type: Mapped[str] = mapped_column(String(32), nullable=False, default="community")
+    source_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    source_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Trust scores — updated atomically by vote handlers
+    corroboration_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    dispute_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    # Anonymous contributor token (hashed browser fingerprint or session ID)
+    # Never stored raw — only used for deduplication.
+    contributor_token: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    # updated via raw SQL increment in vote handler — not set from Python to avoid tz mismatch
+    last_corroborated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, server_default=None)
+
+    votes: Mapped[list["FactVote"]] = relationship("FactVote", back_populates="fact", lazy="select")
+
+    __table_args__ = (
+        Index("ix_community_facts_ward_category", "city_id", "ward_no", "category"),
+    )
+
+    def __repr__(self) -> str:
+        preview = self.value[:30]
+        return f"<CommunityFact ward={self.ward_no} {self.category}/{self.subject}/{self.field}={preview!r}>"
+
+
+class FactVote(Base):
+    """
+    A single corroboration or dispute vote on a CommunityFact.
+
+    Voter token prevents the same person from voting twice on the same fact.
+    Tokens are hashed client-side (e.g. SHA256 of browser fingerprint) —
+    Kaun never stores any identifying information.
+    """
+
+    __tablename__ = "fact_votes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    fact_id: Mapped[int] = mapped_column(Integer, ForeignKey("community_facts.id"), nullable=False, index=True)
+
+    # "corroborate" | "dispute"
+    vote_type: Mapped[str] = mapped_column(String(16), nullable=False)
+
+    # Hashed token — no PII
+    voter_token: Mapped[str] = mapped_column(String(128), nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    fact: Mapped["CommunityFact"] = relationship("CommunityFact", back_populates="votes")
+
+    __table_args__ = (
+        UniqueConstraint("fact_id", "voter_token", name="uq_fact_vote"),
+    )

@@ -1,4 +1,4 @@
-import type { PinResult, RedditPost, WardProfile } from "./types"
+import type { CommunityFact, PinResult, RedditPost, WardProfile } from "./types"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
 
@@ -42,6 +42,54 @@ export async function fetchWardProfile(
     const res = await fetch(`${API_URL}/ward-profile?${params}`)
     if (!res.ok) return null
     return (await res.json()) as WardProfile
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Submit a community fact.
+ */
+export async function submitFact(payload: {
+  city_id?: string
+  ward_no: number
+  category: string
+  subject: string
+  field: string
+  value: string
+  source_type?: string
+  source_note?: string
+  contributor_token?: string
+}): Promise<{ ok: boolean; fact: CommunityFact; is_duplicate: boolean } | null> {
+  try {
+    const res = await fetch(`${API_URL}/community/facts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ city_id: "bengaluru", source_type: "community", ...payload }),
+    })
+    if (!res.ok) return null
+    return await res.json()
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Corroborate (+) or dispute a community fact.
+ */
+export async function voteFact(
+  factId: number,
+  voteType: "corroborate" | "dispute",
+  voterToken: string
+): Promise<{ ok: boolean; corroboration_count: number; trust_level: string; already_voted: boolean } | null> {
+  try {
+    const res = await fetch(`${API_URL}/community/facts/${factId}/vote`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ vote_type: voteType, voter_token: voterToken }),
+    })
+    if (!res.ok) return null
+    return await res.json()
   } catch {
     return null
   }

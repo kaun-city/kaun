@@ -16,7 +16,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_db
-from ..models import ElectedRep, Officer, Tender
+from ..models import CommunityFact, ElectedRep, Officer, Tender
+from ..routers.community import _serialise, _trust_level
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/ward-profile", tags=["ward-profile"])
@@ -124,7 +125,25 @@ async def get_ward_profile(
     except Exception:
         logger.exception("Error fetching tenders")
 
-    # 4. Governance alert — no elected corporators since 2020 (BBMP dissolved)
+    # 4. Community facts for this ward (grouped by category)
+    community_facts: list[dict] = []
+    try:
+        result = await db.execute(
+            select(CommunityFact).where(
+                CommunityFact.city_id == city_id,
+                CommunityFact.ward_no == ward_no,
+                CommunityFact.is_active == True,
+            ).order_by(
+                CommunityFact.corroboration_count.desc(),
+                CommunityFact.created_at.desc(),
+            )
+        )
+        for f in result.scalars().all():
+            community_facts.append(_serialise(f).model_dump())
+    except Exception:
+        logger.exception("Error fetching community facts")
+
+    # 5. Governance alert — no elected corporators since 2020 (BBMP dissolved)
     governance_alert = {
         "type": "no_corporator",
         "title": "No elected corporator",
@@ -148,4 +167,5 @@ async def get_ward_profile(
         "tender_count": len(tenders),
         "tender_total_lakh": round(total_value, 1),
         "governance_alert": governance_alert,
+        "community_facts": community_facts,
     }

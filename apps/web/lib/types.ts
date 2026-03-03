@@ -59,6 +59,26 @@ export interface GovernanceAlert {
   since: string
 }
 
+export type TrustLevel = "official" | "rti" | "community_verified" | "unverified" | "disputed"
+
+export interface CommunityFact {
+  id: number
+  city_id: string
+  ward_no: number | null
+  category: string
+  subject: string
+  field: string
+  value: string
+  source_type: string
+  source_url: string | null
+  source_note: string | null
+  corroboration_count: number
+  dispute_count: number
+  trust_level: TrustLevel
+  created_at: string
+  last_corroborated_at: string | null
+}
+
 export interface WardProfile {
   ward_no: number
   city_id: string
@@ -69,6 +89,7 @@ export interface WardProfile {
   tender_count: number
   tender_total_lakh: number
   governance_alert: GovernanceAlert
+  community_facts: CommunityFact[]
 }
 
 export interface PinResult {

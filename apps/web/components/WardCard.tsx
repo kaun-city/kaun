@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import type { PinResult, WardProfile, RedditPost } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz } from "@/lib/api"
+import { useEffect, useRef, useState } from "react"
+import type { CommunityFact, PinResult, RedditPost, WardProfile } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -27,6 +27,33 @@ const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }>
   CANCELLED: { bg: "bg-red-500/20",    text: "text-red-400",    label: "Cancelled" },
 }
 
+const TRUST_STYLES: Record<string, { bg: string; text: string; border: string; label: string; icon: string }> = {
+  official:           { bg: "bg-green-500/10",  text: "text-green-400",  border: "border-green-500/20", label: "Govt source",          icon: "✓" },
+  rti:                { bg: "bg-blue-500/10",   text: "text-blue-400",   border: "border-blue-500/20",  label: "RTI sourced",          icon: "📄" },
+  community_verified: { bg: "bg-amber-500/10",  text: "text-amber-400",  border: "border-amber-500/20", label: "Community verified",   icon: "✓" },
+  unverified:         { bg: "bg-white/5",       text: "text-white/30",   border: "border-white/10",     label: "Unverified",           icon: "?" },
+  disputed:           { bg: "bg-red-500/10",    text: "text-red-400",    border: "border-red-500/20",   label: "Disputed",             icon: "!" },
+}
+
+const OFFICER_SUBJECTS: Record<string, string> = {
+  gba_ward_officer:   "Ward Officer (GBA)",
+  gba_ae_works:       "AE – Works (GBA)",
+  gba_ae_health:      "AE – Health (GBA)",
+  bwssb_ae:           "AE (BWSSB)",
+  bescom_ae:          "AE (BESCOM)",
+}
+
+// Stable anonymous token for this browser session
+function getVoterToken(): string {
+  if (typeof window === "undefined") return "ssr"
+  let token = sessionStorage.getItem("kaun_voter_token")
+  if (!token) {
+    token = "v_" + Math.random().toString(36).slice(2) + Date.now().toString(36)
+    sessionStorage.setItem("kaun_voter_token", token)
+  }
+  return token
+}
+
 function formatLakh(val: number): string {
   if (val >= 10000) return `Rs. ${(val / 10000).toFixed(1)} Cr`
   return `Rs. ${val.toFixed(0)}L`
@@ -42,12 +69,223 @@ function timeAgo(utc: number): string {
 function PartyBadge({ party }: { party: string }) {
   const color = PARTY_COLORS[party] ?? "#888"
   return (
-    <span
-      className="text-xs font-semibold px-1.5 py-0.5 rounded"
-      style={{ backgroundColor: color + "25", color }}
-    >
+    <span className="text-xs font-semibold px-1.5 py-0.5 rounded" style={{ backgroundColor: color + "25", color }}>
       {party}
     </span>
+  )
+}
+
+function TrustBadge({ level }: { level: string }) {
+  const s = TRUST_STYLES[level] ?? TRUST_STYLES.unverified
+  return (
+    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${s.bg} ${s.text} ${s.border}`}>
+      {s.icon} {s.label}
+    </span>
+  )
+}
+
+// Group community facts by subject, then by field, picking the best (most corroborated) per field
+function groupOfficerFacts(facts: CommunityFact[]): Record<string, Record<string, CommunityFact>> {
+  const result: Record<string, Record<string, CommunityFact>> = {}
+  for (const f of facts) {
+    if (f.category !== "officer") continue
+    if (!result[f.subject]) result[f.subject] = {}
+    const existing = result[f.subject][f.field]
+    if (!existing || f.corroboration_count > existing.corroboration_count) {
+      result[f.subject][f.field] = f
+    }
+  }
+  return result
+}
+
+// ── Community fact card with corroborate button
+function FactCard({
+  fact,
+  onCorroborate,
+}: {
+  fact: CommunityFact
+  onCorroborate: (id: number) => Promise<void>
+}) {
+  const [voting, setVoting] = useState(false)
+  const [count, setCount] = useState(fact.corroboration_count)
+  const [voted, setVoted] = useState(false)
+
+  async function handleCorroborate() {
+    if (voted || voting) return
+    setVoting(true)
+    const res = await onCorroborate(fact.id)
+    setVoting(false)
+    if (res !== undefined) {
+      setVoted(true)
+      setCount(c => c + 1)
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <div className="flex-1 min-w-0">
+        <p className="text-white/40 text-[10px]">{fact.field}</p>
+        <p className="text-white text-sm font-medium truncate">{fact.value}</p>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <TrustBadge level={fact.trust_level} />
+        <button
+          onClick={handleCorroborate}
+          disabled={voted || voting}
+          title="I can verify this"
+          className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-colors
+            ${voted
+              ? "bg-amber-500/20 text-amber-400 cursor-default"
+              : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70 cursor-pointer"
+            }`}
+        >
+          <span>+</span>
+          <span>{count}</span>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ── Inline add-what-you-know form
+function AddFactForm({
+  wardNo,
+  cityId,
+  onSubmitted,
+}: {
+  wardNo: number
+  cityId: string
+  onSubmitted: (fact: CommunityFact) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [subject, setSubject] = useState("gba_ward_officer")
+  const [field, setField] = useState("name")
+  const [value, setValue] = useState("")
+  const [sourceNote, setSourceNote] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+  const [done, setDone] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const fieldOptions: Record<string, string[]> = {
+    name: ["name"],
+    contact: ["phone", "email"],
+  }
+  const allFields = ["name", "phone", "email", "note"]
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!value.trim()) return
+    setSubmitting(true)
+    const res = await submitFact({
+      city_id: cityId,
+      ward_no: wardNo,
+      category: "officer",
+      subject,
+      field,
+      value: value.trim(),
+      source_note: sourceNote.trim() || undefined,
+      contributor_token: getVoterToken(),
+    })
+    setSubmitting(false)
+    if (res?.ok) {
+      onSubmitted(res.fact)
+      setDone(true)
+      setValue("")
+      setSourceNote("")
+      setTimeout(() => { setDone(false); setOpen(false) }, 2000)
+    }
+  }
+
+  if (done) {
+    return (
+      <div className="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs text-center font-medium">
+        ✓ Added! Others can now corroborate this.
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-3">
+      {!open ? (
+        <button
+          onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 100) }}
+          className="w-full py-2.5 rounded-xl border border-dashed border-white/20 text-white/30 text-xs hover:border-white/40 hover:text-white/50 transition-colors"
+        >
+          + Know something? Add it for your community
+        </button>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
+          <p className="text-white/50 text-xs font-semibold">Add what you know</p>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-white/30 text-[10px] uppercase tracking-wider block mb-1">Officer type</label>
+              <select
+                value={subject}
+                onChange={e => setSubject(e.target.value)}
+                className="w-full bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-white/70 text-xs focus:outline-none focus:border-white/30"
+              >
+                {Object.entries(OFFICER_SUBJECTS).map(([k, v]) => (
+                  <option key={k} value={k}>{v}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-white/30 text-[10px] uppercase tracking-wider block mb-1">Field</label>
+              <select
+                value={field}
+                onChange={e => setField(e.target.value)}
+                className="w-full bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-white/70 text-xs focus:outline-none focus:border-white/30"
+              >
+                {allFields.map(f => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <input
+            ref={inputRef}
+            type="text"
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            placeholder={field === "phone" ? "98XXXXXXXX" : field === "email" ? "officer@gba.gov.in" : "Enter value"}
+            className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder-white/20 focus:outline-none focus:border-white/30"
+            required
+          />
+
+          <input
+            type="text"
+            value={sourceNote}
+            onChange={e => setSourceNote(e.target.value)}
+            placeholder="Source (optional): GBA notice board, RTI reply, etc."
+            className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white/60 text-xs placeholder-white/20 focus:outline-none focus:border-white/30"
+          />
+
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={submitting || !value.trim()}
+              className="flex-1 py-2 rounded-lg bg-[#FF9933]/20 border border-[#FF9933]/40 text-[#FF9933] text-xs font-semibold hover:bg-[#FF9933]/30 disabled:opacity-40 transition-colors"
+            >
+              {submitting ? "Submitting…" : "Submit"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="px-3 py-2 rounded-lg bg-white/5 text-white/30 text-xs hover:text-white/50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+
+          <p className="text-white/20 text-[10px] text-center leading-relaxed">
+            No login required. Your submission is anonymous.<br />
+            Others can +1 it to verify.
+          </p>
+        </form>
+      )}
+    </div>
   )
 }
 
@@ -57,37 +295,45 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [profileLoading, setProfileLoading] = useState(false)
   const [buzz, setBuzz] = useState<RedditPost[] | null>(null)
   const [buzzLoading, setBuzzLoading] = useState(false)
+  const [extraFacts, setExtraFacts] = useState<CommunityFact[]>([])
 
-  // Reset on new pin
   useEffect(() => {
     setTab("who")
     setProfile(null)
     setProfileLoading(false)
     setBuzz(null)
     setBuzzLoading(false)
+    setExtraFacts([])
   }, [result?.ward_no])
 
-  // Load profile when WHO tab opens (or on new result)
   useEffect(() => {
     if (!result?.found || !result.ward_no) return
     if (profile !== null || profileLoading) return
-
     setProfileLoading(true)
     fetchWardProfile(result.ward_no, result.city_id, result.assembly_constituency ?? undefined)
       .then((p) => { setProfile(p); setProfileLoading(false) })
   }, [result, profile, profileLoading])
 
-  // Load buzz when MONEY/community tab opens
   useEffect(() => {
     if (tab !== "money" || !result?.found || !result.ward_name) return
     if (buzz !== null || buzzLoading) return
-
     setBuzzLoading(true)
-    fetchBuzz(result.ward_name).then((posts) => {
-      setBuzz(posts)
-      setBuzzLoading(false)
-    })
+    fetchBuzz(result.ward_name).then((posts) => { setBuzz(posts); setBuzzLoading(false) })
   }, [tab, result, buzz, buzzLoading])
+
+  const allFacts = [...(profile?.community_facts ?? []), ...extraFacts]
+  const officerGroups = groupOfficerFacts(allFacts)
+
+  async function handleCorroborate(factId: number): Promise<void> {
+    await voteFact(factId, "corroborate", getVoterToken())
+  }
+
+  function handleNewFact(fact: CommunityFact) {
+    setExtraFacts(prev => {
+      const exists = prev.find(f => f.id === fact.id) || profile?.community_facts.find(f => f.id === fact.id)
+      return exists ? prev : [fact, ...prev]
+    })
+  }
 
   if (!loading && !result) return null
 
@@ -104,7 +350,6 @@ export default function WardCard({ result, loading, onClose }: Props) {
       bg-[#111111] border border-white/10 rounded-t-2xl md:rounded-2xl
       shadow-2xl overflow-hidden animate-slide-up
     ">
-      {/* Mobile drag handle */}
       <div className="flex justify-center pt-3 pb-1 md:hidden">
         <div className="w-10 h-1 rounded-full bg-white/20" />
       </div>
@@ -131,11 +376,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
             <p className="text-white/30 text-xs mt-0.5">No ward found at this location</p>
           </div>
         )}
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="ml-4 mt-0.5 text-white/30 hover:text-white/70 transition-colors text-lg"
-        >
+        <button onClick={onClose} aria-label="Close" className="ml-4 mt-0.5 text-white/30 hover:text-white/70 transition-colors text-lg">
           &times;
         </button>
       </div>
@@ -149,10 +390,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 key={t.id}
                 onClick={() => setTab(t.id)}
                 className={`flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors
-                  ${tab === t.id
-                    ? "text-[#FF9933] border-b-2 border-[#FF9933]"
-                    : "text-white/30 hover:text-white/60"
-                  }`}
+                  ${tab === t.id ? "text-[#FF9933] border-b-2 border-[#FF9933]" : "text-white/30 hover:text-white/60"}`}
               >
                 {t.label}
               </button>
@@ -161,9 +399,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
           {/* ══ WHO TAB ══ */}
           {tab === "who" && (
-            <div className="px-5 py-4 max-h-80 overflow-y-auto space-y-4">
+            <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-4">
 
-              {/* Governance alert — no elected corporator */}
+              {/* Governance alert */}
               {profile?.governance_alert && (
                 <div className="flex gap-2.5 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
                   <span className="text-yellow-400 text-base mt-0.5">!</span>
@@ -199,20 +437,12 @@ export default function WardCard({ result, loading, onClose }: Props) {
                           </div>
                           <p className="text-white font-semibold text-sm mt-0.5">{rep.name}</p>
                           <p className="text-white/30 text-xs">{rep.constituency} constituency</p>
-                          {rep.elected_since && (
-                            <p className="text-white/25 text-xs">Elected {rep.elected_since}</p>
-                          )}
-                          {rep.notes && (
-                            <p className="text-white/30 text-xs mt-1 italic">{rep.notes}</p>
-                          )}
+                          {rep.elected_since && <p className="text-white/25 text-xs">Elected {rep.elected_since}</p>}
+                          {rep.notes && <p className="text-white/30 text-xs mt-1 italic">{rep.notes}</p>}
                         </div>
                         {rep.profile_url && (
-                          <a
-                            href={rep.profile_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#FF9933]/60 hover:text-[#FF9933] text-xs transition-colors whitespace-nowrap mt-1"
-                          >
+                          <a href={rep.profile_url} target="_blank" rel="noopener noreferrer"
+                            className="text-[#FF9933]/60 hover:text-[#FF9933] text-xs transition-colors whitespace-nowrap mt-1">
                             Profile &rarr;
                           </a>
                         )}
@@ -222,25 +452,55 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 </div>
               )}
 
-              {/* Officers */}
+              {/* ── Officers — civic Wikipedia section */}
               <div className="space-y-2">
-                <p className="text-white/30 text-xs uppercase tracking-wider">Ward Officers (GBA)</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-white/30 text-xs uppercase tracking-wider">Ward Officers</p>
+                  {allFacts.filter(f => f.category === "officer").length > 0 && (
+                    <span className="text-white/20 text-[10px]">community reported</span>
+                  )}
+                </div>
+
+                {/* Official officers from DB */}
                 {profile && profile.officers.length > 0 ? (
                   profile.officers.map((o) => (
                     <div key={o.id} className="p-3 rounded-xl bg-white/5">
-                      <p className="text-white/40 text-xs">{o.role} &middot; {o.department}</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-white/40 text-xs">{o.role} · {o.department}</p>
+                        <TrustBadge level={o.source === "rti" ? "rti" : "official"} />
+                      </div>
                       <p className="text-white text-sm font-medium">{o.name ?? "Name not disclosed"}</p>
                       {o.phone && <p className="text-white/40 text-xs">{o.phone}</p>}
-                      {o.source && <p className="text-white/20 text-xs">Source: {o.source}</p>}
+                    </div>
+                  ))
+                ) : Object.keys(officerGroups).length > 0 ? (
+                  // Community-sourced officers
+                  Object.entries(officerGroups).map(([subject, fields]) => (
+                    <div key={subject} className="p-3 rounded-xl bg-white/5 space-y-2">
+                      <p className="text-white/40 text-xs font-medium">
+                        {OFFICER_SUBJECTS[subject] ?? subject}
+                      </p>
+                      {Object.values(fields).map(fact => (
+                        <FactCard key={fact.id} fact={fact} onCorroborate={handleCorroborate} />
+                      ))}
                     </div>
                   ))
                 ) : (
                   <div className="p-3 rounded-xl bg-white/5">
-                    <p className="text-white/50 text-sm">Officer details not yet available</p>
-                    <p className="text-white/30 text-xs mt-1">
-                      File an RTI to get your ward officer&apos;s name and contact.
+                    <p className="text-white/50 text-sm">No officer details yet</p>
+                    <p className="text-white/25 text-xs mt-1 leading-relaxed">
+                      Government doesn&apos;t publish this. If you know your ward officer&apos;s name or number, share it below — others will benefit.
                     </p>
                   </div>
+                )}
+
+                {/* Add what you know */}
+                {profile && result.ward_no && (
+                  <AddFactForm
+                    wardNo={result.ward_no}
+                    cityId={result.city_id}
+                    onSubmitted={handleNewFact}
+                  />
                 )}
               </div>
             </div>
@@ -248,7 +508,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
           {/* ══ MONEY TAB ══ */}
           {tab === "money" && (
-            <div className="px-5 py-4 max-h-80 overflow-y-auto">
+            <div className="px-5 py-4 max-h-[28rem] overflow-y-auto">
               {profileLoading && !profile ? (
                 <div className="space-y-3">
                   {[1,2,3].map(i => (
@@ -264,9 +524,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     <p className="text-white/30 text-xs uppercase tracking-wider">
                       {profile.tender_count} tender{profile.tender_count !== 1 ? "s" : ""}
                     </p>
-                    <p className="text-[#FF9933] text-xs font-semibold">
-                      {formatLakh(profile.tender_total_lakh)} total
-                    </p>
+                    <p className="text-[#FF9933] text-xs font-semibold">{formatLakh(profile.tender_total_lakh)} total</p>
                   </div>
                   {profile.tenders.map((t) => {
                     const st = STATUS_STYLES[t.status] ?? STATUS_STYLES.OPEN
@@ -274,35 +532,23 @@ export default function WardCard({ result, loading, onClose }: Props) {
                       <div key={t.id} className="p-3 rounded-xl bg-white/5">
                         <p className="text-white text-sm leading-snug line-clamp-2">{t.title}</p>
                         <div className="flex items-center gap-2 mt-2 flex-wrap">
-                          <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${st.bg} ${st.text}`}>
-                            {st.label}
-                          </span>
+                          <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${st.bg} ${st.text}`}>{st.label}</span>
                           {t.value_lakh != null && (
-                            <span className="text-[#FF9933] text-xs font-semibold">
-                              {formatLakh(t.value_lakh)}
-                            </span>
+                            <span className="text-[#FF9933] text-xs font-semibold">{formatLakh(t.value_lakh)}</span>
                           )}
-                          {t.issued_date && (
-                            <span className="text-white/30 text-xs">{t.issued_date}</span>
-                          )}
+                          {t.issued_date && <span className="text-white/30 text-xs">{t.issued_date}</span>}
                         </div>
                         {t.contractor_name && (
                           <div className="flex items-center gap-1.5 mt-1.5">
-                            {t.contractor_blacklisted && (
-                              <span className="text-red-400 text-xs font-bold">FLAGGED</span>
-                            )}
+                            {t.contractor_blacklisted && <span className="text-red-400 text-xs font-bold">FLAGGED</span>}
                             <p className={`text-xs ${t.contractor_blacklisted ? "text-red-300" : "text-white/40"}`}>
                               {t.contractor_name}
                             </p>
                           </div>
                         )}
                         {t.source_url && (
-                          <a
-                            href={t.source_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#FF9933]/50 hover:text-[#FF9933] text-xs transition-colors mt-1 inline-block"
-                          >
+                          <a href={t.source_url} target="_blank" rel="noopener noreferrer"
+                            className="text-[#FF9933]/50 hover:text-[#FF9933] text-xs transition-colors mt-1 inline-block">
                             View on KPPP &rarr;
                           </a>
                         )}
@@ -313,25 +559,18 @@ export default function WardCard({ result, loading, onClose }: Props) {
               ) : (
                 <div className="text-center py-8">
                   <p className="text-white/30 text-sm">No tenders found for this ward</p>
-                  <p className="text-white/20 text-xs mt-1">
-                    File an RTI to get the complete works register.
-                  </p>
+                  <p className="text-white/20 text-xs mt-1">File an RTI to get the complete works register.</p>
                 </div>
               )}
 
-              {/* Reddit chatter below tenders */}
               {buzz && buzz.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
                   <p className="text-white/30 text-xs uppercase tracking-wider mb-2">r/bangalore chatter</p>
                   {buzz.map((post, i) => (
                     <a key={i} href={post.url} target="_blank" rel="noopener noreferrer" className="block group">
                       <div className="py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                        <p className="text-white text-xs leading-snug group-hover:text-[#FF9933] transition-colors line-clamp-2">
-                          {post.title}
-                        </p>
-                        <p className="text-white/25 text-xs mt-1">
-                          +{post.score} &middot; {post.num_comments} comments &middot; {timeAgo(post.created_utc)}
-                        </p>
+                        <p className="text-white text-xs leading-snug group-hover:text-[#FF9933] transition-colors line-clamp-2">{post.title}</p>
+                        <p className="text-white/25 text-xs mt-1">+{post.score} · {post.num_comments} comments · {timeAgo(post.created_utc)}</p>
                       </div>
                     </a>
                   ))}
@@ -342,8 +581,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
           {/* ══ REPORT TAB ══ */}
           {tab === "report" && (
-            <div className="px-5 py-4 max-h-80 overflow-y-auto space-y-3">
-              {/* RTI — hero action */}
+            <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-3">
               <button
                 onClick={() => alert("RTI Generator coming soon")}
                 className="w-full py-3.5 rounded-xl bg-[#FF9933]/15 border border-[#FF9933]/40 text-[#FF9933] text-sm font-semibold hover:bg-[#FF9933]/25 transition-colors"
@@ -351,49 +589,34 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 Generate RTI Application
               </button>
               <p className="text-white/25 text-xs text-center -mt-1">
-                Right to Information Act, 2005 &middot; Rs. 10 fee &middot; 30-day response
+                Right to Information Act, 2005 · Rs. 10 fee · 30-day response
               </p>
-
               <div className="pt-2 space-y-2">
                 <p className="text-white/30 text-xs uppercase tracking-wider">File a Complaint</p>
-
-                <a
-                  href="https://sampark.karnataka.gov.in"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
-                >
+                <a href="https://sampark.karnataka.gov.in" target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                   <div>
                     <p className="text-white text-sm font-medium">Sampark Karnataka</p>
-                    <p className="text-white/30 text-xs">Universal grievance portal &middot; all agencies</p>
+                    <p className="text-white/30 text-xs">Universal grievance portal · all agencies</p>
                   </div>
                   <span className="text-[#FF9933] text-sm font-mono font-semibold">1902</span>
                 </a>
-
-                {result.agencies
-                  .filter((a) => a.complaint_url)
-                  .map((agency) => (
-                    <a
-                      key={agency.short}
-                      href={agency.complaint_url!}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
-                    >
-                      <div>
-                        <p className="text-white text-sm font-medium">{agency.short}</p>
-                        <p className="text-white/30 text-xs">{agency.name}</p>
-                      </div>
-                      <span className="text-white/30 text-xs">&rarr;</span>
-                    </a>
-                  ))}
+                {result.agencies.filter((a) => a.complaint_url).map((agency) => (
+                  <a key={agency.short} href={agency.complaint_url!} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                    <div>
+                      <p className="text-white text-sm font-medium">{agency.short}</p>
+                      <p className="text-white/30 text-xs">{agency.name}</p>
+                    </div>
+                    <span className="text-white/30 text-xs">&rarr;</span>
+                  </a>
+                ))}
               </div>
             </div>
           )}
         </>
       )}
 
-      {/* Outside boundary fallback */}
       {!loading && !result?.found && (
         <div className="px-5 py-6 text-center">
           <p className="text-white/30 text-sm">Try pinning a location within Bengaluru.</p>
