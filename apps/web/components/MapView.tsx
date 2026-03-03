@@ -1,0 +1,140 @@
+"use client"
+
+/**
+ * MapView — full-screen Leaflet map with Bengaluru ward overlay.
+ *
+ * Loaded dynamically (no SSR) because Leaflet requires `window`.
+ * See: app/page.tsx -> `dynamic(() => import('./MapView'), { ssr: false })`
+ */
+
+import { useEffect, useRef, useState } from "react"
+import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
+import type { WardProperties, PinResult } from "@/lib/types"
+import { dropPin } from "@/lib/api"
+
+const BENGALURU_CENTER: [number, number] = [12.9716, 77.5946]
+const BENGALURU_GEOJSON_URL =
+  "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson"
+
+// Saffron palette
+const WARD_STYLE = {
+  color: "#FF9933",
+  weight: 0.8,
+  opacity: 0.6,
+  fillColor: "#FF9933",
+  fillOpacity: 0.05,
+}
+const WARD_HOVER_STYLE = {
+  fillOpacity: 0.18,
+  weight: 1.5,
+}
+
+interface Props {
+  onPin: (result: PinResult | null, lat: number, lng: number) => void
+}
+
+export default function MapView({ onPin }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<LeafletMap | null>(null)
+  const geojsonRef = useRef<LeafletGeoJSON | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return
+
+    // Leaflet CSS — must load after mount
+    const link = document.createElement("link")
+    link.rel = "stylesheet"
+    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    document.head.appendChild(link)
+
+    import("leaflet").then((L) => {
+      const map = L.map(containerRef.current!, {
+        center: BENGALURU_CENTER,
+        zoom: 12,
+        zoomControl: true,
+        attributionControl: true,
+      })
+      mapRef.current = map
+
+      // Stadia Maps dark tiles — no API key required for development
+      L.tileLayer(
+        "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+        {
+          attribution:
+            '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          maxZoom: 18,
+        }
+      ).addTo(map)
+
+      // Load ward GeoJSON overlay
+      fetch(BENGALURU_GEOJSON_URL)
+        .then((r) => r.json())
+        .then((data) => {
+          geojsonRef.current = L.geoJSON(data, {
+            style: () => WARD_STYLE,
+            onEachFeature(feature, layer) {
+              layer.on({
+                mouseover(e) {
+                  e.target.setStyle(WARD_HOVER_STYLE)
+                },
+                mouseout() {
+                  geojsonRef.current?.resetStyle(layer)
+                },
+              })
+            },
+          }).addTo(map)
+          setLoading(false)
+        })
+        .catch(() => setLoading(false)) // show map even if GeoJSON fails
+
+      // Custom pin icon
+      const pinIcon = L.divIcon({
+        html: `<div style="
+          width:14px;height:14px;
+          background:#FF9933;
+          border:2px solid #fff;
+          border-radius:50%;
+          box-shadow:0 0 0 3px rgba(255,153,51,0.35)
+        "></div>`,
+        iconSize: [14, 14],
+        iconAnchor: [7, 7],
+        className: "",
+      })
+
+      let marker: ReturnType<typeof L.marker> | null = null
+
+      map.on("click", async (e) => {
+        const { lat, lng } = e.latlng
+
+        // Move or place marker
+        if (marker) {
+          marker.setLatLng([lat, lng])
+        } else {
+          marker = L.marker([lat, lng], { icon: pinIcon }).addTo(map)
+        }
+
+        onPin(null, lat, lng) // signal loading state
+
+        const result = await dropPin(lat, lng)
+        onPin(result, lat, lng)
+      })
+    })
+
+    return () => {
+      mapRef.current?.remove()
+      mapRef.current = null
+    }
+  }, [onPin])
+
+  return (
+    <div className="relative w-full h-full">
+      {loading && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-[#FF9933] text-sm tracking-widest uppercase">
+          Loading ward boundaries...
+        </div>
+      )}
+      <div ref={containerRef} className="w-full h-full" />
+    </div>
+  )
+}
