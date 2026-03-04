@@ -743,11 +743,15 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   <p className="text-white/20 text-xs mt-1">File an RTI to get the complete works register.</p>
                 </div>
               )}
+              <p className="text-white/15 text-[10px] px-1">Source: KPPP karnataka.gov.in</p>
 
               {/* Trade Licenses */}
               {tradeLicenses.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-white/10">
-                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Trade Licenses (BBMP)</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-white/30 text-[10px] uppercase tracking-wider">Trade Licenses (BBMP)</p>
+                    <p className="text-white/15 text-[10px]">opencity.in</p>
+                  </div>
                   <div className="space-y-2">
                     {tradeLicenses.map((tl) => (
                       <div key={tl.year} className="rounded-xl bg-white/5 px-4 py-3">
@@ -786,7 +790,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
               {buzz && buzz.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
-                  <p className="text-white/30 text-xs uppercase tracking-wider mb-2">r/bangalore chatter</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-white/30 text-xs uppercase tracking-wider">r/bangalore chatter</p>
+                    <p className="text-white/15 text-[10px]">reddit.com/r/bangalore</p>
+                  </div>
                   {buzz.map((post, i) => (
                     <a key={i} href={post.url} target="_blank" rel="noopener noreferrer" className="block group">
                       <div className="py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
@@ -818,7 +825,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
                   {/* Population card */}
                   <div className="rounded-xl bg-white/5 p-3 space-y-2">
-                    <p className="text-white/50 text-[10px] uppercase tracking-wider">Population</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-white/50 text-[10px] uppercase tracking-wider">Population</p>
+                      <p className="text-white/15 text-[10px]">Census 2011 via opencity.in</p>
+                    </div>
                     <div className="grid grid-cols-3 gap-2">
                       <div className="min-w-0">
                         <p className="text-lg font-bold text-white truncate">{wardStats.total_population?.toLocaleString('en-IN') ?? '--'}</p>
@@ -840,7 +850,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
                   {/* Infrastructure grid */}
                   <div className="rounded-xl bg-white/5 p-3 space-y-2">
-                    <p className="text-white/50 text-[10px] uppercase tracking-wider">Infrastructure</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-white/50 text-[10px] uppercase tracking-wider">Infrastructure</p>
+                      <p className="text-white/15 text-[10px]">BBMP via opencity.in</p>
+                    </div>
                     <div className="grid grid-cols-2 gap-y-2 gap-x-3">
                       {[
                         { icon: "", label: "Roads", value: wardStats.total_road_length_km ? `${wardStats.total_road_length_km} km` : null },
@@ -865,7 +878,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   {/* Green spaces */}
                   {(wardStats.total_lakes || wardStats.total_parks || wardStats.total_playgrounds) ? (
                     <div className="rounded-xl bg-white/5 p-3 space-y-2">
-                      <p className="text-white/50 text-[10px] uppercase tracking-wider">Green Spaces</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-white/50 text-[10px] uppercase tracking-wider">Green Spaces</p>
+                        <p className="text-white/15 text-[10px]">BBMP via opencity.in</p>
+                      </div>
                       <div className="grid grid-cols-3 gap-2">
                         {wardStats.total_lakes ? (
                           <div className="text-center">
@@ -923,13 +939,17 @@ export default function WardCard({ result, loading, onClose }: Props) {
                           Pothole complaints (Fix My Street 2022): <span className="text-red-400 font-semibold">{potholes.complaints.toLocaleString('en-IN')}</span>
                         </p>
                       )}
+                      <p className="text-white/15 text-[10px] pt-1">Source: BBMP work orders via opencity.in · Fix My Street via opencity.in</p>
                     </div>
                   )}
 
                   {/* Property Tax */}
                   {propertyTax && propertyTax.years && propertyTax.years.length > 0 && (
                     <div className="rounded-xl bg-white/5 p-3 space-y-2">
-                      <p className="text-white/50 text-[10px] uppercase tracking-wider">Property Tax Collected</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-white/50 text-[10px] uppercase tracking-wider">Property Tax Collected</p>
+                        <p className="text-white/15 text-[10px]">BBMP via opencity.in</p>
+                      </div>
                       {propertyTax.years.map((yr) => (
                         <div key={yr.financial_year} className="flex items-center justify-between gap-2">
                           <div className="min-w-0">
@@ -943,7 +963,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   )}
 
                   <p className="text-white/15 text-[10px] text-center">
-                    Source: {wardStats.source}  -  {wardStats.ward_count} wards
+                    {wardStats.source} · {wardStats.ward_count} wards aggregated
                   </p>
                 </>
               )}
@@ -951,7 +971,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
               {/* Grievances */}
               {grievances.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Citizen Complaints (BBMP)</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-white/30 text-[10px] uppercase tracking-wider">Citizen Complaints (BBMP)</p>
+                    <p className="text-white/15 text-[10px]">opencity.in</p>
+                  </div>
                   <div className="space-y-2">
                     {grievances.map((g) => {
                       const closeRate = g.total_complaints > 0 ? Math.round((g.closed / g.total_complaints) * 100) : 0
@@ -979,7 +1002,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
               {/* Sakala service delivery */}
               {sakala && (
                 <div className="mt-4">
-                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Sakala Service Delivery ({sakala.year})</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-white/30 text-[10px] uppercase tracking-wider">Sakala Service Delivery ({sakala.year})</p>
+                    <p className="text-white/15 text-[10px]">sakala.kar.nic.in</p>
+                  </div>
                   <div className="rounded-xl bg-white/5 px-4 py-3 space-y-2">
                     <div className="flex justify-between">
                       <span className="text-white/40 text-xs">BBMP rank ({sakala.assembly_name})</span>
