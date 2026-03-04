@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * MapView — full-screen Leaflet map with Bengaluru ward overlay.
+ * MapView  full-screen Leaflet map with Bengaluru ward overlay.
  *
  * Loaded dynamically (no SSR) because Leaflet requires `window`.
  * See: app/page.tsx -> `dynamic(() => import('./MapView'), { ssr: false })`
@@ -52,7 +52,7 @@ export default function MapView({ onPin }: Props) {
       delete container._leaflet_id
     }
 
-    // Leaflet CSS — must load after mount
+    // Leaflet CSS  must load after mount
     const link = document.createElement("link")
     link.rel = "stylesheet"
     link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -67,7 +67,7 @@ export default function MapView({ onPin }: Props) {
       })
       mapRef.current = map
 
-      // CartoDB dark tiles — free, no API key, dark theme
+      // CartoDB dark tiles  free, no API key, dark theme
       L.tileLayer(
         "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
         {
@@ -136,7 +136,7 @@ export default function MapView({ onPin }: Props) {
       mapRef.current?.remove()
       mapRef.current = null
     }
-  }, []) // empty — map initialises once, onPin updates via ref
+  }, []) // empty  map initialises once, onPin updates via ref
 
   return (
     <div className="relative w-full h-full">

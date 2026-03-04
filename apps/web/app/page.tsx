@@ -5,7 +5,7 @@ import { useCallback, useState } from "react"
 import type { PinResult } from "@/lib/types"
 import WardCard from "@/components/WardCard"
 
-// Leaflet requires window — must be loaded client-side only
+// Leaflet requires window  must be loaded client-side only
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
 export default function HomePage() {
@@ -15,11 +15,11 @@ export default function HomePage() {
 
   const handlePin = useCallback((result: PinResult | null, _lat: number, _lng: number) => {
     if (result === null && !pinLoading) {
-      // First call — loading state
+      // First call  loading state
       setPinLoading(true)
       setShowCard(true)
     } else {
-      // Second call — data arrived
+      // Second call  data arrived
       setPinResult(result)
       setPinLoading(false)
     }
@@ -41,7 +41,7 @@ export default function HomePage() {
         </span>
       </div>
 
-      {/* Hint — hides once user has pinned */}
+      {/* Hint  hides once user has pinned */}
       {!showCard && (
         <div className="
           absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000]

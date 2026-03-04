@@ -1,5 +1,5 @@
 /**
- * Kaun API layer — talks to Supabase directly.
+ * Kaun API layer  talks to Supabase directly.
  *
  * Spatial queries use PostgreSQL functions (RPC).
  * CRUD uses PostgREST.
@@ -10,7 +10,7 @@ import type { BudgetSummary, CommunityFact, PinResult, PropertyTaxData, RedditPo
 import { rpc, query, insert } from "./supabase"
 
 /**
- * Pin lookup — reverse geocode a lat/lng to a ward.
+ * Pin lookup  reverse geocode a lat/lng to a ward.
  */
 export async function pinLookup(lat: number, lng: number): Promise<PinResult | null> {
   const data = await rpc<{
@@ -167,7 +167,7 @@ export async function fetchWardStats(assemblyConstituency: string): Promise<Ward
 }
 
 /**
- * Fetch unanswered questions for a ward — the "what's unknown" prompts.
+ * Fetch unanswered questions for a ward  the "what's unknown" prompts.
  */
 export async function fetchWardUnknowns(wardNo: number, cityId = "bengaluru") {
   return await rpc<{
