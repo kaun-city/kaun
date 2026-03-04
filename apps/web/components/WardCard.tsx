@@ -1089,12 +1089,24 @@ export default function WardCard({ result, loading, onClose }: Props) {
               {/* Local offices for this pin */}
               {localOffices.length > 0 && (() => {
                 const LABELS: Record<string, string> = {
+                  pincode: 'Pin Code',
+                  admin_taluk: 'Taluk',
                   bescom_division: 'BESCOM Division',
                   bescom_subdivision: 'BESCOM Subdivision',
                   bwssb_division: 'BWSSB Division',
                   bwssb_service_station: 'BWSSB Service Station',
                   police_city: 'City Police Station',
                   police_traffic: 'Traffic Police',
+                  stamps_sro: 'Sub-Registrar (SRO)',
+                  stamps_dro: 'Dist. Registrar (DRO)',
+                }
+                // Pincode: strip the "560034: " prefix for display, show code prominently
+                const formatName = (type: string, name: string) => {
+                  if (type === 'pincode') {
+                    const parts = name.split(': ')
+                    return parts.length === 2 ? `${parts[0]} (${parts[1]})` : name
+                  }
+                  return name
                 }
                 return (
                   <div className="rounded-xl bg-white/5 p-3 space-y-2">
@@ -1104,8 +1116,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     </div>
                     {localOffices.map(o => (
                       <div key={o.boundary_type} className="flex items-center justify-between gap-2">
-                        <span className="text-white/30 text-xs">{LABELS[o.boundary_type] ?? o.boundary_type}</span>
-                        <span className="text-white text-xs font-semibold text-right">{o.name}</span>
+                        <span className="text-white/30 text-xs shrink-0">{LABELS[o.boundary_type] ?? o.boundary_type}</span>
+                        <span className={`text-xs font-semibold text-right ${o.boundary_type === 'pincode' ? 'text-[#FF9933]' : 'text-white'}`}>
+                          {formatName(o.boundary_type, o.name)}
+                        </span>
                       </div>
                     ))}
                   </div>
