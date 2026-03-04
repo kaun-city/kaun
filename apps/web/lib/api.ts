@@ -295,6 +295,14 @@ export async function fetchTradeLicenses(wardName: string): Promise<import('./ty
 }
 
 /**
+ * Lookup local offices (BESCOM, BWSSB, Police) for a lat/lng point.
+ */
+export async function lookupLocalOffices(lat: number, lng: number): Promise<import('./types').LocalOffice[]> {
+  const result = await rpc<import('./types').LocalOffice[]>('lookup_local_offices', { p_lat: lat, p_lng: lng })
+  return result ?? []
+}
+
+/**
  * Fetch BBMP work orders for a ward (2024-25).
  */
 export async function fetchWorkOrders(wardNo: number): Promise<import('./types').WorkOrder[]> {

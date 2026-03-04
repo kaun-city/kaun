@@ -107,6 +107,8 @@ export interface PinResult {
   assembly_constituency: string | null
   agencies?: Agency[]
   primary_agency?: Agency | null
+  lat?: number
+  lng?: number
 }
 
 export interface Department {
@@ -207,6 +209,11 @@ export interface WardTradeLicenses {
   renewals: number
   total_revenue: number
   top_trade_type: string | null
+}
+
+export interface LocalOffice {
+  boundary_type: string
+  name: string
 }
 
 export interface WorkOrder {

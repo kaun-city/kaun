@@ -13,14 +13,14 @@ export default function HomePage() {
   const [pinLoading, setPinLoading] = useState(false)
   const [showCard, setShowCard] = useState(false)
 
-  const handlePin = useCallback((result: PinResult | null, _lat: number, _lng: number) => {
+  const handlePin = useCallback((result: PinResult | null, lat: number, lng: number) => {
     if (result === null && !pinLoading) {
       // First call  loading state
       setPinLoading(true)
       setShowCard(true)
     } else {
       // Second call  data arrived
-      setPinResult(result)
+      setPinResult(result ? { ...result, lat, lng } : null)
       setPinLoading(false)
     }
   }, [pinLoading])

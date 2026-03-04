@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, LocalOffice, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, lookupLocalOffices, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -297,6 +297,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [buzzLoading, setBuzzLoading] = useState(false)
   const [extraFacts, setExtraFacts] = useState<CommunityFact[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
+  const [localOffices, setLocalOffices] = useState<LocalOffice[]>([])
   const [wardStats, setWardStats] = useState<WardStats | null>(null)
   const [grievances, setGrievances] = useState<WardGrievances[]>([])
   const [potholes, setPotholes] = useState<WardPotholes | null>(null)
@@ -317,6 +318,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setBuzzLoading(false)
     setExtraFacts([])
     setDepartments([])
+    setLocalOffices([])
     setWardStats(null)
     setPropertyTax(null)
     setBudget(null)
@@ -368,9 +370,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
   }, [tab, budget, workOrders.length, result?.ward_no])
 
   useEffect(() => {
-    if (tab !== "report" || departments.length > 0) return
-    fetchDepartments().then(d => setDepartments(d as Department[]))
-  }, [tab, departments.length])
+    if (tab !== "report") return
+    if (departments.length === 0) fetchDepartments().then(d => setDepartments(d as Department[]))
+    if (localOffices.length === 0 && result?.lat && result?.lng)
+      lookupLocalOffices(result.lat, result.lng).then(setLocalOffices)
+  }, [tab, departments.length, localOffices.length, result?.lat, result?.lng])
 
   useEffect(() => {
     if (tab !== "expenses" || !result?.found || !result.ward_name) return
@@ -1082,6 +1086,32 @@ export default function WardCard({ result, loading, onClose }: Props) {
               <p className="text-white/25 text-xs text-center -mt-1">
                 Right to Information Act, 2005  -  Rs. 10 fee  -  30-day response
               </p>
+              {/* Local offices for this pin */}
+              {localOffices.length > 0 && (() => {
+                const LABELS: Record<string, string> = {
+                  bescom_division: 'BESCOM Division',
+                  bescom_subdivision: 'BESCOM Subdivision',
+                  bwssb_division: 'BWSSB Division',
+                  bwssb_service_station: 'BWSSB Service Station',
+                  police_city: 'City Police Station',
+                  police_traffic: 'Traffic Police',
+                }
+                return (
+                  <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-white/50 text-[10px] uppercase tracking-wider">Your Local Offices</p>
+                      <p className="text-white/15 text-[10px]">bengawalk.com</p>
+                    </div>
+                    {localOffices.map(o => (
+                      <div key={o.boundary_type} className="flex items-center justify-between gap-2">
+                        <span className="text-white/30 text-xs">{LABELS[o.boundary_type] ?? o.boundary_type}</span>
+                        <span className="text-white text-xs font-semibold text-right">{o.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )
+              })()}
+
               <div className="pt-2 space-y-2">
                 <p className="text-white/30 text-xs uppercase tracking-wider">Government Agencies & Helplines</p>
                 {departments.filter(d => d.complaint_url || d.toll_free || d.helpline).map((dept) => (
