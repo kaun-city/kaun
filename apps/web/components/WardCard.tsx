@@ -1112,7 +1112,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   <div className="rounded-xl bg-white/5 p-3 space-y-2">
                     <div className="flex items-center justify-between">
                       <p className="text-white/50 text-[10px] uppercase tracking-wider">Your Local Offices</p>
-                      <p className="text-white/15 text-[10px]">bengawalk.com</p>
+                      <p className="text-white/15 text-[10px]">opencity.in</p>
                     </div>
                     {localOffices.map(o => (
                       <div key={o.boundary_type} className="flex items-center justify-between gap-2">

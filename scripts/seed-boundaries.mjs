@@ -1,4 +1,12 @@
-﻿import { readFileSync } from 'fs'
+﻿/**
+ * Original data sources on opencity.in:
+ *   BESCOM boundaries:          095be44d-3f74-4e5d-b06e-304a14716cff
+ *   BWSSB boundaries:           52a5d05b-0b8a-4511-a9b0-9123ad9c0113
+ *   Traffic Police jurisdictions: ba9be930-e313-4f16-b4e2-39a5d8d7eb3f
+ *   Pincode maps:               d71a695c-1d72-4d3e-bb33-a252a27d3a89
+ *   (bengawalk converted + merged these KMLs into a single TopoJSON)
+ */
+import { readFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import * as topojson from 'topojson-client'
