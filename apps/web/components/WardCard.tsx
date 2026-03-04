@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -298,6 +298,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [extraFacts, setExtraFacts] = useState<CommunityFact[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
   const [wardStats, setWardStats] = useState<WardStats | null>(null)
+  const [grievances, setGrievances] = useState<WardGrievances[]>([])
+  const [sakala, setSakala] = useState<SakalaPerformance | null>(null)
   const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
   const [budget, setBudget] = useState<BudgetSummary | null>(null)
   const [unknowns, setUnknowns] = useState<{ total_questions: number; answered: number; unanswered: Array<{ category: string; subject: string; field: string; prompt: string; icon: string; priority: number }> } | null>(null)
@@ -316,6 +318,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setBudget(null)
     setUnknowns(null)
     setShowAddFor(null)
+    setGrievances([])
+    setSakala(null)
   }, [result?.ward_no])
 
   useEffect(() => {
@@ -335,7 +339,13 @@ export default function WardCard({ result, loading, onClose }: Props) {
     if (tab !== "stats" || !result?.assembly_constituency) return
     if (!wardStats) fetchWardStats(result.assembly_constituency).then(setWardStats)
     if (!propertyTax) fetchPropertyTax(result.assembly_constituency).then(setPropertyTax)
-  }, [tab, wardStats, propertyTax, result?.assembly_constituency])
+    if (!sakala) fetchSakalaPerformance(result.assembly_constituency).then(setSakala)
+  }, [tab, wardStats, propertyTax, sakala, result?.assembly_constituency])
+
+  useEffect(() => {
+    if (tab !== "stats" || !result?.ward_name || grievances.length > 0) return
+    fetchWardGrievances(result.ward_name).then(setGrievances)
+  }, [tab, grievances, result?.ward_name])
 
   useEffect(() => {
     if (tab !== "money" || budget) return
@@ -846,6 +856,64 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     Source: {wardStats.source} · {wardStats.ward_count} wards
                   </p>
                 </>
+              )}
+
+              {/* Grievances */}
+              {grievances.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Citizen Complaints (BBMP)</p>
+                  <div className="space-y-2">
+                    {grievances.map((g) => {
+                      const closeRate = g.total_complaints > 0 ? Math.round((g.closed / g.total_complaints) * 100) : 0
+                      return (
+                        <div key={g.year} className="rounded-xl bg-white/5 px-4 py-3 flex items-center justify-between">
+                          <div>
+                            <p className="text-white text-sm font-semibold">{g.year}</p>
+                            <p className="text-white/30 text-xs">{g.total_complaints.toLocaleString("en-IN")} complaints</p>
+                          </div>
+                          <div className="text-right">
+                            <p className={`text-sm font-bold ${closeRate >= 90 ? "text-green-400" : closeRate >= 70 ? "text-yellow-400" : "text-red-400"}`}>
+                              {closeRate}% closed
+                            </p>
+                            {g.registered > 0 && (
+                              <p className="text-white/30 text-xs">{g.registered.toLocaleString("en-IN")} pending</p>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Sakala service delivery */}
+              {sakala && (
+                <div className="mt-4">
+                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Sakala Service Delivery ({sakala.year})</p>
+                  <div className="rounded-xl bg-white/5 px-4 py-3 space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-white/40 text-xs">BBMP rank ({sakala.assembly_name})</span>
+                      <span className="text-white text-xs font-semibold">
+                        {sakala.rank_overall != null ? `#${sakala.rank_overall} of 28` : "—"}
+                      </span>
+                    </div>
+                    {sakala.intime_pct != null && (
+                      <div className="flex justify-between">
+                        <span className="text-white/40 text-xs">In-time delivery</span>
+                        <span className={`text-xs font-semibold ${sakala.intime_pct >= 90 ? "text-green-400" : sakala.intime_pct >= 75 ? "text-yellow-400" : "text-red-400"}`}>
+                          {sakala.intime_pct.toFixed(1)}%
+                        </span>
+                      </div>
+                    )}
+                    {sakala.pending != null && (
+                      <div className="flex justify-between">
+                        <span className="text-white/40 text-xs">Pending applications</span>
+                        <span className="text-white text-xs font-semibold">{sakala.pending.toLocaleString("en-IN")}</span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-white/15 text-[10px] mt-1 px-1">Bengaluru Urban ranks 31st of 32 districts statewide</p>
+                </div>
               )}
             </div>
           )}

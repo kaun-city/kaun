@@ -167,6 +167,25 @@ export interface WardStats {
   source: string
 }
 
+export interface WardGrievances {
+  year: number
+  total_complaints: number
+  closed: number
+  in_progress: number
+  registered: number
+  reopened: number
+}
+
+export interface SakalaPerformance {
+  assembly_name: string
+  year: number
+  intime_pct: number | null
+  delayed_pct: number | null
+  pending: number | null
+  rank_intime: number | null
+  rank_overall: number | null
+}
+
 /** Subset of GeoJSON feature properties from datameet BBMP.geojson */
 export interface WardProperties {
   KGISWardNo: number
