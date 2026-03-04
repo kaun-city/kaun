@@ -193,3 +193,12 @@ export interface WardProperties {
   ZoneName?: string
   Assembly?: string
 }
+
+export interface WardTradeLicenses {
+  year: number
+  total_licenses: number
+  new_licenses: number
+  renewals: number
+  total_revenue: number
+  top_trade_type: string | null
+}

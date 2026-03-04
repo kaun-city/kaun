@@ -1,8 +1,8 @@
 ﻿"use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -302,6 +302,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [sakala, setSakala] = useState<SakalaPerformance | null>(null)
   const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
   const [budget, setBudget] = useState<BudgetSummary | null>(null)
+  const [tradeLicenses, setTradeLicenses] = useState<WardTradeLicenses[]>([])
   const [unknowns, setUnknowns] = useState<{ total_questions: number; answered: number; unanswered: Array<{ category: string; subject: string; field: string; prompt: string; icon: string; priority: number }> } | null>(null)
   const [showAddFor, setShowAddFor] = useState<{ category: string; subject: string; field: string; prompt: string } | null>(null)
 
@@ -320,6 +321,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setShowAddFor(null)
     setGrievances([])
     setSakala(null)
+    setTradeLicenses([])
   }, [result?.ward_no])
 
   useEffect(() => {
@@ -359,10 +361,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
   useEffect(() => {
     if (tab !== "expenses" || !result?.found || !result.ward_name) return
+    if (tradeLicenses.length === 0) fetchTradeLicenses(result.ward_name).then(setTradeLicenses)
     if (buzz !== null || buzzLoading) return
     setBuzzLoading(true)
     fetchBuzz(result.ward_name).then((posts) => { setBuzz(posts); setBuzzLoading(false) })
-  }, [tab, result, buzz, buzzLoading])
+  }, [tab, result, buzz, buzzLoading, tradeLicenses.length])
 
   const allFacts = [...(profile?.community_facts ?? []), ...extraFacts]
   const officerGroups = groupOfficerFacts(allFacts)
@@ -728,6 +731,46 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 <div className="text-center py-8">
                   <p className="text-white/30 text-sm">No tenders found for this ward</p>
                   <p className="text-white/20 text-xs mt-1">File an RTI to get the complete works register.</p>
+                </div>
+              )}
+
+              {/* Trade Licenses */}
+              {tradeLicenses.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Trade Licenses (BBMP)</p>
+                  <div className="space-y-2">
+                    {tradeLicenses.map((tl) => (
+                      <div key={tl.year} className="rounded-xl bg-white/5 px-4 py-3">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-white text-sm font-semibold">{tl.year}</span>
+                          <span className="text-[#FF9933] text-sm font-bold">{tl.total_licenses.toLocaleString("en-IN")} licenses</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 text-center">
+                          <div className="rounded-lg bg-white/5 py-1.5">
+                            <p className="text-green-400 text-xs font-bold">{tl.new_licenses.toLocaleString("en-IN")}</p>
+                            <p className="text-white/30 text-[10px]">New</p>
+                          </div>
+                          <div className="rounded-lg bg-white/5 py-1.5">
+                            <p className="text-blue-400 text-xs font-bold">{tl.renewals.toLocaleString("en-IN")}</p>
+                            <p className="text-white/30 text-[10px]">Renewed</p>
+                          </div>
+                          <div className="rounded-lg bg-white/5 py-1.5">
+                            <p className="text-white text-xs font-bold">
+                              {tl.total_revenue >= 10000000
+                                ? `${(tl.total_revenue / 10000000).toFixed(1)} Cr`
+                                : tl.total_revenue >= 100000
+                                ? `${(tl.total_revenue / 100000).toFixed(1)} L`
+                                : `${Math.round(tl.total_revenue / 1000)}K`}
+                            </p>
+                            <p className="text-white/30 text-[10px]">Revenue</p>
+                          </div>
+                        </div>
+                        {tl.top_trade_type && (
+                          <p className="text-white/20 text-[10px] mt-1.5 truncate">Top: {tl.top_trade_type}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
