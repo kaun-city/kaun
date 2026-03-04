@@ -1,93 +1,118 @@
-# KAUN?
+# Kaun?
 
 **Pin a place. Know who's responsible.**
 
-Kaun is an open civic accountability platform. Drop a pin anywhere in a city — see the officer responsible, active public works, budget allocations, and generate a pre-filled RTI application in under 5 minutes.
+Kaun is an open civic accountability platform. Drop a pin anywhere in a city — see the elected rep, active public works tenders, infrastructure facts, citizen complaint data, and government service delivery rankings.
 
-Built for Bengaluru. Designed for every city.
+Built for Bengaluru. Designed for every Indian city.
 
-**[kaun.city](https://kaun.city)** — live for Bengaluru
-
----
-
-## The Problem
-
-When a road caves in, a drain overflows, or a tender goes missing — no one knows who to call. Official portals are broken, officer directories don't exist, and RTI feels impossible. Accountability is invisible.
-
-Kaun makes it visible.
+**[kaun.vercel.app](https://kaun.vercel.app)** — live for Bengaluru
 
 ---
 
-## What It Does
+## What It Shows
 
-- **Drop a pin** anywhere in the city
-- **See who's responsible** — officer name, designation, contact (where public)
-- **Browse active tenders** — what's being built, by whom, for how much
-- **File citizen issues** — photo + location, visible to the neighborhood
-- **Generate an RTI** — legally valid application, pre-filled, ready in 5 minutes
-- **Share on WhatsApp** — ward accountability cards that spread through RWA groups
+Drop a pin anywhere in Bengaluru and instantly see:
 
----
-
-## How It Works (For Cities)
-
-Kaun is city-config driven. Each city is a folder:
-
-```
-cities/
-  bengaluru/
-    config.json       # agencies, helplines, RTI addresses
-    wards.geojson     # ward boundary polygons
-    agencies.json     # jurisdiction resolver
-```
-
-Adding a new city = adding a folder + config. No core code changes needed.
+- **WHO** — MLA/MP with criminal cases, declared assets, asset growth since 2018
+- **Expenses** — KPPP tenders active in the ward (count, total value, contractor, status)
+- **Area** — Population, roads, lakes, parks, schools, bus stops; citizen complaint closure rates; Sakala service delivery rank
+- **Report** — Agency helplines (BBMP, BWSSB, BESCOM, BMTC, BDA) + RTI generator (coming soon)
 
 ---
 
 ## Stack
 
-- **Frontend**: Next.js + Leaflet.js
-- **Backend**: FastAPI (Python)
-- **Database**: PostgreSQL + PostGIS
-- **Scrapers**: Python + GitHub Actions (weekly)
-- **Hosting**: ~$15/month on Fly.io + Cloudflare Pages
+| Layer | Tech |
+|---|---|
+| Frontend | Next.js 16 + Leaflet.js + Tailwind CSS |
+| Database | Supabase (PostgreSQL + PostGIS) |
+| Data pipelines | Node.js scripts + GitHub Actions crons |
+| Hosting | Vercel (free tier) |
+
+No separate API server. Frontend talks directly to Supabase via PostgREST + RPC functions.
+
+---
+
+## Data Sources
+
+| Dataset | Source | Rows | Refresh |
+|---|---|---|---|
+| KPPP tenders | kppp.karnataka.gov.in | 1,446 | Weekly (Sun) |
+| BBMP grievances | data.opencity.in | 334K complaints, 199 wards | Monthly |
+| Sakala performance | sakala.kar.nic.in | 28 ACs | Monthly |
+| Ward stats | data.opencity.in/BBMP | 198 wards | Static |
+| BBMP work orders | data.opencity.in | 465 | Monthly |
+| Elected reps | myneta.info | 28 MLAs + MPs | Election cycle |
+
+---
+
+## Repo Structure
+
+```
+kaun/
+├── apps/
+│   └── web/              # Next.js frontend
+│       ├── app/          # Pages
+│       ├── components/   # WardCard, MapView
+│       └── lib/          # api.ts, types.ts, supabase.ts
+├── scripts/              # Data refresh scrapers (Node.js)
+│   ├── refresh-kppp.mjs
+│   ├── refresh-sakala.mjs
+│   ├── refresh-grievances.mjs
+│   └── lib/db.mjs
+├── cities/               # City configs (add your city here)
+│   └── bengaluru/
+├── data/                 # Seed data CSVs
+├── docs/
+│   ├── DATA_SOURCES.md
+│   └── adding-a-city.md
+└── .github/workflows/    # Scheduled cron jobs
+```
+
+---
+
+## Running Locally
+
+```bash
+git clone https://github.com/kaun-city/kaun
+cd kaun/apps/web
+cp .env.example .env.local
+# Fill in NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+npm install
+npm run dev
+```
 
 ---
 
 ## Contributing
 
-We welcome contributions of any kind:
+We welcome all contributions:
 
-- **Add your city** — see [docs/adding-a-city.md](docs/adding-a-city.md)
-- **Improve data** — fix officer names, add tender links, update ward boundaries
-- **Build features** — pick an open issue
-- **Spread the word** — star the repo, share with civic orgs in your city
+- **Add your city** — see [docs/adding-a-city.md](docs/adding-a-city.md). No coding required for basic configs.
+- **Improve data** — fix officer names, add tender sources, update ward boundaries
+- **Build features** — pick an open issue labeled `good first issue`
+- **Add a data source** — extend the scrapers in `scripts/`
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
 ## Status
 
-- [x] Research complete (jurisdiction mapping, tenders, RTI, UX)
-- [x] FastAPI backend — PostGIS ward model, `/pin` endpoint, city config loader
-- [x] Ward loader script — downloads datameet GeoJSON, upserts into PostGIS
-- [x] Next.js frontend — Leaflet map, ward overlay, pin-to-ward card
-- [ ] Deployment — Fly.io (API) + Cloudflare Pages (web)
-- [ ] Bengaluru ward data loaded into production DB
-- [ ] Tender scraper (KPPP, GitHub Actions weekly)
-- [ ] RTI generator (5 templates, PDF output)
-- [ ] WhatsApp share cards (OG image per ward)
-- [ ] kaun.city live
-
----
-
-## Why Open Source?
-
-Civic data belongs to everyone. The code that surfaces it should too.
-
-Kaun is MIT licensed. Fork it, deploy it, improve it. If you make it better, send a PR.
+- [x] Next.js frontend — Leaflet map, ward overlay, 4-tab WardCard
+- [x] Supabase backend — PostGIS pin lookup, ward profile RPC
+- [x] KPPP tender data — 1,446 BBMP tenders, weekly refresh
+- [x] Grievances data — 334K complaints across 199 wards (2024 + 2025)
+- [x] Sakala rankings — 28 Bengaluru ACs, monthly refresh
+- [x] Ward infrastructure stats — population, roads, lakes, schools
+- [x] Elected reps — 28 MLAs with MyNeta affidavit data
+- [x] Deployed at kaun.vercel.app
+- [ ] RTI generator — pre-filled PDF application
+- [ ] WhatsApp share cards — ward accountability OG image
+- [ ] More cities — Delhi, Chennai, Mumbai configs
+- [ ] Air quality data (CPCB/aqinow.org)
+- [ ] BBMP ward boundary update (198 -> 243 wards)
 
 ---
 
