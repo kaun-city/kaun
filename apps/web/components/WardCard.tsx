@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useRef, useState } from "react"
 import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "@/lib/types"
@@ -10,7 +10,7 @@ interface Props {
   onClose: () => void
 }
 
-type Tab = "who" | "money" | "stats" | "report"
+type Tab = "who" | "expenses" | "stats" | "report"
 
 const PARTY_COLORS: Record<string, string> = {
   INC: "#19AAED",
@@ -28,17 +28,17 @@ const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }>
 }
 
 const TRUST_STYLES: Record<string, { bg: string; text: string; border: string; label: string; icon: string }> = {
-  official:           { bg: "bg-green-500/10",  text: "text-green-400",  border: "border-green-500/20", label: "Govt source",          icon: "✓" },
-  rti:                { bg: "bg-blue-500/10",   text: "text-blue-400",   border: "border-blue-500/20",  label: "RTI sourced",          icon: "📄" },
-  community_verified: { bg: "bg-amber-500/10",  text: "text-amber-400",  border: "border-amber-500/20", label: "Community verified",   icon: "✓" },
+  official:           { bg: "bg-green-500/10",  text: "text-green-400",  border: "border-green-500/20", label: "Govt source",          icon: "âœ“" },
+  rti:                { bg: "bg-blue-500/10",   text: "text-blue-400",   border: "border-blue-500/20",  label: "RTI sourced",          icon: "ðŸ“„" },
+  community_verified: { bg: "bg-amber-500/10",  text: "text-amber-400",  border: "border-amber-500/20", label: "Community verified",   icon: "âœ“" },
   unverified:         { bg: "bg-white/5",       text: "text-white/30",   border: "border-white/10",     label: "Unverified",           icon: "?" },
   disputed:           { bg: "bg-red-500/10",    text: "text-red-400",    border: "border-red-500/20",   label: "Disputed",             icon: "!" },
 }
 
 const OFFICER_SUBJECTS: Record<string, string> = {
   gba_ward_officer:   "Ward Officer (GBA)",
-  gba_ae_works:       "AE – Works (GBA)",
-  gba_ae_health:      "AE – Health (GBA)",
+  gba_ae_works:       "AE â€“ Works (GBA)",
+  gba_ae_health:      "AE â€“ Health (GBA)",
   bwssb_ae:           "AE (BWSSB)",
   bescom_ae:          "AE (BESCOM)",
 }
@@ -98,7 +98,7 @@ function groupOfficerFacts(facts: CommunityFact[]): Record<string, Record<string
   return result
 }
 
-// ── Community fact card with corroborate button
+// â”€â”€ Community fact card with corroborate button
 function FactCard({
   fact,
   onCorroborate,
@@ -147,7 +147,7 @@ function FactCard({
   )
 }
 
-// ── Inline add-what-you-know form
+// â”€â”€ Inline add-what-you-know form
 function AddFactForm({
   wardNo,
   cityId,
@@ -199,7 +199,7 @@ function AddFactForm({
   if (done) {
     return (
       <div className="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs text-center font-medium">
-        ✓ Added! Others can now corroborate this.
+        âœ“ Added! Others can now corroborate this.
       </div>
     )
   }
@@ -268,7 +268,7 @@ function AddFactForm({
               disabled={submitting || !value.trim()}
               className="flex-1 py-2 rounded-lg bg-[#FF9933]/20 border border-[#FF9933]/40 text-[#FF9933] text-xs font-semibold hover:bg-[#FF9933]/30 disabled:opacity-40 transition-colors"
             >
-              {submitting ? "Submitting…" : "Submit"}
+              {submitting ? "Submittingâ€¦" : "Submit"}
             </button>
             <button
               type="button"
@@ -348,7 +348,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   }, [tab, grievances, result?.ward_name])
 
   useEffect(() => {
-    if (tab !== "money" || budget) return
+    if (tab !== "expenses" || budget) return
     fetchBudgetSummary("2020-21").then(setBudget)
   }, [tab, budget])
 
@@ -358,7 +358,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   }, [tab, departments.length])
 
   useEffect(() => {
-    if (tab !== "money" || !result?.found || !result.ward_name) return
+    if (tab !== "expenses" || !result?.found || !result.ward_name) return
     if (buzz !== null || buzzLoading) return
     setBuzzLoading(true)
     fetchBuzz(result.ward_name).then((posts) => { setBuzz(posts); setBuzzLoading(false) })
@@ -382,7 +382,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
   const TABS: { id: Tab; label: string }[] = [
     { id: "who",    label: "Who" },
-    { id: "money",  label: "Money" },
+    { id: "expenses",  label: "Expenses" },
     { id: "stats",  label: "Area" },
     { id: "report", label: "Report" },
   ]
@@ -410,8 +410,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
             <h2 className="text-white font-semibold text-base leading-snug">{result.ward_name}</h2>
             <p className="text-white/40 text-xs mt-0.5">
               Ward {result.ward_no}
-              {result.zone ? ` · ${result.zone}` : ""}
-              {result.assembly_constituency ? ` · ${result.assembly_constituency}` : ""}
+              {result.zone ? ` Â· ${result.zone}` : ""}
+              {result.assembly_constituency ? ` Â· ${result.assembly_constituency}` : ""}
             </p>
           </div>
         ) : (
@@ -441,7 +441,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
             ))}
           </div>
 
-          {/* ══ WHO TAB ══ */}
+          {/* â•â• WHO TAB â•â• */}
           {tab === "who" && (
             <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-4">
 
@@ -466,7 +466,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                       ? "Nobody has contributed data about this ward yet. Be the first."
                       : unknowns.unanswered?.length
                         ? `${unknowns.unanswered.length} things still unknown. Help fill the gaps.`
-                        : "This ward is fully mapped by the community! 🎉"}
+                        : "This ward is fully mapped by the community! ðŸŽ‰"}
                   </p>
                 </div>
               )}
@@ -522,7 +522,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 </div>
               )}
 
-              {/* ── Officers — civic Wikipedia section */}
+              {/* â”€â”€ Officers â€” civic Wikipedia section */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <p className="text-white/30 text-xs uppercase tracking-wider">Ward Officers</p>
@@ -536,7 +536,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   profile.officers.map((o) => (
                     <div key={o.id} className="p-3 rounded-xl bg-white/5">
                       <div className="flex items-center justify-between">
-                        <p className="text-white/40 text-xs">{o.role} · {o.department}</p>
+                        <p className="text-white/40 text-xs">{o.role} Â· {o.department}</p>
                         <TrustBadge level={o.source === "rti" ? "rti" : "official"} />
                       </div>
                       <p className="text-white text-sm font-medium">{o.name ?? "Name not disclosed"}</p>
@@ -559,12 +559,12 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   <div className="p-3 rounded-xl bg-white/5">
                     <p className="text-white/50 text-sm">No officer details yet</p>
                     <p className="text-white/25 text-xs mt-1 leading-relaxed">
-                      Government doesn&apos;t publish this. If you know your ward officer&apos;s name or number, share it below — others will benefit.
+                      Government doesn&apos;t publish this. If you know your ward officer&apos;s name or number, share it below â€” others will benefit.
                     </p>
                   </div>
                 )}
 
-                {/* Unanswered questions — the civic Wikipedia prompts */}
+                {/* Unanswered questions â€” the civic Wikipedia prompts */}
                 {unknowns && unknowns.unanswered && unknowns.unanswered.length > 0 && (
                   <div className="space-y-2 pt-2">
                     <p className="text-white/30 text-xs uppercase tracking-wider">Help fill the gaps</p>
@@ -647,15 +647,15 @@ export default function WardCard({ result, loading, onClose }: Props) {
             </div>
           )}
 
-          {/* ══ MONEY TAB ══ */}
-          {tab === "money" && (
+          {/* â•â• EXPENSES TAB â•â• */}
+          {tab === "expenses" && (
             <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-4">
               {/* City-wide Budget */}
               {budget && (
                 <div className="rounded-xl bg-white/5 p-3 space-y-3">
                   <div className="flex items-center justify-between">
                     <p className="text-white/50 text-[10px] uppercase tracking-wider">BBMP Budget {budget.financial_year}</p>
-                    <p className="text-[#FF9933] text-lg font-bold">₹{budget.total_expenditure_lakh ? Math.round(budget.total_expenditure_lakh / 100).toLocaleString('en-IN') : '—'} Cr</p>
+                    <p className="text-[#FF9933] text-lg font-bold">â‚¹{budget.total_expenditure_lakh ? Math.round(budget.total_expenditure_lakh / 100).toLocaleString('en-IN') : 'â€”'} Cr</p>
                   </div>
                   {budget.departments && budget.departments.length > 0 && (
                     <div className="space-y-2">
@@ -663,7 +663,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                         <div key={i}>
                           <div className="flex items-center justify-between gap-2 mb-0.5">
                             <p className="text-white/60 text-xs truncate flex-1">{dept.department}</p>
-                            <p className="text-white/40 text-xs font-mono shrink-0">₹{dept.amount_cr} Cr <span className="text-white/20">({dept.pct}%)</span></p>
+                            <p className="text-white/40 text-xs font-mono shrink-0">â‚¹{dept.amount_cr} Cr <span className="text-white/20">({dept.pct}%)</span></p>
                           </div>
                           <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
                             <div className="h-full bg-[#FF9933]/60 rounded-full" style={{ width: `${Math.min(dept.pct, 100)}%` }} />
@@ -738,7 +738,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     <a key={i} href={post.url} target="_blank" rel="noopener noreferrer" className="block group">
                       <div className="py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                         <p className="text-white text-xs leading-snug group-hover:text-[#FF9933] transition-colors line-clamp-2">{post.title}</p>
-                        <p className="text-white/25 text-xs mt-1">+{post.score} · {post.num_comments} comments · {timeAgo(post.created_utc)}</p>
+                        <p className="text-white/25 text-xs mt-1">+{post.score} Â· {post.num_comments} comments Â· {timeAgo(post.created_utc)}</p>
                       </div>
                     </a>
                   ))}
@@ -747,7 +747,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
             </div>
           )}
 
-          {/* ══ AREA STATS TAB ══ */}
+          {/* â•â• AREA STATS TAB â•â• */}
           {tab === "stats" && (
             <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-3">
               {!wardStats ? (
@@ -768,20 +768,20 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     <p className="text-white/50 text-[10px] uppercase tracking-wider">Population</p>
                     <div className="grid grid-cols-3 gap-2">
                       <div className="min-w-0">
-                        <p className="text-lg font-bold text-white truncate">{wardStats.total_population?.toLocaleString('en-IN') ?? '—'}</p>
+                        <p className="text-lg font-bold text-white truncate">{wardStats.total_population?.toLocaleString('en-IN') ?? 'â€”'}</p>
                         <p className="text-white/30 text-[10px]">People</p>
                       </div>
                       <div className="min-w-0">
-                        <p className="text-lg font-bold text-white truncate">{wardStats.total_households?.toLocaleString('en-IN') ?? '—'}</p>
+                        <p className="text-lg font-bold text-white truncate">{wardStats.total_households?.toLocaleString('en-IN') ?? 'â€”'}</p>
                         <p className="text-white/30 text-[10px]">Households</p>
                       </div>
                       <div className="min-w-0">
-                        <p className="text-lg font-bold text-[#FF9933] truncate">{wardStats.avg_population_density?.toLocaleString('en-IN') ?? '—'}</p>
-                        <p className="text-white/30 text-[10px]">per km²</p>
+                        <p className="text-lg font-bold text-[#FF9933] truncate">{wardStats.avg_population_density?.toLocaleString('en-IN') ?? 'â€”'}</p>
+                        <p className="text-white/30 text-[10px]">per kmÂ²</p>
                       </div>
                     </div>
                     {wardStats.total_area_sqkm && (
-                      <p className="text-white/20 text-[10px]">Area: {wardStats.total_area_sqkm} km²</p>
+                      <p className="text-white/20 text-[10px]">Area: {wardStats.total_area_sqkm} kmÂ²</p>
                     )}
                   </div>
 
@@ -790,13 +790,13 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     <p className="text-white/50 text-[10px] uppercase tracking-wider">Infrastructure</p>
                     <div className="grid grid-cols-2 gap-y-2 gap-x-3">
                       {[
-                        { icon: "🛣️", label: "Roads", value: wardStats.total_road_length_km ? `${wardStats.total_road_length_km} km` : null },
-                        { icon: "💡", label: "Streetlights", value: wardStats.total_streetlights?.toLocaleString('en-IN') },
-                        { icon: "🚏", label: "Bus stops", value: wardStats.total_bus_stops?.toLocaleString('en-IN') },
-                        { icon: "🚌", label: "Bus routes", value: wardStats.total_bus_routes?.toLocaleString('en-IN') },
-                        { icon: "🏫", label: "Govt schools", value: wardStats.total_govt_schools?.toLocaleString('en-IN') },
-                        { icon: "👮", label: "Police stations", value: wardStats.total_police_stations?.toLocaleString('en-IN') },
-                        { icon: "🚒", label: "Fire stations", value: wardStats.total_fire_stations?.toLocaleString('en-IN') },
+                        { icon: "ðŸ›£ï¸", label: "Roads", value: wardStats.total_road_length_km ? `${wardStats.total_road_length_km} km` : null },
+                        { icon: "ðŸ’¡", label: "Streetlights", value: wardStats.total_streetlights?.toLocaleString('en-IN') },
+                        { icon: "ðŸš", label: "Bus stops", value: wardStats.total_bus_stops?.toLocaleString('en-IN') },
+                        { icon: "ðŸšŒ", label: "Bus routes", value: wardStats.total_bus_routes?.toLocaleString('en-IN') },
+                        { icon: "ðŸ«", label: "Govt schools", value: wardStats.total_govt_schools?.toLocaleString('en-IN') },
+                        { icon: "ðŸ‘®", label: "Police stations", value: wardStats.total_police_stations?.toLocaleString('en-IN') },
+                        { icon: "ðŸš’", label: "Fire stations", value: wardStats.total_fire_stations?.toLocaleString('en-IN') },
                       ].filter(s => s.value).map((s) => (
                         <div key={s.label} className="flex items-center gap-1.5 min-w-0">
                           <span className="text-sm shrink-0">{s.icon}</span>
@@ -846,14 +846,14 @@ export default function WardCard({ result, loading, onClose }: Props) {
                             <p className="text-white text-xs font-mono">{yr.financial_year}</p>
                             <p className="text-white/30 text-[10px]">{yr.total_applications?.toLocaleString('en-IN')} properties</p>
                           </div>
-                          <p className="text-[#FF9933] text-sm font-bold shrink-0">₹{(yr.total_collection_lakh / 100).toFixed(0)} Cr</p>
+                          <p className="text-[#FF9933] text-sm font-bold shrink-0">â‚¹{(yr.total_collection_lakh / 100).toFixed(0)} Cr</p>
                         </div>
                       ))}
                     </div>
                   )}
 
                   <p className="text-white/15 text-[10px] text-center">
-                    Source: {wardStats.source} · {wardStats.ward_count} wards
+                    Source: {wardStats.source} Â· {wardStats.ward_count} wards
                   </p>
                 </>
               )}
@@ -894,7 +894,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     <div className="flex justify-between">
                       <span className="text-white/40 text-xs">BBMP rank ({sakala.assembly_name})</span>
                       <span className="text-white text-xs font-semibold">
-                        {sakala.rank_overall != null ? `#${sakala.rank_overall} of 28` : "—"}
+                        {sakala.rank_overall != null ? `#${sakala.rank_overall} of 28` : "â€”"}
                       </span>
                     </div>
                     {sakala.intime_pct != null && (
@@ -918,7 +918,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
             </div>
           )}
 
-          {/* ══ REPORT TAB ══ */}
+          {/* â•â• REPORT TAB â•â• */}
           {tab === "report" && (
             <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-3">
               <button
@@ -928,7 +928,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 Generate RTI Application
               </button>
               <p className="text-white/25 text-xs text-center -mt-1">
-                Right to Information Act, 2005 · Rs. 10 fee · 30-day response
+                Right to Information Act, 2005 Â· Rs. 10 fee Â· 30-day response
               </p>
               <div className="pt-2 space-y-2">
                 <p className="text-white/30 text-xs uppercase tracking-wider">Government Agencies & Helplines</p>
