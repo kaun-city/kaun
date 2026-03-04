@@ -542,6 +542,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
                           <p className="text-white font-semibold text-sm mt-0.5">{rep.name}</p>
                           <p className="text-white/30 text-xs">{rep.constituency} constituency</p>
                           {rep.elected_since && <p className="text-white/25 text-xs">Elected {rep.elected_since}</p>}
+                          {rep.phone && (
+                            <a href={`tel:${rep.phone.replace(/\s/g,'')}`} className="text-[#FF9933] text-xs font-mono hover:underline block mt-0.5">
+                              {rep.phone}
+                            </a>
+                          )}
                           {rep.notes && <p className="text-white/30 text-xs mt-1 italic">{rep.notes}</p>}
                         </div>
                         {rep.profile_url && (
@@ -942,7 +947,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     <div className="grid grid-cols-2 gap-y-2 gap-x-3">
                       {[
                         { icon: "", label: "Roads", value: wardStats.total_road_length_km ? `${wardStats.total_road_length_km} km` : null },
-                        { icon: "", label: "Streetlights", value: wardStats.total_streetlights?.toLocaleString('en-IN') },
+                        { icon: "", label: "Streetlights", value: (wardStats.streetlights ?? wardStats.total_streetlights)?.toLocaleString('en-IN') },
                         { icon: "", label: "Bus stops", value: wardStats.total_bus_stops?.toLocaleString('en-IN') },
                         { icon: "", label: "Bus routes", value: wardStats.total_bus_routes?.toLocaleString('en-IN') },
                         { icon: "", label: "Govt schools", value: wardStats.total_govt_schools?.toLocaleString('en-IN') },
@@ -1161,11 +1166,18 @@ export default function WardCard({ result, loading, onClose }: Props) {
                       <p className="text-white/15 text-[10px]">opencity.in</p>
                     </div>
                     {officesFiltered.map(o => (
-                      <div key={o.boundary_type} className="flex items-center justify-between gap-2">
-                        <span className="text-white/30 text-xs shrink-0">{LABELS[o.boundary_type] ?? o.boundary_type}</span>
-                        <span className={`text-xs font-semibold text-right ${o.boundary_type === 'pincode' ? 'text-[#FF9933]' : 'text-white'}`}>
-                          {formatName(o.boundary_type, o.name)}
-                        </span>
+                      <div key={o.boundary_type} className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <span className="text-white/30 text-xs">{LABELS[o.boundary_type] ?? o.boundary_type}</span>
+                          <p className={`text-xs font-semibold ${o.boundary_type === 'pincode' ? 'text-[#FF9933]' : 'text-white'}`}>
+                            {formatName(o.boundary_type, o.name)}
+                          </p>
+                        </div>
+                        {o.phone && (
+                          <a href={`tel:${o.phone.replace(/\s/g,'')}`} className="text-[#FF9933] text-xs font-mono shrink-0 hover:underline mt-0.5">
+                            {o.phone}
+                          </a>
+                        )}
                       </div>
                     ))}
                   </div>

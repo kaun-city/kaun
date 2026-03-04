@@ -169,6 +169,7 @@ export interface WardStats {
   total_bus_stops: number | null
   total_bus_routes: number | null
   total_streetlights: number | null
+  streetlights: number | null
   avg_population_density: number | null
   ward_count: number | null
   data_year: number
@@ -214,6 +215,8 @@ export interface WardTradeLicenses {
 export interface LocalOffice {
   boundary_type: string
   name: string
+  phone?: string
+  email?: string
 }
 
 export interface GbaContact {
