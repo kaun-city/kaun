@@ -295,6 +295,14 @@ export async function fetchTradeLicenses(wardName: string): Promise<import('./ty
 }
 
 /**
+ * Fetch GBA City Corporation contacts for a given corporation name.
+ */
+export async function fetchCorpContacts(corporation: string): Promise<import('./types').GbaContact[]> {
+  const rows = await query<import('./types').GbaContact>('gba_contacts', { corporation: `eq.${corporation}` }, { order: 'id' })
+  return rows
+}
+
+/**
  * Lookup local offices (BESCOM, BWSSB, Police) for a lat/lng point.
  */
 export async function lookupLocalOffices(lat: number, lng: number): Promise<import('./types').LocalOffice[]> {

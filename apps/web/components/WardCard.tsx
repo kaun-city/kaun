@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { BudgetSummary, CommunityFact, Department, LocalOffice, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, lookupLocalOffices, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, lookupLocalOffices, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -298,6 +298,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [extraFacts, setExtraFacts] = useState<CommunityFact[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
   const [localOffices, setLocalOffices] = useState<LocalOffice[]>([])
+  const [corpContacts, setCorpContacts] = useState<GbaContact[]>([])
+  const [corpName, setCorpName] = useState<string | null>(null)
   const [wardStats, setWardStats] = useState<WardStats | null>(null)
   const [grievances, setGrievances] = useState<WardGrievances[]>([])
   const [potholes, setPotholes] = useState<WardPotholes | null>(null)
@@ -319,6 +321,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setExtraFacts([])
     setDepartments([])
     setLocalOffices([])
+    setCorpContacts([])
+    setCorpName(null)
     setWardStats(null)
     setPropertyTax(null)
     setBudget(null)
@@ -370,10 +374,20 @@ export default function WardCard({ result, loading, onClose }: Props) {
   }, [tab, budget, workOrders.length, result?.ward_no])
 
   useEffect(() => {
-    if (tab !== "report") return
-    if (departments.length === 0) fetchDepartments().then(d => setDepartments(d as Department[]))
-    if (localOffices.length === 0 && result?.lat && result?.lng)
-      lookupLocalOffices(result.lat, result.lng).then(setLocalOffices)
+    if (tab !== "report" && tab !== "who") return
+    if (tab === "report") {
+      if (departments.length === 0) fetchDepartments().then(d => setDepartments(d as Department[]))
+    }
+    if (localOffices.length === 0 && result?.lat && result?.lng) {
+      lookupLocalOffices(result.lat, result.lng).then(offices => {
+        setLocalOffices(offices)
+        const corp = offices.find(o => o.boundary_type === 'gba_corporation')
+        if (corp) {
+          setCorpName(corp.name)
+          fetchCorpContacts(corp.name).then(setCorpContacts)
+        }
+      })
+    }
   }, [tab, departments.length, localOffices.length, result?.lat, result?.lng])
 
   useEffect(() => {
@@ -581,6 +595,37 @@ export default function WardCard({ result, loading, onClose }: Props) {
                     <p className="text-white/25 text-xs mt-1 leading-relaxed">
                       Government doesn&apos;t publish this. If you know your ward officer&apos;s name or number, share it below -- others will benefit.
                     </p>
+                  </div>
+                )}
+
+                {/* GBA Corporation contacts */}
+                {corpContacts.length > 0 && corpName && (
+                  <div className="rounded-xl bg-white/5 p-3 space-y-2 mt-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-white/50 text-[10px] uppercase tracking-wider">
+                        {corpName.replace('Bengaluru ', '').replace(' City Corporation', '')} City Corporation
+                      </p>
+                      <p className="text-white/15 text-[10px]">BBMP Dec 2025</p>
+                    </div>
+                    {corpContacts.filter(c => ['Commissioner', 'Health Officer'].includes(c.role)).map(c => (
+                      <div key={c.role} className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-white/30 text-xs">{c.role}</p>
+                          <p className="text-white text-xs font-semibold truncate">{c.name}</p>
+                        </div>
+                        {c.phone && (
+                          <a href={`tel:${c.phone.replace(/\s/g,'')}`} className="text-[#FF9933] text-xs font-mono shrink-0 hover:underline">
+                            {c.phone}
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                    {(() => {
+                      const comm = corpContacts.find(c => c.control_room)
+                      return comm?.control_room ? (
+                        <p className="text-white/20 text-[10px] pt-1">Control room: {comm.control_room}</p>
+                      ) : null
+                    })()}
                   </div>
                 )}
 
@@ -1086,8 +1131,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
               <p className="text-white/25 text-xs text-center -mt-1">
                 Right to Information Act, 2005  -  Rs. 10 fee  -  30-day response
               </p>
-              {/* Local offices for this pin */}
-              {localOffices.length > 0 && (() => {
+              {/* Local offices for this pin (exclude gba_corporation - shown in WHO tab) */}
+              {localOffices.filter(o => o.boundary_type !== 'gba_corporation').length > 0 && (() => {
+                const officesFiltered = localOffices.filter(o => o.boundary_type !== 'gba_corporation')
                 const LABELS: Record<string, string> = {
                   pincode: 'Pin Code',
                   admin_taluk: 'Taluk',
@@ -1114,7 +1160,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                       <p className="text-white/50 text-[10px] uppercase tracking-wider">Your Local Offices</p>
                       <p className="text-white/15 text-[10px]">opencity.in</p>
                     </div>
-                    {localOffices.map(o => (
+                    {officesFiltered.map(o => (
                       <div key={o.boundary_type} className="flex items-center justify-between gap-2">
                         <span className="text-white/30 text-xs shrink-0">{LABELS[o.boundary_type] ?? o.boundary_type}</span>
                         <span className={`text-xs font-semibold text-right ${o.boundary_type === 'pincode' ? 'text-[#FF9933]' : 'text-white'}`}>

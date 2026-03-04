@@ -18,6 +18,7 @@ const TYPES_TO_SEED = new Set([
   'bwssb_division', 'bwssb_service_station',
   'police_city', 'police_traffic',
   'pincode', 'stamps_sro', 'stamps_dro', 'admin_taluk',
+  'gba_corporation',
 ])
 
 const MGMT = 'https://api.supabase.com/v1/projects/xgygxfyfsvccqqmtboeu/database/query'

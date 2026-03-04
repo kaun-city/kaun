@@ -216,6 +216,17 @@ export interface LocalOffice {
   name: string
 }
 
+export interface GbaContact {
+  id: number
+  corporation: string
+  role: string
+  name: string | null
+  phone: string | null
+  email: string | null
+  control_room: string | null
+  office_address: string | null
+}
+
 export interface WorkOrder {
   id: number
   work_order_id: string
