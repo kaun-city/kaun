@@ -281,3 +281,15 @@ export async function fetchSakalaPerformance(acName: string): Promise<SakalaPerf
   })
   return rows[0] ?? null
 }
+
+/**
+ * Fetch trade license stats for a ward (aggregated by year).
+ */
+export async function fetchTradeLicenses(wardName: string): Promise<import('./types').WardTradeLicenses[]> {
+  return await query<import('./types').WardTradeLicenses>('ward_trade_licenses', {
+    'ward_name': `eq.${wardName}`,
+    'select': 'year,total_licenses,new_licenses,renewals,total_revenue,top_trade_type',
+    'order': 'year.desc',
+    'limit': '3',
+  })
+}
