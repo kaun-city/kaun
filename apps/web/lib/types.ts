@@ -202,3 +202,24 @@ export interface WardTradeLicenses {
   total_revenue: number
   top_trade_type: string | null
 }
+
+export interface WardPotholes {
+  ward_no: number
+  ward_name: string
+  complaints: number
+  data_year: string
+}
+
+export interface WardSpendCategory {
+  ward_no: number
+  ward_name: string
+  buildings_facilities: number
+  drainage: number
+  roads_and_drains: number
+  roads_and_infrastructure: number
+  streetlighting: number
+  waste_management: number
+  water_and_sanitation: number
+  grand_total: number
+  period: string
+}

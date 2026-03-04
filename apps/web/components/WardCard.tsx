@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -299,6 +299,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [departments, setDepartments] = useState<Department[]>([])
   const [wardStats, setWardStats] = useState<WardStats | null>(null)
   const [grievances, setGrievances] = useState<WardGrievances[]>([])
+  const [potholes, setPotholes] = useState<WardPotholes | null>(null)
+  const [wardSpend, setWardSpend] = useState<WardSpendCategory | null>(null)
   const [sakala, setSakala] = useState<SakalaPerformance | null>(null)
   const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
   const [budget, setBudget] = useState<BudgetSummary | null>(null)
@@ -322,6 +324,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setGrievances([])
     setSakala(null)
     setTradeLicenses([])
+    setPotholes(null)
+    setWardSpend(null)
   }, [result?.ward_no])
 
   useEffect(() => {
@@ -348,6 +352,12 @@ export default function WardCard({ result, loading, onClose }: Props) {
     if (tab !== "stats" || !result?.ward_name || grievances.length > 0) return
     fetchWardGrievances(result.ward_name).then(setGrievances)
   }, [tab, grievances, result?.ward_name])
+
+  useEffect(() => {
+    if (tab !== "stats" || !result?.ward_no) return
+    if (!potholes) fetchWardPotholes(result.ward_no).then(setPotholes)
+    if (!wardSpend) fetchWardSpend(result.ward_no).then(setWardSpend)
+  }, [tab, potholes, wardSpend, result?.ward_no])
 
   useEffect(() => {
     if (tab !== "expenses" || budget) return
@@ -878,6 +888,43 @@ export default function WardCard({ result, loading, onClose }: Props) {
                       </div>
                     </div>
                   ) : null}
+
+                  {/* Roads & Spending (2018-2023) */}
+                  {wardSpend && wardSpend.grand_total > 0 && (
+                    <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-white/50 text-[10px] uppercase tracking-wider">BBMP Spending 2018-23</p>
+                        <p className="text-white/30 text-[10px]">Rs.{(wardSpend.grand_total / 10000000).toFixed(1)} Cr total</p>
+                      </div>
+                      {[
+                        { label: "Roads & Infrastructure", val: wardSpend.roads_and_infrastructure },
+                        { label: "Roads & Drains", val: wardSpend.roads_and_drains },
+                        { label: "Drainage", val: wardSpend.drainage },
+                        { label: "Streetlighting", val: wardSpend.streetlighting },
+                        { label: "Waste Management", val: wardSpend.waste_management },
+                        { label: "Water & Sanitation", val: wardSpend.water_and_sanitation },
+                        { label: "Buildings & Facilities", val: wardSpend.buildings_facilities },
+                      ].filter(x => x.val > 0).map(({ label, val }) => {
+                        const pct = wardSpend.grand_total > 0 ? Math.round((val / wardSpend.grand_total) * 100) : 0
+                        return (
+                          <div key={label}>
+                            <div className="flex justify-between text-[10px] mb-0.5">
+                              <span className="text-white/40">{label}</span>
+                              <span className="text-white/60 font-mono">Rs.{(val / 10000000).toFixed(1)} Cr ({pct}%)</span>
+                            </div>
+                            <div className="h-1 rounded-full bg-white/10">
+                              <div className="h-1 rounded-full bg-[#FF9933]/60" style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        )
+                      })}
+                      {potholes && (
+                        <p className="text-white/25 text-[10px] pt-1 border-t border-white/10">
+                          Pothole complaints (Fix My Street 2022): <span className="text-red-400 font-semibold">{potholes.complaints.toLocaleString('en-IN')}</span>
+                        </p>
+                      )}
+                    </div>
+                  )}
 
                   {/* Property Tax */}
                   {propertyTax && propertyTax.years && propertyTax.years.length > 0 && (

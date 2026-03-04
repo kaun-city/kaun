@@ -293,3 +293,27 @@ export async function fetchTradeLicenses(wardName: string): Promise<import('./ty
     'limit': '3',
   })
 }
+
+/**
+ * Fetch pothole complaint count for a ward (Fix My Street 2022).
+ */
+export async function fetchWardPotholes(wardNo: number): Promise<import('./types').WardPotholes | null> {
+  const rows = await query<import('./types').WardPotholes>('ward_potholes', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'ward_no,ward_name,complaints,data_year',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
+
+/**
+ * Fetch ward spend breakdown by category (BBMP work orders 2018-2023).
+ */
+export async function fetchWardSpend(wardNo: number): Promise<import('./types').WardSpendCategory | null> {
+  const rows = await query<import('./types').WardSpendCategory>('ward_spend_category', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'ward_no,ward_name,buildings_facilities,drainage,roads_and_drains,roads_and_infrastructure,streetlighting,waste_management,water_and_sanitation,grand_total,period',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
