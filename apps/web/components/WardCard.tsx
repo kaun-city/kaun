@@ -369,7 +369,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
   useEffect(() => {
     if (tab !== "expenses" || !result?.ward_no) return
-    if (!budget) fetchBudgetSummary("2020-21").then(setBudget)
+    if (!budget) fetchBudgetSummary("2025-26").then(setBudget)
     if (workOrders.length === 0) fetchWorkOrders(result.ward_no).then(setWorkOrders)
   }, [tab, budget, workOrders.length, result?.ward_no])
 
@@ -953,6 +953,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
                         { icon: "", label: "Govt schools", value: wardStats.total_govt_schools?.toLocaleString('en-IN') },
                         { icon: "", label: "Police stations", value: wardStats.total_police_stations?.toLocaleString('en-IN') },
                         { icon: "", label: "Fire stations", value: wardStats.total_fire_stations?.toLocaleString('en-IN') },
+                        { icon: "", label: "Namma Clinics", value: wardStats.namma_clinics?.toLocaleString('en-IN') },
+                        { icon: "", label: "Waste centers", value: wardStats.dwcc_count?.toLocaleString('en-IN') },
                       ].filter(s => s.value).map((s) => (
                         <div key={s.label} className="flex items-center gap-1.5 min-w-0">
                           <span className="text-sm shrink-0">{s.icon}</span>
@@ -966,11 +968,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   </div>
 
                   {/* Green spaces */}
-                  {(wardStats.total_lakes || wardStats.total_parks || wardStats.total_playgrounds) ? (
+                  {(wardStats.total_lakes || wardStats.total_parks || wardStats.total_playgrounds || wardStats.trees) ? (
                     <div className="rounded-xl bg-white/5 p-3 space-y-2">
                       <div className="flex items-center justify-between">
                         <p className="text-white/50 text-[10px] uppercase tracking-wider">Green Spaces</p>
-                        <p className="text-white/15 text-[10px]">BBMP via opencity.in</p>
+                        <p className="text-white/15 text-[10px]">BBMP / KGIS</p>
                       </div>
                       <div className="grid grid-cols-3 gap-2">
                         {wardStats.total_lakes ? (
@@ -989,6 +991,12 @@ export default function WardCard({ result, loading, onClose }: Props) {
                           <div className="text-center">
                             <p className="text-lg font-bold text-yellow-400">{wardStats.total_playgrounds}</p>
                             <p className="text-white/30 text-[10px]">Playgrounds</p>
+                          </div>
+                        ) : null}
+                        {wardStats.trees ? (
+                          <div className="text-center">
+                            <p className="text-lg font-bold text-green-300">{wardStats.trees.toLocaleString('en-IN')}</p>
+                            <p className="text-white/30 text-[10px]">Trees</p>
                           </div>
                         ) : null}
                       </div>

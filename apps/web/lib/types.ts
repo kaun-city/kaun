@@ -170,6 +170,9 @@ export interface WardStats {
   total_bus_routes: number | null
   total_streetlights: number | null
   streetlights: number | null
+  trees: number | null
+  namma_clinics: number | null
+  dwcc_count: number | null
   avg_population_density: number | null
   ward_count: number | null
   data_year: number
