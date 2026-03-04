@@ -215,7 +215,7 @@ export async function fetchPropertyTax(assemblyConstituency: string): Promise<Pr
 /**
  * Fetch BBMP budget summary.
  */
-export async function fetchBudgetSummary(financialYear = "2020-21"): Promise<BudgetSummary | null> {
+export async function fetchBudgetSummary(financialYear = "2024-25"): Promise<BudgetSummary | null> {
   return await rpc<BudgetSummary>("budget_summary", {
     p_financial_year: financialYear,
   })

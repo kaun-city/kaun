@@ -642,33 +642,27 @@ export default function WardCard({ result, loading, onClose }: Props) {
             <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-4">
               {/* City-wide Budget */}
               {budget && (
-                <div className="rounded-xl bg-white/5 p-4 space-y-3">
+                <div className="rounded-xl bg-white/5 p-3 space-y-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-white/50 text-xs uppercase tracking-wider">BBMP Budget {budget.financial_year}</p>
-                    <span className="text-white/20 text-[10px]">City-wide</span>
+                    <p className="text-white/50 text-[10px] uppercase tracking-wider">BBMP Budget {budget.financial_year}</p>
+                    <p className="text-[#FF9933] text-lg font-bold">₹{budget.total_expenditure_lakh ? Math.round(budget.total_expenditure_lakh / 100).toLocaleString('en-IN') : '—'} Cr</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <p className="text-green-400 text-xl font-bold">₹{budget.total_receipts_lakh ? Math.round(budget.total_receipts_lakh / 100).toLocaleString('en-IN') : '—'} Cr</p>
-                      <p className="text-white/30 text-xs">Revenue</p>
-                    </div>
-                    <div>
-                      <p className="text-red-400 text-xl font-bold">₹{budget.total_payments_lakh ? Math.round(budget.total_payments_lakh / 100).toLocaleString('en-IN') : '—'} Cr</p>
-                      <p className="text-white/30 text-xs">Expenditure</p>
-                    </div>
-                  </div>
-                  {budget.top_expenditures && budget.top_expenditures.length > 0 && (
-                    <div className="space-y-1.5 pt-2 border-t border-white/5">
-                      <p className="text-white/30 text-[10px] uppercase tracking-wider">Top expenditures</p>
-                      {budget.top_expenditures.slice(0, 8).map((item, i) => (
-                        <div key={i} className="flex items-center justify-between gap-2">
-                          <p className="text-white/60 text-xs truncate flex-1">{item.description}</p>
-                          <p className="text-[#FF9933] text-xs font-mono shrink-0">₹{Math.round(item.amount_lakh / 100).toLocaleString('en-IN')} Cr</p>
+                  {budget.departments && budget.departments.length > 0 && (
+                    <div className="space-y-2">
+                      {budget.departments.map((dept, i) => (
+                        <div key={i}>
+                          <div className="flex items-center justify-between gap-2 mb-0.5">
+                            <p className="text-white/60 text-xs truncate flex-1">{dept.department}</p>
+                            <p className="text-white/40 text-xs font-mono shrink-0">₹{dept.amount_cr} Cr <span className="text-white/20">({dept.pct}%)</span></p>
+                          </div>
+                          <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-full bg-[#FF9933]/60 rounded-full" style={{ width: `${Math.min(dept.pct, 100)}%` }} />
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
-                  <p className="text-white/15 text-[10px]">Source: opencity.in/BBMP Budget</p>
+                  <p className="text-white/15 text-[10px]">Source: BBMP Budget Book 2024-25 via opencity.in</p>
                 </div>
               )}
 
@@ -745,7 +739,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
           {/* ══ AREA STATS TAB ══ */}
           {tab === "stats" && (
-            <div className="space-y-4">
+            <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-3">
               {!wardStats ? (
                 <p className="text-white/30 text-sm animate-pulse">Loading area data...</p>
               ) : wardStats.ward_count === 0 ? (
@@ -753,40 +747,40 @@ export default function WardCard({ result, loading, onClose }: Props) {
               ) : (
                 <>
                   <div className="flex items-center justify-between">
-                    <p className="text-white/50 text-xs uppercase tracking-wider">
-                      {wardStats.assembly_constituency} constituency
+                    <p className="text-white/50 text-xs uppercase tracking-wider truncate">
+                      {wardStats.assembly_constituency}
                     </p>
-                    <span className="text-white/20 text-[10px]">Census {wardStats.data_year}</span>
+                    <span className="text-white/20 text-[10px] shrink-0 ml-2">Census {wardStats.data_year}</span>
                   </div>
 
                   {/* Population card */}
-                  <div className="rounded-xl bg-white/5 p-4 space-y-3">
-                    <p className="text-white/50 text-xs uppercase tracking-wider">Population</p>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div>
-                        <p className="text-2xl font-bold text-white">{wardStats.total_population?.toLocaleString('en-IN') ?? '—'}</p>
-                        <p className="text-white/30 text-xs">People</p>
+                  <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                    <p className="text-white/50 text-[10px] uppercase tracking-wider">Population</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="min-w-0">
+                        <p className="text-lg font-bold text-white truncate">{wardStats.total_population?.toLocaleString('en-IN') ?? '—'}</p>
+                        <p className="text-white/30 text-[10px]">People</p>
                       </div>
-                      <div>
-                        <p className="text-2xl font-bold text-white">{wardStats.total_households?.toLocaleString('en-IN') ?? '—'}</p>
-                        <p className="text-white/30 text-xs">Households</p>
+                      <div className="min-w-0">
+                        <p className="text-lg font-bold text-white truncate">{wardStats.total_households?.toLocaleString('en-IN') ?? '—'}</p>
+                        <p className="text-white/30 text-[10px]">Households</p>
                       </div>
-                      <div>
-                        <p className="text-2xl font-bold text-[#FF9933]">{wardStats.avg_population_density?.toLocaleString('en-IN') ?? '—'}</p>
-                        <p className="text-white/30 text-xs">per km²</p>
+                      <div className="min-w-0">
+                        <p className="text-lg font-bold text-[#FF9933] truncate">{wardStats.avg_population_density?.toLocaleString('en-IN') ?? '—'}</p>
+                        <p className="text-white/30 text-[10px]">per km²</p>
                       </div>
                     </div>
                     {wardStats.total_area_sqkm && (
-                      <p className="text-white/20 text-xs">Area: {wardStats.total_area_sqkm} km²</p>
+                      <p className="text-white/20 text-[10px]">Area: {wardStats.total_area_sqkm} km²</p>
                     )}
                   </div>
 
                   {/* Infrastructure grid */}
-                  <div className="rounded-xl bg-white/5 p-4 space-y-3">
-                    <p className="text-white/50 text-xs uppercase tracking-wider">Infrastructure</p>
-                    <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                  <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                    <p className="text-white/50 text-[10px] uppercase tracking-wider">Infrastructure</p>
+                    <div className="grid grid-cols-2 gap-y-2 gap-x-3">
                       {[
-                        { icon: "🛣️", label: "Road length", value: wardStats.total_road_length_km ? `${wardStats.total_road_length_km} km` : null },
+                        { icon: "🛣️", label: "Roads", value: wardStats.total_road_length_km ? `${wardStats.total_road_length_km} km` : null },
                         { icon: "💡", label: "Streetlights", value: wardStats.total_streetlights?.toLocaleString('en-IN') },
                         { icon: "🚏", label: "Bus stops", value: wardStats.total_bus_stops?.toLocaleString('en-IN') },
                         { icon: "🚌", label: "Bus routes", value: wardStats.total_bus_routes?.toLocaleString('en-IN') },
@@ -794,9 +788,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
                         { icon: "👮", label: "Police stations", value: wardStats.total_police_stations?.toLocaleString('en-IN') },
                         { icon: "🚒", label: "Fire stations", value: wardStats.total_fire_stations?.toLocaleString('en-IN') },
                       ].filter(s => s.value).map((s) => (
-                        <div key={s.label} className="flex items-center gap-2">
-                          <span className="text-base">{s.icon}</span>
-                          <div>
+                        <div key={s.label} className="flex items-center gap-1.5 min-w-0">
+                          <span className="text-sm shrink-0">{s.icon}</span>
+                          <div className="min-w-0">
                             <p className="text-white text-sm font-semibold">{s.value}</p>
                             <p className="text-white/30 text-[10px]">{s.label}</p>
                           </div>
@@ -807,25 +801,25 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
                   {/* Green spaces */}
                   {(wardStats.total_lakes || wardStats.total_parks || wardStats.total_playgrounds) ? (
-                    <div className="rounded-xl bg-white/5 p-4 space-y-3">
-                      <p className="text-white/50 text-xs uppercase tracking-wider">Green Spaces</p>
-                      <div className="grid grid-cols-3 gap-3">
+                    <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                      <p className="text-white/50 text-[10px] uppercase tracking-wider">Green Spaces</p>
+                      <div className="grid grid-cols-3 gap-2">
                         {wardStats.total_lakes ? (
                           <div className="text-center">
-                            <p className="text-2xl font-bold text-blue-400">{wardStats.total_lakes}</p>
-                            <p className="text-white/30 text-xs">Lakes</p>
+                            <p className="text-lg font-bold text-blue-400">{wardStats.total_lakes}</p>
+                            <p className="text-white/30 text-[10px]">Lakes</p>
                           </div>
                         ) : null}
                         {wardStats.total_parks ? (
                           <div className="text-center">
-                            <p className="text-2xl font-bold text-green-400">{wardStats.total_parks}</p>
-                            <p className="text-white/30 text-xs">Parks</p>
+                            <p className="text-lg font-bold text-green-400">{wardStats.total_parks}</p>
+                            <p className="text-white/30 text-[10px]">Parks</p>
                           </div>
                         ) : null}
                         {wardStats.total_playgrounds ? (
                           <div className="text-center">
-                            <p className="text-2xl font-bold text-yellow-400">{wardStats.total_playgrounds}</p>
-                            <p className="text-white/30 text-xs">Playgrounds</p>
+                            <p className="text-lg font-bold text-yellow-400">{wardStats.total_playgrounds}</p>
+                            <p className="text-white/30 text-[10px]">Playgrounds</p>
                           </div>
                         ) : null}
                       </div>
@@ -834,25 +828,22 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
                   {/* Property Tax */}
                   {propertyTax && propertyTax.years && propertyTax.years.length > 0 && (
-                    <div className="rounded-xl bg-white/5 p-4 space-y-3">
-                      <p className="text-white/50 text-xs uppercase tracking-wider">Property Tax Collected</p>
+                    <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                      <p className="text-white/50 text-[10px] uppercase tracking-wider">Property Tax Collected</p>
                       {propertyTax.years.map((yr) => (
-                        <div key={yr.financial_year} className="flex items-center justify-between">
-                          <div>
-                            <p className="text-white text-sm font-mono">{yr.financial_year}</p>
-                            <p className="text-white/30 text-[10px]">{yr.total_applications?.toLocaleString('en-IN')} properties · {yr.ward_count} wards</p>
+                        <div key={yr.financial_year} className="flex items-center justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="text-white text-xs font-mono">{yr.financial_year}</p>
+                            <p className="text-white/30 text-[10px]">{yr.total_applications?.toLocaleString('en-IN')} properties</p>
                           </div>
-                          <div className="text-right">
-                            <p className="text-[#FF9933] text-lg font-bold">₹{(yr.total_collection_lakh / 100).toFixed(0)} Cr</p>
-                            <p className="text-white/20 text-[10px]">₹{yr.total_collection_lakh.toLocaleString('en-IN')} lakh</p>
-                          </div>
+                          <p className="text-[#FF9933] text-sm font-bold shrink-0">₹{(yr.total_collection_lakh / 100).toFixed(0)} Cr</p>
                         </div>
                       ))}
                     </div>
                   )}
 
                   <p className="text-white/15 text-[10px] text-center">
-                    Source: {wardStats.source} · {wardStats.ward_count} wards in this constituency
+                    Source: {wardStats.source} · {wardStats.ward_count} wards
                   </p>
                 </>
               )}

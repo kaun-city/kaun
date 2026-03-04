@@ -133,22 +133,17 @@ export interface PropertyTaxData {
 
 export interface BudgetDept {
   department: string
-  amount_lakh: number
-  type: string
-}
-
-export interface BudgetItem {
-  department: string
   description: string
   amount_lakh: number
+  amount_cr: number
+  pct: number
 }
 
 export interface BudgetSummary {
   financial_year: string
-  total_receipts_lakh: number | null
-  total_payments_lakh: number | null
+  budget_type: string
+  total_expenditure_lakh: number | null
   departments: BudgetDept[] | null
-  top_expenditures: BudgetItem[] | null
 }
 
 export interface WardStats {
