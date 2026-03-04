@@ -1,4 +1,4 @@
----
+﻿---
 name: Add a city
 about: Propose adding a new city to Kaun
 title: 'feat: add [City Name]'

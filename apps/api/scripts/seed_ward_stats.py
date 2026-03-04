@@ -1,4 +1,4 @@
-"""
+﻿"""
 Seed ward-level statistics from OpenCity.in BBMP Ward-wise Public Goods dataset.
 
 Source: https://data.opencity.in/dataset/bbmp-ward-wise-public-goods-data
@@ -16,7 +16,7 @@ import sys
 # Path to the CSV
 CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "bbmp_ward_public_goods.csv")
 
-SUPABASE_TOKEN = os.environ.get("SUPABASE_TOKEN", "sbp_8226477e680b438942c021e7b534bd0ba53bf56b")
+SUPABASE_TOKEN = os.environ["SUPABASE_TOKEN"]  # Set via environment variable
 PROJECT_ID = "xgygxfyfsvccqqmtboeu"
 
 def parse_number(val):

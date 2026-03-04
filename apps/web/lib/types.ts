@@ -1,4 +1,4 @@
-export interface Agency {
+﻿export interface Agency {
   name: string
   short: string
   helpline: string | null
@@ -27,6 +27,12 @@ export interface ElectedRep {
   phone: string | null
   profile_url: string | null
   notes: string | null
+  // From ECI affidavit / myneta.info
+  criminal_cases: number | null
+  age: number | null
+  profession: string | null
+  education: string | null
+  data_source: string | null
 }
 
 export interface Officer {
@@ -223,3 +229,4 @@ export interface WardSpendCategory {
   grand_total: number
   period: string
 }
+
