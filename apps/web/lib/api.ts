@@ -6,7 +6,7 @@
  * No separate API server.
  */
 
-import type { BudgetSummary, CommunityFact, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats } from "./types"
+import type { BudgetSummary, CommunityFact, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "./types"
 import { rpc, query, insert } from "./supabase"
 
 /**
@@ -253,4 +253,31 @@ export async function fetchBuzz(wardName: string): Promise<RedditPost[]> {
   } catch {
     return []
   }
+}
+
+/**
+ * Fetch ward-level grievance aggregates (BBMP complaints, by ward name).
+ */
+export async function fetchWardGrievances(wardName: string): Promise<WardGrievances[]> {
+  return await query<WardGrievances>("ward_grievances", {
+    "ward_name": `eq.${wardName}`,
+    "category": "eq.ALL",
+    "select": "year,total_complaints,closed,in_progress,registered,reopened",
+    "order": "year.desc",
+    "limit": "3",
+  })
+}
+
+/**
+ * Fetch Sakala service-delivery performance for a BBMP assembly constituency.
+ */
+export async function fetchSakalaPerformance(acName: string): Promise<SakalaPerformance | null> {
+  const rows = await query<SakalaPerformance>("sakala_performance", {
+    "assembly_name": `ilike.${acName}`,
+    "department_code": "eq.BB",
+    "select": "assembly_name,year,intime_pct,delayed_pct,pending,rank_intime,rank_overall",
+    "order": "year.desc",
+    "limit": "1",
+  })
+  return rows[0] ?? null
 }

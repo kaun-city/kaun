@@ -1,0 +1,34 @@
+name: Refresh BBMP Grievances
+
+on:
+  schedule:
+    # 2nd of every month at 03:00 UTC
+    - cron: '0 3 2 * *'
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'Specific year to refresh (leave blank for current + last year)'
+        default: ''
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Grievances scraper
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.year }}" ]; then
+            ARGS="--year=${{ github.event.inputs.year }}"
+          fi
+          node scripts/refresh-grievances.mjs $ARGS

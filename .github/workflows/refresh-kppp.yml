@@ -1,0 +1,35 @@
+name: Refresh KPPP Tenders
+
+on:
+  schedule:
+    # Every Sunday at 01:00 UTC (6:30am IST)
+    - cron: '0 1 * * 0'
+  workflow_dispatch:
+    inputs:
+      full:
+        description: 'Full refresh (ignore last-inserted date)?'
+        type: boolean
+        default: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run KPPP scraper
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.full }}" = "true" ]; then
+            ARGS="--full"
+          fi
+          node scripts/refresh-kppp.mjs $ARGS
