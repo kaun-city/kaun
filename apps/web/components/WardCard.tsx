@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -301,6 +301,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [grievances, setGrievances] = useState<WardGrievances[]>([])
   const [potholes, setPotholes] = useState<WardPotholes | null>(null)
   const [wardSpend, setWardSpend] = useState<WardSpendCategory | null>(null)
+  const [workOrders, setWorkOrders] = useState<WorkOrder[]>([])
   const [sakala, setSakala] = useState<SakalaPerformance | null>(null)
   const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
   const [budget, setBudget] = useState<BudgetSummary | null>(null)
@@ -326,6 +327,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setTradeLicenses([])
     setPotholes(null)
     setWardSpend(null)
+    setWorkOrders([])
   }, [result?.ward_no])
 
   useEffect(() => {
@@ -360,9 +362,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
   }, [tab, potholes, wardSpend, result?.ward_no])
 
   useEffect(() => {
-    if (tab !== "expenses" || budget) return
-    fetchBudgetSummary("2020-21").then(setBudget)
-  }, [tab, budget])
+    if (tab !== "expenses" || !result?.ward_no) return
+    if (!budget) fetchBudgetSummary("2020-21").then(setBudget)
+    if (workOrders.length === 0) fetchWorkOrders(result.ward_no).then(setWorkOrders)
+  }, [tab, budget, workOrders.length, result?.ward_no])
 
   useEffect(() => {
     if (tab !== "report" || departments.length > 0) return
@@ -744,6 +747,39 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 </div>
               )}
               <p className="text-white/15 text-[10px] px-1">Source: KPPP karnataka.gov.in</p>
+
+              {/* Work Orders 2024-25 */}
+              {workOrders.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-white/30 text-[10px] uppercase tracking-wider">
+                      Works 2024-25 ({workOrders.length})
+                    </p>
+                    <p className="text-white/15 text-[10px]">BBMP via opencity.in</p>
+                  </div>
+                  <div className="space-y-2">
+                    {workOrders.map((wo) => {
+                      // Strip leading "NNN-YY-NNNNNN" work order ref from description
+                      const desc = wo.description.replace(/^\d{3}-\d{2}-\d{6}/, '').trim()
+                      // Extract contractor name: strip leading 6-digit ID and trailing 10-digit phone
+                      const contractor = wo.contractor
+                        ? wo.contractor.replace(/^\d{6}\s*/, '').replace(/\d{10}$/, '').trim()
+                        : null
+                      return (
+                        <div key={wo.id} className="rounded-xl bg-white/5 p-3">
+                          <p className="text-white text-xs leading-snug line-clamp-2">{desc}</p>
+                          <div className="flex items-center justify-between mt-2 gap-2">
+                            <p className="text-white/30 text-[10px] truncate">{contractor}</p>
+                            <p className="text-[#FF9933] text-xs font-semibold shrink-0">
+                              Rs.{(wo.net_paid / 100000).toFixed(1)}L
+                            </p>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Trade Licenses */}
               {tradeLicenses.length > 0 && (

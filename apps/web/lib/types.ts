@@ -209,6 +209,18 @@ export interface WardTradeLicenses {
   top_trade_type: string | null
 }
 
+export interface WorkOrder {
+  id: number
+  work_order_id: string
+  ward_no: number
+  description: string
+  contractor: string | null
+  sanctioned_amount: number
+  net_paid: number
+  deduction: number
+  fy: string
+}
+
 export interface WardPotholes {
   ward_no: number
   ward_name: string

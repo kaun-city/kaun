@@ -295,6 +295,18 @@ export async function fetchTradeLicenses(wardName: string): Promise<import('./ty
 }
 
 /**
+ * Fetch BBMP work orders for a ward (2024-25).
+ */
+export async function fetchWorkOrders(wardNo: number): Promise<import('./types').WorkOrder[]> {
+  return await query<import('./types').WorkOrder>('bbmp_work_orders', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'id,work_order_id,description,contractor,sanctioned_amount,net_paid,deduction,fy',
+    'order': 'net_paid.desc',
+    'limit': '10',
+  })
+}
+
+/**
  * Fetch pothole complaint count for a ward (Fix My Street 2022).
  */
 export async function fetchWardPotholes(wardNo: number): Promise<import('./types').WardPotholes | null> {
