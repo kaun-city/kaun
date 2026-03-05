@@ -73,9 +73,9 @@ export function WhoTab({
           mla_party: profile?.elected_reps?.find(r => r.role === "MLA")?.party ?? undefined,
           mla_attendance_pct: reportCard?.attendance_pct ?? undefined,
           mla_questions_asked: reportCard?.questions_asked ?? undefined,
-          mla_lad_utilization_pct: reportCard?.lad_utilization_pct ?? undefined,
-          mla_criminal_cases: reportCard?.criminal_cases ?? undefined,
-          mla_net_worth_growth_pct: reportCard?.net_worth_growth_pct ?? undefined,
+          mla_lad_utilization_pct: reportCard?.lad_utilization_pct !== null && reportCard?.lad_utilization_pct !== undefined ? Number(reportCard.lad_utilization_pct) : undefined,
+          mla_criminal_cases: reportCard?.criminal_cases !== null && reportCard?.criminal_cases !== undefined ? Number(reportCard.criminal_cases) : undefined,
+          mla_net_worth_growth_pct: reportCard?.net_worth_growth_pct !== null && reportCard?.net_worth_growth_pct !== undefined ? Number(reportCard.net_worth_growth_pct) : undefined,
           committee_meetings: committeeMeetings?.meetings_count ?? undefined,
           signal_count: infraStats?.signal_count ?? undefined,
           bus_stop_count: infraStats?.bus_stop_count ?? undefined,
@@ -196,25 +196,37 @@ export function WhoTab({
             )}
             <div className="space-y-0.5">
               <p className="text-white/30 text-[10px]">LAD Fund Used</p>
-              <p className={`text-sm font-bold ${(reportCard.lad_utilization_pct ?? 0) < 50 ? "text-red-400" : (reportCard.lad_utilization_pct ?? 0) < 75 ? "text-yellow-400" : "text-green-400"}`}>
-                {reportCard.lad_utilization_pct ?? 0}%
-              </p>
+              {reportCard.lad_utilization_pct !== null ? (
+                <p className={`text-sm font-bold ${Number(reportCard.lad_utilization_pct) < 50 ? "text-red-400" : Number(reportCard.lad_utilization_pct) < 75 ? "text-yellow-400" : "text-green-400"}`}>
+                  {reportCard.lad_utilization_pct}%
+                </p>
+              ) : (
+                <p className="text-white/20 text-xs italic">No data</p>
+              )}
             </div>
             {reportCard.net_worth_growth_pct !== null && (
               <div className="space-y-0.5">
                 <p className="text-white/30 text-[10px]">Net Worth Growth</p>
-                <p className={`text-sm font-bold ${reportCard.net_worth_growth_pct > 100 ? "text-red-400" : "text-white/60"}`}>
-                  {reportCard.net_worth_growth_pct > 0 ? "+" : ""}{reportCard.net_worth_growth_pct}%
-                  {reportCard.net_worth_growth_pct > 100 && <span className="text-[10px] ml-1">!</span>}
+                <p className={`text-sm font-bold ${Number(reportCard.net_worth_growth_pct) > 100 ? "text-red-400" : "text-white/60"}`}>
+                  {Number(reportCard.net_worth_growth_pct) > 0 ? "+" : ""}{reportCard.net_worth_growth_pct}%
+                  {Number(reportCard.net_worth_growth_pct) > 100 && <span className="text-[10px] ml-1">!</span>}
                 </p>
               </div>
             )}
           </div>
+
+          {/* Net worth source note */}
+          {reportCard.net_worth_growth_pct !== null && (
+            <p className="text-white/20 text-[10px] italic">Net worth: self-declared in EC nomination affidavit</p>
+          )}
+
+          {/* Criminal cases */}
           {(reportCard.criminal_cases ?? 0) > 0 && (
-            <div className="flex items-center gap-2 mt-1 px-2 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
+            <div className="flex flex-col gap-1 mt-1 px-2 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
               <span className="text-red-400 text-xs font-bold">
                 {reportCard.criminal_cases} criminal case{reportCard.criminal_cases !== 1 ? "s" : ""} declared
               </span>
+              <span className="text-white/25 text-[10px]">Self-declared in Election Commission nomination affidavit</span>
             </div>
           )}
         </div>

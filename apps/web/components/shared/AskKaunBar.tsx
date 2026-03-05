@@ -111,6 +111,13 @@ export function AskKaunBar({ wardContext }: Props) {
         </div>
       )}
 
+      {/* AI disclaimer */}
+      {expanded && messages.some(m => m.role === "assistant") && (
+        <p className="px-4 pb-1 text-[10px] text-white/20">
+          AI-generated. Verify important claims before acting.
+        </p>
+      )}
+
       {/* Input bar */}
       <div className="flex items-center gap-2 px-4 py-3">
         <span className="text-[#FF9933] font-bold text-sm shrink-0">Ask</span>

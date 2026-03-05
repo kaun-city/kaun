@@ -37,11 +37,11 @@ export async function GET(req: Request) {
   // Pick most notable accountability stat
   let stat = ""
   let statLabel = ""
-  if (report?.lad_utilization_pct === 0) {
+  if (report?.lad_utilization_pct !== null && report?.lad_utilization_pct !== undefined && Number(report.lad_utilization_pct) === 0) {
     stat = "0%"; statLabel = "development funds utilized"
-  } else if (report?.criminal_cases >= 3) {
-    stat = `${report.criminal_cases}`; statLabel = `criminal case${report.criminal_cases > 1 ? "s" : ""} on record`
-  } else if (report?.attendance_pct != null && report.attendance_pct < 65) {
+  } else if (report?.criminal_cases != null && Number(report.criminal_cases) >= 3) {
+    stat = `${report.criminal_cases}`; statLabel = `criminal case${Number(report.criminal_cases) > 1 ? "s" : ""} on record`
+  } else if (report?.attendance_pct != null && Number(report.attendance_pct) < 65) {
     stat = `${report.attendance_pct}%`; statLabel = "assembly attendance"
   } else if (report?.lad_utilization_pct != null) {
     stat = `${report.lad_utilization_pct}%`; statLabel = "LAD funds utilized"

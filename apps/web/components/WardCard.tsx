@@ -32,7 +32,7 @@ function buildShareText(result: PinResult, ward: ReturnType<typeof useWardData>)
   const lines: string[] = []
 
   // Lead with the most accountability-worthy stat
-  if (report?.lad_utilization_pct === 0) {
+  if (report?.lad_utilization_pct !== null && report?.lad_utilization_pct !== undefined && Number(report.lad_utilization_pct) === 0) {
     lines.push(`${mla?.name ?? "The MLA"} (${mla?.party ?? ""}) has utilized 0% of allocated development funds in ${result.ward_name}.`)
   } else if (report?.criminal_cases && report.criminal_cases >= 3) {
     lines.push(`${mla?.name ?? "The MLA"} (${mla?.party ?? ""}) representing ${result.ward_name} has ${report.criminal_cases} criminal cases on record.`)
