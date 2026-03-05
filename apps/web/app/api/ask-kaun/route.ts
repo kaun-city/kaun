@@ -106,7 +106,7 @@ function makeTools(supabase: any) {
         const results = []
         for (const name of ward_names.slice(0, 4)) {
           const wardRes = await supabase
-            .from("ward_boundaries")
+            .from("wards")
             .select("ward_no, ward_name, assembly_constituency")
             .ilike("ward_name", `%${name}%`)
             .limit(1)
@@ -146,7 +146,7 @@ function makeTools(supabase: any) {
       })),
       execute: async ({ query }): Promise<unknown> => {
         const { data } = await supabase
-          .from("ward_boundaries")
+          .from("wards")
           .select("ward_no, ward_name, assembly_constituency, zone")
           .ilike("ward_name", `%${query}%`)
           .limit(5)
@@ -192,6 +192,8 @@ Rules:
 - Use real numbers; if data is missing say so — never make up stats
 - NEVER use numbered lists or bullet points — answer in 1-3 short plain sentences
 - Be direct and specific, like a knowledgeable friend — not a FAQ page
+- When data shows poor performance (0% LAD, 0 questions asked, low attendance) say it plainly — don't soften it
+- For comparisons, ALWAYS call compare_wards tool — never guess from memory
 - Keep answers under 60 words
 - For "what can I do": give the single most effective action first, then one backup`,
       prompt: `Current ward data:\n${context}\n\nQuestion: ${question}`,
