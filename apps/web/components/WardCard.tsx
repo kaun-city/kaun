@@ -55,14 +55,17 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const handleShare = useCallback(async () => {
     if (!result?.found) return
     const text = buildShareText(result, ward)
+    const url = result.ward_no
+      ? `https://kaun.city?ward=${result.ward_no}`
+      : "https://kaun.city"
     if (navigator.share) {
       try {
-        await navigator.share({ text, url: "https://kaun.city" })
+        await navigator.share({ text, url })
       } catch {
         // user dismissed share sheet — no-op
       }
     } else {
-      await navigator.clipboard.writeText(text + "\nhttps://kaun.city")
+      await navigator.clipboard.writeText(`${text}\n${url}`)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }

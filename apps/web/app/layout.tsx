@@ -9,10 +9,19 @@ export const metadata: Metadata = {
   title: "Kaun?",
   description: "Pin a place. Know who's responsible. Civic accountability for Indian cities.",
   openGraph: {
-    title: "Kaun?",
-    description: "Pin a place. Know who's responsible.",
+    title: "KAUN? — Bengaluru Civic Accountability",
+    description: "Pin a place on the map. Find out who your MLA is, how they voted, what was spent in your ward — and what you can do about it.",
     url: "https://kaun.city",
     siteName: "Kaun",
+    images: [{ url: "https://kaun.city/opengraph-image", width: 1200, height: 630 }],
+    type: "website",
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KAUN? — Know who is accountable for your ward",
+    description: "Pin a place. Find your MLA, ward spending, RTI generator — civic accountability for Bengaluru.",
+    images: ["https://kaun.city/opengraph-image"],
   },
   // PWA / home-screen
   appleWebApp: {
