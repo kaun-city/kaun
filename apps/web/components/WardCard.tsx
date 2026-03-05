@@ -88,6 +88,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
           {ward.tab === "who" && (
             <WhoTab
               result={result}
+              city={ward.city}
               profile={ward.profile}
               profileLoading={ward.profileLoading}
               unknowns={ward.unknowns}
@@ -109,6 +110,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
           {ward.tab === "expenses" && (
             <ExpensesTab
               result={result}
+              city={ward.city}
               profile={ward.profile}
               profileLoading={ward.profileLoading}
               budget={ward.budget}
@@ -121,6 +123,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
           {ward.tab === "stats" && (
             <StatsTab
+              city={ward.city}
               wardStats={ward.wardStats}
               grievances={ward.grievances}
               potholes={ward.potholes}
@@ -141,7 +144,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
       {!loading && !result?.found && (
         <div className="px-5 py-6 text-center">
-          <p className="text-white/30 text-sm">Try pinning a location within Bengaluru.</p>
+          <p className="text-white/30 text-sm">Try pinning a location within {ward.city.name}.</p>
         </div>
       )}
     </div>

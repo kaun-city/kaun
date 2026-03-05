@@ -11,10 +11,12 @@ import { useEffect, useRef, useState } from "react"
 import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
+import { bengaluru } from "@/lib/cities"
 
-const BENGALURU_CENTER: [number, number] = [12.9716, 77.5946]
-const BENGALURU_GEOJSON_URL =
-  "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson"
+// Default to Bengaluru; future: accept city prop when multi-city map is needed
+const DEFAULT_CITY = bengaluru
+const BENGALURU_CENTER: [number, number] = DEFAULT_CITY.center
+const BENGALURU_GEOJSON_URL = DEFAULT_CITY.geojsonUrl
 
 // Saffron palette
 const WARD_STYLE = {

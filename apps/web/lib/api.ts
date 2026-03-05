@@ -229,13 +229,13 @@ export async function fetchDepartments(cityId = "bengaluru") {
 }
 
 /**
- * Fetch recent r/bangalore posts (client-side, optional).
+ * Fetch recent subreddit posts for a ward (client-side, optional).
  */
-export async function fetchBuzz(wardName: string): Promise<RedditPost[]> {
+export async function fetchBuzz(wardName: string, subreddit = "bangalore"): Promise<RedditPost[]> {
   try {
-    const q = encodeURIComponent(`${wardName} bangalore`)
+    const q = encodeURIComponent(`${wardName} ${subreddit}`)
     const res = await fetch(
-      `https://www.reddit.com/r/bangalore/search.json?q=${q}&restrict_sr=on&sort=new&limit=5`,
+      `https://www.reddit.com/r/${subreddit}/search.json?q=${q}&restrict_sr=on&sort=new&limit=5`,
       { headers: { "User-Agent": "kaun-civic/1.0" } }
     )
     if (!res.ok) return []

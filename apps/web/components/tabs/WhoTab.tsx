@@ -2,6 +2,7 @@
 
 import { submitFact } from "@/lib/api"
 import { OFFICER_SUBJECTS } from "@/lib/constants"
+import type { CityConfig } from "@/lib/cities"
 import type {
   CommunityFact, GbaContact, MlaLadFunds, PinResult,
   RepReportCard, WardCommitteeMeetings, WardProfile,
@@ -14,6 +15,7 @@ import { TrustBadge } from "@/components/shared/TrustBadge"
 
 interface Props {
   result: PinResult
+  city: CityConfig
   profile: WardProfile | null
   profileLoading: boolean
   unknowns: WardUnknowns | null
@@ -32,7 +34,7 @@ interface Props {
 }
 
 export function WhoTab({
-  result, profile, profileLoading, unknowns, showAddFor, onSetShowAddFor,
+  result, city, profile, profileLoading, unknowns, showAddFor, onSetShowAddFor,
   committeeMeetings, reportCard, ladFunds, corpContacts, corpName,
   allFacts, officerGroups, onCorroborate, onNewFact, onUnknownsRefresh,
 }: Props) {
@@ -129,7 +131,7 @@ export function WhoTab({
           <div className="rounded-xl bg-white/5 p-3 space-y-2">
             <div className="flex items-center justify-between">
               <p className="text-white/50 text-[10px] uppercase tracking-wider">MLA Scorecard (2023-25)</p>
-              <span className="text-white/20 text-[10px]">CIVIC Bengaluru</span>
+              <span className="text-white/20 text-[10px]">CIVIC {city.name}</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-0.5">

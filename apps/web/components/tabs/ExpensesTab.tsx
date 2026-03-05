@@ -2,10 +2,12 @@
 
 import { STATUS_STYLES } from "@/lib/constants"
 import { formatLakh, timeAgo } from "@/lib/ward-utils"
+import type { CityConfig } from "@/lib/cities"
 import type { BudgetSummary, PinResult, RedditPost, WardProfile, WardTradeLicenses, WorkOrder } from "@/lib/types"
 
 interface Props {
   result: PinResult
+  city: CityConfig
   profile: WardProfile | null
   profileLoading: boolean
   budget: BudgetSummary | null
@@ -15,7 +17,7 @@ interface Props {
   buzzLoading: boolean
 }
 
-export function ExpensesTab({ result, profile, profileLoading, budget, workOrders, tradeLicenses, buzz, buzzLoading }: Props) {
+export function ExpensesTab({ result, city, profile, profileLoading, budget, workOrders, tradeLicenses, buzz, buzzLoading }: Props) {
   return (
     <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-4">
 
@@ -171,8 +173,8 @@ export function ExpensesTab({ result, profile, profileLoading, budget, workOrder
       {buzz && buzz.length > 0 && (
         <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-white/30 text-xs uppercase tracking-wider">r/bangalore chatter</p>
-            <p className="text-white/15 text-[10px]">reddit.com/r/bangalore</p>
+            <p className="text-white/30 text-xs uppercase tracking-wider">r/{city.subreddit} chatter</p>
+            <p className="text-white/15 text-[10px]">reddit.com/r/{city.subreddit}</p>
           </div>
           {buzz.map((post, i) => (
             <a key={i} href={post.url} target="_blank" rel="noopener noreferrer" className="block group">

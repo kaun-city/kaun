@@ -1,11 +1,13 @@
 "use client"
 
+import type { CityConfig } from "@/lib/cities"
 import type {
   PropertyTaxData, SakalaPerformance, WardGrievances,
   WardPotholes, WardSpendCategory, WardStats,
 } from "@/lib/types"
 
 interface Props {
+  city: CityConfig
   wardStats: WardStats | null
   grievances: WardGrievances[]
   potholes: WardPotholes | null
@@ -14,7 +16,7 @@ interface Props {
   sakala: SakalaPerformance | null
 }
 
-export function StatsTab({ wardStats, grievances, potholes, wardSpend, propertyTax, sakala }: Props) {
+export function StatsTab({ city, wardStats, grievances, potholes, wardSpend, propertyTax, sakala }: Props) {
   return (
     <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-3">
       {!wardStats ? (
@@ -213,7 +215,7 @@ export function StatsTab({ wardStats, grievances, potholes, wardSpend, propertyT
               </div>
             )}
           </div>
-          <p className="text-white/15 text-[10px] mt-1 px-1">Bengaluru Urban ranks 31st of 32 districts statewide</p>
+          {city.sakalaNote && <p className="text-white/15 text-[10px] mt-1 px-1">{city.sakalaNote}</p>}
         </div>
       )}
     </div>
