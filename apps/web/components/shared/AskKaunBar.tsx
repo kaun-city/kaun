@@ -24,8 +24,15 @@ export function AskKaunBar({ wardContext }: Props) {
   const [input, setInput]       = useState("")
   const [loading, setLoading]   = useState(false)
   const [expanded, setExpanded] = useState(false)
-  const bottomRef = useRef<HTMLDivElement>(null)
-  const inputRef  = useRef<HTMLInputElement>(null)
+  const bottomRef  = useRef<HTMLDivElement>(null)
+  const inputRef   = useRef<HTMLInputElement>(null)
+  const abortRef   = useRef<AbortController | null>(null)
+
+  function collapse() {
+    abortRef.current?.abort()
+    setLoading(false)
+    setExpanded(false)
+  }
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -46,14 +53,17 @@ export function AskKaunBar({ wardContext }: Props) {
     setExpanded(true)
 
     try {
+      abortRef.current = new AbortController()
       const res = await fetch("/api/ask-kaun", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: q, ward_context: wardContext }),
+        signal: abortRef.current.signal,
       })
       const j = await res.json()
       setMessages(m => [...m, { role: "assistant", text: j.answer ?? j.error ?? "Sorry, something went wrong." }])
-    } catch {
+    } catch (e) {
+      if ((e as Error)?.name === "AbortError") return // user collapsed — no error message
       setMessages(m => [...m, { role: "assistant", text: "Could not reach the server. Try again." }])
     } finally {
       setLoading(false)
@@ -65,6 +75,22 @@ export function AskKaunBar({ wardContext }: Props) {
 
   return (
     <div className="border-t border-white/10 bg-white/[0.02]">
+      {/* Header row when expanded — shows collapse button */}
+      {expanded && (
+        <div className="flex items-center justify-between px-4 pt-2 pb-0">
+          <span className="text-[10px] text-white/25 uppercase tracking-wider">Ask Kaun</span>
+          <button
+            onClick={collapse}
+            aria-label="Close chat"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/15 text-white/30 hover:text-white/60 transition-colors"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 4.5L7 9.5L12 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* Conversation history */}
       {expanded && messages.length > 0 && (
         <div className="px-4 py-3 space-y-3 max-h-56 overflow-y-auto">
