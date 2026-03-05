@@ -69,7 +69,7 @@ export function WhoTab({
           ward_no: result.ward_no,
           ward_name: result.ward_name ?? "",
           assembly_constituency: result.assembly_constituency,
-          mla_name: reportCard?.constituency ?? undefined,
+          mla_name: profile?.elected_reps?.find(r => r.role === "MLA")?.name ?? undefined,
           mla_party: profile?.elected_reps?.find(r => r.role === "MLA")?.party ?? undefined,
           mla_attendance_pct: reportCard?.attendance_pct ?? undefined,
           mla_questions_asked: reportCard?.questions_asked ?? undefined,
