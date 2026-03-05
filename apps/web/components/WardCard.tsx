@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState, useCallback } from "react"
 import type { PinResult } from "@/lib/types"
 import { useWardData } from "@/hooks/useWardData"
 import { useKeyboardAware } from "@/hooks/useKeyboardAware"
@@ -26,8 +26,47 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "reach",   label: "Reach" },
 ]
 
+function buildShareText(result: PinResult, ward: ReturnType<typeof useWardData>): string {
+  const mla    = ward.profile?.elected_reps?.find(r => r.role === "MLA")
+  const report = ward.reportCard
+  const lines: string[] = []
+
+  // Lead with the most accountability-worthy stat
+  if (report?.lad_utilization_pct === 0) {
+    lines.push(`${mla?.name ?? "The MLA"} (${mla?.party ?? ""}) has spent Rs 0 of crore-level development funds in ${result.ward_name}.`)
+  } else if (report?.criminal_cases && report.criminal_cases >= 3) {
+    lines.push(`${mla?.name ?? "The MLA"} (${mla?.party ?? ""}) representing ${result.ward_name} has ${report.criminal_cases} criminal cases on record.`)
+  } else if (report?.attendance_pct != null && report.attendance_pct < 60) {
+    lines.push(`${mla?.name ?? "The MLA"} representing ${result.ward_name} attends only ${report.attendance_pct}% of assembly sessions.`)
+  } else if (mla?.name) {
+    lines.push(`${mla.name} (${mla.party ?? ""}) represents ${result.ward_name} — Ward ${result.ward_no}, ${result.assembly_constituency}.`)
+  } else {
+    lines.push(`Ward ${result.ward_no} — ${result.ward_name}, Bengaluru.`)
+  }
+
+  lines.push(`Find out who is accountable for your ward: kaun.city`)
+  return lines.join("\n")
+}
+
 export default function WardCard({ result, loading, onClose }: Props) {
   const ward = useWardData(result)
+  const [copied, setCopied] = useState(false)
+
+  const handleShare = useCallback(async () => {
+    if (!result?.found) return
+    const text = buildShareText(result, ward)
+    if (navigator.share) {
+      try {
+        await navigator.share({ text, url: "https://kaun.city" })
+      } catch {
+        // user dismissed share sheet — no-op
+      }
+    } else {
+      await navigator.clipboard.writeText(text + "\nhttps://kaun.city")
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }, [result, ward])
   const cardRef = useRef<HTMLDivElement>(null)
   // Shift card above keyboard when inputs are focused on iOS
   useKeyboardAware(cardRef, !loading && !!result?.found)
@@ -81,11 +120,34 @@ export default function WardCard({ result, loading, onClose }: Props) {
             <p className="text-white/30 text-xs mt-0.5">No ward found at this location</p>
           </div>
         )}
+        {/* Share button — only when ward found */}
+        {result?.found && !loading && (
+          <button
+            onClick={handleShare}
+            aria-label="Share"
+            className="ml-1 shrink-0 w-11 h-11 lg:w-8 lg:h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-white/30 hover:text-white/70 transition-colors"
+          >
+            {copied ? (
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                <path d="M2.5 8L6 11.5L12.5 4" stroke="#22c55e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            ) : (
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                <circle cx="12" cy="2.5" r="1.8" stroke="currentColor" strokeWidth="1.3"/>
+                <circle cx="12" cy="12.5" r="1.8" stroke="currentColor" strokeWidth="1.3"/>
+                <circle cx="3"  cy="7.5"  r="1.8" stroke="currentColor" strokeWidth="1.3"/>
+                <line x1="10.3" y1="3.4"  x2="4.7" y2="6.6"  stroke="currentColor" strokeWidth="1.3"/>
+                <line x1="4.7"  y1="8.4"  x2="10.3" y2="11.6" stroke="currentColor" strokeWidth="1.3"/>
+              </svg>
+            )}
+          </button>
+        )}
+
         {/* 44×44 touch target on mobile, smaller on desktop */}
         <button
           onClick={onClose}
           aria-label="Close"
-          className="ml-2 shrink-0 -mr-1 w-11 h-11 lg:w-7 lg:h-7 flex items-center justify-center rounded-full hover:bg-white/10 text-white/40 hover:text-white/80 transition-colors text-xl lg:text-base lg:bg-white/5"
+          className="shrink-0 -mr-1 w-11 h-11 lg:w-7 lg:h-7 flex items-center justify-center rounded-full hover:bg-white/10 text-white/40 hover:text-white/80 transition-colors text-xl lg:text-base lg:bg-white/5"
         >
           &times;
         </button>
