@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice, MlaLadFunds, PinResult, PropertyTaxData, RedditPost, WardCommitteeMeetings, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchMlaLadFunds, fetchWardCommitteeMeetings, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, lookupLocalOffices, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice, MlaLadFunds, PinResult, PropertyTaxData, RedditPost, RepReportCard, WardCommitteeMeetings, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchMlaLadFunds, fetchRepReportCard, fetchWardCommitteeMeetings, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, lookupLocalOffices, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -311,6 +311,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [tradeLicenses, setTradeLicenses] = useState<WardTradeLicenses[]>([])
   const [ladFunds, setLadFunds] = useState<MlaLadFunds[]>([])
   const [committeeMeetings, setCommitteeMeetings] = useState<WardCommitteeMeetings | null>(null)
+  const [reportCard, setReportCard] = useState<RepReportCard | null>(null)
   const [unknowns, setUnknowns] = useState<{ total_questions: number; answered: number; unanswered: Array<{ category: string; subject: string; field: string; prompt: string; icon: string; priority: number }> } | null>(null)
   const [showAddFor, setShowAddFor] = useState<{ category: string; subject: string; field: string; prompt: string } | null>(null)
 
@@ -334,6 +335,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setSakala(null)
     setLadFunds([])
     setCommitteeMeetings(null)
+    setReportCard(null)
     setTradeLicenses([])
     setPotholes(null)
     setWardSpend(null)
@@ -362,6 +364,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
     if (!result?.assembly_constituency || ladFunds.length > 0) return
     fetchMlaLadFunds(result.assembly_constituency).then(funds => setLadFunds(funds ?? []))
   }, [result?.assembly_constituency, ladFunds.length])
+
+  useEffect(() => {
+    if (!result?.assembly_constituency || reportCard !== null) return
+    fetchRepReportCard(result.assembly_constituency).then(rc => setReportCard(rc ?? null))
+  }, [result?.assembly_constituency, reportCard])
 
   useEffect(() => {
     if (tab !== "stats" || !result?.assembly_constituency) return
@@ -573,6 +580,60 @@ export default function WardCard({ result, loading, onClose }: Props) {
                       </div>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* MLA Report Card */}
+              {reportCard && (
+                <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-white/50 text-[10px] uppercase tracking-wider">MLA Scorecard (2023-25)</p>
+                    <span className="text-white/20 text-[10px]">CIVIC Bengaluru</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {reportCard.attendance_pct !== null && (
+                      <div className="space-y-0.5">
+                        <p className="text-white/30 text-[10px]">Attendance</p>
+                        <p className={`text-sm font-bold ${reportCard.attendance_pct < 75 ? 'text-red-400' : reportCard.attendance_pct < 85 ? 'text-yellow-400' : 'text-green-400'}`}>
+                          {reportCard.attendance_pct}%
+                        </p>
+                      </div>
+                    )}
+                    {reportCard.attendance_pct === null && (
+                      <div className="space-y-0.5">
+                        <p className="text-white/30 text-[10px]">Attendance</p>
+                        <p className="text-white/20 text-xs italic">N/A (Minister)</p>
+                      </div>
+                    )}
+                    {reportCard.questions_asked !== null && (
+                      <div className="space-y-0.5">
+                        <p className="text-white/30 text-[10px]">Questions Asked</p>
+                        <p className={`text-sm font-bold ${reportCard.questions_asked === 0 ? 'text-red-400' : reportCard.questions_asked < 10 ? 'text-yellow-400' : 'text-green-400'}`}>
+                          {reportCard.questions_asked}
+                        </p>
+                      </div>
+                    )}
+                    <div className="space-y-0.5">
+                      <p className="text-white/30 text-[10px]">LAD Fund Used</p>
+                      <p className={`text-sm font-bold ${(reportCard.lad_utilization_pct ?? 0) < 50 ? 'text-red-400' : (reportCard.lad_utilization_pct ?? 0) < 75 ? 'text-yellow-400' : 'text-green-400'}`}>
+                        {reportCard.lad_utilization_pct ?? 0}%
+                      </p>
+                    </div>
+                    {reportCard.net_worth_growth_pct !== null && (
+                      <div className="space-y-0.5">
+                        <p className="text-white/30 text-[10px]">Net Worth Growth</p>
+                        <p className={`text-sm font-bold ${reportCard.net_worth_growth_pct > 100 ? 'text-red-400' : 'text-white/60'}`}>
+                          {reportCard.net_worth_growth_pct > 0 ? '+' : ''}{reportCard.net_worth_growth_pct}%
+                          {reportCard.net_worth_growth_pct > 100 && <span className="text-[10px] ml-1">⚠️</span>}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  {(reportCard.criminal_cases ?? 0) > 0 && (
+                    <div className="flex items-center gap-2 mt-1 px-2 py-1 rounded-lg bg-red-500/10">
+                      <span className="text-red-400 text-xs font-bold">{reportCard.criminal_cases} criminal case{reportCard.criminal_cases !== 1 ? 's' : ''}</span>
+                    </div>
+                  )}
                 </div>
               )}
 

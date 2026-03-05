@@ -252,6 +252,20 @@ export interface WardPotholes {
   data_year: string
 }
 
+export interface RepReportCard {
+  role: string
+  constituency: string
+  attendance_pct: number | null
+  questions_asked: number | null
+  debates: number | null
+  bills_introduced: number | null
+  committees: number | null
+  lad_utilization_pct: number | null
+  net_worth_growth_pct: number | null
+  criminal_cases: number | null
+  term: string
+}
+
 export interface WardCommitteeMeetings {
   ward_no: number
   ward_name: string

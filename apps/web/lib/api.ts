@@ -335,6 +335,19 @@ export async function fetchWardPotholes(wardNo: number): Promise<import('./types
 }
 
 /**
+ * Fetch MLA/MP report card for a constituency.
+ */
+export async function fetchRepReportCard(constituency: string, role: string = 'MLA'): Promise<import('./types').RepReportCard | null> {
+  const rows = await query<import('./types').RepReportCard>('rep_report_cards', {
+    'constituency': `ilike.${constituency}`,
+    'role': `eq.${role}`,
+    'select': 'role,constituency,attendance_pct,questions_asked,debates,bills_introduced,committees,lad_utilization_pct,net_worth_growth_pct,criminal_cases,term',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
+
+/**
  * Fetch ward committee meeting count (2020-2022) by ward number.
  */
 export async function fetchWardCommitteeMeetings(wardNo: number): Promise<import('./types').WardCommitteeMeetings | null> {
