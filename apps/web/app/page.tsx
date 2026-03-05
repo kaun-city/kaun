@@ -13,7 +13,7 @@ export default function HomePage() {
   const [pinResult, setPinResult]   = useState<PinResult | null>(null)
   const [pinLoading, setPinLoading] = useState(false)
   const [showCard, setShowCard]     = useState(false)
-  const [geoError, setGeoError]     = useState<string | null>(null)
+  const [geoDenied, setGeoDenied]   = useState(false)
   const [geoLoading, setGeoLoading] = useState(false)
   const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
 
@@ -35,14 +35,20 @@ export default function HomePage() {
 
   const handleFindMyWard = useCallback(async () => {
     if (!navigator.geolocation) {
-      setGeoError("Location not supported on this device")
+      setGeoDenied(true)
       return
     }
     setGeoLoading(true)
-    setGeoError(null)
+
+    // Safety net: if no callback fires in 12s, treat as denied
+    const bail = setTimeout(() => {
+      setGeoLoading(false)
+      setGeoDenied(true)
+    }, 12000)
 
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
+        clearTimeout(bail)
         const { latitude: lat, longitude: lng } = coords
         mapViewRef.current?.panTo(lat, lng)
         setPinLoading(true)
@@ -52,15 +58,12 @@ export default function HomePage() {
         setPinResult(result ? { ...result, lat, lng } : null)
         setPinLoading(false)
       },
-      (err) => {
+      () => {
+        clearTimeout(bail)
         setGeoLoading(false)
-        if (err.code === 1) {
-          setGeoError("Location access denied — tap the map instead")
-        } else {
-          setGeoError("Could not get location — tap the map instead")
-        }
+        setGeoDenied(true)
       },
-      { timeout: 10000, maximumAge: 60000 }
+      { timeout: 10000, maximumAge: 0 }
     )
   }, [])
 
@@ -79,45 +82,56 @@ export default function HomePage() {
 
         {/* Onboarding CTA  hides once user has pinned */}
         {!showCard && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[900] flex flex-col items-center gap-3">
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-[900] flex flex-col items-center gap-3">
 
-            {/* Primary: Find My Ward */}
-            <button
-              onClick={handleFindMyWard}
-              disabled={geoLoading}
-              className="
-                flex items-center gap-2 px-5 py-3 rounded-full
-                bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95
-                text-black font-semibold text-sm tracking-wide
-                shadow-lg shadow-[#FF9933]/20
-                transition-all duration-150 disabled:opacity-60
-              "
-            >
-              {geoLoading ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                  Locating...
-                </>
-              ) : (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <circle cx="8" cy="8" r="3" fill="black"/>
-                    <circle cx="8" cy="8" r="6.5" stroke="black" strokeWidth="1.5"/>
-                    <line x1="8" y1="0" x2="8" y2="3" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-                    <line x1="8" y1="13" x2="8" y2="16" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-                    <line x1="0" y1="8" x2="3" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-                    <line x1="13" y1="8" x2="16" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                  Find My Ward
-                </>
-              )}
-            </button>
-
-            {/* Error or secondary hint */}
-            {geoError ? (
-              <p className="text-red-400/80 text-xs text-center px-4">{geoError}</p>
+            {geoDenied ? (
+              /* After denial: replace button with clear tap instruction */
+              <div className="flex flex-col items-center gap-2">
+                <div className="
+                  px-5 py-3 rounded-full
+                  bg-black/70 backdrop-blur-sm border border-white/20
+                  text-white/70 text-sm font-medium tracking-wide
+                  whitespace-nowrap
+                ">
+                  Tap anywhere on the map
+                </div>
+                <p className="text-white/30 text-xs">to find your ward</p>
+              </div>
             ) : (
-              <p className="text-white/30 text-xs">or tap anywhere on the map</p>
+              /* Default: Find My Ward button */
+              <>
+                <button
+                  onClick={handleFindMyWard}
+                  disabled={geoLoading}
+                  className="
+                    flex items-center gap-2 px-5 py-3 rounded-full
+                    bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95
+                    text-black font-semibold text-sm tracking-wide
+                    shadow-lg shadow-[#FF9933]/20
+                    transition-all duration-150 disabled:opacity-60
+                  "
+                >
+                  {geoLoading ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      Locating...
+                    </>
+                  ) : (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="8" cy="8" r="3" fill="black"/>
+                        <circle cx="8" cy="8" r="6.5" stroke="black" strokeWidth="1.5"/>
+                        <line x1="8" y1="0" x2="8" y2="3" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+                        <line x1="8" y1="13" x2="8" y2="16" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+                        <line x1="0" y1="8" x2="3" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+                        <line x1="13" y1="8" x2="16" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                      Find My Ward
+                    </>
+                  )}
+                </button>
+                <p className="text-white/30 text-xs">or tap anywhere on the map</p>
+              </>
             )}
           </div>
         )}
