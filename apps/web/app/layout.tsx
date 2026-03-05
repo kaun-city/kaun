@@ -6,8 +6,8 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "KAUN? — Bengaluru Civic Accountability",
-  description: "Pin a place on the map. Find your MLA, ward spending, RTI generator and more — civic accountability for Bengaluru.",
+  title: "KAUN? — Know Who's Responsible",
+  description: "Pin a place on the map. Find your elected rep, ward spending, RTI generator and more — civic accountability for India.",
   openGraph: {
     title: "KAUN? — Bengaluru Civic Accountability",
     description: "Pin a place on the map. Find out who your MLA is, how they voted, what was spent in your ward — and what you can do about it.",
