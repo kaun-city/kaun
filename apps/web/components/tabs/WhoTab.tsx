@@ -2,6 +2,7 @@
 
 import { submitFact } from "@/lib/api"
 import { OFFICER_SUBJECTS } from "@/lib/constants"
+import { getVoterToken } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
 import type {
   CommunityFact, GbaContact, MlaLadFunds, PinResult,
@@ -308,13 +309,6 @@ export function WhoTab({
               e.preventDefault()
               const input = (e.target as HTMLFormElement).elements.namedItem("answer") as HTMLInputElement
               if (!input.value.trim()) return
-              const token = typeof window !== "undefined"
-                ? sessionStorage.getItem("kaun_voter_token") || (() => {
-                    const t = crypto.randomUUID()
-                    sessionStorage.setItem("kaun_voter_token", t)
-                    return t
-                  })()
-                : null
               const res = await submitFact({
                 city_id: result.city_id,
                 ward_no: result.ward_no!,
@@ -323,7 +317,7 @@ export function WhoTab({
                 field: showAddFor!.field,
                 value: input.value.trim(),
                 source_type: "community",
-                contributor_token: token ?? undefined,
+                contributor_token: getVoterToken(),
               })
               if (res?.fact) {
                 onNewFact(res.fact)
