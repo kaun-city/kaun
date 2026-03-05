@@ -8,6 +8,8 @@ import { WhoTab } from "@/components/tabs/WhoTab"
 import { SpendTab } from "@/components/tabs/SpendTab"
 import { CitizenTab } from "@/components/tabs/CitizenTab"
 import { ReachTab } from "@/components/tabs/ReachTab"
+import { AskKaunBar } from "@/components/shared/AskKaunBar"
+import type { AskKaunRequest } from "@/app/api/ask-kaun/route"
 
 interface Props {
   result: PinResult | null
@@ -108,8 +110,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
         </div>
       )}
 
-      {/* Tab content — scrolls within the card */}
+      {/* Tab content + Ask Kaun bar */}
       {!loading && result?.found && (
+        <>
         <div className="flex-1 overflow-y-auto min-h-0 pb-safe">
           {ward.tab === "who" && (
             <WhoTab
@@ -176,6 +179,31 @@ export default function WardCard({ result, loading, onClose }: Props) {
             />
           )}
         </div>
+
+        {/* Ask Kaun bar */}
+        <AskKaunBar
+            wardContext={result.ward_no ? {
+              ward_no: result.ward_no,
+              ward_name: result.ward_name ?? "",
+              assembly_constituency: result.assembly_constituency ?? "",
+              mla_name: ward.profile?.elected_reps?.find(r => r.role === "MLA")?.name ?? null,
+              mla_party: ward.profile?.elected_reps?.find(r => r.role === "MLA")?.party ?? null,
+              mla_attendance_pct: ward.reportCard?.attendance_pct ?? null,
+              mla_questions_asked: ward.reportCard?.questions_asked ?? null,
+              mla_lad_utilization_pct: ward.reportCard?.lad_utilization_pct ?? null,
+              mla_criminal_cases: ward.reportCard?.criminal_cases ?? null,
+              committee_meetings: ward.committeeMeetings?.meetings_count ?? null,
+              signal_count: ward.infraStats?.signal_count ?? null,
+              bus_stop_count: ward.infraStats?.bus_stop_count ?? null,
+              pothole_complaints: ward.potholes?.complaints ?? null,
+              ward_spend_total_lakh: ward.wardSpend?.grand_total ?? null,
+              ward_spend_roads_pct: ward.wardSpend
+                ? ((ward.wardSpend.roads_and_drains + ward.wardSpend.roads_and_infrastructure) / ward.wardSpend.grand_total) * 100
+                : null,
+              grievance_count: ward.grievances?.length ?? null,
+            } : null}
+          />
+        </>
       )}
 
       {/* Not found */}
