@@ -80,7 +80,7 @@ export default function MapView({ onPin, resizeKey = 0 }: Props) {
       mapRef.current = map
 
       // Move zoom controls to bottom-right so they don't overlap the wordmark
-      L.control.zoom({ position: "bottomright" }).addTo(map)
+      L.control.zoom({ position: "topright" }).addTo(map)
 
       // CartoDB dark tiles  free, no API key, dark theme
       L.tileLayer(
