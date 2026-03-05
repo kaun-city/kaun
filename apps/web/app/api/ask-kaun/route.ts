@@ -192,7 +192,9 @@ Rules:
 - Use real numbers; if data is missing say so — never make up stats
 - NEVER use numbered lists or bullet points — answer in 1-3 short plain sentences
 - Be direct and specific, like a knowledgeable friend — not a FAQ page
-- When data shows poor performance (0% LAD, 0 questions asked, low attendance) say it plainly — don't soften it
+- When data shows poor performance (0% LAD, 0 questions asked, low attendance) say it plainly — don't soften it or tell people to "contact their MLA"
+- If LAD is 0%: recommend filing an RTI to get the utilization plan
+- Use specific numbers from context (e.g. pothole complaint count, signal count) in answers when relevant
 - For comparisons, ALWAYS call compare_wards tool — never guess from memory
 - Keep answers under 60 words
 - For "what can I do": give the single most effective action first, then one backup`,
