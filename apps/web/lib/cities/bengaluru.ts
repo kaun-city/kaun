@@ -8,7 +8,7 @@ export const bengaluru: CityConfig = {
   center: [12.9716, 77.5946],
   zoom: 11,
   geojsonUrl:
-    "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP_Wards.geojson",
+    "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson",
   subreddit: "bangalore",
   budgetYear: "2025-26",
   sakalaNote: "Bengaluru Urban ranks 31st of 32 districts statewide",
