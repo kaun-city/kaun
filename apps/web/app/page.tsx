@@ -6,24 +6,103 @@ import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
 
-// Leaflet requires window  must be loaded client-side only
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
+const CITY_REQUEST_URL =
+  "https://github.com/kaun-city/kaun/issues/new?template=city-request.yml&labels=city-request"
+
+function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="
+      fixed inset-x-0 bottom-0 z-[1000]
+      md:fixed md:inset-auto md:right-4 md:top-1/2 md:-translate-y-1/2
+      md:w-[400px]
+    ">
+      <div className="
+        bg-[#111] border border-white/10 rounded-t-2xl md:rounded-2xl
+        p-6 flex flex-col gap-4
+      ">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-white font-semibold text-base">Not in Bengaluru?</p>
+            <p className="text-white/50 text-sm mt-1">
+              Kaun only covers Bengaluru right now.
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-white/40 hover:text-white/80 text-xl leading-none w-8 h-8 flex items-center justify-center"
+          >
+            x
+          </button>
+        </div>
+
+        <p className="text-white/60 text-sm leading-relaxed">
+          We want to expand to every Indian city. If you want Kaun in your city,
+          open a request on GitHub -- others can vote on it and it helps us
+          prioritise where to go next.
+        </p>
+
+        <a
+          href={CITY_REQUEST_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+            flex items-center justify-center gap-2
+            px-4 py-3 rounded-xl
+            bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95
+            text-black font-semibold text-sm
+            transition-all duration-150
+          "
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+              0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+              -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+              .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+              -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
+              .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+              .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+              0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+              fill="black"
+            />
+          </svg>
+          Request my city on GitHub
+        </a>
+
+        <p className="text-white/30 text-xs text-center">
+          Already requested? Drop a thumbs up on the existing issue.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export default function HomePage() {
-  const [pinResult, setPinResult]   = useState<PinResult | null>(null)
-  const [pinLoading, setPinLoading] = useState(false)
-  const [showCard, setShowCard]     = useState(false)
-  const [geoDenied, setGeoDenied]   = useState(false)
-  const [geoLoading, setGeoLoading] = useState(false)
+  const [pinResult, setPinResult]     = useState<PinResult | null>(null)
+  const [pinLoading, setPinLoading]   = useState(false)
+  const [showCard, setShowCard]       = useState(false)
+  const [outOfBounds, setOutOfBounds] = useState(false)
+  const [geoDenied, setGeoDenied]     = useState(false)
+  const [geoLoading, setGeoLoading]   = useState(false)
   const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
 
   const handlePin = useCallback((result: PinResult | null, lat: number, lng: number) => {
     if (result === null && !pinLoading) {
       setPinLoading(true)
       setShowCard(true)
+      setOutOfBounds(false)
     } else {
-      setPinResult(result ? { ...result, lat, lng } : null)
-      setPinLoading(false)
+      if (!result) {
+        // Coords resolved but no ward found = outside coverage
+        setPinLoading(false)
+        setShowCard(false)
+        setOutOfBounds(true)
+      } else {
+        setPinResult({ ...result, lat, lng })
+        setPinLoading(false)
+        setOutOfBounds(false)
+      }
     }
   }, [pinLoading])
 
@@ -31,6 +110,7 @@ export default function HomePage() {
     setShowCard(false)
     setPinResult(null)
     setPinLoading(false)
+    setOutOfBounds(false)
   }, [])
 
   const handleFindMyWard = useCallback(async () => {
@@ -40,7 +120,6 @@ export default function HomePage() {
     }
     setGeoLoading(true)
 
-    // Safety net: if no callback fires in 12s, treat as denied
     const bail = setTimeout(() => {
       setGeoLoading(false)
       setGeoDenied(true)
@@ -53,10 +132,17 @@ export default function HomePage() {
         mapViewRef.current?.panTo(lat, lng)
         setPinLoading(true)
         setShowCard(true)
+        setOutOfBounds(false)
         setGeoLoading(false)
         const result = await pinLookup(lat, lng)
-        setPinResult(result ? { ...result, lat, lng } : null)
-        setPinLoading(false)
+        if (!result) {
+          setPinLoading(false)
+          setShowCard(false)
+          setOutOfBounds(true)
+        } else {
+          setPinResult({ ...result, lat, lng })
+          setPinLoading(false)
+        }
       },
       () => {
         clearTimeout(bail)
@@ -70,8 +156,7 @@ export default function HomePage() {
   return (
     <main className="flex h-screen bg-[#0A0A0A] overflow-hidden">
 
-      {/* Map  shrinks to make room for sidebar on desktop */}
-      <div className={`relative flex-1 min-w-0 h-full transition-all duration-300`}>
+      <div className="relative flex-1 min-w-0 h-full transition-all duration-300">
 
         {/* Wordmark */}
         <div className="absolute top-4 left-4 z-[900] select-none pointer-events-none">
@@ -80,12 +165,11 @@ export default function HomePage() {
           </span>
         </div>
 
-        {/* Onboarding CTA  hides once user has pinned */}
-        {!showCard && (
+        {/* Onboarding CTA */}
+        {!showCard && !outOfBounds && (
           <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-[900] flex flex-col items-center gap-3">
 
             {geoDenied ? (
-              /* After denial: replace button with clear tap instruction */
               <div className="flex flex-col items-center gap-2">
                 <div className="
                   px-5 py-3 rounded-full
@@ -98,7 +182,6 @@ export default function HomePage() {
                 <p className="text-white/30 text-xs">to find your ward</p>
               </div>
             ) : (
-              /* Default: Find My Ward button */
               <>
                 <button
                   onClick={handleFindMyWard}
@@ -139,11 +222,12 @@ export default function HomePage() {
         <MapView onPin={handlePin} panRef={mapViewRef} resizeKey={showCard ? 1 : 0} />
       </div>
 
-      {/* Ward card
-          Mobile:  fixed bottom sheet overlaying the map
-          Desktop: flex sidebar to the right of the map */}
       {showCard && (
         <WardCard result={pinResult} loading={pinLoading} onClose={handleClose} />
+      )}
+
+      {outOfBounds && (
+        <OutOfBoundsCard onClose={handleClose} />
       )}
     </main>
   )

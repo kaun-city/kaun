@@ -1,0 +1,55 @@
+name: "City Request"
+description: "Request Kaun for your city"
+title: "City Request: [City Name]"
+labels: ["city-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for wanting Kaun in your city! Fill in what you know — we'll figure out the rest.
+
+  - type: input
+    id: city
+    attributes:
+      label: City
+      placeholder: "e.g. Chennai, Hyderabad, Pune"
+    validations:
+      required: true
+
+  - type: input
+    id: municipality
+    attributes:
+      label: Municipal Body
+      description: The civic body that governs your city
+      placeholder: "e.g. GHMC, Chennai Corporation, PMC"
+    validations:
+      required: true
+
+  - type: input
+    id: ward_count
+    attributes:
+      label: Number of Wards (approximate)
+      placeholder: "e.g. 150"
+
+  - type: input
+    id: open_data
+    attributes:
+      label: Open Data Source (if you know one)
+      description: Any public dataset with ward boundaries or civic data
+      placeholder: "e.g. data.telangana.gov.in, link to GeoJSON..."
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why does your city need Kaun?
+      placeholder: "What civic accountability problem are you facing?"
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Can you help?
+      options:
+        - label: I can help source ward boundary data
+        - label: I can help find elected rep data
+        - label: I can help with testing
+        - label: I just want to vote for this city
