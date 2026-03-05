@@ -66,6 +66,7 @@ function buildPrompt(d: WardStoryRequest): string {
 }
 
 export async function POST(req: Request) {
+  try {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -114,4 +115,9 @@ Write in plain English. No headers, no bullet points. Just the narrative paragra
   })
 
   return Response.json({ story: text, cached: false })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error("ward-story error:", msg)
+    return Response.json({ error: msg }, { status: 500 })
+  }
 }

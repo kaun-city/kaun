@@ -86,6 +86,7 @@ function buildContext(d: RTIDraftRequest): string {
 }
 
 export async function POST(req: Request) {
+  try {
   const data: RTIDraftRequest = await req.json()
   const config = ISSUE_CONFIG[data.issue_type]
   const context = buildContext(data)
@@ -123,4 +124,9 @@ The applicant is a resident of ${data.ward_name} ward, ${data.assembly_constitue
     address: config.address,
     subject: config.subject,
   })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error("rti-draft error:", msg)
+    return Response.json({ error: msg }, { status: 500 })
+  }
 }
