@@ -33,7 +33,7 @@ function buildShareText(result: PinResult, ward: ReturnType<typeof useWardData>)
 
   // Lead with the most accountability-worthy stat
   if (report?.lad_utilization_pct === 0) {
-    lines.push(`${mla?.name ?? "The MLA"} (${mla?.party ?? ""}) has spent Rs 0 of crore-level development funds in ${result.ward_name}.`)
+    lines.push(`${mla?.name ?? "The MLA"} (${mla?.party ?? ""}) has utilized 0% of allocated development funds in ${result.ward_name}.`)
   } else if (report?.criminal_cases && report.criminal_cases >= 3) {
     lines.push(`${mla?.name ?? "The MLA"} (${mla?.party ?? ""}) representing ${result.ward_name} has ${report.criminal_cases} criminal cases on record.`)
   } else if (report?.attendance_pct != null && report.attendance_pct < 60) {
