@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, lookupLocalOffices, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice, MlaLadFunds, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchMlaLadFunds, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, lookupLocalOffices, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -309,6 +309,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
   const [budget, setBudget] = useState<BudgetSummary | null>(null)
   const [tradeLicenses, setTradeLicenses] = useState<WardTradeLicenses[]>([])
+  const [ladFunds, setLadFunds] = useState<MlaLadFunds[]>([])
   const [unknowns, setUnknowns] = useState<{ total_questions: number; answered: number; unanswered: Array<{ category: string; subject: string; field: string; prompt: string; icon: string; priority: number }> } | null>(null)
   const [showAddFor, setShowAddFor] = useState<{ category: string; subject: string; field: string; prompt: string } | null>(null)
 
@@ -330,6 +331,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setShowAddFor(null)
     setGrievances([])
     setSakala(null)
+    setLadFunds([])
     setTradeLicenses([])
     setPotholes(null)
     setWardSpend(null)
@@ -348,6 +350,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
     if (!result?.ward_no || unknowns) return
     fetchWardUnknowns(result.ward_no).then(setUnknowns)
   }, [result?.ward_no, unknowns])
+
+  useEffect(() => {
+    if (!result?.assembly_constituency || ladFunds.length > 0) return
+    fetchMlaLadFunds(result.assembly_constituency).then(funds => setLadFunds(funds ?? []))
+  }, [result?.assembly_constituency, ladFunds.length])
 
   useEffect(() => {
     if (tab !== "stats" || !result?.assembly_constituency) return
@@ -477,6 +484,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
           {/*  WHO TAB  */}
           {tab === "who" && (
+            <>
             <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-4">
 
               {/* Knowledge Score */}
@@ -715,6 +723,38 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 )}
               </div>
             </div>
+
+            {/* MLA LAD Fund Track Record */}
+            {ladFunds.length > 0 && (() => {
+              const termRow = ladFunds.find(r => r.financial_year === 'ALL')
+              const fyRows = ladFunds.filter(r => r.financial_year !== 'ALL').sort((a, b) => a.financial_year.localeCompare(b.financial_year))
+              if (!termRow) return null
+              return (
+                <div className="px-5 pb-4">
+                  <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-white/50 text-[10px] uppercase tracking-wider">MLA LAD Fund (2013-18 term)</p>
+                      <p className="text-[#FF9933] font-bold text-sm">Rs.{Math.round(termRow.total_lakh / 100 * 10) / 10} Cr</p>
+                    </div>
+                    <p className="text-white/40 text-xs">{termRow.project_count} projects funded in your constituency</p>
+                    <div className="space-y-1">
+                      {fyRows.map(r => (
+                        <div key={r.financial_year} className="flex items-center justify-between gap-2">
+                          <span className="text-white/30 text-[10px] font-mono">{r.financial_year.trim()}</span>
+                          <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-full bg-[#FF9933]/40 rounded-full" style={{ width: `${Math.min(100, (r.total_lakh / termRow.total_lakh) * 100 * fyRows.length)}%` }} />
+                          </div>
+                          <span className="text-white/40 text-[10px] font-mono shrink-0">Rs.{Math.round(r.total_lakh)} L</span>
+                          <span className="text-white/20 text-[10px] shrink-0">{r.project_count}p</span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-white/15 text-[10px]">Source: opencity.in | Previous term (2013-18) MLA development spend</p>
+                  </div>
+                </div>
+              )
+            })()}
+            </>
           )}
 
           {/*  EXPENSES TAB  */}

@@ -335,6 +335,17 @@ export async function fetchWardPotholes(wardNo: number): Promise<import('./types
 }
 
 /**
+ * Fetch MLA LAD fund spend for an assembly constituency (2013-2018 term).
+ */
+export async function fetchMlaLadFunds(assemblyConstituency: string): Promise<import('./types').MlaLadFunds[]> {
+  return await query<import('./types').MlaLadFunds>('mla_lad_funds', {
+    'assembly_constituency': `ilike.${assemblyConstituency}`,
+    'select': 'assembly_constituency,financial_year,total_lakh,project_count,term',
+    'order': 'financial_year.asc',
+  })
+}
+
+/**
  * Fetch ward spend breakdown by category (BBMP work orders 2018-2023).
  */
 export async function fetchWardSpend(wardNo: number): Promise<import('./types').WardSpendCategory | null> {

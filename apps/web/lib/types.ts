@@ -252,6 +252,14 @@ export interface WardPotholes {
   data_year: string
 }
 
+export interface MlaLadFunds {
+  assembly_constituency: string
+  financial_year: string
+  total_lakh: number
+  project_count: number
+  term: string
+}
+
 export interface WardSpendCategory {
   ward_no: number
   ward_name: string
