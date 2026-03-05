@@ -10,7 +10,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.43",
+    "@supabase/supabase-js": "^2.98.0",
     "@vercel/analytics": "^1.6.1",
+    "ai": "^6.0.116",
     "leaflet": "^1.9.4",
     "next": "^16.1.6",
     "react": "19.0.0",

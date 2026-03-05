@@ -130,6 +130,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
               onCorroborate={ward.handleCorroborate}
               onNewFact={ward.handleNewFact}
               onUnknownsRefresh={ward.refreshUnknowns}
+              infraStats={ward.infraStats}
+              potholes={ward.potholes}
             />
           )}
 

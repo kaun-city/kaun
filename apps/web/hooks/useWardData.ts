@@ -203,12 +203,17 @@ export function useWardData(result: PinResult | null) {
     if (city.features.grievances) fetchWardGrievances(result.ward_name).then(setGrievances)
   }, [tab, grievances, result?.ward_name, city.features.grievances])
 
-  // ── CITIZEN: ward-number-level data (potholes + infra) ───
+  // ── WHO + CITIZEN: infra stats (needed for story card on WHO tab) ──
+  useEffect(() => {
+    if (!result?.ward_no || infraStats) return
+    fetchWardInfraStats(result.ward_no).then(setInfraStats)
+  }, [result?.ward_no, infraStats])
+
+  // ── CITIZEN: potholes ────────────────────────────────────
   useEffect(() => {
     if (tab !== "citizen" || !result?.ward_no) return
     if (city.features.wardPotholes && !potholes) fetchWardPotholes(result.ward_no).then(setPotholes)
-    if (!infraStats) fetchWardInfraStats(result.ward_no).then(setInfraStats)
-  }, [tab, potholes, infraStats, result?.ward_no, city.features.wardPotholes])
+  }, [tab, potholes, result?.ward_no, city.features.wardPotholes])
 
   // ── SPEND: ward-number-level data (ward spend) ────────────
   useEffect(() => {

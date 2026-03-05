@@ -15,6 +15,9 @@ import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { PartyBadge } from "@/components/shared/PartyBadge"
 import { SkeletonCard, SkeletonRepCard, SkeletonScorecard } from "@/components/shared/Skeleton"
 import { TrustBadge } from "@/components/shared/TrustBadge"
+import { WardStoryCard } from "@/components/shared/WardStoryCard"
+import type { WardStoryRequest } from "@/app/api/ward-story/route"
+import type { WardInfraStats, WardPotholes } from "@/lib/types"
 
 interface Props {
   result: PinResult
@@ -34,15 +37,40 @@ interface Props {
   onCorroborate: (id: number) => Promise<void>
   onNewFact: (fact: CommunityFact) => void
   onUnknownsRefresh: () => void
+  infraStats: WardInfraStats | null
+  potholes: WardPotholes | null
 }
 
 export function WhoTab({
   result, city, profile, profileLoading, unknowns, showAddFor, onSetShowAddFor,
   committeeMeetings, reportCard, ladFunds, corpContacts, corpName,
   allFacts, officerGroups, onCorroborate, onNewFact, onUnknownsRefresh,
+  infraStats, potholes,
 }: Props) {
+  // Build story payload once we have the key data points
+  const storyData: WardStoryRequest | null =
+    result.ward_no && result.assembly_constituency
+      ? {
+          ward_no: result.ward_no,
+          ward_name: result.ward_name ?? "",
+          assembly_constituency: result.assembly_constituency,
+          mla_name: reportCard?.constituency ?? undefined,
+          mla_party: profile?.elected_reps?.find(r => r.role === "MLA")?.party ?? undefined,
+          mla_attendance_pct: reportCard?.attendance_pct ?? undefined,
+          mla_questions_asked: reportCard?.questions_asked ?? undefined,
+          mla_lad_utilization_pct: reportCard?.lad_utilization_pct ?? undefined,
+          mla_criminal_cases: reportCard?.criminal_cases ?? undefined,
+          mla_net_worth_growth_pct: reportCard?.net_worth_growth_pct ?? undefined,
+          committee_meetings: committeeMeetings?.meetings_count ?? undefined,
+          signal_count: infraStats?.signal_count ?? undefined,
+          bus_stop_count: infraStats?.bus_stop_count ?? undefined,
+          pothole_complaints: potholes?.complaints ?? undefined,
+        }
+      : null
+
   return (
     <div className="px-5 py-4 space-y-4 pb-safe-content">
+      <WardStoryCard storyData={storyData} />
 
       {/* Knowledge Score */}
       {unknowns ? (
