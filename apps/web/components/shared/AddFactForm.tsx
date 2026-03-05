@@ -24,6 +24,11 @@ export function AddFactForm({ wardNo, cityId, onSubmitted }: Props) {
 
   const allFields = ["name", "phone", "email", "note"]
 
+  function handleInputFocus(e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) {
+    // On iOS Safari: scroll the focused input into view after keyboard opens
+    setTimeout(() => e.target.scrollIntoView({ behavior: "smooth", block: "center" }), 350)
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!value.trim()) return
@@ -101,6 +106,7 @@ export function AddFactForm({ wardNo, cityId, onSubmitted }: Props) {
             type="text"
             value={value}
             onChange={e => setValue(e.target.value)}
+            onFocus={handleInputFocus}
             placeholder={field === "phone" ? "98XXXXXXXX" : field === "email" ? "officer@gba.gov.in" : "Enter value"}
             className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder-white/20 focus:outline-none focus:border-white/30"
             required

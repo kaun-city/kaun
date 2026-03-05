@@ -1,7 +1,9 @@
 "use client"
 
+import { useRef } from "react"
 import type { PinResult } from "@/lib/types"
 import { useWardData } from "@/hooks/useWardData"
+import { useKeyboardAware } from "@/hooks/useKeyboardAware"
 import { WhoTab } from "@/components/tabs/WhoTab"
 import { ExpensesTab } from "@/components/tabs/ExpensesTab"
 import { StatsTab } from "@/components/tabs/StatsTab"
@@ -24,6 +26,9 @@ const TABS: { id: Tab; label: string }[] = [
 
 export default function WardCard({ result, loading, onClose }: Props) {
   const ward = useWardData(result)
+  const cardRef = useRef<HTMLDivElement>(null)
+  // Shift card above keyboard when inputs are focused on iOS
+  useKeyboardAware(cardRef, !loading && !!result?.found)
 
   if (!loading && !result) return null
 
@@ -33,16 +38,18 @@ export default function WardCard({ result, loading, onClose }: Props) {
      *   Mobile  : fixed bottom sheet (overlays map, slides up from bottom)
      *   Desktop : static flex sidebar (map shrinks to accommodate)
      */
-    <div className="
+    <div
+      ref={cardRef}
+      className="
       fixed bottom-0 left-0 right-0 z-[1000]
       flex flex-col
       bg-[#111111] border-t border-white/10
       rounded-t-2xl
-      min-h-[48vh] max-h-[88vh]
+      min-h-[48svh] max-h-[88svh]
       animate-slide-up
 
       lg:static lg:z-auto
-      lg:w-[26rem] lg:h-screen lg:min-h-0 lg:max-h-none
+      lg:w-[26rem] lg:h-dvh lg:min-h-0 lg:max-h-none
       lg:rounded-none lg:border-t-0 lg:border-l lg:border-white/10
     ">
       {/* Drag handle (mobile only) — also acts as a 44px tap target for dismiss */}
