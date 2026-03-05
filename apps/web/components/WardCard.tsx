@@ -152,6 +152,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               city={ward.city}
               wardStats={ward.wardStats}
               potholes={ward.potholes}
+              infraStats={ward.infraStats}
               buzz={ward.buzz}
               buzzLoading={ward.buzzLoading}
             />

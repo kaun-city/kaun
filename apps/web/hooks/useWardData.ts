@@ -4,15 +4,15 @@ import { useEffect, useState } from "react"
 import type {
   BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice,
   MlaLadFunds, PinResult, PropertyTaxData, RedditPost, RepReportCard,
-  SakalaPerformance, WardCommitteeMeetings, WardGrievances, WardPotholes,
+  SakalaPerformance, WardCommitteeMeetings, WardGrievances, WardInfraStats, WardPotholes,
   WardProfile, WardSpendCategory, WardStats, WardTradeLicenses, WorkOrder,
 } from "@/lib/types"
 import {
   fetchBudgetSummary, fetchBuzz, fetchCorpContacts, fetchDepartments,
   fetchMlaLadFunds, fetchPropertyTax, fetchRepReportCard, fetchSakalaPerformance,
-  fetchTradeLicenses, fetchWardCommitteeMeetings, fetchWardGrievances, fetchWardPotholes,
-  fetchWardProfile, fetchWardSpend, fetchWardStats, fetchWardUnknowns, fetchWorkOrders,
-  lookupLocalOffices, voteFact,
+  fetchTradeLicenses, fetchWardCommitteeMeetings, fetchWardGrievances, fetchWardInfraStats,
+  fetchWardPotholes, fetchWardProfile, fetchWardSpend, fetchWardStats, fetchWardUnknowns,
+  fetchWorkOrders, lookupLocalOffices, voteFact,
 } from "@/lib/api"
 import { getCity } from "@/lib/cities"
 import type { CityConfig } from "@/lib/cities"
@@ -55,6 +55,7 @@ export function useWardData(result: PinResult | null) {
   const [wardStats, setWardStats] = useState<WardStats | null>(null)
   const [grievances, setGrievances] = useState<WardGrievances[]>([])
   const [potholes, setPotholes] = useState<WardPotholes | null>(null)
+  const [infraStats, setInfraStats] = useState<WardInfraStats | null>(null)
   const [wardSpend, setWardSpend] = useState<WardSpendCategory | null>(null)
   const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
   const [sakala, setSakala] = useState<SakalaPerformance | null>(null)
@@ -87,6 +88,7 @@ export function useWardData(result: PinResult | null) {
     setWardStats(null)
     setGrievances([])
     setPotholes(null)
+    setInfraStats(null)
     setWardSpend(null)
     setPropertyTax(null)
     setSakala(null)
@@ -201,11 +203,12 @@ export function useWardData(result: PinResult | null) {
     if (city.features.grievances) fetchWardGrievances(result.ward_name).then(setGrievances)
   }, [tab, grievances, result?.ward_name, city.features.grievances])
 
-  // ── CITIZEN: ward-number-level data (potholes) ───────────
+  // ── CITIZEN: ward-number-level data (potholes + infra) ───
   useEffect(() => {
     if (tab !== "citizen" || !result?.ward_no) return
     if (city.features.wardPotholes && !potholes) fetchWardPotholes(result.ward_no).then(setPotholes)
-  }, [tab, potholes, result?.ward_no, city.features.wardPotholes])
+    if (!infraStats) fetchWardInfraStats(result.ward_no).then(setInfraStats)
+  }, [tab, potholes, infraStats, result?.ward_no, city.features.wardPotholes])
 
   // ── SPEND: ward-number-level data (ward spend) ────────────
   useEffect(() => {
@@ -248,7 +251,7 @@ export function useWardData(result: PinResult | null) {
     // expenses
     budget, workOrders, tradeLicenses, buzz, buzzLoading,
     // stats
-    wardStats, grievances, potholes, wardSpend, propertyTax, sakala,
+    wardStats, grievances, potholes, infraStats, wardSpend, propertyTax, sakala,
     // report
     localOffices, departments,
   }

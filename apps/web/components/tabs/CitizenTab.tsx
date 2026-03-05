@@ -2,19 +2,24 @@
 
 import { timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
-import type { RedditPost, WardPotholes, WardStats } from "@/lib/types"
+import type { RedditPost, WardInfraStats, WardPotholes, WardStats } from "@/lib/types"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { SkeletonCard, SkeletonStats } from "@/components/shared/Skeleton"
+
+// City-wide averages for comparison (from ward_infra_stats materialized view)
+const CITY_AVG_SIGNALS  = 5.5
+const CITY_AVG_STOPS    = 155.6
 
 interface Props {
   city: CityConfig
   wardStats: WardStats | null
   potholes: WardPotholes | null
+  infraStats: WardInfraStats | null
   buzz: RedditPost[] | null
   buzzLoading: boolean
 }
 
-export function CitizenTab({ city, wardStats, potholes, buzz, buzzLoading }: Props) {
+export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLoading }: Props) {
   return (
     <div className="px-5 py-4 space-y-4 pb-safe-content">
 
@@ -92,6 +97,37 @@ export function CitizenTab({ city, wardStats, potholes, buzz, buzzLoading }: Pro
                 {wardStats.total_playgrounds ? <div><p className="text-lg font-bold text-yellow-400">{wardStats.total_playgrounds}</p><p className="text-white/30 text-[10px]">Playgrounds</p></div> : null}
                 {wardStats.trees            ? <div><p className="text-lg font-bold text-green-300">{wardStats.trees.toLocaleString("en-IN")}</p><p className="text-white/30 text-[10px]">Trees</p></div> : null}
               </div>
+            </div>
+          )}
+
+          {/* Traffic Signals + Bus Stops */}
+          {infraStats && (
+            <div className="rounded-xl bg-white/5 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-white/50 text-[10px] uppercase tracking-wider">Road Infrastructure</p>
+                <FreshnessBadge label="2026" source="OSM / BMTC" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg bg-white/5 px-3 py-2">
+                  <p className={`text-lg font-bold ${infraStats.signal_count === 0 ? "text-red-400" : infraStats.signal_count < CITY_AVG_SIGNALS ? "text-yellow-400" : "text-green-400"}`}>
+                    {infraStats.signal_count}
+                  </p>
+                  <p className="text-white/30 text-[10px]">Traffic signals</p>
+                  <p className="text-white/20 text-[10px]">city avg {CITY_AVG_SIGNALS}</p>
+                </div>
+                <div className="rounded-lg bg-white/5 px-3 py-2">
+                  <p className={`text-lg font-bold ${infraStats.bus_stop_count === 0 ? "text-red-400" : infraStats.bus_stop_count < CITY_AVG_STOPS ? "text-yellow-400" : "text-green-400"}`}>
+                    {infraStats.bus_stop_count}
+                  </p>
+                  <p className="text-white/30 text-[10px]">Bus stops</p>
+                  <p className="text-white/20 text-[10px]">city avg {Math.round(CITY_AVG_STOPS)}</p>
+                </div>
+              </div>
+              {infraStats.daily_trips > 0 && (
+                <p className="text-white/20 text-[10px] text-right">
+                  {infraStats.daily_trips.toLocaleString("en-IN")} daily bus trips through this ward
+                </p>
+              )}
             </div>
           )}
 

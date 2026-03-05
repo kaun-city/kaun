@@ -371,6 +371,18 @@ export async function fetchMlaLadFunds(assemblyConstituency: string): Promise<im
 }
 
 /**
+ * Fetch infrastructure stats for a ward (traffic signals + BMTC stops from spatial join).
+ */
+export async function fetchWardInfraStats(wardNo: number): Promise<import('./types').WardInfraStats | null> {
+  const rows = await query<import('./types').WardInfraStats>('ward_infra_stats', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'ward_no,ward_name,signal_count,bus_stop_count,daily_trips',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
+
+/**
  * Fetch ward spend breakdown by category (BBMP work orders 2018-2023).
  */
 export async function fetchWardSpend(wardNo: number): Promise<import('./types').WardSpendCategory | null> {

@@ -296,3 +296,11 @@ export interface WardSpendCategory {
   period: string
 }
 
+export interface WardInfraStats {
+  ward_no: number
+  ward_name: string
+  signal_count: number
+  bus_stop_count: number
+  daily_trips: number
+}
+
