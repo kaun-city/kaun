@@ -17,7 +17,7 @@ type Tab = "who" | "expenses" | "stats" | "report"
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "who",      label: "Who" },
-  { id: "expenses", label: "Expenses" },
+  { id: "expenses", label: "Spend" },
   { id: "stats",    label: "Area" },
   { id: "report",   label: "Report" },
 ]
@@ -28,63 +28,82 @@ export default function WardCard({ result, loading, onClose }: Props) {
   if (!loading && !result) return null
 
   return (
+    /*
+     * Layout:
+     *   Mobile  : fixed bottom sheet (overlays map, slides up from bottom)
+     *   Desktop : static flex sidebar (map shrinks to accommodate)
+     */
     <div className="
       fixed bottom-0 left-0 right-0 z-[1000]
-      md:bottom-6 md:right-6 md:left-auto md:w-[26rem]
-      bg-[#111111] border border-white/10 rounded-t-2xl md:rounded-2xl
-      shadow-2xl overflow-hidden animate-slide-up
+      flex flex-col
+      bg-[#111111] border-t border-white/10
+      rounded-t-2xl
+      max-h-[88vh]
+      animate-slide-up
+
+      lg:static lg:z-auto
+      lg:w-[26rem] lg:h-screen lg:max-h-none
+      lg:rounded-none lg:border-t-0 lg:border-l lg:border-white/10
+      lg:animate-none
     ">
-      {/* Drag handle (mobile) */}
-      <div className="flex justify-center pt-3 pb-1 md:hidden">
+      {/* Drag handle (mobile only) */}
+      <div className="flex justify-center pt-3 pb-1 lg:hidden shrink-0">
         <div className="w-10 h-1 rounded-full bg-white/20" />
       </div>
 
       {/* Header */}
-      <div className="flex items-start justify-between px-5 pt-4 pb-3 border-b border-white/10">
+      <div className="flex items-start justify-between px-5 pt-4 pb-3 border-b border-white/10 shrink-0">
         {loading ? (
-          <div className="space-y-2">
+          <div className="space-y-2 flex-1">
             <div className="h-4 w-40 bg-white/10 rounded animate-pulse" />
             <div className="h-3 w-24 bg-white/5 rounded animate-pulse" />
           </div>
         ) : result?.found ? (
-          <div>
-            <h2 className="text-white font-semibold text-base leading-snug">{result.ward_name}</h2>
-            <p className="text-white/40 text-xs mt-0.5">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-white font-semibold text-base leading-snug truncate">{result.ward_name}</h2>
+            <p className="text-white/40 text-xs mt-0.5 truncate">
               Ward {result.ward_no}
               {result.zone ? `  ·  ${result.zone}` : ""}
               {result.assembly_constituency ? `  ·  ${result.assembly_constituency}` : ""}
             </p>
           </div>
         ) : (
-          <div>
+          <div className="flex-1 min-w-0">
             <h2 className="text-white/60 font-medium text-base">Outside city boundary</h2>
             <p className="text-white/30 text-xs mt-0.5">No ward found at this location</p>
           </div>
         )}
-        <button onClick={onClose} aria-label="Close" className="ml-4 mt-0.5 text-white/30 hover:text-white/70 transition-colors text-lg">
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="ml-4 mt-0.5 shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-white/80 transition-colors text-base"
+        >
           &times;
         </button>
       </div>
 
-      {/* Tabs + Content */}
+      {/* Tabs */}
       {!loading && result?.found && (
-        <>
-          <div className="flex border-b border-white/10">
-            {TABS.map(t => (
-              <button
-                key={t.id}
-                onClick={() => ward.setTab(t.id)}
-                className={`flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors
-                  ${ward.tab === t.id
-                    ? "text-[#FF9933] border-b-2 border-[#FF9933]"
-                    : "text-white/30 hover:text-white/60"
-                  }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
+        <div className="flex border-b border-white/10 shrink-0">
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              onClick={() => ward.setTab(t.id)}
+              className={`flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors
+                ${ward.tab === t.id
+                  ? "text-[#FF9933] border-b-2 border-[#FF9933]"
+                  : "text-white/30 hover:text-white/60"
+                }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      )}
 
+      {/* Tab content — scrolls within the card */}
+      {!loading && result?.found && (
+        <div className="flex-1 overflow-y-auto min-h-0">
           {ward.tab === "who" && (
             <WhoTab
               result={result}
@@ -139,12 +158,19 @@ export default function WardCard({ result, loading, onClose }: Props) {
               departments={ward.departments}
             />
           )}
-        </>
+        </div>
       )}
 
+      {/* Not found */}
       {!loading && !result?.found && (
-        <div className="px-5 py-6 text-center">
-          <p className="text-white/30 text-sm">Try pinning a location within {ward.city.name}.</p>
+        <div className="flex-1 flex flex-col items-center justify-center px-5 py-8 gap-3">
+          <div className="text-4xl opacity-20">?</div>
+          <p className="text-white/40 text-sm text-center">
+            No ward found here.
+          </p>
+          <p className="text-white/20 text-xs text-center leading-relaxed">
+            Try tapping within {ward.city.name} city limits.
+          </p>
         </div>
       )}
     </div>

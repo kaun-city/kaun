@@ -4,6 +4,8 @@ import { STATUS_STYLES } from "@/lib/constants"
 import { formatLakh, timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
 import type { BudgetSummary, PinResult, RedditPost, WardProfile, WardTradeLicenses, WorkOrder } from "@/lib/types"
+import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
+import { SkeletonBarRow, SkeletonCard } from "@/components/shared/Skeleton"
 
 interface Props {
   result: PinResult
@@ -19,16 +21,19 @@ interface Props {
 
 export function ExpensesTab({ result, city, profile, profileLoading, budget, workOrders, tradeLicenses, buzz, buzzLoading }: Props) {
   return (
-    <div className="px-5 py-4 max-h-[28rem] overflow-y-auto space-y-4">
+    <div className="px-5 py-4 space-y-4 pb-6">
 
       {/* City-wide Budget */}
-      {budget && (
+      {budget ? (
         <div className="rounded-xl bg-white/5 p-3 space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-white/50 text-[10px] uppercase tracking-wider">BBMP Budget {budget.financial_year}</p>
-            <p className="text-[#FF9933] text-lg font-bold">
-              Rs.{budget.total_expenditure_lakh ? Math.round(budget.total_expenditure_lakh / 100).toLocaleString("en-IN") : "--"} Cr
-            </p>
+            <p className="text-white/50 text-[10px] uppercase tracking-wider">BBMP Budget</p>
+            <div className="flex items-center gap-1.5">
+              <p className="text-[#FF9933] text-lg font-bold">
+                Rs.{budget.total_expenditure_lakh ? Math.round(budget.total_expenditure_lakh / 100).toLocaleString("en-IN") : "--"} Cr
+              </p>
+              <FreshnessBadge label={city.budgetYear} source="BBMP" />
+            </div>
           </div>
           {budget.departments && budget.departments.length > 0 && (
             <div className="space-y-2">
@@ -45,29 +50,30 @@ export function ExpensesTab({ result, city, profile, profileLoading, budget, wor
               ))}
             </div>
           )}
-          <p className="text-white/15 text-[10px]">Source: BBMP Budget Book 2024-25 via opencity.in</p>
+        </div>
+      ) : (
+        <div className="rounded-xl bg-white/5 p-3 space-y-2">
+          <div className="h-3 w-28 bg-white/10 rounded animate-pulse" />
+          <SkeletonBarRow />
         </div>
       )}
 
       {/* Tenders */}
-      {profileLoading && !profile ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="space-y-1.5">
-              <div className="h-3 w-full bg-white/10 rounded animate-pulse" />
-              <div className="h-3 w-3/4 bg-white/5 rounded animate-pulse" />
-            </div>
-          ))}
-        </div>
-      ) : profile && profile.tenders.length > 0 ? (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between mb-1">
-            <p className="text-white/30 text-xs uppercase tracking-wider">
-              {profile.tender_count} tender{profile.tender_count !== 1 ? "s" : ""}
-            </p>
-            <p className="text-[#FF9933] text-xs font-semibold">{formatLakh(profile.tender_total_lakh)} total</p>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <p className="text-white/30 text-xs uppercase tracking-wider">
+            {profileLoading && !profile ? "Tenders" : profile ? `${profile.tender_count} Tender${profile.tender_count !== 1 ? "s" : ""}` : "Tenders"}
+          </p>
+          <div className="flex items-center gap-1.5">
+            {profile && <span className="text-[#FF9933] text-xs font-semibold">{formatLakh(profile.tender_total_lakh)} total</span>}
+            <FreshnessBadge label="2024" source="KPPP" />
           </div>
-          {profile.tenders.map(t => {
+        </div>
+
+        {profileLoading && !profile ? (
+          <><SkeletonCard lines={3} /><SkeletonCard lines={2} /><SkeletonCard lines={3} /></>
+        ) : profile && profile.tenders.length > 0 ? (
+          profile.tenders.map(t => {
             const st = STATUS_STYLES[t.status] ?? STATUS_STYLES.OPEN
             return (
               <div key={t.id} className="p-3 rounded-xl bg-white/5">
@@ -91,22 +97,21 @@ export function ExpensesTab({ result, city, profile, profileLoading, budget, wor
                 )}
               </div>
             )
-          })}
-        </div>
-      ) : (
-        <div className="text-center py-8">
-          <p className="text-white/30 text-sm">No tenders found for this ward</p>
-          <p className="text-white/20 text-xs mt-1">File an RTI to get the complete works register.</p>
-        </div>
-      )}
-      <p className="text-white/15 text-[10px] px-1">Source: KPPP karnataka.gov.in</p>
+          })
+        ) : !profileLoading ? (
+          <div className="p-5 rounded-xl bg-white/5 text-center space-y-1">
+            <p className="text-white/30 text-sm">No tenders found</p>
+            <p className="text-white/20 text-xs">File an RTI to get the complete works register.</p>
+          </div>
+        ) : null}
+      </div>
 
       {/* Work Orders 2024-25 */}
-      {workOrders.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-white/10">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-white/30 text-[10px] uppercase tracking-wider">Works 2024-25 ({workOrders.length})</p>
-            <p className="text-white/15 text-[10px]">BBMP via opencity.in</p>
+      {workOrders.length > 0 ? (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-white/30 text-xs uppercase tracking-wider">Works ({workOrders.length})</p>
+            <FreshnessBadge label="2024-25" source="BBMP" />
           </div>
           <div className="space-y-2">
             {workOrders.map(wo => {
@@ -126,14 +131,19 @@ export function ExpensesTab({ result, city, profile, profileLoading, budget, wor
             })}
           </div>
         </div>
-      )}
+      ) : !profileLoading && profile !== null ? (
+        <div className="p-4 rounded-xl bg-white/5 text-center space-y-1">
+          <p className="text-white/25 text-sm">No work orders on record</p>
+          <p className="text-white/15 text-xs">BBMP 2024-25</p>
+        </div>
+      ) : null}
 
       {/* Trade Licenses */}
       {tradeLicenses.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-white/10">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-white/30 text-[10px] uppercase tracking-wider">Trade Licenses (BBMP)</p>
-            <p className="text-white/15 text-[10px]">opencity.in</p>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-white/30 text-xs uppercase tracking-wider">Trade Licenses</p>
+            <FreshnessBadge label="2021-23" source="BBMP" />
           </div>
           <div className="space-y-2">
             {tradeLicenses.map(tl => (
@@ -170,22 +180,33 @@ export function ExpensesTab({ result, city, profile, profileLoading, budget, wor
       )}
 
       {/* Reddit buzz */}
-      {buzz && buzz.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
-          <div className="flex items-center justify-between mb-2">
+      {buzzLoading ? (
+        <div className="space-y-2">
+          <div className="h-3 w-32 bg-white/10 rounded animate-pulse" />
+          <SkeletonCard lines={2} />
+          <SkeletonCard lines={2} />
+        </div>
+      ) : buzz && buzz.length > 0 ? (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
             <p className="text-white/30 text-xs uppercase tracking-wider">r/{city.subreddit} chatter</p>
-            <p className="text-white/15 text-[10px]">reddit.com/r/{city.subreddit}</p>
+            <FreshnessBadge label="Live" source={`reddit.com/r/${city.subreddit}`} />
           </div>
           {buzz.map((post, i) => (
             <a key={i} href={post.url} target="_blank" rel="noopener noreferrer" className="block group">
               <div className="py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                 <p className="text-white text-xs leading-snug group-hover:text-[#FF9933] transition-colors line-clamp-2">{post.title}</p>
-                <p className="text-white/25 text-xs mt-1">+{post.score}  -  {post.num_comments} comments  -  {timeAgo(post.created_utc)}</p>
+                <p className="text-white/25 text-xs mt-1">+{post.score}  ·  {post.num_comments} comments  ·  {timeAgo(post.created_utc)}</p>
               </div>
             </a>
           ))}
         </div>
-      )}
+      ) : buzz !== null && buzz.length === 0 ? (
+        <div className="p-4 rounded-xl bg-white/5 text-center space-y-1">
+          <p className="text-white/25 text-sm">No recent Reddit posts</p>
+          <p className="text-white/15 text-xs">r/{city.subreddit}</p>
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -33,9 +33,11 @@ const WARD_HOVER_STYLE = {
 
 interface Props {
   onPin: (result: PinResult | null, lat: number, lng: number) => void
+  /** Increment to trigger Leaflet invalidateSize() after a layout shift (e.g. sidebar open) */
+  resizeKey?: number
 }
 
-export default function MapView({ onPin }: Props) {
+export default function MapView({ onPin, resizeKey = 0 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
@@ -44,6 +46,14 @@ export default function MapView({ onPin }: Props) {
 
   // Keep the ref current without re-running map setup
   useEffect(() => { onPinRef.current = onPin }, [onPin])
+
+  // Re-fit map when sidebar open/closes (layout shift changes container width)
+  useEffect(() => {
+    if (!mapRef.current) return
+    // Small delay so CSS transition has finished before we measure
+    const t = setTimeout(() => mapRef.current?.invalidateSize(), 320)
+    return () => clearTimeout(t)
+  }, [resizeKey])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return

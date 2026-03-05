@@ -15,11 +15,9 @@ export default function HomePage() {
 
   const handlePin = useCallback((result: PinResult | null, lat: number, lng: number) => {
     if (result === null && !pinLoading) {
-      // First call  loading state
       setPinLoading(true)
       setShowCard(true)
     } else {
-      // Second call  data arrived
       setPinResult(result ? { ...result, lat, lng } : null)
       setPinLoading(false)
     }
@@ -32,31 +30,37 @@ export default function HomePage() {
   }, [])
 
   return (
-    <main className="relative w-screen h-screen bg-[#0A0A0A] overflow-hidden">
+    <main className="flex h-screen bg-[#0A0A0A] overflow-hidden">
 
-      {/* Wordmark */}
-      <div className="absolute top-4 left-4 z-[1000] select-none">
-        <span className="text-white font-bold text-xl tracking-tight">
-          KAUN<span className="text-[#FF9933]">?</span>
-        </span>
+      {/* Map  shrinks to make room for sidebar on desktop */}
+      <div className={`relative flex-1 min-w-0 h-full transition-all duration-300`}>
+
+        {/* Wordmark */}
+        <div className="absolute top-4 left-4 z-[900] select-none pointer-events-none">
+          <span className="text-white font-bold text-xl tracking-tight">
+            KAUN<span className="text-[#FF9933]">?</span>
+          </span>
+        </div>
+
+        {/* Tap hint  hides once user has pinned */}
+        {!showCard && (
+          <div className="
+            absolute bottom-6 left-1/2 -translate-x-1/2 z-[900]
+            px-4 py-2 rounded-full
+            bg-black/70 backdrop-blur-sm border border-white/10
+            text-white/50 text-xs tracking-wide pointer-events-none
+            whitespace-nowrap
+          ">
+            Tap anywhere to find out who&apos;s responsible
+          </div>
+        )}
+
+        <MapView onPin={handlePin} resizeKey={showCard ? 1 : 0} />
       </div>
 
-      {/* Hint  hides once user has pinned */}
-      {!showCard && (
-        <div className="
-          absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000]
-          px-4 py-2 rounded-full
-          bg-black/70 backdrop-blur-sm border border-white/10
-          text-white/50 text-xs tracking-wide pointer-events-none
-        ">
-          Tap anywhere to find out who&apos;s responsible
-        </div>
-      )}
-
-      {/* Map */}
-      <MapView onPin={handlePin} />
-
-      {/* Ward card */}
+      {/* Ward card
+          Mobile:  fixed bottom sheet overlaying the map
+          Desktop: flex sidebar to the right of the map */}
       {showCard && (
         <WardCard result={pinResult} loading={pinLoading} onClose={handleClose} />
       )}
