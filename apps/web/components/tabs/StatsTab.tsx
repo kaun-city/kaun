@@ -20,7 +20,7 @@ interface Props {
 
 export function StatsTab({ city, wardStats, grievances, potholes, wardSpend, propertyTax, sakala }: Props) {
   return (
-    <div className="px-5 py-4 space-y-4 pb-6">
+    <div className="px-5 py-4 space-y-4 pb-safe-content">
 
       {/* Population + Infrastructure */}
       {!wardStats ? (

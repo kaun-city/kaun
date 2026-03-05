@@ -19,6 +19,16 @@ body {
   overflow: hidden;
   background: var(--bg);
   color: white;
+  /* Prevent elastic overscroll on iOS at the body level */
+  overscroll-behavior: none;
+}
+
+/* Safe-area utility — bottom of cards on notch phones */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pb-safe-content {
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
 }
 
 /* Leaflet overrides — keep map controls on brand */
@@ -38,7 +48,7 @@ body {
   color: rgba(255, 255, 255, 0.4) !important;
 }
 
-/* Ward card slide-up animation */
+/* Ward card slide-up animation (mobile only — lg+ uses static sidebar) */
 @keyframes slide-up {
   from {
     transform: translateY(100%);
@@ -50,6 +60,15 @@ body {
   }
 }
 
-.animate-slide-up {
-  animation: slide-up 0.25s ease-out forwards;
+/* Only animate below lg breakpoint */
+@media (max-width: 1023px) {
+  .animate-slide-up {
+    animation: slide-up 0.25s ease-out forwards;
+  }
+}
+
+/* iOS momentum scroll for all overflow-y-auto elements */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }

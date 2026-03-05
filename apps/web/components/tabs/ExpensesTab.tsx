@@ -21,7 +21,7 @@ interface Props {
 
 export function ExpensesTab({ result, city, profile, profileLoading, budget, workOrders, tradeLicenses, buzz, buzzLoading }: Props) {
   return (
-    <div className="px-5 py-4 space-y-4 pb-6">
+    <div className="px-5 py-4 space-y-4 pb-safe-content">
 
       {/* City-wide Budget */}
       {budget ? (

@@ -33,7 +33,7 @@ export function ReportTab({ localOffices, departments }: Props) {
   const offices = localOffices.filter(o => o.boundary_type !== "gba_corporation")
 
   return (
-    <div className="px-5 py-4 space-y-4 pb-6">
+    <div className="px-5 py-4 space-y-4 pb-safe-content">
 
       {/* RTI Button */}
       <div className="space-y-1.5">

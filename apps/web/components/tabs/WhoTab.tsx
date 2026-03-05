@@ -41,7 +41,7 @@ export function WhoTab({
   allFacts, officerGroups, onCorroborate, onNewFact, onUnknownsRefresh,
 }: Props) {
   return (
-    <div className="px-5 py-4 space-y-4 pb-6">
+    <div className="px-5 py-4 space-y-4 pb-safe-content">
 
       {/* Knowledge Score */}
       {unknowns ? (

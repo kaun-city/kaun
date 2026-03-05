@@ -38,17 +38,16 @@ export default function WardCard({ result, loading, onClose }: Props) {
       flex flex-col
       bg-[#111111] border-t border-white/10
       rounded-t-2xl
-      max-h-[88vh]
+      min-h-[48vh] max-h-[88vh]
       animate-slide-up
 
       lg:static lg:z-auto
-      lg:w-[26rem] lg:h-screen lg:max-h-none
+      lg:w-[26rem] lg:h-screen lg:min-h-0 lg:max-h-none
       lg:rounded-none lg:border-t-0 lg:border-l lg:border-white/10
-      lg:animate-none
     ">
-      {/* Drag handle (mobile only) */}
-      <div className="flex justify-center pt-3 pb-1 lg:hidden shrink-0">
-        <div className="w-10 h-1 rounded-full bg-white/20" />
+      {/* Drag handle (mobile only) — also acts as a 44px tap target for dismiss */}
+      <div className="flex justify-center items-center py-3 lg:hidden shrink-0 cursor-grab active:cursor-grabbing">
+        <div className="w-10 h-1 rounded-full bg-white/25" />
       </div>
 
       {/* Header */}
@@ -73,10 +72,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
             <p className="text-white/30 text-xs mt-0.5">No ward found at this location</p>
           </div>
         )}
+        {/* 44×44 touch target on mobile, smaller on desktop */}
         <button
           onClick={onClose}
           aria-label="Close"
-          className="ml-4 mt-0.5 shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-white/80 transition-colors text-base"
+          className="ml-2 shrink-0 -mr-1 w-11 h-11 lg:w-7 lg:h-7 flex items-center justify-center rounded-full hover:bg-white/10 text-white/40 hover:text-white/80 transition-colors text-xl lg:text-base lg:bg-white/5"
         >
           &times;
         </button>
@@ -89,10 +89,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
             <button
               key={t.id}
               onClick={() => ward.setTab(t.id)}
-              className={`flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors
+              className={`flex-1 py-3 lg:py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors
                 ${ward.tab === t.id
                   ? "text-[#FF9933] border-b-2 border-[#FF9933]"
-                  : "text-white/30 hover:text-white/60"
+                  : "text-white/30 hover:text-white/60 active:text-white/60"
                 }`}
             >
               {t.label}
@@ -103,7 +103,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
       {/* Tab content — scrolls within the card */}
       {!loading && result?.found && (
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="flex-1 overflow-y-auto min-h-0 pb-safe">
           {ward.tab === "who" && (
             <WhoTab
               result={result}
@@ -163,7 +163,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
       {/* Not found */}
       {!loading && !result?.found && (
-        <div className="flex-1 flex flex-col items-center justify-center px-5 py-8 gap-3">
+        <div className="flex-1 flex flex-col items-center justify-center px-5 py-8 pb-safe gap-3">
           <div className="text-4xl opacity-20">?</div>
           <p className="text-white/40 text-sm text-center">
             No ward found here.
