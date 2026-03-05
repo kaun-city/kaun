@@ -92,7 +92,7 @@ export async function POST(req: Request) {
   const context = buildContext(data)
 
   const { text } = await generateText({
-    model: google("gemini-1.5-flash"),
+    model: google("gemini-2.0-flash"),
     system: `You are an RTI (Right to Information Act 2005) expert for Karnataka, India.
 Generate a formal RTI application that:
 - Follows the standard Karnataka RTI format exactly

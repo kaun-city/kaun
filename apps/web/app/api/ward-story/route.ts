@@ -93,7 +93,7 @@ export async function POST(req: Request) {
   // Generate fresh story
   const context = buildPrompt(data)
   const { text } = await generateText({
-    model: google("gemini-1.5-flash"),
+    model: google("gemini-2.0-flash"),
     system: `You are a civic accountability analyst for Bangalore, India. 
 Given ward data, write a short, punchy 2-3 sentence narrative (under 80 words) that:
 - Connects the dots between infrastructure gaps, elected representative performance, and resident impact
