@@ -5,9 +5,9 @@ import type { PinResult } from "@/lib/types"
 import { useWardData } from "@/hooks/useWardData"
 import { useKeyboardAware } from "@/hooks/useKeyboardAware"
 import { WhoTab } from "@/components/tabs/WhoTab"
-import { ExpensesTab } from "@/components/tabs/ExpensesTab"
-import { StatsTab } from "@/components/tabs/StatsTab"
-import { ReportTab } from "@/components/tabs/ReportTab"
+import { SpendTab } from "@/components/tabs/SpendTab"
+import { CitizenTab } from "@/components/tabs/CitizenTab"
+import { ReachTab } from "@/components/tabs/ReachTab"
 
 interface Props {
   result: PinResult | null
@@ -15,13 +15,13 @@ interface Props {
   onClose: () => void
 }
 
-type Tab = "who" | "expenses" | "stats" | "report"
+type Tab = "who" | "spend" | "citizen" | "reach"
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: "who",      label: "Who" },
-  { id: "expenses", label: "Spend" },
-  { id: "stats",    label: "Area" },
-  { id: "report",   label: "Report" },
+  { id: "who",     label: "Who" },
+  { id: "spend",   label: "Spend" },
+  { id: "citizen", label: "Citizen" },
+  { id: "reach",   label: "Reach" },
 ]
 
 export default function WardCard({ result, loading, onClose }: Props) {
@@ -133,8 +133,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
             />
           )}
 
-          {ward.tab === "expenses" && (
-            <ExpensesTab
+          {ward.tab === "spend" && (
+            <SpendTab
               result={result}
               city={ward.city}
               profile={ward.profile}
@@ -142,27 +142,28 @@ export default function WardCard({ result, loading, onClose }: Props) {
               budget={ward.budget}
               workOrders={ward.workOrders}
               tradeLicenses={ward.tradeLicenses}
+              wardSpend={ward.wardSpend}
+              propertyTax={ward.propertyTax}
+            />
+          )}
+
+          {ward.tab === "citizen" && (
+            <CitizenTab
+              city={ward.city}
+              wardStats={ward.wardStats}
+              potholes={ward.potholes}
               buzz={ward.buzz}
               buzzLoading={ward.buzzLoading}
             />
           )}
 
-          {ward.tab === "stats" && (
-            <StatsTab
+          {ward.tab === "reach" && (
+            <ReachTab
               city={ward.city}
-              wardStats={ward.wardStats}
-              grievances={ward.grievances}
-              potholes={ward.potholes}
-              wardSpend={ward.wardSpend}
-              propertyTax={ward.propertyTax}
-              sakala={ward.sakala}
-            />
-          )}
-
-          {ward.tab === "report" && (
-            <ReportTab
               localOffices={ward.localOffices}
               departments={ward.departments}
+              grievances={ward.grievances}
+              sakala={ward.sakala}
             />
           )}
         </div>

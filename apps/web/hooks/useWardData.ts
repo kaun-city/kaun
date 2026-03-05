@@ -64,7 +64,7 @@ export function useWardData(result: PinResult | null) {
   const [departments, setDepartments] = useState<Department[]>([])
 
   // ── Tab state ─────────────────────────────────────────────
-  const [tab, setTab] = useState<"who" | "expenses" | "stats" | "report">("who")
+  const [tab, setTab] = useState<"who" | "spend" | "citizen" | "reach">("who")
 
   // ── Reset on ward change ─────────────────────────────────
   useEffect(() => {
@@ -130,10 +130,10 @@ export function useWardData(result: PinResult | null) {
     fetchRepReportCard(result.assembly_constituency).then(rc => setReportCard(rc ?? null))
   }, [result?.assembly_constituency, reportCard, city.features.repReportCards])
 
-  // ── Local offices + corp contacts (WHO + REPORT) ─────────
+  // ── Local offices + corp contacts (WHO + REACH) ──────────
   useEffect(() => {
-    if (tab !== "report" && tab !== "who") return
-    if (tab === "report" && departments.length === 0) {
+    if (tab !== "reach" && tab !== "who") return
+    if (tab === "reach" && departments.length === 0) {
       fetchDepartments(result?.city_id).then(d => setDepartments(d as Department[]))
     }
     if (localOffices.length === 0 && result?.lat && result?.lng) {
@@ -148,9 +148,9 @@ export function useWardData(result: PinResult | null) {
     }
   }, [tab, departments.length, localOffices.length, result?.lat, result?.lng, result?.city_id])
 
-  // ── EXPENSES: budget + work orders ───────────────────────
+  // ── SPEND: budget + work orders ──────────────────────────
   useEffect(() => {
-    if (tab !== "expenses" || !result?.ward_no) return
+    if (tab !== "spend" || !result?.ward_no) return
     if (city.features.budget && !budget) {
       fetchBudgetSummary(city.budgetYear).then(setBudget)
     }
@@ -159,42 +159,59 @@ export function useWardData(result: PinResult | null) {
     }
   }, [tab, budget, workOrders.length, result?.ward_no, city.features.budget, city.features.workOrders, city.budgetYear])
 
-  // ── EXPENSES: trade licenses + buzz ──────────────────────
+  // ── SPEND: trade licenses + ward spend + property tax ────
   useEffect(() => {
-    if (tab !== "expenses" || !result?.found || !result.ward_name) return
+    if (tab !== "spend" || !result?.found || !result.ward_name) return
     if (city.features.tradeLicenses && tradeLicenses.length === 0) {
       fetchTradeLicenses(result.ward_name).then(setTradeLicenses)
     }
+  }, [tab, result, tradeLicenses.length, city.features.tradeLicenses])
+
+  useEffect(() => {
+    if (tab !== "spend" || !result?.assembly_constituency) return
+    if (city.features.propertyTax && !propertyTax) {
+      fetchPropertyTax(result.assembly_constituency).then(setPropertyTax)
+    }
+  }, [tab, propertyTax, result?.assembly_constituency, city.features.propertyTax])
+
+  // ── CITIZEN: demographics + buzz ─────────────────────────
+  useEffect(() => {
+    if (tab !== "citizen" || !result?.assembly_constituency) return
+    if (!wardStats) fetchWardStats(result.assembly_constituency).then(setWardStats)
+  }, [tab, wardStats, result?.assembly_constituency])
+
+  useEffect(() => {
+    if (tab !== "citizen" || !result?.found || !result.ward_name) return
     if (city.features.buzz && buzz === null && !buzzLoading) {
       setBuzzLoading(true)
       fetchBuzz(result.ward_name, city.subreddit).then(posts => { setBuzz(posts); setBuzzLoading(false) })
     }
-  }, [tab, result, buzz, buzzLoading, tradeLicenses.length, city.features.tradeLicenses, city.features.buzz, city.subreddit])
+  }, [tab, result, buzz, buzzLoading, city.features.buzz, city.subreddit])
 
-  // ── STATS: constituency-level data ───────────────────────
+  // ── REACH: grievances + sakala ────────────────────────────
   useEffect(() => {
-    if (tab !== "stats" || !result?.assembly_constituency) return
-    if (!wardStats) fetchWardStats(result.assembly_constituency).then(setWardStats)
-    if (city.features.propertyTax && !propertyTax) {
-      fetchPropertyTax(result.assembly_constituency).then(setPropertyTax)
-    }
+    if (tab !== "reach" || !result?.assembly_constituency) return
     if (city.features.sakala && !sakala) {
       fetchSakalaPerformance(result.assembly_constituency).then(setSakala)
     }
-  }, [tab, wardStats, propertyTax, sakala, result?.assembly_constituency, city.features.propertyTax, city.features.sakala])
+  }, [tab, sakala, result?.assembly_constituency, city.features.sakala])
 
-  // ── STATS: ward-name-level data ───────────────────────────
   useEffect(() => {
-    if (tab !== "stats" || !result?.ward_name || grievances.length > 0) return
+    if (tab !== "reach" || !result?.ward_name || grievances.length > 0) return
     if (city.features.grievances) fetchWardGrievances(result.ward_name).then(setGrievances)
   }, [tab, grievances, result?.ward_name, city.features.grievances])
 
-  // ── STATS: ward-number-level data ─────────────────────────
+  // ── CITIZEN: ward-number-level data (potholes) ───────────
   useEffect(() => {
-    if (tab !== "stats" || !result?.ward_no) return
+    if (tab !== "citizen" || !result?.ward_no) return
     if (city.features.wardPotholes && !potholes) fetchWardPotholes(result.ward_no).then(setPotholes)
+  }, [tab, potholes, result?.ward_no, city.features.wardPotholes])
+
+  // ── SPEND: ward-number-level data (ward spend) ────────────
+  useEffect(() => {
+    if (tab !== "spend" || !result?.ward_no) return
     if (city.features.wardSpend && !wardSpend) fetchWardSpend(result.ward_no).then(setWardSpend)
-  }, [tab, potholes, wardSpend, result?.ward_no, city.features.wardPotholes, city.features.wardSpend])
+  }, [tab, wardSpend, result?.ward_no, city.features.wardSpend])
 
   // ── Derived values ────────────────────────────────────────
   const allFacts = [...(profile?.community_facts ?? []), ...extraFacts]
