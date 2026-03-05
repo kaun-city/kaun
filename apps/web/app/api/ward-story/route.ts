@@ -1,4 +1,4 @@
-import { google } from "@ai-sdk/google"
+import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
 import { createClient } from "@supabase/supabase-js"
 import { createHash } from "crypto"
@@ -93,7 +93,7 @@ export async function POST(req: Request) {
   // Generate fresh story
   const context = buildPrompt(data)
   const { text } = await generateText({
-    model: google("gemini-2.0-flash-lite"),
+    model: openai("gpt-4o-mini"),
     system: `You are a civic accountability analyst for Bangalore, India. 
 Given ward data, write a short, punchy 2-3 sentence narrative (under 80 words) that:
 - Connects the dots between infrastructure gaps, elected representative performance, and resident impact
@@ -121,4 +121,5 @@ Write in plain English. No headers, no bullet points. Just the narrative paragra
     return Response.json({ error: msg }, { status: 500 })
   }
 }
+
 
