@@ -2,7 +2,10 @@
 
 import { timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
+import { useState } from "react"
 import type { RedditPost, WardInfraStats, WardPotholes, WardStats } from "@/lib/types"
+import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
+import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { SkeletonCard, SkeletonStats } from "@/components/shared/Skeleton"
 
@@ -17,10 +20,16 @@ interface Props {
   infraStats: WardInfraStats | null
   buzz: RedditPost[] | null
   buzzLoading: boolean
+  wardNo: number
+  wardName: string
+  assemblyConstituency: string
 }
 
-export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLoading }: Props) {
+export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLoading, wardNo, wardName, assemblyConstituency }: Props) {
+  const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   return (
+    <>
+    <RTIDraftSheet request={rtiRequest} onClose={() => setRtiRequest(null)} />
     <div className="px-5 py-4 space-y-4 pb-safe-content">
 
       {/* Demographics + Infrastructure */}
@@ -132,12 +141,24 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
           )}
 
           {potholes && (
-            <div className="rounded-xl bg-white/5 px-4 py-3 flex items-center justify-between">
-              <div>
-                <p className="text-white/50 text-[10px] uppercase tracking-wider">Pothole Complaints</p>
-                <p className="text-white/30 text-xs mt-0.5">Fix My Street 2022</p>
+            <div className="rounded-xl bg-white/5 px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/50 text-[10px] uppercase tracking-wider">Pothole Complaints</p>
+                  <p className="text-white/30 text-xs mt-0.5">Fix My Street 2022</p>
+                </div>
+                <p className="text-red-400 text-lg font-bold">{potholes.complaints.toLocaleString("en-IN")}</p>
               </div>
-              <p className="text-red-400 text-lg font-bold">{potholes.complaints.toLocaleString("en-IN")}</p>
+              {potholes.complaints > 0 && (
+                <div className="mt-2 flex justify-end">
+                  <button
+                    onClick={() => setRtiRequest({ issue_type: "pothole_complaints", ward_no: wardNo, ward_name: wardName, assembly_constituency: assemblyConstituency, pothole_complaints: potholes.complaints })}
+                    className="text-[10px] text-[#FF9933]/70 hover:text-[#FF9933] underline transition-colors"
+                  >
+                    File RTI
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
@@ -174,5 +195,6 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
         </div>
       ) : null}
     </div>
+    </>
   )
 }

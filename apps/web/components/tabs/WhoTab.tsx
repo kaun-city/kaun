@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { submitFact } from "@/lib/api"
 import { OFFICER_SUBJECTS } from "@/lib/constants"
 import { getVoterToken } from "@/lib/ward-utils"
@@ -16,7 +17,9 @@ import { PartyBadge } from "@/components/shared/PartyBadge"
 import { SkeletonCard, SkeletonRepCard, SkeletonScorecard } from "@/components/shared/Skeleton"
 import { TrustBadge } from "@/components/shared/TrustBadge"
 import { WardStoryCard } from "@/components/shared/WardStoryCard"
+import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
 import type { WardStoryRequest } from "@/app/api/ward-story/route"
+import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import type { WardInfraStats, WardPotholes } from "@/lib/types"
 
 interface Props {
@@ -47,6 +50,18 @@ export function WhoTab({
   allFacts, officerGroups, onCorroborate, onNewFact, onUnknownsRefresh,
   infraStats, potholes,
 }: Props) {
+  const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
+
+  function rtiBase(): Omit<RTIDraftRequest, "issue_type"> {
+    return {
+      ward_no: result.ward_no ?? 0,
+      ward_name: result.ward_name ?? "",
+      assembly_constituency: result.assembly_constituency ?? "",
+      mla_name: profile?.elected_reps?.find(r => r.role === "MLA")?.name ?? undefined,
+      mla_party: profile?.elected_reps?.find(r => r.role === "MLA")?.party ?? undefined,
+    }
+  }
+
   // Build story payload once we have the key data points
   const storyData: WardStoryRequest | null =
     result.ward_no && result.assembly_constituency
@@ -69,6 +84,8 @@ export function WhoTab({
       : null
 
   return (
+    <>
+    <RTIDraftSheet request={rtiRequest} onClose={() => setRtiRequest(null)} />
     <div className="px-5 py-4 space-y-4 pb-safe-content">
       <WardStoryCard storyData={storyData} />
 
@@ -230,7 +247,17 @@ export function WhoTab({
             <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
               <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: grade.color + "99" }} />
             </div>
-            <p className="text-white/15 text-[10px]">Ward committees are mandated to meet monthly</p>
+            <div className="flex items-center justify-between pt-0.5">
+              <p className="text-white/15 text-[10px]">Ward committees are mandated to meet monthly</p>
+              {count < 25 && (
+                <button
+                  onClick={() => setRtiRequest({ ...rtiBase(), issue_type: "committee_meetings", committee_meetings: count })}
+                  className="text-[10px] text-[#FF9933]/70 hover:text-[#FF9933] underline transition-colors"
+                >
+                  File RTI
+                </button>
+              )}
+            </div>
           </div>
         )
       })() : null}
@@ -385,7 +412,15 @@ export function WhoTab({
                 <FreshnessBadge label="2013-18" source="opencity.in" />
               </div>
             </div>
-            <p className="text-white/40 text-xs">{termRow.project_count} projects in your constituency</p>
+            <div className="flex items-center justify-between">
+              <p className="text-white/40 text-xs">{termRow.project_count} projects in your constituency</p>
+              <button
+                onClick={() => setRtiRequest({ ...rtiBase(), issue_type: "lad_funds", lad_total_lakh: termRow.total_lakh })}
+                className="text-[10px] text-[#FF9933]/70 hover:text-[#FF9933] underline transition-colors"
+              >
+                File RTI
+              </button>
+            </div>
             <div className="space-y-1">
               {fyRows.map(r => (
                 <div key={r.financial_year} className="flex items-center justify-between gap-2">
@@ -407,5 +442,6 @@ export function WhoTab({
         <AddFactForm wardNo={result.ward_no} cityId={result.city_id} onSubmitted={onNewFact} />
       )}
     </div>
+    </>
   )
 }
