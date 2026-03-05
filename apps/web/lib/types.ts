@@ -252,6 +252,14 @@ export interface WardPotholes {
   data_year: string
 }
 
+export interface WardCommitteeMeetings {
+  ward_no: number
+  ward_name: string
+  assembly_constituency: string
+  meetings_count: number
+  period: string
+}
+
 export interface MlaLadFunds {
   assembly_constituency: string
   financial_year: string

@@ -335,6 +335,18 @@ export async function fetchWardPotholes(wardNo: number): Promise<import('./types
 }
 
 /**
+ * Fetch ward committee meeting count (2020-2022) by ward number.
+ */
+export async function fetchWardCommitteeMeetings(wardNo: number): Promise<import('./types').WardCommitteeMeetings | null> {
+  const rows = await query<import('./types').WardCommitteeMeetings>('ward_committee_meetings', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'ward_no,ward_name,assembly_constituency,meetings_count,period',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
+
+/**
  * Fetch MLA LAD fund spend for an assembly constituency (2013-2018 term).
  */
 export async function fetchMlaLadFunds(assemblyConstituency: string): Promise<import('./types').MlaLadFunds[]> {

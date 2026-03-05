@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import type { BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice, MlaLadFunds, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
-import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchMlaLadFunds, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, lookupLocalOffices, submitFact, voteFact } from "@/lib/api"
+import type { BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice, MlaLadFunds, PinResult, PropertyTaxData, RedditPost, WardCommitteeMeetings, WardProfile, WardStats, WardGrievances, SakalaPerformance, WardTradeLicenses, WardPotholes, WardSpendCategory, WorkOrder } from "@/lib/types"
+import { fetchWardProfile, fetchBuzz, fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchMlaLadFunds, fetchWardCommitteeMeetings, fetchPropertyTax, fetchWardStats, fetchWardUnknowns, fetchWardGrievances, fetchSakalaPerformance, fetchTradeLicenses, fetchWardPotholes, fetchWardSpend, fetchWorkOrders, lookupLocalOffices, submitFact, voteFact } from "@/lib/api"
 
 interface Props {
   result: PinResult | null
@@ -310,6 +310,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const [budget, setBudget] = useState<BudgetSummary | null>(null)
   const [tradeLicenses, setTradeLicenses] = useState<WardTradeLicenses[]>([])
   const [ladFunds, setLadFunds] = useState<MlaLadFunds[]>([])
+  const [committeeMeetings, setCommitteeMeetings] = useState<WardCommitteeMeetings | null>(null)
   const [unknowns, setUnknowns] = useState<{ total_questions: number; answered: number; unanswered: Array<{ category: string; subject: string; field: string; prompt: string; icon: string; priority: number }> } | null>(null)
   const [showAddFor, setShowAddFor] = useState<{ category: string; subject: string; field: string; prompt: string } | null>(null)
 
@@ -332,6 +333,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
     setGrievances([])
     setSakala(null)
     setLadFunds([])
+    setCommitteeMeetings(null)
     setTradeLicenses([])
     setPotholes(null)
     setWardSpend(null)
@@ -350,6 +352,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
     if (!result?.ward_no || unknowns) return
     fetchWardUnknowns(result.ward_no).then(setUnknowns)
   }, [result?.ward_no, unknowns])
+
+  useEffect(() => {
+    if (!result?.ward_no || committeeMeetings !== null) return
+    fetchWardCommitteeMeetings(result.ward_no).then(setCommitteeMeetings)
+  }, [result?.ward_no, committeeMeetings])
 
   useEffect(() => {
     if (!result?.assembly_constituency || ladFunds.length > 0) return
@@ -723,6 +730,35 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 )}
               </div>
             </div>
+
+            {/* Ward Committee Meetings */}
+            {committeeMeetings && (() => {
+              const count = committeeMeetings.meetings_count
+              const MAX = 56 // highest in dataset
+              const pct = Math.round((count / MAX) * 100)
+              const grade = count === 0 ? { label: 'Never met', color: '#ef4444' }
+                : count < 10 ? { label: 'Rarely meets', color: '#f97316' }
+                : count < 25 ? { label: 'Meets sometimes', color: '#eab308' }
+                : { label: 'Meets regularly', color: '#22c55e' }
+              return (
+                <div className="px-5 pb-2">
+                  <div className="rounded-xl bg-white/5 p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-white/50 text-[10px] uppercase tracking-wider">Ward Committee (2020-22)</p>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: grade.color + '22', color: grade.color }}>{grade.label}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <p style={{ color: grade.color }} className="text-2xl font-bold">{count}</p>
+                      <p className="text-white/40 text-xs">meetings held<br /><span className="text-white/25">out of a possible ~48 (2 yrs)</span></p>
+                    </div>
+                    <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: grade.color + '99' }} />
+                    </div>
+                    <p className="text-white/15 text-[10px]">Source: opencity.in / BBMP | Ward committees are mandated to meet monthly</p>
+                  </div>
+                </div>
+              )
+            })()}
 
             {/* MLA LAD Fund Track Record */}
             {ladFunds.length > 0 && (() => {
