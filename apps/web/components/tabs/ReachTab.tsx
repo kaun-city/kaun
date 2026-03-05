@@ -1,8 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import type { CityConfig } from "@/lib/cities"
 import type { Department, LocalOffice, SakalaPerformance, WardGrievances } from "@/lib/types"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
+import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
+import type { RTIDraftRequest, RTIIssueType } from "@/app/api/rti-draft/route"
 
 const OFFICE_LABELS: Record<string, string> = {
   pincode:               "Pin Code",
@@ -31,12 +34,27 @@ interface Props {
   departments: Department[]
   grievances: WardGrievances[]
   sakala: SakalaPerformance | null
+  wardNo: number
+  wardName: string
+  assemblyConstituency: string
 }
 
-export function ReachTab({ city, localOffices, departments, grievances, sakala }: Props) {
+const RTI_ISSUES: { type: RTIIssueType; label: string; desc: string }[] = [
+  { type: "lad_funds",          label: "MLA Fund Utilization",     desc: "Demand account of unspent LAD funds" },
+  { type: "committee_meetings", label: "Ward Committee Meetings",   desc: "Why hasn't your ward committee met?" },
+  { type: "pothole_complaints", label: "Pothole Resolution",        desc: "Status of logged road complaints" },
+  { type: "ward_spend",         label: "BBMP Ward Expenditure",     desc: "Breakdown of ward budget spending" },
+  { type: "work_orders",        label: "Work Order Status",         desc: "Completion status of BBMP work orders" },
+]
+
+export function ReachTab({ city, localOffices, departments, grievances, sakala, wardNo, wardName, assemblyConstituency }: Props) {
   const offices = localOffices.filter(o => o.boundary_type !== "gba_corporation")
+  const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
+  const [showIssues, setShowIssues] = useState(false)
 
   return (
+    <>
+    <RTIDraftSheet request={rtiRequest} onClose={() => setRtiRequest(null)} />
     <div className="px-5 py-4 space-y-4 pb-safe-content">
 
       {/* Complaint Resolution */}
@@ -97,17 +115,44 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala }
         </div>
       )}
 
-      {/* RTI Button */}
-      <div className="space-y-1.5">
+      {/* RTI Section */}
+      <div className="space-y-2">
         <button
-          onClick={() => alert("RTI Generator coming soon")}
+          onClick={() => setShowIssues(v => !v)}
           className="w-full py-3.5 rounded-xl bg-[#FF9933]/15 border border-[#FF9933]/40 text-[#FF9933] text-sm font-semibold hover:bg-[#FF9933]/25 active:scale-[0.98] transition-all"
         >
-          Generate RTI Application
+          {showIssues ? "Pick an issue below" : "File an RTI Application"}
         </button>
-        <p className="text-white/25 text-xs text-center">
-          Right to Information Act, 2005 · Rs. 10 fee · 30-day response
-        </p>
+
+        {showIssues && (
+          <div className="rounded-xl bg-white/5 divide-y divide-white/5 overflow-hidden">
+            {RTI_ISSUES.map(issue => (
+              <button
+                key={issue.type}
+                onClick={() => { setRtiRequest({ issue_type: issue.type, ward_no: wardNo, ward_name: wardName, assembly_constituency: assemblyConstituency }); setShowIssues(false) }}
+                className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
+              >
+                <div>
+                  <p className="text-white/70 text-sm font-medium">{issue.label}</p>
+                  <p className="text-white/30 text-xs">{issue.desc}</p>
+                </div>
+                <span className="text-white/20 text-lg">›</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between px-1">
+          <p className="text-white/20 text-[10px]">RTI Act 2005 · Rs. 10 fee · 30-day response</p>
+          <a
+            href="https://rtionline.gov.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/20 text-[10px] underline hover:text-white/40"
+          >
+            File online (Central Govt)
+          </a>
+        </div>
       </div>
 
       {/* Local Offices */}
@@ -182,5 +227,6 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala }
         </div>
       )}
     </div>
+    </>
   )
 }

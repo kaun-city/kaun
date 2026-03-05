@@ -74,10 +74,13 @@ export default function MapView({ onPin, resizeKey = 0 }: Props) {
       const map = L.map(containerRef.current!, {
         center: BENGALURU_CENTER,
         zoom: 12,
-        zoomControl: true,
+        zoomControl: false,
         attributionControl: true,
       })
       mapRef.current = map
+
+      // Move zoom controls to bottom-right so they don't overlap the wordmark
+      L.control.zoom({ position: "bottomright" }).addTo(map)
 
       // CartoDB dark tiles  free, no API key, dark theme
       L.tileLayer(
