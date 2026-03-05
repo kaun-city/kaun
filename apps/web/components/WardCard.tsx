@@ -186,6 +186,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
               ward_no: result.ward_no,
               ward_name: result.ward_name ?? "",
               assembly_constituency: result.assembly_constituency ?? "",
+              corporator_name: ward.profile?.elected_reps?.find(r => r.role === "CORPORATOR")?.name ?? null,
+              corporator_party: ward.profile?.elected_reps?.find(r => r.role === "CORPORATOR")?.party ?? null,
               mla_name: ward.profile?.elected_reps?.find(r => r.role === "MLA")?.name ?? null,
               mla_party: ward.profile?.elected_reps?.find(r => r.role === "MLA")?.party ?? null,
               mla_attendance_pct: ward.reportCard?.attendance_pct ?? null,

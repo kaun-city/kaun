@@ -19,6 +19,9 @@ export interface AskKaunRequest {
     mla_lad_utilization_pct?: number | null
     mla_criminal_cases?: number | null
     committee_meetings?: number | null
+    // Corporator (ward-level elected rep)
+    corporator_name?: string | null
+    corporator_party?: string | null
     // CITIZEN
     signal_count?: number | null
     bus_stop_count?: number | null
@@ -28,6 +31,9 @@ export interface AskKaunRequest {
     ward_spend_roads_pct?: number | null
     // REACH
     grievance_count?: number | null
+    // Key BBMP contacts (from local offices)
+    bbmp_ward_office?: string | null
+    bbmp_complaint_no?: string | null
   }
 }
 
@@ -35,18 +41,21 @@ function buildContext(c: AskKaunRequest["ward_context"]): string {
   const lines = [
     `Ward: ${c.ward_name} (Ward #${c.ward_no}), Assembly Constituency: ${c.assembly_constituency}`,
   ]
-  if (c.mla_name)              lines.push(`MLA: ${c.mla_name} (${c.mla_party ?? "Unknown"})`)
-  if (c.mla_attendance_pct != null) lines.push(`MLA assembly attendance: ${c.mla_attendance_pct}%`)
-  if (c.mla_questions_asked != null) lines.push(`MLA questions asked in assembly: ${c.mla_questions_asked}`)
+  if (c.corporator_name)       lines.push(`Corporator (ward councillor): ${c.corporator_name}${c.corporator_party ? ` (${c.corporator_party})` : ""}`)
+  if (c.mla_name)              lines.push(`MLA: ${c.mla_name}${c.mla_party ? ` (${c.mla_party})` : ""}`)
+  if (c.mla_attendance_pct != null)    lines.push(`MLA assembly attendance: ${c.mla_attendance_pct}%`)
+  if (c.mla_questions_asked != null)   lines.push(`MLA questions asked in assembly: ${c.mla_questions_asked}`)
   if (c.mla_lad_utilization_pct != null) lines.push(`MLA LAD fund utilization: ${c.mla_lad_utilization_pct}%`)
   if (c.mla_criminal_cases != null && c.mla_criminal_cases > 0) lines.push(`MLA criminal cases: ${c.mla_criminal_cases}`)
-  if (c.committee_meetings != null) lines.push(`Ward committee meetings held (2020-22): ${c.committee_meetings} of 56 possible`)
-  if (c.signal_count != null) lines.push(`Traffic signals: ${c.signal_count} (city avg: 5.5)`)
-  if (c.bus_stop_count != null) lines.push(`Bus stops: ${c.bus_stop_count} (city avg: 155)`)
-  if (c.pothole_complaints != null) lines.push(`Pothole complaints logged: ${c.pothole_complaints}`)
+  if (c.committee_meetings != null)    lines.push(`Ward committee meetings held (2020-22): ${c.committee_meetings} of 56 possible`)
+  if (c.signal_count != null)          lines.push(`Traffic signals in ward: ${c.signal_count} (city avg: 5.5)`)
+  if (c.bus_stop_count != null)        lines.push(`BMTC bus stops in ward: ${c.bus_stop_count} (city avg: 155)`)
+  if (c.pothole_complaints != null)    lines.push(`Pothole complaints logged: ${c.pothole_complaints}`)
   if (c.ward_spend_total_lakh != null) lines.push(`BBMP ward spend: Rs ${c.ward_spend_total_lakh} lakh (2018-2023)`)
-  if (c.ward_spend_roads_pct != null) lines.push(`Roads & infrastructure share of spend: ${c.ward_spend_roads_pct.toFixed(1)}%`)
-  if (c.grievance_count != null) lines.push(`BBMP grievances filed: ${c.grievance_count}`)
+  if (c.ward_spend_roads_pct != null)  lines.push(`Roads & infrastructure share of spend: ${c.ward_spend_roads_pct.toFixed(1)}%`)
+  if (c.grievance_count != null)       lines.push(`BBMP grievances filed: ${c.grievance_count}`)
+  if (c.bbmp_ward_office)              lines.push(`BBMP ward office: ${c.bbmp_ward_office}`)
+  if (c.bbmp_complaint_no)             lines.push(`BBMP complaint helpline: ${c.bbmp_complaint_no}`)
   return lines.join("\n")
 }
 
@@ -67,20 +76,30 @@ export async function POST(req: Request) {
 
     const { text } = await generateText({
       model: openai("gpt-4o-mini"),
-      system: `You are Kaun, a civic accountability assistant for Bangalore, India.
-You have data about a specific ward. Answer the user's question using ONLY the data provided.
+      system: `You are Kaun, a civic accountability assistant for Bengaluru (Bangalore), India.
+You have real data about a specific ward. Use it to give specific, grounded answers.
+
+Bengaluru civic structure you should know:
+- Roads in wards: BBMP (Bruhat Bengaluru Mahanagara Palike) — the ward's Corporator is the elected ward-level contact; call 1533 or bbmp.gov.in
+- Traffic signals: BBMP Engineering installs/maintains them; Bangalore Traffic Police (BTP) operates signal timing — call 103 for traffic issues
+- Potholes: File on BBMP Sampark app or call 1533; responsible is the ward's Assistant Executive Engineer (Roads)
+- Public transport (buses): BMTC — call 080-22251777
+- Water/drainage: BWSSB — call 1916
+- Electricity: BESCOM — call 1912
+- MLAs handle state-level funds (LAD scheme) and raise issues in the Karnataka Legislature
+- Corporator handles ward-level BBMP work and attends ward committee meetings
+
 Rules:
-- Be direct and specific — use the numbers you have
-- If data isn't available, say so clearly ("I don't have that data for this ward")
-- For "what can I do" questions: suggest concrete actions (file RTI, contact BBMP, attend ward meeting)
+- Always name the specific Corporator or MLA from the ward data when answering "who is responsible"
+- Use actual numbers from the data (pothole count, signal count, spend) when relevant
+- For "what can I do": suggest RTI filing, BBMP Sampark app, ward meetings, calling 1533
+- If a specific piece of data is missing, still give the structural answer (who is generally responsible) rather than saying "I don't have that data"
 - Keep answers under 80 words
-- Never make up data or infer what isn't there
-- Mention the RTI option when relevant (unspent funds, unresolved complaints, non-meetings)`,
+- Never make up data (names, phone numbers, addresses) that isn't in the ward context`,
       prompt: `Ward data:\n${context}\n\nQuestion: ${question}`,
       maxOutputTokens: 200,
     })
 
-    // Log async (don't await — don't block the response)
     void supabase.from("ask_kaun_logs").insert({
       ward_no: ward_context.ward_no,
       ward_name: ward_context.ward_name,
