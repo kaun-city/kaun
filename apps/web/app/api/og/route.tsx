@@ -19,6 +19,7 @@ async function fetchJson(path: string) {
 }
 
 export async function GET(req: Request) {
+  try {
   const { searchParams } = new URL(req.url)
   const wardNo = parseInt(searchParams.get("ward_no") ?? "0", 10)
 
@@ -121,4 +122,7 @@ export async function GET(req: Request) {
     ),
     { width: 1200, height: 630 }
   )
+  } catch (e: unknown) {
+    return new Response(String(e), { status: 500, headers: { "content-type": "text/plain" } })
+  }
 }
