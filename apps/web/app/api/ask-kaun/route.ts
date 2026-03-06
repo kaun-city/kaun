@@ -201,7 +201,7 @@ Rules:
       prompt: `Current ward data:\n${context}\n\nQuestion: ${question}`,
     })
 
-    void supabase.from("ask_kaun_logs").insert({
+    await supabase.from("ask_kaun_logs").insert({
       ward_no: ward_context.ward_no,
       ward_name: ward_context.ward_name,
       question: question.trim(),
