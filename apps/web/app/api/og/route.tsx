@@ -24,7 +24,7 @@ export async function GET(req: Request) {
 
   // Fetch ward boundary info
   const ward = wardNo
-    ? await fetchJson(`ward_boundaries?ward_no=eq.${wardNo}&select=ward_name,assembly_constituency,zone&limit=1`)
+    ? await fetchJson(`wards?ward_no=eq.${wardNo}&select=ward_name,assembly_constituency,zone&limit=1`)
     : null
 
   // Fetch report card via constituency
