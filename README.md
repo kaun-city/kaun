@@ -37,18 +37,31 @@ No separate API server. Frontend talks directly to Supabase via PostgREST + RPC.
 
 ---
 
-## Data Sources
+## Data Sources & Attribution
 
-| Dataset | Source | Coverage |
+All data is sourced from public records and open datasets. We are grateful to the organisations that publish and maintain this data.
+
+| Dataset | Source | Link |
 |---|---|---|
-| Ward boundaries | datameet / Municipal Spatial Data | 243 BBMP wards |
-| Elected reps + affidavits | Election Commission of India / CIVIC Bengaluru | 28 MLAs + corporators |
-| MLA LAD funds | opencity.in | Constituency-level |
-| Ward committee meetings | opencity.in | Ward-level |
-| Traffic signals | OpenStreetMap (Overpass API) | 1,367 signals |
-| BMTC bus stops | opencity.in | Ward-level |
-| Budget 2025-26 | opencity.in / BBMP | Department-level |
-| Pothole complaints | opencity.in | Ward-level |
+| BBMP ward boundaries (243 wards) | datameet — Municipal Spatial Data | [github.com/datameet](https://github.com/datameet/Municipal_Spatial_Data/tree/master/Bangalore) |
+| MLA affidavits (criminal cases, assets, net worth) | Election Commission of India via MyNeta | [myneta.info](https://www.myneta.info) |
+| MLA LAD fund utilization | CIVIC Bengaluru via opencity.in | [opencity.in](https://opencity.in) |
+| Ward committee meetings | opencity.in / BBMP | [opencity.in](https://opencity.in) |
+| Rep report cards (attendance, questions asked) | CIVIC Bengaluru via opencity.in | [opencity.in](https://opencity.in) |
+| BBMP Budget 2025-26 | opencity.in / BBMP | [opencity.in](https://opencity.in) |
+| BMTC bus stops | opencity.in / BMTC | [opencity.in](https://opencity.in) |
+| Pothole complaints | opencity.in / BBMP | [opencity.in](https://opencity.in) |
+| BBMP work orders | opencity.in / BBMP | [opencity.in](https://opencity.in) |
+| Traffic signals | OpenStreetMap contributors (Overpass API) | [openstreetmap.org](https://www.openstreetmap.org) |
+
+**Key organisations:**
+- [**datameet**](https://datameet.org) — civic data community that publishes and maintains open spatial datasets for Indian cities
+- [**opencity.in**](https://opencity.in) — Open City Foundation's open data portal for Indian municipal data
+- [**CIVIC Bengaluru**](https://civicbengaluru.org) — citizen platform that compiles and publishes elected rep performance data
+- [**OpenStreetMap**](https://www.openstreetmap.org) — community-maintained map data used for infrastructure (signals, stops)
+- [**Election Commission of India**](https://eci.gov.in) — source of all candidate affidavit data (criminal cases, assets)
+
+> All elected representative data is self-declared in EC nomination affidavits and sourced from public records. Ward-level statistics reflect data available at the time of last update.
 
 ---
 
