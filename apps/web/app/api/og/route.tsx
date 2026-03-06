@@ -19,7 +19,6 @@ async function fetchJson(path: string) {
 }
 
 export async function GET(req: Request) {
-  try {
   const { searchParams } = new URL(req.url)
   const wardNo = parseInt(searchParams.get("ward_no") ?? "0", 10)
 
@@ -87,24 +86,23 @@ export async function GET(req: Request) {
         </div>
 
         {/* Accountability stat */}
-        {stat && (
+        {stat ? (
           <div style={{
-            display: "flex", alignItems: "center", gap: "24px",
+            display: "flex", alignItems: "center",
             marginTop: "40px",
             backgroundColor: "rgba(255,153,51,0.12)",
-            border: "1.5px solid rgba(255,153,51,0.30)",
+            border: "2px solid rgba(255,153,51,0.30)",
             borderRadius: "16px",
             padding: "28px 40px",
-            width: "fit-content",
           }}>
-            <div style={{ color: "#FF9933", fontSize: "72px", fontWeight: 900, lineHeight: 1 }}>
+            <div style={{ color: "#FF9933", fontSize: "72px", fontWeight: 900, lineHeight: "1", marginRight: "24px" }}>
               {stat}
             </div>
-            <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "28px", fontWeight: 400, maxWidth: "320px" }}>
+            <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "28px", fontWeight: 400, maxWidth: "320px", display: "flex" }}>
               {statLabel}
             </div>
           </div>
-        )}
+        ) : null}
 
         {/* Footer */}
         <div style={{
@@ -122,7 +120,4 @@ export async function GET(req: Request) {
     ),
     { width: 1200, height: 630 }
   )
-  } catch (e: unknown) {
-    return new Response(String(e), { status: 500, headers: { "content-type": "text/plain" } })
-  }
 }
