@@ -53,7 +53,7 @@ export async function GET(req: Request) {
         }} />
 
         {/* Photo (if available) — right half */}
-        {report.photo_url && (
+        {report.photo_url ? (
           <div style={{
             position: "absolute", right: 0, top: 0, bottom: 0,
             width: "45%",
@@ -67,12 +67,12 @@ export async function GET(req: Request) {
             />
             {/* Gradient overlay */}
             <div style={{
-              position: "absolute", inset: 0,
+              position: "absolute", top: 0, right: 0, bottom: 0, left: 0,
               background: "linear-gradient(to right, #0A0A0A 0%, transparent 40%)",
               display: "flex",
             }} />
           </div>
-        )}
+        ) : null}
 
         {/* Content */}
         <div style={{
@@ -93,10 +93,9 @@ export async function GET(req: Request) {
             <div style={{
               display: "flex",
               backgroundColor: "rgba(255,153,51,0.15)",
-              border: "1.5px solid rgba(255,153,51,0.4)",
+              border: "2px solid rgba(255,153,51,0.4)",
               borderRadius: "8px",
               padding: "6px 14px",
-              width: "fit-content",
             }}>
               <span style={{ color: "#FF9933", fontSize: "14px", fontWeight: 700, letterSpacing: "0.05em" }}>
                 {issueLabel.toUpperCase()}

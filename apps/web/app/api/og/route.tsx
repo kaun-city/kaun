@@ -62,7 +62,7 @@ export async function GET(req: Request) {
       }}>
         {/* Glow */}
         <div style={{
-          position: "absolute", inset: 0,
+          position: "absolute", top: 0, right: 0, bottom: 0, left: 0,
           backgroundImage: "radial-gradient(circle at 75% 30%, rgba(255,153,51,0.10) 0%, transparent 55%)",
           display: "flex",
         }} />
