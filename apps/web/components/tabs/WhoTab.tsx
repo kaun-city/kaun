@@ -81,8 +81,10 @@ export function WhoTab({
   }
 
   // Build story payload once we have the key data points
+  // Wait for profile to load before building storyData
+  // so mla_name is never undefined (prevents AI hallucinating MLA from training data)
   const storyData: WardStoryRequest | null =
-    result.ward_no && result.assembly_constituency
+    !profileLoading && result.ward_no && result.assembly_constituency
       ? {
           ward_no: result.ward_no,
           ward_name: result.ward_name ?? "",
@@ -109,8 +111,8 @@ export function WhoTab({
 
 
 
-      {/* Governance alert */}
-      {profile?.governance_alert && (
+      {/* Governance alert — skip the "No elected corporator" noise (applies to all 243 wards) */}
+      {profile?.governance_alert && profile.governance_alert.title !== "No elected corporator" && (
         <div className="flex gap-2.5 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
           <span className="text-yellow-400 text-base mt-0.5">!</span>
           <div>
