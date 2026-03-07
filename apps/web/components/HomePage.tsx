@@ -149,6 +149,7 @@ export default function HomePage() {
             assembly_constituency: ward.assembly_constituency ?? "",
             zone: ward.zone ?? "",
             city_id: "bengaluru",
+            found: true,
             lat: 12.9716,
             lng: 77.5946,
           } as PinResult)
