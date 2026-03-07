@@ -15,18 +15,19 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     try {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/ward_reports?id=eq.${reportId}&status=eq.approved&select=issue_type,ward_name,ai_label,ai_person,ai_party&limit=1`,
+        `${SUPABASE_URL}/rest/v1/ward_reports?id=eq.${reportId}&status=eq.approved&select=issue_type,ward_name,ai_label,ai_person,ai_party,description&limit=1`,
         { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` }, next: { revalidate: 60 } }
       )
       const rows = await res.json()
       const report = Array.isArray(rows) ? rows[0] : null
       if (report) {
+        const desc = report.ai_label ?? report.description ?? report.issue_type
         const title = report.ai_person
-          ? `${report.ai_person} (${report.ai_party ?? ""}) - ${report.ai_label ?? report.issue_type}`
-          : `${report.ai_label ?? report.issue_type} in ${report.ward_name ?? "Bengaluru"}`
+          ? `${report.ai_person} (${report.ai_party ?? ""}) - ${desc}`
+          : `${desc} in ${report.ward_name ?? "Bengaluru"}`
         return {
           title: `${title} | KAUN?`,
-          description: report.ai_label ?? `Civic issue reported in ${report.ward_name ?? "Bengaluru"}`,
+          description: desc,
           openGraph: {
             title,
             description: report.ai_label ?? `Civic issue reported via kaun.city`,

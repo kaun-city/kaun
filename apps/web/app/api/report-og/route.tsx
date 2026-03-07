@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 
   // Fetch report from Supabase
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/ward_reports?id=eq.${reportId}&status=eq.approved&select=issue_type,ward_name,ward_no,ai_label,ai_person,ai_party,photo_url&limit=1`,
+    `${SUPABASE_URL}/rest/v1/ward_reports?id=eq.${reportId}&status=eq.approved&select=issue_type,ward_name,ward_no,ai_label,ai_person,ai_party,photo_url,description&limit=1`,
     { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
   )
   const rows = await res.json()
