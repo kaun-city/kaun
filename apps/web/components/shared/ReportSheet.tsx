@@ -158,11 +158,11 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
                   className="w-full h-32 rounded-xl border-2 border-dashed border-white/15 flex flex-col items-center justify-center gap-2 text-white/30 hover:border-white/25 hover:text-white/50 transition-all"
                 >
                   <span className="text-2xl">+</span>
-                  <span className="text-sm">Tap to add photo</span>
-                  <span className="text-xs">Photo goes through AI moderation before publishing</span>
+                  <span className="text-sm">Camera or gallery</span>
+                  <span className="text-xs text-center px-4">AI checks photo before publishing</span>
                 </button>
               )}
-              <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handlePhotoChange} />
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
             </div>
 
             {/* Description */}
