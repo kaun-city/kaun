@@ -395,6 +395,28 @@ export async function fetchWardReportCount(wardNo: number): Promise<number> {
   return rows.length
 }
 
+export interface CivicSignal {
+  id: number
+  source: string
+  url: string
+  author: string
+  title: string
+  issue_type: string
+  upvotes: number
+  signal_at: string
+}
+
+export async function fetchWardSignals(wardNo: number): Promise<CivicSignal[]> {
+  const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  return query<CivicSignal>('civic_signals', {
+    'ward_no': `eq.${wardNo}`,
+    'signal_at': `gte.${since}`,
+    'select': 'id,source,url,author,title,issue_type,upvotes,signal_at',
+    'order': 'signal_at.desc',
+    'limit': '10',
+  })
+}
+
 export async function fetchWardSpend(wardNo: number): Promise<import('./types').WardSpendCategory | null> {
   const rows = await query<import('./types').WardSpendCategory>('ward_spend_category', {
     'ward_no': `eq.${wardNo}`,

@@ -8,6 +8,7 @@ import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
 import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { SkeletonCard, SkeletonStats } from "@/components/shared/Skeleton"
+import type { CivicSignal } from "@/lib/api"
 
 // City-wide averages for comparison (from ward_infra_stats materialized view)
 const CITY_AVG_SIGNALS  = 5.5
@@ -24,9 +25,10 @@ interface Props {
   wardName: string
   assemblyConstituency: string
   reportCount?: number
+  signals?: CivicSignal[]
 }
 
-export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLoading, wardNo, wardName, assemblyConstituency, reportCount = 0 }: Props) {
+export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLoading, wardNo, wardName, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   return (
     <>
@@ -179,6 +181,29 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
 
           <p className="text-white/15 text-[10px] text-center">{wardStats.source} · {wardStats.ward_count} wards aggregated</p>
         </>
+      )}
+
+      {/* Ward Pulse — geotagged signals from reddit ingestion agent */}
+      {signals.length > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-white/30 text-xs uppercase tracking-wider">Ward Pulse</p>
+            <FreshnessBadge label="7d" source="reddit / kaun" />
+          </div>
+          {signals.map(s => (
+            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block group">
+              <div className="py-2.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border-l-2 border-[#FF9933]/30">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#FF9933]/70">{s.issue_type}</span>
+                  <span className="text-white/15 text-[10px]">·</span>
+                  <span className="text-white/25 text-[10px]">{s.source}</span>
+                </div>
+                <p className="text-white/80 text-xs leading-snug group-hover:text-white transition-colors line-clamp-2">{s.title}</p>
+                <p className="text-white/25 text-[10px] mt-1">+{s.upvotes} · {timeAgo(new Date(s.signal_at).getTime() / 1000)}</p>
+              </div>
+            </a>
+          ))}
+        </div>
       )}
 
       {/* Community Buzz */}
