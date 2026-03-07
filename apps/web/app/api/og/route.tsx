@@ -68,21 +68,21 @@ export async function GET(req: Request) {
         }} />
 
         {/* Wordmark */}
-        <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <span style={{ color: "white", fontSize: "26px", fontWeight: 900 }}>KAUN</span>
-          <span style={{ color: "#FF9933", fontSize: "30px", fontWeight: 900 }}>?</span>
+          <span style={{ color: "#FF9933", fontSize: "30px", fontWeight: 900, marginLeft: "2px" }}>?</span>
         </div>
 
         {/* Ward name */}
-        <div style={{ display: "flex", flexDirection: "column", marginTop: "40px", gap: "10px" }}>
-          <div style={{ color: "white", fontSize: "76px", fontWeight: 800, lineHeight: 1, letterSpacing: "-2px" }}>
+        <div style={{ display: "flex", flexDirection: "column", marginTop: "40px" }}>
+          <div style={{ color: "white", fontSize: "76px", fontWeight: 800, lineHeight: "1", letterSpacing: "-2px" }}>
             {wardName}
           </div>
-          {constituency && (
-            <div style={{ color: "rgba(255,255,255,0.35)", fontSize: "24px" }}>
-              Ward {wardNo}  {constituency} Assembly  Bengaluru
+          {constituency ? (
+            <div style={{ color: "rgba(255,255,255,0.35)", fontSize: "24px", display: "flex" }}>
+              Ward {wardNo} · {constituency} · Bengaluru
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Accountability stat */}
