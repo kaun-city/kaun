@@ -107,7 +107,7 @@ async function classifySignal(openai: OpenAI, title: string, body: string): Prom
   }
 }
 
-// ─── Google News RSS (works from cloud, no auth) ─────────────────────────────
+// ─── RSS feeds ───────────────────────────────────────────────────────────────
 
 interface NewsItem {
   title: string
@@ -116,33 +116,62 @@ interface NewsItem {
   source: string
 }
 
-const NEWS_QUERIES = [
-  "Bengaluru+pothole", "Bengaluru+BBMP+road", "Bengaluru+flooding",
-  "Bengaluru+traffic+signal", "Bengaluru+garbage", "Bengaluru+encroachment",
-  "BBMP+ward+complaint", "Bengaluru+water+supply", "BESCOM+Bengaluru",
-]
-
-async function fetchGoogleNews(query: string): Promise<NewsItem[]> {
+// Generic RSS parser — handles standard RSS 2.0 and Atom feeds
+async function fetchRSS(url: string, sourceName: string, limit = 15): Promise<NewsItem[]> {
   try {
-    const url = `https://news.google.com/rss/search?q=${query}+when:7d&hl=en-IN&gl=IN&ceid=IN:en`
-    const res = await fetch(url, { headers: { "User-Agent": "kaun-city/1.0" } })
+    const res = await fetch(url, {
+      headers: { "User-Agent": "kaun-city/1.0 (https://kaun.city; civic accountability)" },
+      signal: AbortSignal.timeout(8000),
+    })
     if (!res.ok) return []
     const xml = await res.text()
-    // Simple XML parse — extract <item> blocks
+    if (!xml.includes("<item") && !xml.includes("<entry")) return []
     const items: NewsItem[] = []
-    const itemMatches = xml.match(/<item>([\s\S]*?)<\/item>/g) ?? []
-    for (const block of itemMatches.slice(0, 10)) {
-      const title = block.match(/<title>([\s\S]*?)<\/title>/)?.[1]?.replace(/<!\[CDATA\[|\]\]>/g, "").trim() ?? ""
-      const link  = block.match(/<link>([\s\S]*?)<\/link>/)?.[1]?.trim()
-        ?? block.match(/<link\s*\/>([\s\S]*?)(?=<)/)?.[1]?.trim() ?? ""
-      const pubDate = block.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1]?.trim() ?? ""
-      const source  = block.match(/<source[^>]*>([\s\S]*?)<\/source>/)?.[1]?.replace(/<!\[CDATA\[|\]\]>/g, "").trim() ?? "news"
-      if (title) items.push({ title, link, pubDate, source })
+    // Support both RSS <item> and Atom <entry>
+    const blocks = xml.match(/<item>([\s\S]*?)<\/item>/g)
+      ?? xml.match(/<entry>([\s\S]*?)<\/entry>/g)
+      ?? []
+    for (const block of blocks.slice(0, limit)) {
+      const title   = block.match(/<title[^>]*>([\s\S]*?)<\/title>/)?.[1]?.replace(/<!\[CDATA\[|\]\]>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim() ?? ""
+      // RSS: <link>url</link>  Atom: <link href="url"/>
+      const link    = block.match(/<link>([\s\S]*?)<\/link>/)?.[1]?.trim()
+        ?? block.match(/<link[^>]+href="([^"]+)"/)?.[1]?.trim() ?? ""
+      const pubDate = block.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1]?.trim()
+        ?? block.match(/<published>([\s\S]*?)<\/published>/)?.[1]?.trim() ?? ""
+      if (title.length > 10) items.push({ title, link, pubDate, source: sourceName })
     }
     return items
   } catch {
     return []
   }
+}
+
+// Direct RSS feeds — civic-focused Bengaluru sources
+const DIRECT_RSS_FEEDS: Array<{ url: string; name: string }> = [
+  // Best: hyper-local Bengaluru civic journalism
+  { url: "https://citizenmatters.in/feed",                                                        name: "Citizen Matters" },
+  // Mainstream Bengaluru news
+  { url: "https://www.deccanherald.com/rss/city.rss",                                             name: "Deccan Herald" },
+  { url: "https://www.thehindu.com/news/cities/bangalore/?service=rss",                           name: "The Hindu Bengaluru" },
+  { url: "https://bangaloremirror.indiatimes.com/rssfeeds/1564615/list.cms",                       name: "Bangalore Mirror" },
+  // BBMP / civic beat
+  { url: "https://www.newindianexpress.com/rss/states/karnataka.xml",                             name: "New Indian Express" },
+]
+
+// Google News RSS — query-based, catches anything the direct feeds miss
+const GOOGLE_NEWS_QUERIES = [
+  "Bengaluru+pothole+BBMP", "Bengaluru+flooding+ward",
+  "Bengaluru+garbage+BBMP", "Bengaluru+traffic+signal+broken",
+  "BBMP+road+repair", "Bengaluru+encroachment+complaint",
+  "Bengaluru+water+supply+shortage", "BESCOM+power+cut+Bengaluru",
+]
+
+async function fetchGoogleNews(query: string): Promise<NewsItem[]> {
+  return fetchRSS(
+    `https://news.google.com/rss/search?q=${query}+when:7d&hl=en-IN&gl=IN&ceid=IN:en`,
+    "Google News",
+    10,
+  )
 }
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
@@ -158,10 +187,35 @@ export async function GET(req: Request) {
   )
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
 
-  const results = { reddit: 0, news: 0, skipped: 0, errors: 0 }
+  const results = { reddit: 0, news: 0, civic_media: 0, skipped: 0, errors: 0 }
 
-  // ── Reddit (may fail from cloud IPs) ─────────────────────────────────
-  const redditQueries = REDDIT_QUERIES.sort(() => Math.random() - 0.5).slice(0, 3)
+  // Helper: upsert one news/RSS item
+  async function upsertNewsItem(item: NewsItem, sourceKey: string) {
+    const cls = await classifySignal(openai, item.title, "")
+    if (!cls.is_civic) { results.skipped++; return }
+    const geo     = guessWardFromText(item.title)
+    const geoHint = cls.ward_hint ? guessWardFromText(cls.ward_hint) : { ward_no: null, ward_name: null }
+    const { ward_no, ward_name } = geoHint.ward_no ? geoHint : geo
+    const hashId  = item.title.replace(/[^a-zA-Z0-9]/g, "").substring(0, 40).toLowerCase()
+    const { error } = await supabase.from("civic_signals").upsert({
+      source: sourceKey,
+      source_id: `${sourceKey}_${hashId}`,
+      url: item.link || null,
+      author: item.source,
+      title: item.title,
+      body: null,
+      ward_no, ward_name,
+      issue_type: cls.issue_type,
+      upvotes: 0,
+      signal_at: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
+    }, { onConflict: "source,source_id", ignoreDuplicates: true })
+    if (error) results.errors++
+    else if (sourceKey === "gnews") results.news++
+    else results.civic_media++
+  }
+
+  // ── Reddit (may fail from cloud IPs — keeping for future OAuth upgrade) ──
+  const redditQueries = REDDIT_QUERIES.sort(() => Math.random() - 0.5).slice(0, 2)
   for (const query of redditQueries) {
     const posts = await fetchReddit("bangalore", query)
     for (const post of posts) {
@@ -170,18 +224,15 @@ export async function GET(req: Request) {
       if (ageHours > 168) { results.skipped++; continue }
       const cls = await classifySignal(openai, post.title, post.selftext)
       if (!cls.is_civic) { results.skipped++; continue }
-      const geoFromHint = cls.ward_hint ? guessWardFromText(cls.ward_hint) : { ward_no: null, ward_name: null }
-      const geoFromText = guessWardFromText(text)
-      const { ward_no, ward_name } = geoFromHint.ward_no ? geoFromHint : geoFromText
+      const geoHint = cls.ward_hint ? guessWardFromText(cls.ward_hint) : { ward_no: null, ward_name: null }
+      const geoText = guessWardFromText(text)
+      const { ward_no, ward_name } = geoHint.ward_no ? geoHint : geoText
       const { error } = await supabase.from("civic_signals").upsert({
-        source: "reddit",
-        source_id: post.id,
+        source: "reddit", source_id: post.id,
         url: `https://reddit.com${post.permalink}`,
-        author: post.author,
-        title: post.title,
+        author: post.author, title: post.title,
         body: post.selftext.substring(0, 500),
-        ward_no, ward_name,
-        issue_type: cls.issue_type,
+        ward_no, ward_name, issue_type: cls.issue_type,
         upvotes: post.score,
         signal_at: new Date(post.created_utc * 1000).toISOString(),
       }, { onConflict: "source,source_id", ignoreDuplicates: true })
@@ -189,31 +240,24 @@ export async function GET(req: Request) {
     }
   }
 
-  // ── Google News RSS (reliable from cloud) ───────────────────────────
-  const newsQueries = NEWS_QUERIES.sort(() => Math.random() - 0.5).slice(0, 3)
-  for (const query of newsQueries) {
+  // ── Direct civic RSS feeds (citizenmatters, Deccan Herald, The Hindu, etc.) ──
+  // All feeds run every day — ignoreDuplicates handles seen items
+  const feedResults = await Promise.allSettled(
+    DIRECT_RSS_FEEDS.map(f => fetchRSS(f.url, f.name))
+  )
+  for (const result of feedResults) {
+    if (result.status !== "fulfilled") continue
+    for (const item of result.value) {
+      await upsertNewsItem(item, "civic_media")
+    }
+  }
+
+  // ── Google News RSS — 2 random civic queries ─────────────────────────
+  const gnQueries = GOOGLE_NEWS_QUERIES.sort(() => Math.random() - 0.5).slice(0, 2)
+  for (const query of gnQueries) {
     const items = await fetchGoogleNews(query)
     for (const item of items) {
-      const cls = await classifySignal(openai, item.title, "")
-      if (!cls.is_civic) { results.skipped++; continue }
-      const geo = guessWardFromText(item.title)
-      const geoHint = cls.ward_hint ? guessWardFromText(cls.ward_hint) : { ward_no: null, ward_name: null }
-      const { ward_no, ward_name } = geoHint.ward_no ? geoHint : geo
-      // Use title hash as source_id since news links can change
-      const hashId = item.title.replace(/[^a-zA-Z0-9]/g, "").substring(0, 40).toLowerCase()
-      const { error } = await supabase.from("civic_signals").upsert({
-        source: "news",
-        source_id: `gn_${hashId}`,
-        url: item.link,
-        author: item.source,
-        title: item.title,
-        body: null,
-        ward_no, ward_name,
-        issue_type: cls.issue_type,
-        upvotes: 0,
-        signal_at: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
-      }, { onConflict: "source,source_id", ignoreDuplicates: true })
-      if (error) results.errors++; else results.news++
+      await upsertNewsItem(item, "gnews")
     }
   }
 
