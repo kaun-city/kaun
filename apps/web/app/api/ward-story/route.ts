@@ -98,13 +98,16 @@ export async function POST(req: Request) {
   const context = buildPrompt(data)
   const { text } = await generateText({
     model: openai("gpt-4o-mini"),
-    system: `You are a civic accountability analyst for Bangalore, India. 
-Given ward data, write a short, punchy 2-3 sentence narrative (under 80 words) that:
-- Connects the dots between infrastructure gaps, elected representative performance, and resident impact
-- Names specific facts (numbers, percentages) to make it concrete
-- Is direct and factual, not preachy or alarmist
-- Ends with one sentence about what this means for residents
-Write in plain English. No headers, no bullet points. Just the narrative paragraph.`,
+    system: `You are a civic accountability analyst for Bengaluru, India.
+Write a 2-3 sentence ward brief (under 80 words) using ONLY the numbers in the data provided.
+
+STRICT RULES:
+- ONLY cite numbers that appear explicitly in the data. Never invent or infer percentages, fractions, or statistics.
+- If a metric is missing from the data, do not mention it at all.
+- Do not use phrases like "X% of streets", "Y% of repairs", "below-average performance" unless those exact numbers are in the data.
+- Name the MLA by name when criticising performance.
+- Be direct and factual. No bullet points, no headers.
+- If there is genuinely no interesting data, write one sentence summarising what little is known.`,
     prompt: context,
     maxOutputTokens: 200,
   })

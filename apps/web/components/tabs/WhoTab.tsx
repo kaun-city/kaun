@@ -1,16 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { submitFact } from "@/lib/api"
 import { OFFICER_SUBJECTS } from "@/lib/constants"
-import { getVoterToken } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
 import type {
   CommunityFact, GbaContact, MlaLadFunds, PinResult,
   RepReportCard, WardCommitteeMeetings, WardProfile,
 } from "@/lib/types"
-import type { ShowAddFor, WardUnknowns } from "@/hooks/useWardData"
-import { AddFactForm } from "@/components/shared/AddFactForm"
+
 
 /** Collapsible wrapper for data older than ~2 years */
 function HistoricalSection({ label, children }: { label: string; children: React.ReactNode }) {
@@ -52,9 +49,6 @@ interface Props {
   city: CityConfig
   profile: WardProfile | null
   profileLoading: boolean
-  unknowns: WardUnknowns | null
-  showAddFor: ShowAddFor | null
-  onSetShowAddFor: (q: ShowAddFor | null) => void
   committeeMeetings: WardCommitteeMeetings | null
   reportCard: RepReportCard | null
   ladFunds: MlaLadFunds[]
@@ -64,15 +58,14 @@ interface Props {
   officerGroups: Record<string, Record<string, CommunityFact>>
   onCorroborate: (id: number) => Promise<void>
   onNewFact: (fact: CommunityFact) => void
-  onUnknownsRefresh: () => void
   infraStats: WardInfraStats | null
   potholes: WardPotholes | null
 }
 
 export function WhoTab({
-  result, city, profile, profileLoading, unknowns, showAddFor, onSetShowAddFor,
+  result, city, profile, profileLoading,
   committeeMeetings, reportCard, ladFunds, corpContacts, corpName,
-  allFacts, officerGroups, onCorroborate, onNewFact, onUnknownsRefresh,
+  allFacts, officerGroups, onCorroborate, onNewFact,
   infraStats, potholes,
 }: Props) {
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
@@ -114,33 +107,7 @@ export function WhoTab({
     <div className="px-5 py-4 space-y-4 pb-safe-content">
       <WardStoryCard storyData={storyData} />
 
-      {/* Knowledge Score */}
-      {unknowns ? (
-        <div className="rounded-xl bg-white/5 p-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-white/50 text-xs uppercase tracking-wider">Community Knowledge</p>
-            <span className="text-white/40 text-xs font-mono">{unknowns.answered}/{unknowns.total_questions}</span>
-          </div>
-          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${Math.max(2, (unknowns.answered / unknowns.total_questions) * 100)}%`,
-                background: unknowns.answered === 0 ? "#ef4444" : unknowns.answered < unknowns.total_questions / 2 ? "#f59e0b" : "#22c55e",
-              }}
-            />
-          </div>
-          <p className="text-white/25 text-[10px]">
-            {unknowns.answered === 0
-              ? "Nobody has contributed data about this ward yet. Be the first."
-              : unknowns.unanswered?.length
-                ? `${unknowns.unanswered.length} things still unknown. Help fill the gaps.`
-                : "This ward is fully mapped by the community!"}
-          </p>
-        </div>
-      ) : (
-        <SkeletonCard lines={2} />
-      )}
+
 
       {/* Governance alert */}
       {profile?.governance_alert && (
@@ -301,7 +268,8 @@ export function WhoTab({
         )
       })() : null}
 
-      {/* Ward Officers */}
+      {/* Ward Officers — only show if data exists */}
+      {(profileLoading || (profile && (profile.officers.length > 0 || Object.keys(officerGroups).length > 0)) || corpContacts.length > 0) && (
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <p className="text-white/30 text-xs uppercase tracking-wider">Ward Officers</p>
@@ -332,14 +300,7 @@ export function WhoTab({
               ))}
             </div>
           ))
-        ) : (
-          <div className="p-3 rounded-xl bg-white/5">
-            <p className="text-white/50 text-sm">No officer details yet</p>
-            <p className="text-white/25 text-xs mt-1 leading-relaxed">
-              Government doesn&apos;t publish this. If you know your ward officer&apos;s name or number, share it below.
-            </p>
-          </div>
-        )}
+        ) : null}
 
         {/* GBA Corporation contacts */}
         {corpContacts.length > 0 && corpName && (
@@ -372,70 +333,9 @@ export function WhoTab({
           </div>
         )}
       </div>
-
-      {/* Fill-the-gaps prompts */}
-      {unknowns?.unanswered && unknowns.unanswered.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-white/30 text-xs uppercase tracking-wider">Help fill the gaps</p>
-          {unknowns.unanswered.slice(0, showAddFor ? 3 : 6).map(q => (
-            <button
-              key={`${q.category}-${q.subject}-${q.field}`}
-              onClick={() => onSetShowAddFor(q)}
-              className={`w-full text-left p-2.5 rounded-lg transition-colors ${
-                showAddFor?.field === q.field && showAddFor?.subject === q.subject
-                  ? "bg-[#FF9933]/10 border border-[#FF9933]/30"
-                  : "bg-white/[0.03] hover:bg-white/[0.06] border border-transparent"
-              }`}
-            >
-              <span className="text-sm mr-2">{q.icon}</span>
-              <span className="text-white/50 text-xs">{q.prompt}</span>
-            </button>
-          ))}
-        </div>
       )}
 
-      {/* Inline quick-answer form */}
-      {showAddFor && result.ward_no && (
-        <div className="rounded-xl bg-[#FF9933]/5 border border-[#FF9933]/20 p-3 space-y-2">
-          <p className="text-white/60 text-xs">{showAddFor.prompt}</p>
-          <form
-            onSubmit={async e => {
-              e.preventDefault()
-              const input = (e.target as HTMLFormElement).elements.namedItem("answer") as HTMLInputElement
-              if (!input.value.trim()) return
-              const res = await submitFact({
-                city_id: result.city_id,
-                ward_no: result.ward_no!,
-                category: showAddFor!.category,
-                subject: showAddFor!.subject,
-                field: showAddFor!.field,
-                value: input.value.trim(),
-                source_type: "community",
-                contributor_token: getVoterToken(),
-              })
-              if (res?.fact) {
-                onNewFact(res.fact)
-                onSetShowAddFor(null)
-                onUnknownsRefresh()
-                input.value = ""
-              }
-            }}
-            className="flex gap-2"
-          >
-            <input
-              name="answer"
-              type="text"
-              placeholder="Type what you know..."
-              className="flex-1 bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white text-xs placeholder:text-white/20 focus:outline-none focus:border-[#FF9933]/50"
-              autoFocus
-            />
-            <button type="submit" className="bg-[#FF9933] text-black text-xs font-semibold px-4 py-2 rounded-lg hover:bg-[#FF9933]/80 transition-colors shrink-0">
-              Share
-            </button>
-          </form>
-          <button onClick={() => onSetShowAddFor(null)} className="text-white/20 text-[10px] hover:text-white/40">cancel</button>
-        </div>
-      )}
+
 
       {/* MLA LAD Fund */}
       {ladFunds.length > 0 && (() => {
@@ -478,10 +378,7 @@ export function WhoTab({
         )
       })()}
 
-      {/* Generic add-fact form */}
-      {!showAddFor && profile && result.ward_no && (
-        <AddFactForm wardNo={result.ward_no} cityId={result.city_id} onSubmitted={onNewFact} />
-      )}
+
     </div>
     </>
   )

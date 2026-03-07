@@ -185,9 +185,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               city={ward.city}
               profile={ward.profile}
               profileLoading={ward.profileLoading}
-              unknowns={ward.unknowns}
-              showAddFor={ward.showAddFor}
-              onSetShowAddFor={ward.setShowAddFor}
+
               committeeMeetings={ward.committeeMeetings}
               reportCard={ward.reportCard}
               ladFunds={ward.ladFunds}
@@ -197,7 +195,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               officerGroups={ward.officerGroups}
               onCorroborate={ward.handleCorroborate}
               onNewFact={ward.handleNewFact}
-              onUnknownsRefresh={ward.refreshUnknowns}
+
               infraStats={ward.infraStats}
               potholes={ward.potholes}
             />
