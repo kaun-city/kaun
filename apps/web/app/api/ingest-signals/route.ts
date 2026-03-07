@@ -35,17 +35,26 @@ interface RedditPost {
 }
 
 async function fetchReddit(subreddit: string, query: string): Promise<RedditPost[]> {
-  try {
-    const url = `https://www.reddit.com/r/${subreddit}/search.json?q=${encodeURIComponent(query)}&restrict_sr=1&sort=new&limit=10&t=week`
-    const res = await fetch(url, {
-      headers: { "User-Agent": "kaun-city-civic-bot/1.0 (civic accountability)" },
-    })
-    if (!res.ok) return []
-    const data = await res.json()
-    return (data?.data?.children ?? []).map((c: { data: RedditPost }) => c.data)
-  } catch {
-    return []
+  // Try old.reddit.com first (less aggressive bot blocking from cloud IPs)
+  const urls = [
+    `https://old.reddit.com/r/${subreddit}/search.json?q=${encodeURIComponent(query)}&restrict_sr=1&sort=new&limit=10&t=week`,
+    `https://www.reddit.com/r/${subreddit}/search.json?q=${encodeURIComponent(query)}&restrict_sr=1&sort=new&limit=10&t=week`,
+  ]
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, {
+        headers: { "User-Agent": "kaun-city-civic-bot/1.0 (https://kaun.city; civic accountability tool)" },
+      })
+      if (!res.ok) continue
+      const text = await res.text()
+      // Reddit sometimes returns HTML instead of JSON when blocking
+      if (!text.startsWith("{") && !text.startsWith("[")) continue
+      const data = JSON.parse(text)
+      const posts = (data?.data?.children ?? []).map((c: { data: RedditPost }) => c.data)
+      if (posts.length > 0) return posts
+    } catch { continue }
   }
+  return []
 }
 
 // ─── GPT classification ───────────────────────────────────────────────────────
