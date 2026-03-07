@@ -130,7 +130,7 @@ export default function HomePage() {
         })
         .catch(() => {})
     } else if (wardParam) {
-      // Fetch ward center from ward_boundaries
+      // Direct ward deep link — fetch ward row and open card without reverse geocoding
       const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL!
       const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       fetch(
@@ -138,29 +138,20 @@ export default function HomePage() {
         { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
       )
         .then(r => r.json())
-        .then(async (rows) => {
+        .then((rows) => {
           const ward = Array.isArray(rows) ? rows[0] : null
           if (!ward) return
-          // Use bengaluru center as fallback, ward lookup will happen via map click
-          const lat = 12.9716, lng = 77.5946
-          setPinLoading(true)
+          setOutOfBounds(false)
           setShowCard(true)
-          // Try to find a representative point for this ward
-          const result = await pinLookup(lat, lng)
-          if (result && result.ward_no === Number(wardParam)) {
-            setPinResult({ ...result, lat, lng })
-            setPinLoading(false)
-          } else {
-            // Ward center didn't match, just show ward data from API
-            setPinResult({
-              ward_no: ward.ward_no,
-              ward_name: ward.ward_name,
-              assembly_constituency: ward.assembly_constituency,
-              zone: ward.zone,
-              lat, lng,
-            } as PinResult)
-            setPinLoading(false)
-          }
+          setPinResult({
+            ward_no: ward.ward_no,
+            ward_name: ward.ward_name,
+            assembly_constituency: ward.assembly_constituency ?? "",
+            zone: ward.zone ?? "",
+            city_id: "bengaluru",
+            lat: 12.9716,
+            lng: 77.5946,
+          } as PinResult)
         })
         .catch(() => {})
     }
