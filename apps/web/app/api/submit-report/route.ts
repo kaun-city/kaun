@@ -133,8 +133,26 @@ Analyse this photo and respond with a JSON object (no markdown, raw JSON only):
         // JSON parse failed — keep as pending for manual review
         status = "pending"
       }
+    } else if (issue_type === "hoarding" && description) {
+      // Hoarding text report — quick GPT extraction of politician name from description
+      try {
+        const textExtract = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          max_tokens: 100,
+          messages: [{
+            role: "user",
+            content: `Extract politician name and party from this civic complaint. Respond with raw JSON only: {"politician_name": "...", "politician_party": "...", "description": "one sentence civic violation description"}. If no politician mentioned, use null.\n\nComplaint: ${description}`
+          }]
+        })
+        const raw = textExtract.choices[0]?.message?.content ?? "{}"
+        const parsed = JSON.parse(raw)
+        ai_person = parsed.politician_name ?? null
+        ai_party  = parsed.politician_party ?? null
+        ai_label  = parsed.description ?? description
+      } catch { /* keep original description */ }
+      status = "approved"
     } else {
-      // Text-only report — auto-approve with lower confidence
+      // Text-only report — auto-approve
       status = "approved"
     }
 

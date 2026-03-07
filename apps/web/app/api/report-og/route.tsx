@@ -30,11 +30,12 @@ export async function GET(req: Request) {
   const report = Array.isArray(rows) ? rows[0] : null
   if (!report) return new Response("Report not found", { status: 404 })
 
-  const issueLabel = ISSUE_LABELS[report.issue_type] ?? "Civic issue"
-  const wardLine   = report.ward_name ? `Ward ${report.ward_no} · ${report.ward_name} · Bengaluru` : "Bengaluru"
-  const personLine = report.ai_person
+  const issueLabel  = ISSUE_LABELS[report.issue_type] ?? "Civic issue"
+  const wardLine    = report.ward_name ? `Ward ${report.ward_no} · ${report.ward_name} · Bengaluru` : "Bengaluru"
+  const personLine  = report.ai_person
     ? `${report.ai_person}${report.ai_party ? " · " + report.ai_party : ""}`
     : null
+  const headline    = report.ai_label ?? report.description ?? issueLabel
 
   return new ImageResponse(
     (
@@ -102,11 +103,9 @@ export async function GET(req: Request) {
               </span>
             </div>
 
-            {report.ai_label && (
-              <div style={{ color: "white", fontSize: "34px", fontWeight: 800, lineHeight: "1.2", letterSpacing: "-0.5px" }}>
-                {report.ai_label}
-              </div>
-            )}
+            <div style={{ display: "flex", color: "white", fontSize: "32px", fontWeight: 800, lineHeight: "1.3" }}>
+              {headline.length > 120 ? headline.substring(0, 117) + "..." : headline}
+            </div>
 
             {personLine && (
               <div style={{
