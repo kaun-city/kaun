@@ -5,6 +5,7 @@ import { useCallback, useState, useRef } from "react"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
+import ReportSheet from "@/components/shared/ReportSheet"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -85,6 +86,8 @@ export default function HomePage() {
   const [outOfBounds, setOutOfBounds] = useState(false)
   const [geoDenied, setGeoDenied]     = useState(false)
   const [geoLoading, setGeoLoading]   = useState(false)
+  const [showReport, setShowReport]   = useState(false)
+  const [reportRefresh, setReportRefresh] = useState(0)
   const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
 
   const handlePin = useCallback((result: PinResult | null, lat: number, lng: number) => {
@@ -219,7 +222,22 @@ export default function HomePage() {
           </div>
         )}
 
-        <MapView onPin={handlePin} panRef={mapViewRef} resizeKey={showCard ? 1 : 0} />
+        {/* Floating Report button */}
+        <button
+          onClick={() => setShowReport(true)}
+          className="
+            absolute bottom-16 right-4 z-[900]
+            flex items-center gap-2 px-4 py-2.5 rounded-full
+            bg-[#111] border border-white/15 hover:border-white/30
+            text-white/70 hover:text-white text-sm font-medium
+            shadow-lg transition-all duration-150
+          "
+        >
+          <span className="text-[#FF9933] text-base font-bold">+</span>
+          Report
+        </button>
+
+        <MapView onPin={handlePin} panRef={mapViewRef} resizeKey={showCard ? 1 : 0} reportRefresh={reportRefresh} />
       </div>
 
       {showCard && (
@@ -228,6 +246,17 @@ export default function HomePage() {
 
       {outOfBounds && (
         <OutOfBoundsCard onClose={handleClose} />
+      )}
+
+      {showReport && (
+        <ReportSheet
+          lat={pinResult?.lat ?? 12.9716}
+          lng={pinResult?.lng ?? 77.5946}
+          wardNo={pinResult?.ward_no ?? undefined}
+          wardName={pinResult?.ward_name ?? undefined}
+          onClose={() => setShowReport(false)}
+          onSubmitted={() => { setShowReport(false); setReportRefresh(r => r + 1) }}
+        />
       )}
     </main>
   )

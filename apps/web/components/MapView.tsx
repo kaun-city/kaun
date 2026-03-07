@@ -33,16 +33,17 @@ const WARD_HOVER_STYLE = {
 
 interface Props {
   onPin: (result: PinResult | null, lat: number, lng: number) => void
-  /** Increment to trigger Leaflet invalidateSize() after a layout shift (e.g. sidebar open) */
   resizeKey?: number
-  /** Ref exposed for programmatic pan (e.g. geolocation button) */
   panRef?: MutableRefObject<{ panTo: (lat: number, lng: number) => void } | null>
+  /** Increment to refresh report markers after a new submission */
+  reportRefresh?: number
 }
 
-export default function MapView({ onPin, resizeKey = 0, panRef }: Props) {
+export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
+  const reportLayerRef = useRef<ReturnType<import("leaflet").LayerGroup["addTo"]> | null>(null)
   const onPinRef = useRef(onPin)
   const [loading, setLoading] = useState(true)
 
@@ -59,13 +60,57 @@ export default function MapView({ onPin, resizeKey = 0, panRef }: Props) {
     }
   }, [panRef])
 
-  // Re-fit map when sidebar open/closes (layout shift changes container width)
+  // Re-fit map when sidebar open/closes
   useEffect(() => {
     if (!mapRef.current) return
-    // Small delay so CSS transition has finished before we measure
     const t = setTimeout(() => mapRef.current?.invalidateSize(), 320)
     return () => clearTimeout(t)
   }, [resizeKey])
+
+  // Refresh report markers whenever a new report is submitted
+  useEffect(() => {
+    if (!mapRef.current) return
+    import("leaflet").then((L) => {
+      // Clear old report markers
+      if (reportLayerRef.current) {
+        (reportLayerRef.current as unknown as import("leaflet").LayerGroup).clearLayers()
+      } else {
+        const lg = L.layerGroup().addTo(mapRef.current!)
+        reportLayerRef.current = lg as unknown as ReturnType<import("leaflet").LayerGroup["addTo"]>
+      }
+
+      const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
+      const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
+
+      fetch(`${SUPABASE_URL}/rest/v1/ward_reports?status=eq.approved&select=id,lat,lng,issue_type,description,ward_name,ai_person,reported_at&order=reported_at.desc&limit=200`, {
+        headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` }
+      })
+        .then(r => r.json())
+        .then((reports: Array<{ id: number; lat: number; lng: number; issue_type: string; description: string; ward_name: string; ai_person: string; reported_at: string }>) => {
+          const layer = reportLayerRef.current as unknown as import("leaflet").LayerGroup
+          reports.forEach((report) => {
+            const dot = L.circleMarker([report.lat, report.lng], {
+              radius: 6,
+              color: "#FF9933",
+              fillColor: "#FF9933",
+              fillOpacity: 0.9,
+              weight: 2,
+            })
+            const label = report.issue_type.charAt(0).toUpperCase() + report.issue_type.slice(1)
+            dot.bindPopup(`
+              <div style="font-family:sans-serif;min-width:160px">
+                <strong style="color:#FF9933">${label}</strong>
+                ${report.ward_name ? `<br><span style="color:#888;font-size:12px">${report.ward_name}</span>` : ""}
+                ${report.ai_person ? `<br><span style="color:#fff;font-size:12px">${report.ai_person}</span>` : ""}
+                ${report.description ? `<br><span style="font-size:12px;color:#aaa">${report.description}</span>` : ""}
+              </div>
+            `)
+            layer.addLayer(dot)
+          })
+        })
+        .catch(() => {})
+    })
+  }, [reportRefresh])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
