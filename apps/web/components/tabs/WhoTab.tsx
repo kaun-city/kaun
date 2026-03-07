@@ -11,6 +11,31 @@ import type {
 } from "@/lib/types"
 import type { ShowAddFor, WardUnknowns } from "@/hooks/useWardData"
 import { AddFactForm } from "@/components/shared/AddFactForm"
+
+/** Collapsible wrapper for data older than ~2 years */
+function HistoricalSection({ label, children }: { label: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="rounded-xl border border-white/5 overflow-hidden">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-3 py-2.5 bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-white/20 text-[10px] uppercase tracking-widest font-semibold">Historical</span>
+          <span className="text-white/15 text-[10px] font-mono">{label}</span>
+        </div>
+        <svg
+          width="12" height="12" viewBox="0 0 12 12" fill="none"
+          className={`text-white/20 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        >
+          <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+      {open && <div className="p-3 pt-0 space-y-3 bg-white/[0.02]">{children}</div>}
+    </div>
+  )
+}
 import { FactCard } from "@/components/shared/FactCard"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { PartyBadge } from "@/components/shared/PartyBadge"
@@ -244,6 +269,7 @@ export function WhoTab({
           : count < 25 ? { label: "Meets sometimes", color: "#eab308" }
           : { label: "Meets regularly", color: "#22c55e" }
         return (
+          <HistoricalSection label="2020-22">
           <div className="rounded-xl bg-white/5 p-3 space-y-2">
             <div className="flex items-center justify-between">
               <p className="text-white/50 text-[10px] uppercase tracking-wider">Ward Committee</p>
@@ -271,6 +297,7 @@ export function WhoTab({
               )}
             </div>
           </div>
+          </HistoricalSection>
         )
       })() : null}
 
@@ -416,6 +443,7 @@ export function WhoTab({
         const fyRows = ladFunds.filter(r => r.financial_year !== "ALL").sort((a, b) => a.financial_year.localeCompare(b.financial_year))
         if (!termRow) return null
         return (
+          <HistoricalSection label="2013-18 · previous MLA term">
           <div className="rounded-xl bg-white/5 p-3 space-y-2">
             <div className="flex items-center justify-between">
               <p className="text-white/50 text-[10px] uppercase tracking-wider">MLA LAD Fund</p>
@@ -446,6 +474,7 @@ export function WhoTab({
               ))}
             </div>
           </div>
+          </HistoricalSection>
         )
       })()}
 
