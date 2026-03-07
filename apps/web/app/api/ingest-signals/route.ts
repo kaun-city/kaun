@@ -7,9 +7,11 @@ export const maxDuration = 60
 // Vercel Cron guard - only allow cron runner or internal admin calls
 function isAuthorized(req: Request): boolean {
   const cronSecret = process.env.CRON_SECRET
+  // Vercel Cron sends: Authorization: Bearer <CRON_SECRET>
+  const authHeader = req.headers.get("authorization") ?? ""
+  if (cronSecret && authHeader === `Bearer ${cronSecret}`) return true
+  // Manual trigger with secret header
   if (cronSecret && req.headers.get("x-cron-secret") === cronSecret) return true
-  // Vercel Cron sets this header automatically
-  if (req.headers.get("x-vercel-cron") === "1") return true
   return false
 }
 
