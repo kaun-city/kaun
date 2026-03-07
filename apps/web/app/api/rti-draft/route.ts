@@ -1,5 +1,6 @@
 import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
+import { aiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
@@ -86,6 +87,9 @@ function buildContext(d: RTIDraftRequest): string {
 }
 
 export async function POST(req: Request) {
+  const { success, reset } = await aiLimiter.limit(getIP(req))
+  if (!success) return rateLimitResponse(reset)
+
   try {
   const data: RTIDraftRequest = await req.json()
   const config = ISSUE_CONFIG[data.issue_type]

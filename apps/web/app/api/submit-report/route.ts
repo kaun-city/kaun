@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import OpenAI from "openai"
+import { reportLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 export const maxDuration = 45
@@ -19,6 +20,9 @@ interface SubmitReportBody {
 }
 
 export async function POST(req: Request) {
+  const { success, reset } = await reportLimiter.limit(getIP(req))
+  if (!success) return rateLimitResponse(reset)
+
   try {
     const body: SubmitReportBody = await req.json()
     const { lat, lng, ward_no, ward_name, issue_type, description, photo_base64, photo_mime } = body
