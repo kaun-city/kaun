@@ -40,6 +40,13 @@ body {
 .leaflet-control-zoom a:hover {
   background-color: #2a2a2a !important;
 }
+/* Ensure zoom controls stay visible on mobile (Android nav bar clearance) */
+@media (max-width: 767px) {
+  .leaflet-top.leaflet-right {
+    top: 48px !important;
+    right: 4px !important;
+  }
+}
 .leaflet-control-attribution {
   background: rgba(0, 0, 0, 0.6) !important;
   color: rgba(255, 255, 255, 0.3) !important;
