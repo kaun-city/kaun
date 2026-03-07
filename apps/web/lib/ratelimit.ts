@@ -1,27 +1,33 @@
 import { Ratelimit } from "@upstash/ratelimit"
 import { Redis } from "@upstash/redis"
 
-// Reuse Redis client across invocations (module-level singleton)
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
+/** Create a fresh Redis client per invocation — avoids module-level init before env is ready */
+function makeRedis() {
+  return new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL!,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  })
+}
 
-// AI routes: 10 requests per IP per minute (generous, stops bots)
-export const aiLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(10, "1 m"),
-  analytics: true,
-  prefix: "kaun:ai",
-})
+/** AI routes: 10 requests per IP per minute */
+export function makeAiLimiter() {
+  return new Ratelimit({
+    redis: makeRedis(),
+    limiter: Ratelimit.slidingWindow(10, "1 m"),
+    analytics: false,
+    prefix: "kaun:ai",
+  })
+}
 
-// Report submission: 5 reports per IP per hour (prevents spam floods)
-export const reportLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(5, "1 h"),
-  analytics: true,
-  prefix: "kaun:report",
-})
+/** Report submission: 5 per IP per hour */
+export function makeReportLimiter() {
+  return new Ratelimit({
+    redis: makeRedis(),
+    limiter: Ratelimit.slidingWindow(5, "1 h"),
+    analytics: false,
+    prefix: "kaun:report",
+  })
+}
 
 /** Extract best available IP from Vercel/Cloudflare headers */
 export function getIP(req: Request): string {
@@ -40,7 +46,7 @@ export function rateLimitResponse(reset: number): Response {
     {
       status: 429,
       headers: {
-        "Retry-After": String(retryAfter),
+        "Retry-After": String(Math.max(retryAfter, 1)),
         "X-RateLimit-Reset": String(reset),
       },
     }

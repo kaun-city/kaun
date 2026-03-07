@@ -2,7 +2,7 @@ import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
 import { createClient } from "@supabase/supabase-js"
 import { createHash } from "crypto"
-import { aiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
@@ -67,7 +67,7 @@ function buildPrompt(d: WardStoryRequest): string {
 }
 
 export async function POST(req: Request) {
-  const { success, reset } = await aiLimiter.limit(getIP(req))
+  const { success, reset } = await makeAiLimiter().limit(getIP(req))
   if (!success) return rateLimitResponse(reset)
 
   try {

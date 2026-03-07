@@ -2,7 +2,7 @@ import { openai } from "@ai-sdk/openai"
 import { generateText, tool, zodSchema, stepCountIs } from "ai"
 import { z } from "zod"
 import { createClient } from "@supabase/supabase-js"
-import { aiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
@@ -158,7 +158,7 @@ function makeTools(supabase: any) {
 }
 
 export async function POST(req: Request) {
-  const { success, reset } = await aiLimiter.limit(getIP(req))
+  const { success, reset } = await makeAiLimiter().limit(getIP(req))
   if (!success) return rateLimitResponse(reset)
 
   try {
