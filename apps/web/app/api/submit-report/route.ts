@@ -138,18 +138,28 @@ Analyse this photo and respond with a JSON object (no markdown, raw JSON only):
       try {
         const textExtract = await openai.chat.completions.create({
           model: "gpt-4o-mini",
-          max_tokens: 100,
-          messages: [{
-            role: "user",
-            content: `Extract politician name and party from this civic complaint. Respond with raw JSON only: {"politician_name": "...", "politician_party": "...", "description": "one sentence civic violation description"}. If no politician mentioned, use null.\n\nComplaint: ${description}`
-          }]
+          max_tokens: 150,
+          messages: [
+            {
+              role: "system",
+              content: "You extract structured data from civic complaints. Always respond with valid JSON, no markdown, no code blocks."
+            },
+            {
+              role: "user",
+              content: `Extract from this complaint: {"politician_name": string|null, "politician_party": string|null, "summary": "one sentence description of the civic violation"}\n\nComplaint: ${description}`
+            }
+          ]
         })
-        const raw = textExtract.choices[0]?.message?.content ?? "{}"
+        const raw = (textExtract.choices[0]?.message?.content ?? "{}").replace(/```json|```/g, "").trim()
         const parsed = JSON.parse(raw)
         ai_person = parsed.politician_name ?? null
         ai_party  = parsed.politician_party ?? null
-        ai_label  = parsed.description ?? description
-      } catch { /* keep original description */ }
+        ai_label  = parsed.summary ?? description
+        ai_confidence = ai_person ? 75 : 50
+      } catch (e) {
+        console.error("hoarding text extraction failed:", e)
+        ai_label = description
+      }
       status = "approved"
     } else {
       // Text-only report — auto-approve
