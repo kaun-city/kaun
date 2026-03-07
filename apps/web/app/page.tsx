@@ -22,15 +22,16 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       const report = Array.isArray(rows) ? rows[0] : null
       if (report) {
         const desc = report.ai_label ?? report.description ?? report.issue_type
+        const shortDesc = desc.length > 80 ? desc.substring(0, 77) + "..." : desc
         const title = report.ai_person
-          ? `${report.ai_person} (${report.ai_party ?? ""}) - ${desc}`
-          : `${desc} in ${report.ward_name ?? "Bengaluru"}`
+          ? `${report.ai_person} (${report.ai_party ?? ""}) - ${shortDesc}`
+          : `${shortDesc} - ${report.ward_name ?? "Bengaluru"}`
         return {
           title: `${title} | KAUN?`,
-          description: desc,
+          description: desc.length > 160 ? desc.substring(0, 157) + "..." : desc,
           openGraph: {
             title,
-            description: report.ai_label ?? `Civic issue reported via kaun.city`,
+            description: desc.length > 160 ? desc.substring(0, 157) + "..." : desc,
             images: [{ url: `https://kaun.city/api/report-og?id=${reportId}`, width: 1200, height: 630 }],
             type: "article",
           },
