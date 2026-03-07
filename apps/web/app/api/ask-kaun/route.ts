@@ -167,8 +167,11 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
-    const { question, ward_context }: AskKaunRequest = await req.json()
+    const body = await req.json()
+    const question = body.question as string | undefined
+    const ward_context = body.ward_context as AskKaunRequest["ward_context"] | undefined
     if (!question?.trim()) return Response.json({ error: "No question provided" }, { status: 400 })
+    if (!ward_context?.ward_name) return Response.json({ error: "Ward context required" }, { status: 400 })
 
     const context = buildContext(ward_context)
 
