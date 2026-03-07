@@ -145,6 +145,20 @@ function guessWardFromText(text: string): { ward_no: number | null; ward_name: s
   return { ward_no: null, ward_name: null }
 }
 
+// Returns ALL wards mentioned in text (deduped by ward_no)
+function guessAllWardsFromText(text: string): Array<{ ward_no: number; ward_name: string }> {
+  const lower = text.toLowerCase()
+  const seen = new Set<number>()
+  const results: Array<{ ward_no: number; ward_name: string }> = []
+  for (const [area, wardNo] of Object.entries(BENGALURU_AREAS)) {
+    if (lower.includes(area) && !seen.has(wardNo)) {
+      seen.add(wardNo)
+      results.push({ ward_no: wardNo, ward_name: area.split(" ").map(w => w[0].toUpperCase() + w.slice(1)).join(" ") })
+    }
+  }
+  return results
+}
+
 async function classifySignal(openai: OpenAI, title: string, body: string): Promise<{
   is_civic: boolean; issue_type: string; ward_hint: string | null
 }> {
@@ -246,29 +260,41 @@ export async function GET(req: Request) {
 
   const results = { reddit: 0, news: 0, civic_media: 0, skipped: 0, errors: 0 }
 
-  // Helper: upsert one news/RSS item
+  // Helper: upsert one news/RSS item — fans out to multiple rows if multiple wards mentioned
   async function upsertNewsItem(item: NewsItem, sourceKey: string) {
     const cls = await classifySignal(openai, item.title, "")
     if (!cls.is_civic) { results.skipped++; return }
-    const geo     = guessWardFromText(item.title)
-    const geoHint = cls.ward_hint ? guessWardFromText(cls.ward_hint) : { ward_no: null, ward_name: null }
-    const { ward_no, ward_name } = geoHint.ward_no ? geoHint : geo
-    const hashId  = item.title.replace(/[^a-zA-Z0-9]/g, "").substring(0, 40).toLowerCase()
-    const { error } = await supabase.from("civic_signals").upsert({
-      source: sourceKey,
-      source_id: `${sourceKey}_${hashId}`,
-      url: item.link || null,
-      author: item.source,
-      title: item.title,
-      body: null,
-      ward_no, ward_name,
-      issue_type: cls.issue_type,
-      upvotes: 0,
-      signal_at: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
-    }, { onConflict: "source,source_id", ignoreDuplicates: true })
-    if (error) results.errors++
-    else if (sourceKey === "gnews") results.news++
-    else results.civic_media++
+
+    const hashId   = item.title.replace(/[^a-zA-Z0-9]/g, "").substring(0, 40).toLowerCase()
+    const signalAt = item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString()
+    const base     = { source: sourceKey, url: item.link || null, author: item.source, title: item.title, body: null, issue_type: cls.issue_type, upvotes: 0, signal_at: signalAt }
+
+    // Find ALL wards mentioned in title + GPT hint
+    const hintWards = cls.ward_hint ? guessAllWardsFromText(cls.ward_hint) : []
+    const titleWards = guessAllWardsFromText(item.title)
+    const allWards = [...hintWards, ...titleWards].filter((w, i, arr) => arr.findIndex(x => x.ward_no === w.ward_no) === i)
+
+    if (allWards.length === 0) {
+      // No specific ward — store once with null ward
+      const { error } = await supabase.from("civic_signals").upsert(
+        { ...base, source_id: `${sourceKey}_${hashId}`, ward_no: null, ward_name: null },
+        { onConflict: "source,source_id", ignoreDuplicates: true }
+      )
+      if (error) results.errors++
+      else if (sourceKey === "gnews") results.news++
+      else results.civic_media++
+    } else {
+      // Fan out: one row per ward
+      for (const { ward_no, ward_name } of allWards) {
+        const { error } = await supabase.from("civic_signals").upsert(
+          { ...base, source_id: `${sourceKey}_${hashId}_w${ward_no}`, ward_no, ward_name },
+          { onConflict: "source,source_id", ignoreDuplicates: true }
+        )
+        if (error) results.errors++
+        else if (sourceKey === "gnews") results.news++
+        else results.civic_media++
+      }
+    }
   }
 
   // ── Reddit (may fail from cloud IPs — keeping for future OAuth upgrade) ──
