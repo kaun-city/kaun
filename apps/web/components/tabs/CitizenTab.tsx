@@ -23,9 +23,10 @@ interface Props {
   wardNo: number
   wardName: string
   assemblyConstituency: string
+  reportCount?: number
 }
 
-export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLoading, wardNo, wardName, assemblyConstituency }: Props) {
+export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLoading, wardNo, wardName, assemblyConstituency, reportCount = 0 }: Props) {
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   return (
     <>
@@ -139,6 +140,20 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
               )}
             </div>
           )}
+
+          {/* Live reports count */}
+          <div className={`rounded-xl px-4 py-3 flex items-center justify-between ${reportCount > 0 ? "bg-[#FF9933]/10 border border-[#FF9933]/20" : "bg-white/5"}`}>
+            <div>
+              <p className="text-white/50 text-[10px] uppercase tracking-wider">Civic Reports (last 30 days)</p>
+              <p className={`text-2xl font-bold mt-0.5 ${reportCount > 0 ? "text-[#FF9933]" : "text-white/30"}`}>
+                {reportCount}
+              </p>
+              <p className="text-white/30 text-[10px]">
+                {reportCount === 0 ? "No reports yet — be the first" : reportCount === 1 ? "1 issue reported by residents" : `issues reported by residents`}
+              </p>
+            </div>
+            <div className="text-2xl text-white/10">!</div>
+          </div>
 
           {potholes && (
             <div className="rounded-xl bg-white/5 px-4 py-3">

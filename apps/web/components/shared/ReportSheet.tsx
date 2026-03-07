@@ -33,6 +33,7 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
   const [photoPreview, setPhotoPreview]  = useState<string | null>(null)
   const [stage, setStage]                = useState<Stage>("form")
   const [resultMsg, setResultMsg]        = useState("")
+  const [reportId, setReportId]          = useState<number | null>(null)
   const [aiContext, setAiContext]         = useState<{ person?: string; party?: string; label?: string } | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -86,6 +87,7 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
       }
 
       setAiContext({ person: data.ai_person, party: data.ai_party, label: data.ai_label })
+      setReportId(data.id ?? null)
       setStage("success")
       if (data.id) onSubmitted?.(data.id)
 
@@ -214,9 +216,32 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
                 </p>
               )}
             </div>
-            <button onClick={onClose} className="mt-2 px-6 py-2.5 rounded-xl bg-white/10 text-white/70 text-sm hover:bg-white/15 transition-all">
-              Close
-            </button>
+            <div className="flex gap-3 mt-2">
+              {reportId && (
+                <button
+                  onClick={async () => {
+                    const shareUrl = `https://kaun.city?report=${reportId}`
+                    const ogUrl    = `https://kaun.city/api/report-og?id=${reportId}`
+                    const text     = aiContext?.person
+                      ? `${aiContext.person}${aiContext.party ? " (" + aiContext.party + ")" : ""} spotted — ${aiContext.label ?? "civic issue reported"}. ${shareUrl}`
+                      : `${aiContext?.label ?? "Civic issue reported"} in ${wardName ?? "Bengaluru"}. ${shareUrl}`
+                    if (navigator.share) {
+                      await navigator.share({ text, url: shareUrl }).catch(() => {})
+                    } else {
+                      await navigator.clipboard.writeText(text)
+                      alert("Link copied!")
+                    }
+                    void ogUrl // used for OG image when link is shared
+                  }}
+                  className="flex-1 py-2.5 rounded-xl bg-[#FF9933] text-black font-semibold text-sm"
+                >
+                  Share this report
+                </button>
+              )}
+              <button onClick={onClose} className="px-6 py-2.5 rounded-xl bg-white/10 text-white/70 text-sm hover:bg-white/15 transition-all">
+                Close
+              </button>
+            </div>
           </div>
         )}
 

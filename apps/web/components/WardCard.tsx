@@ -228,6 +228,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               wardNo={result.ward_no ?? 0}
               wardName={result.ward_name ?? ""}
               assemblyConstituency={result.assembly_constituency ?? ""}
+              reportCount={ward.reportCount}
             />
           )}
 

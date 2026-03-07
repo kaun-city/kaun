@@ -385,6 +385,16 @@ export async function fetchWardInfraStats(wardNo: number): Promise<import('./typ
 /**
  * Fetch ward spend breakdown by category (BBMP work orders 2018-2023).
  */
+export async function fetchWardReportCount(wardNo: number): Promise<number> {
+  const rows = await query<{ id: number }>('ward_reports', {
+    'ward_no': `eq.${wardNo}`,
+    'status': 'eq.approved',
+    'reported_at': `gte.${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()}`,
+    'select': 'id',
+  })
+  return rows.length
+}
+
 export async function fetchWardSpend(wardNo: number): Promise<import('./types').WardSpendCategory | null> {
   const rows = await query<import('./types').WardSpendCategory>('ward_spend_category', {
     'ward_no': `eq.${wardNo}`,

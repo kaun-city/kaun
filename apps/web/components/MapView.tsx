@@ -43,7 +43,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
-  const reportLayerRef = useRef<ReturnType<import("leaflet").LayerGroup["addTo"]> | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const reportLayerRef = useRef<any>(null)
   const onPinRef = useRef(onPin)
   const [loading, setLoading] = useState(true)
 
@@ -67,16 +68,15 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
     return () => clearTimeout(t)
   }, [resizeKey])
 
-  // Refresh report markers whenever a new report is submitted
+  // Refresh report markers on mount + whenever a new report is submitted
   useEffect(() => {
-    if (!mapRef.current) return
+    if (!mapRef.current || loading) return
     import("leaflet").then((L) => {
       // Clear old report markers
       if (reportLayerRef.current) {
-        (reportLayerRef.current as unknown as import("leaflet").LayerGroup).clearLayers()
+        reportLayerRef.current.clearLayers()
       } else {
-        const lg = L.layerGroup().addTo(mapRef.current!)
-        reportLayerRef.current = lg as unknown as ReturnType<import("leaflet").LayerGroup["addTo"]>
+        reportLayerRef.current = L.layerGroup().addTo(mapRef.current!)
       }
 
       const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
@@ -87,7 +87,6 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       })
         .then(r => r.json())
         .then((reports: Array<{ id: number; lat: number; lng: number; issue_type: string; description: string; ward_name: string; ai_person: string; reported_at: string }>) => {
-          const layer = reportLayerRef.current as unknown as import("leaflet").LayerGroup
           reports.forEach((report) => {
             const dot = L.circleMarker([report.lat, report.lng], {
               radius: 6,
@@ -105,12 +104,12 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                 ${report.description ? `<br><span style="font-size:12px;color:#aaa">${report.description}</span>` : ""}
               </div>
             `)
-            layer.addLayer(dot)
+            reportLayerRef.current.addLayer(dot)
           })
         })
         .catch(() => {})
     })
-  }, [reportRefresh])
+  }, [reportRefresh, loading])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return

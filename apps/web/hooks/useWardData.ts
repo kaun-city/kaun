@@ -11,8 +11,8 @@ import {
   fetchBudgetSummary, fetchBuzz, fetchCorpContacts, fetchDepartments,
   fetchMlaLadFunds, fetchPropertyTax, fetchRepReportCard, fetchSakalaPerformance,
   fetchTradeLicenses, fetchWardCommitteeMeetings, fetchWardGrievances, fetchWardInfraStats,
-  fetchWardPotholes, fetchWardProfile, fetchWardSpend, fetchWardStats, fetchWardUnknowns,
-  fetchWorkOrders, lookupLocalOffices, voteFact,
+  fetchWardPotholes, fetchWardProfile, fetchWardReportCount, fetchWardSpend, fetchWardStats,
+  fetchWardUnknowns, fetchWorkOrders, lookupLocalOffices, voteFact,
 } from "@/lib/api"
 import { getCity } from "@/lib/cities"
 import type { CityConfig } from "@/lib/cities"
@@ -56,6 +56,7 @@ export function useWardData(result: PinResult | null) {
   const [grievances, setGrievances] = useState<WardGrievances[]>([])
   const [potholes, setPotholes] = useState<WardPotholes | null>(null)
   const [infraStats, setInfraStats] = useState<WardInfraStats | null>(null)
+  const [reportCount, setReportCount] = useState<number>(0)
   const [wardSpend, setWardSpend] = useState<WardSpendCategory | null>(null)
   const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
   const [sakala, setSakala] = useState<SakalaPerformance | null>(null)
@@ -209,6 +210,11 @@ export function useWardData(result: PinResult | null) {
     fetchWardInfraStats(result.ward_no).then(setInfraStats)
   }, [result?.ward_no, infraStats])
 
+  useEffect(() => {
+    if (!result?.ward_no) return
+    fetchWardReportCount(result.ward_no).then(setReportCount)
+  }, [result?.ward_no])
+
   // ── CITIZEN: potholes ────────────────────────────────────
   useEffect(() => {
     if (tab !== "citizen" || !result?.ward_no) return
@@ -256,7 +262,7 @@ export function useWardData(result: PinResult | null) {
     // expenses
     budget, workOrders, tradeLicenses, buzz, buzzLoading,
     // stats
-    wardStats, grievances, potholes, infraStats, wardSpend, propertyTax, sakala,
+    wardStats, grievances, potholes, infraStats, wardSpend, propertyTax, sakala, reportCount,
     // report
     localOffices, departments,
   }
