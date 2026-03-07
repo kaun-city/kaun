@@ -107,7 +107,8 @@ STRICT RULES:
 - Do not use phrases like "X% of streets", "Y% of repairs", "below-average performance" unless those exact numbers are in the data.
 - Name the MLA by name when criticising performance.
 - Be direct and factual. No bullet points, no headers.
-- If there is genuinely no interesting data, write one sentence summarising what little is known.`,
+- If scorecard metrics are missing, still name the MLA and constituency, and note that performance data is not yet available for this ward.
+- Never say "no specific data is available" — instead name who is responsible and what is known.`,
     prompt: context,
     maxOutputTokens: 200,
   })
