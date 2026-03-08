@@ -344,6 +344,113 @@ export async function GET(req: Request) {
     }
   }
 
-  console.log("ingest-signals:", results)
-  return Response.json({ ok: true, ...results })
+  // ── Moderate pending ward_reports (AI runs here, not at submit time) ──
+  const modResults = await moderatePendingReports(supabase, openai)
+  console.log("ingest-signals:", results, "moderation:", modResults)
+  return Response.json({ ok: true, ...results, moderated: modResults })
+}
+
+// ─── Report moderation (runs daily at 2am) ──────────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function moderatePendingReports(
+  supabase: any,
+  openai: OpenAI
+): Promise<{ approved: number; rejected: number; errors: number }> {
+  const out = { approved: 0, rejected: 0, errors: 0 }
+
+  const { data: pending } = await supabase
+    .from("ward_reports")
+    .select("id, photo_url, description, issue_type")
+    .eq("status", "pending")
+    .order("reported_at", { ascending: true })
+    .limit(20)
+
+  if (!pending || pending.length === 0) return out
+
+  for (const report of pending) {
+    try {
+      let ai_label: string | null = null
+      let ai_person: string | null = null
+      let ai_party: string | null = null
+      let ai_confidence = 0
+      let newStatus = "approved"
+
+      // Text moderation on description
+      if (report.description) {
+        const modResult = await openai.moderations.create({ input: report.description })
+        if (modResult.results[0]?.flagged) {
+          await supabase.from("ward_reports").update({ status: "rejected", moderated_at: new Date().toISOString() }).eq("id", report.id)
+          out.rejected++
+          continue
+        }
+      }
+
+      // Vision analysis if photo exists
+      if (report.photo_url) {
+        const prompt = `You are a civic issue moderator for Bengaluru, India. Analyse this photo and respond with raw JSON only:
+{"is_civic_issue":bool,"issue_type":"hoarding|pothole|flooding|construction|encroachment|garbage|signal|other","confidence":0-100,"description":"one sentence","politician_name":string|null,"politician_party":string|null,"rejection_reason":string|null}`
+
+        const vision = await openai.chat.completions.create({
+          model: "gpt-4o",
+          max_tokens: 300,
+          messages: [{ role: "user", content: [
+            { type: "text", text: prompt },
+            { type: "image_url", image_url: { url: report.photo_url, detail: "low" } }
+          ]}]
+        })
+
+        try {
+          const analysis = JSON.parse(vision.choices[0]?.message?.content ?? "{}")
+          if (!analysis.is_civic_issue || analysis.confidence < 40) {
+            newStatus = "rejected"
+            const path = report.photo_url.split("report-photos/")[1]
+            if (path) await supabase.storage.from("report-photos").move(path, path.replace("pending/", "rejected/"))
+            await supabase.from("ward_reports").update({ status: "rejected", moderated_at: new Date().toISOString() }).eq("id", report.id)
+            out.rejected++
+            continue
+          }
+          ai_label      = analysis.description ?? null
+          ai_person     = analysis.politician_name ?? null
+          ai_party      = analysis.politician_party ?? null
+          ai_confidence = analysis.confidence ?? 0
+          newStatus     = ai_confidence >= 70 ? "approved" : "pending"
+
+          if (newStatus === "approved" && report.photo_url) {
+            const path = report.photo_url.split("report-photos/")[1]
+            if (path) await supabase.storage.from("report-photos").move(path, path.replace("pending/", "approved/"))
+            report.photo_url = report.photo_url.replace("pending/", "approved/")
+          }
+        } catch { newStatus = "approved" }
+      } else if (report.description) {
+        // Text-only — extract politician name
+        try {
+          const extract = await openai.chat.completions.create({
+            model: "gpt-4o-mini", max_tokens: 150,
+            messages: [
+              { role: "system", content: "Extract structured data from civic complaints. Raw JSON only." },
+              { role: "user", content: `{"politician_name":string|null,"politician_party":string|null,"summary":"one sentence"}\n\n${report.description}` }
+            ]
+          })
+          const parsed = JSON.parse((extract.choices[0]?.message?.content ?? "{}").replace(/```json|```/g, "").trim())
+          ai_person = parsed.politician_name ?? null
+          ai_party  = parsed.politician_party ?? null
+          ai_label  = parsed.summary ?? report.description
+          ai_confidence = ai_person ? 75 : 50
+        } catch { ai_label = report.description }
+      }
+
+      await supabase.from("ward_reports").update({
+        status:        newStatus,
+        ai_label, ai_person, ai_party, ai_confidence,
+        moderated_at:  new Date().toISOString(),
+      }).eq("id", report.id)
+      out.approved++
+
+    } catch (e) {
+      console.error("moderate report", report.id, e)
+      out.errors++
+    }
+  }
+
+  return out
 }
