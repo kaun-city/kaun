@@ -237,54 +237,41 @@ export default function HomePage() {
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
-          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-[900] flex flex-col items-center gap-3">
-
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[900]">
             {geoDenied ? (
-              <div className="flex flex-col items-center gap-2">
-                <div className="
-                  px-5 py-3 rounded-full
-                  bg-black/70 backdrop-blur-sm border border-white/20
-                  text-white/70 text-sm font-medium tracking-wide
-                  whitespace-nowrap
-                ">
-                  Tap anywhere on the map
-                </div>
-                <p className="text-white/30 text-xs">to find your ward</p>
-              </div>
+              <p className="text-white/30 text-xs tracking-wide">Tap anywhere on the map</p>
             ) : (
-              <>
-                <button
-                  onClick={handleFindMyWard}
-                  disabled={geoLoading}
-                  className="
-                    flex items-center gap-2 px-5 py-3 rounded-full
-                    bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95
-                    text-black font-semibold text-sm tracking-wide
-                    shadow-lg shadow-[#FF9933]/20
-                    transition-all duration-150 disabled:opacity-60
-                  "
-                >
-                  {geoLoading ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                      Locating...
-                    </>
-                  ) : (
-                    <>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <circle cx="8" cy="8" r="3" fill="black"/>
-                        <circle cx="8" cy="8" r="6.5" stroke="black" strokeWidth="1.5"/>
-                        <line x1="8" y1="0" x2="8" y2="3" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-                        <line x1="8" y1="13" x2="8" y2="16" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-                        <line x1="0" y1="8" x2="3" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-                        <line x1="13" y1="8" x2="16" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                      Find My Ward
-                    </>
-                  )}
-                </button>
-                <p className="text-white/30 text-xs">or tap anywhere on the map</p>
-              </>
+              <button
+                onClick={handleFindMyWard}
+                disabled={geoLoading}
+                className="
+                  flex items-center gap-1.5 px-4 py-2 rounded-full
+                  bg-[#FF9933]/15 hover:bg-[#FF9933]/25 active:scale-95
+                  border border-[#FF9933]/40
+                  text-[#FF9933] font-medium text-xs tracking-wide
+                  backdrop-blur-sm
+                  transition-all duration-150 disabled:opacity-50
+                "
+              >
+                {geoLoading ? (
+                  <>
+                    <span className="w-3 h-3 border border-[#FF9933]/40 border-t-[#FF9933] rounded-full animate-spin" />
+                    Locating...
+                  </>
+                ) : (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="3" fill="#FF9933"/>
+                      <circle cx="8" cy="8" r="6.5" stroke="#FF9933" strokeWidth="1.5"/>
+                      <line x1="8" y1="0" x2="8" y2="3" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="8" y1="13" x2="8" y2="16" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="0" y1="8" x2="3" y2="8" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="13" y1="8" x2="16" y2="8" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    Find my ward
+                  </>
+                )}
+              </button>
             )}
           </div>
         )}
