@@ -40,7 +40,7 @@ type Stage = "form" | "submitting" | "success" | "error"
 export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSubmitted }: ReportSheetProps) {
   const [issueType, setIssueType]       = useState<IssueValue | null>(null)
   const [description, setDescription]   = useState("")
-  const [locationText, setLocationText] = useState("")
+
   const [photoFile, setPhotoFile]       = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [stage, setStage]               = useState<Stage>("form")
@@ -92,7 +92,7 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
           ward_name:     wardName,
           issue_type:    issueType,
           description:   description.trim() || undefined,
-          location_text: locationText.trim() || undefined,
+
           photo_base64,
           photo_mime,
         }),
@@ -160,17 +160,13 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
               </div>
             </div>
 
-            {/* Location */}
-            <div>
-              <p className="text-white/50 text-xs uppercase tracking-wider mb-3">Where exactly?</p>
-              <input
-                type="text"
-                value={locationText}
-                onChange={(e) => setLocationText(e.target.value)}
-                placeholder="e.g. near Dominos on 80ft road, Indiranagar"
-                maxLength={150}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/80 text-sm placeholder:text-white/20 focus:outline-none focus:border-white/20"
-              />
+            {/* Location pinned from map — show confirmation */}
+            <div className="flex items-center gap-2 text-white/40 text-xs">
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="3" fill="#FF9933"/>
+                <circle cx="8" cy="8" r="6.5" stroke="#FF9933" strokeWidth="1.5"/>
+              </svg>
+              <span>Location pinned at {lat.toFixed(4)}, {lng.toFixed(4)}</span>
             </div>
 
             {/* Photo upload */}

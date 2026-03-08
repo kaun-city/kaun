@@ -37,19 +37,26 @@ interface Props {
   panRef?: MutableRefObject<{ panTo: (lat: number, lng: number) => void } | null>
   /** Increment to refresh report markers after a new submission */
   reportRefresh?: number
+  /** When true, next tap captures a report location instead of a ward lookup */
+  reportPickMode?: boolean
+  onReportPin?: (lat: number, lng: number) => void
 }
 
-export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0 }: Props) {
+export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const reportLayerRef = useRef<any>(null)
   const onPinRef = useRef(onPin)
+  const reportPickRef = useRef(reportPickMode)
+  const onReportPinRef = useRef(onReportPin)
   const [loading, setLoading] = useState(true)
 
-  // Keep the ref current without re-running map setup
+  // Keep refs current without re-running map setup
   useEffect(() => { onPinRef.current = onPin }, [onPin])
+  useEffect(() => { reportPickRef.current = reportPickMode }, [reportPickMode])
+  useEffect(() => { onReportPinRef.current = onReportPin }, [onReportPin])
 
   // Expose panTo for geolocation button
   useEffect(() => {
@@ -189,7 +196,13 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       map.on("click", async (e) => {
         const { lat, lng } = e.latlng
 
-        // Move or place marker
+        // Report pick mode: capture coords and hand off — no ward lookup
+        if (reportPickRef.current) {
+          onReportPinRef.current?.(lat, lng)
+          return
+        }
+
+        // Normal mode: ward lookup
         if (marker) {
           marker.setLatLng([lat, lng])
         } else {
@@ -210,7 +223,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   }, []) // empty  map initialises once, onPin updates via ref
 
   return (
-    <div className="relative w-full h-full">
+    <div className={`relative w-full h-full${reportPickMode ? " [&_.leaflet-container]:cursor-crosshair" : ""}`}>
       {loading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-[#FF9933] text-sm tracking-widest uppercase">
           Loading ward boundaries...

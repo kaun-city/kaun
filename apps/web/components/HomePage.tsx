@@ -88,7 +88,10 @@ export default function HomePage() {
   const [outOfBounds, setOutOfBounds] = useState(false)
   const [geoDenied, setGeoDenied]     = useState(false)
   const [geoLoading, setGeoLoading]   = useState(false)
-  const [showReport, setShowReport]   = useState(false)
+  const [showReport, setShowReport]     = useState(false)
+  const [reportPickMode, setReportPickMode] = useState(false)
+  const [reportLat, setReportLat]       = useState<number | null>(null)
+  const [reportLng, setReportLng]       = useState<number | null>(null)
   const [reportRefresh, setReportRefresh] = useState(0)
   const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
   const deepLinkHandled = useRef(false)
@@ -276,22 +279,56 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Floating Report button */}
-        <button
-          onClick={() => setShowReport(true)}
-          className="
-            absolute bottom-16 right-4 z-[900]
-            flex items-center gap-2 px-4 py-2.5 rounded-full
-            bg-[#111] border border-white/15 hover:border-white/30
-            text-white/70 hover:text-white text-sm font-medium
-            shadow-lg transition-all duration-150
-          "
-        >
-          <span className="text-[#FF9933] text-base font-bold">+</span>
-          Report
-        </button>
+        {/* Floating Report button — enters pick mode */}
+        {!reportPickMode && (
+          <button
+            onClick={() => setReportPickMode(true)}
+            className="
+              absolute bottom-16 right-4 z-[900]
+              flex items-center gap-2 px-4 py-2.5 rounded-full
+              bg-[#111] border border-white/15 hover:border-white/30
+              text-white/70 hover:text-white text-sm font-medium
+              shadow-lg transition-all duration-150
+            "
+          >
+            <span className="text-[#FF9933] text-base font-bold">+</span>
+            Report
+          </button>
+        )}
 
-        <MapView onPin={handlePin} panRef={mapViewRef} resizeKey={showCard ? 1 : 0} reportRefresh={reportRefresh} />
+        {/* Report pick mode banner */}
+        {reportPickMode && (
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-[900] flex items-center gap-3
+            px-4 py-2.5 rounded-full bg-[#FF9933] text-black text-sm font-semibold shadow-xl whitespace-nowrap">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="3" fill="black"/>
+              <circle cx="8" cy="8" r="6.5" stroke="black" strokeWidth="1.5"/>
+              <line x1="8" y1="0" x2="8" y2="3" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+              <line x1="8" y1="13" x2="8" y2="16" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+              <line x1="0" y1="8" x2="3" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+              <line x1="13" y1="8" x2="16" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            Tap on the map where the issue is
+            <button
+              onClick={() => setReportPickMode(false)}
+              className="ml-1 text-black/50 hover:text-black font-bold text-base leading-none"
+            >x</button>
+          </div>
+        )}
+
+        <MapView
+          onPin={handlePin}
+          panRef={mapViewRef}
+          resizeKey={showCard ? 1 : 0}
+          reportRefresh={reportRefresh}
+          reportPickMode={reportPickMode}
+          onReportPin={(lat, lng) => {
+            setReportLat(lat)
+            setReportLng(lng)
+            setReportPickMode(false)
+            setShowReport(true)
+          }}
+        />
       </div>
 
       {showCard && (
@@ -302,14 +339,14 @@ export default function HomePage() {
         <OutOfBoundsCard onClose={handleClose} />
       )}
 
-      {showReport && (
+      {showReport && reportLat !== null && reportLng !== null && (
         <ReportSheet
-          lat={pinResult?.lat ?? 12.9716}
-          lng={pinResult?.lng ?? 77.5946}
+          lat={reportLat}
+          lng={reportLng}
           wardNo={pinResult?.ward_no ?? undefined}
           wardName={pinResult?.ward_name ?? undefined}
-          onClose={() => setShowReport(false)}
-          onSubmitted={() => { setShowReport(false); setReportRefresh(r => r + 1) }}
+          onClose={() => { setShowReport(false); setReportLat(null); setReportLng(null) }}
+          onSubmitted={() => { setShowReport(false); setReportLat(null); setReportLng(null); setReportRefresh(r => r + 1) }}
         />
       )}
     </main>
