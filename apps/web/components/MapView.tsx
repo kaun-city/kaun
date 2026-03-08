@@ -12,7 +12,6 @@ import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import { bengaluru } from "@/lib/cities"
-import type { SubmittedReport } from "@/components/shared/ReportSheet"
 
 // Default to Bengaluru; future: accept city prop when multi-city map is needed
 const DEFAULT_CITY = bengaluru
@@ -38,14 +37,12 @@ interface Props {
   panRef?: MutableRefObject<{ panTo: (lat: number, lng: number) => void } | null>
   /** Increment to refresh report markers after a new submission */
   reportRefresh?: number
-  /** Instantly-submitted reports shown as pending markers before cron approves them */
-  pendingReports?: SubmittedReport[]
   /** When true, next tap captures a report location instead of a ward lookup */
   reportPickMode?: boolean
   onReportPin?: (lat: number, lng: number) => void
 }
 
-export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, pendingReports = [], reportPickMode = false, onReportPin }: Props) {
+export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
@@ -78,48 +75,10 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
     return () => clearTimeout(t)
   }, [resizeKey])
 
-  // Pending report markers (submitted this session, awaiting cron approval)
-  const pendingLayerRef = useRef<any>(null)
-  useEffect(() => {
-    if (!mapRef.current || loading || pendingReports.length === 0) return
-    import("leaflet").then((L) => {
-      if (!pendingLayerRef.current) {
-        pendingLayerRef.current = L.layerGroup().addTo(mapRef.current!)
-      }
-      pendingLayerRef.current.clearLayers()
-      pendingReports.forEach((r) => {
-        const icon = L.divIcon({
-          html: `<div style="
-            width:14px;height:14px;
-            background:#facc15;
-            border:2px solid #fff;
-            border-radius:50%;
-            box-shadow:0 0 0 4px rgba(250,204,21,0.3);
-            animation:kaun-pulse 1.5s ease-in-out infinite;
-          "></div>`,
-          iconSize: [14, 14],
-          iconAnchor: [7, 7],
-          className: "",
-        })
-        const marker = L.marker([r.lat, r.lng], { icon })
-        marker.bindPopup(`
-          <div style="font-family:sans-serif;min-width:140px">
-            <strong style="color:#facc15">Under review</strong>
-            <br><span style="color:#aaa;font-size:12px">${r.issueType.charAt(0).toUpperCase() + r.issueType.slice(1)}</span>
-            ${r.wardName ? `<br><span style="color:#888;font-size:11px">${r.wardName}</span>` : ""}
-            <br><span style="color:#666;font-size:10px">Your report is being reviewed</span>
-          </div>
-        `)
-        pendingLayerRef.current.addLayer(marker)
-      })
-    })
-  }, [pendingReports, loading])
-
-  // Refresh approved report markers on mount + whenever a new report is submitted
+  // Refresh report markers: both pending (yellow, confirmable) + approved (orange)
   useEffect(() => {
     if (!mapRef.current || loading) return
     import("leaflet").then((L) => {
-      // Clear old report markers
       if (reportLayerRef.current) {
         reportLayerRef.current.clearLayers()
       } else {
@@ -129,29 +88,110 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
       const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
 
-      fetch(`${SUPABASE_URL}/rest/v1/ward_reports?status=eq.approved&select=id,lat,lng,issue_type,description,ward_name,ai_person,reported_at&order=reported_at.desc&limit=200`, {
+      // Fetch both pending and approved
+      fetch(`${SUPABASE_URL}/rest/v1/ward_reports?status=in.(pending,approved)&select=id,lat,lng,issue_type,description,ward_name,ai_person,upvotes,status,reported_at&order=reported_at.desc&limit=300`, {
         headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` }
       })
         .then(r => r.json())
-        .then((reports: Array<{ id: number; lat: number; lng: number; issue_type: string; description: string; ward_name: string; ai_person: string; reported_at: string }>) => {
+        .then((reports: Array<{ id: number; lat: number; lng: number; issue_type: string; description: string; ward_name: string; ai_person: string; upvotes: number; status: string; reported_at: string }>) => {
+          // Track confirmed report IDs in localStorage to prevent double-confirm
+          const confirmed: number[] = JSON.parse(localStorage.getItem("kaun_confirmed") ?? "[]")
+
           reports.forEach((report) => {
-            const dot = L.circleMarker([report.lat, report.lng], {
-              radius: 6,
-              color: "#FF9933",
-              fillColor: "#FF9933",
-              fillOpacity: 0.9,
-              weight: 2,
-            })
-            const label = report.issue_type.charAt(0).toUpperCase() + report.issue_type.slice(1)
-            dot.bindPopup(`
-              <div style="font-family:sans-serif;min-width:160px">
-                <strong style="color:#FF9933">${label}</strong>
-                ${report.ward_name ? `<br><span style="color:#888;font-size:12px">${report.ward_name}</span>` : ""}
-                ${report.ai_person ? `<br><span style="color:#fff;font-size:12px">${report.ai_person}</span>` : ""}
-                ${report.description ? `<br><span style="font-size:12px;color:#aaa">${report.description}</span>` : ""}
-              </div>
-            `)
-            reportLayerRef.current.addLayer(dot)
+            const isPending  = report.status === "pending"
+            const label      = report.issue_type.charAt(0).toUpperCase() + report.issue_type.slice(1)
+            const upvotes    = report.upvotes ?? 0
+            const alreadyDone = confirmed.includes(report.id)
+
+            if (isPending) {
+              // Yellow pulsing marker for unverified reports
+              const icon = L.divIcon({
+                html: `<div style="
+                  width:13px;height:13px;
+                  background:#facc15;
+                  border:2px solid rgba(255,255,255,0.8);
+                  border-radius:50%;
+                  box-shadow:0 0 0 4px rgba(250,204,21,0.3);
+                  animation:kaun-pulse 1.5s ease-in-out infinite;
+                "></div>`,
+                iconSize: [13, 13],
+                iconAnchor: [6, 6],
+                className: "",
+              })
+              const marker = L.marker([report.lat, report.lng], { icon })
+              const confirmLabel = alreadyDone
+                ? `<span style="color:#888;font-size:11px">You confirmed this</span>`
+                : `<button id="confirm-${report.id}" style="
+                    margin-top:6px;padding:4px 10px;
+                    background:#facc15;border:none;border-radius:6px;
+                    font-size:11px;font-weight:600;cursor:pointer;color:#000;
+                    width:100%;
+                  ">Confirm (${upvotes}/2)</button>`
+              marker.bindPopup(`
+                <div style="font-family:sans-serif;min-width:150px">
+                  <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                    <span style="width:8px;height:8px;background:#facc15;border-radius:50%;display:inline-block"></span>
+                    <strong style="color:#facc15;font-size:12px">Unverified</strong>
+                  </div>
+                  <span style="color:#ccc;font-size:12px">${label}</span>
+                  ${report.ward_name ? `<br><span style="color:#888;font-size:11px">${report.ward_name}</span>` : ""}
+                  ${report.description ? `<br><span style="font-size:11px;color:#aaa;margin-top:2px;display:block">${report.description}</span>` : ""}
+                  ${confirmLabel}
+                </div>
+              `)
+              marker.on("popupopen", () => {
+                const btn = document.getElementById(`confirm-${report.id}`)
+                if (!btn || alreadyDone) return
+                btn.onclick = async () => {
+                  btn.textContent = "Confirming..."
+                  btn.style.opacity = "0.6"
+                  try {
+                    const res = await fetch("/api/confirm-report", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ id: report.id }),
+                    })
+                    const data = await res.json()
+                    const newUpvotes = data.upvotes ?? upvotes + 1
+                    // Save to localStorage
+                    const stored: number[] = JSON.parse(localStorage.getItem("kaun_confirmed") ?? "[]")
+                    localStorage.setItem("kaun_confirmed", JSON.stringify([...stored, report.id]))
+                    if (data.status === "approved") {
+                      btn.textContent = "Approved!"
+                      btn.style.background = "#FF9933"
+                    } else {
+                      btn.textContent = `Confirmed (${newUpvotes}/2)`
+                      btn.style.background = "#86efac"
+                    }
+                  } catch {
+                    btn.textContent = "Try again"
+                    btn.style.opacity = "1"
+                  }
+                }
+              })
+              reportLayerRef.current.addLayer(marker)
+            } else {
+              // Orange solid dot for approved reports
+              const dot = L.circleMarker([report.lat, report.lng], {
+                radius: 6,
+                color: "#FF9933",
+                fillColor: "#FF9933",
+                fillOpacity: 0.9,
+                weight: 2,
+              })
+              dot.bindPopup(`
+                <div style="font-family:sans-serif;min-width:160px">
+                  <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                    <span style="width:8px;height:8px;background:#FF9933;border-radius:50%;display:inline-block"></span>
+                    <strong style="color:#FF9933;font-size:12px">${label}</strong>
+                  </div>
+                  ${report.ward_name ? `<span style="color:#888;font-size:11px">${report.ward_name}</span><br>` : ""}
+                  ${report.ai_person ? `<span style="color:#fff;font-size:12px">${report.ai_person}</span><br>` : ""}
+                  ${report.description ? `<span style="font-size:11px;color:#aaa">${report.description}</span>` : ""}
+                </div>
+              `)
+              reportLayerRef.current.addLayer(dot)
+            }
           })
         })
         .catch(() => {})
