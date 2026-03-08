@@ -13,6 +13,17 @@ import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import { bengaluru } from "@/lib/cities"
 
+function relativeTime(isoStr: string): string {
+  const diffMs = Date.now() - new Date(isoStr).getTime()
+  const m = Math.floor(diffMs / 60000)
+  if (m < 1)  return "just now"
+  if (m < 60) return `${m}m ago`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h}h ago`
+  const d = Math.floor(h / 24)
+  return `${d}d ago`
+}
+
 // Default to Bengaluru; future: accept city prop when multi-city map is needed
 const DEFAULT_CITY = bengaluru
 const BENGALURU_CENTER: [number, number] = DEFAULT_CITY.center
@@ -129,9 +140,12 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                   ">Confirm (${upvotes}/2)</button>`
               marker.bindPopup(`
                 <div style="font-family:sans-serif;min-width:150px">
-                  <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-                    <span style="width:8px;height:8px;background:#facc15;border-radius:50%;display:inline-block"></span>
-                    <strong style="color:#facc15;font-size:12px">Unverified</strong>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span style="width:8px;height:8px;background:#facc15;border-radius:50%;display:inline-block"></span>
+                      <strong style="color:#facc15;font-size:12px">Unverified</strong>
+                    </div>
+                    <span style="color:#666;font-size:10px">${relativeTime(report.reported_at)}</span>
                   </div>
                   <span style="color:#ccc;font-size:12px">${label}</span>
                   ${report.ward_name ? `<br><span style="color:#888;font-size:11px">${report.ward_name}</span>` : ""}
@@ -181,9 +195,12 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               })
               dot.bindPopup(`
                 <div style="font-family:sans-serif;min-width:160px">
-                  <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-                    <span style="width:8px;height:8px;background:#FF9933;border-radius:50%;display:inline-block"></span>
-                    <strong style="color:#FF9933;font-size:12px">${label}</strong>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span style="width:8px;height:8px;background:#FF9933;border-radius:50%;display:inline-block"></span>
+                      <strong style="color:#FF9933;font-size:12px">${label}</strong>
+                    </div>
+                    <span style="color:#666;font-size:10px">${relativeTime(report.reported_at)}</span>
                   </div>
                   ${report.ward_name ? `<span style="color:#888;font-size:11px">${report.ward_name}</span><br>` : ""}
                   ${report.ai_person ? `<span style="color:#fff;font-size:12px">${report.ai_person}</span><br>` : ""}
