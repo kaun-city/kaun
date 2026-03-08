@@ -12,6 +12,7 @@ import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import { bengaluru } from "@/lib/cities"
+import type { SubmittedReport } from "@/components/shared/ReportSheet"
 
 // Default to Bengaluru; future: accept city prop when multi-city map is needed
 const DEFAULT_CITY = bengaluru
@@ -37,12 +38,14 @@ interface Props {
   panRef?: MutableRefObject<{ panTo: (lat: number, lng: number) => void } | null>
   /** Increment to refresh report markers after a new submission */
   reportRefresh?: number
+  /** Instantly-submitted reports shown as pending markers before cron approves them */
+  pendingReports?: SubmittedReport[]
   /** When true, next tap captures a report location instead of a ward lookup */
   reportPickMode?: boolean
   onReportPin?: (lat: number, lng: number) => void
 }
 
-export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin }: Props) {
+export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, pendingReports = [], reportPickMode = false, onReportPin }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
@@ -75,7 +78,44 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
     return () => clearTimeout(t)
   }, [resizeKey])
 
-  // Refresh report markers on mount + whenever a new report is submitted
+  // Pending report markers (submitted this session, awaiting cron approval)
+  const pendingLayerRef = useRef<any>(null)
+  useEffect(() => {
+    if (!mapRef.current || loading || pendingReports.length === 0) return
+    import("leaflet").then((L) => {
+      if (!pendingLayerRef.current) {
+        pendingLayerRef.current = L.layerGroup().addTo(mapRef.current!)
+      }
+      pendingLayerRef.current.clearLayers()
+      pendingReports.forEach((r) => {
+        const icon = L.divIcon({
+          html: `<div style="
+            width:14px;height:14px;
+            background:#facc15;
+            border:2px solid #fff;
+            border-radius:50%;
+            box-shadow:0 0 0 4px rgba(250,204,21,0.3);
+            animation:kaun-pulse 1.5s ease-in-out infinite;
+          "></div>`,
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+          className: "",
+        })
+        const marker = L.marker([r.lat, r.lng], { icon })
+        marker.bindPopup(`
+          <div style="font-family:sans-serif;min-width:140px">
+            <strong style="color:#facc15">Under review</strong>
+            <br><span style="color:#aaa;font-size:12px">${r.issueType.charAt(0).toUpperCase() + r.issueType.slice(1)}</span>
+            ${r.wardName ? `<br><span style="color:#888;font-size:11px">${r.wardName}</span>` : ""}
+            <br><span style="color:#666;font-size:10px">Your report is being reviewed</span>
+          </div>
+        `)
+        pendingLayerRef.current.addLayer(marker)
+      })
+    })
+  }, [pendingReports, loading])
+
+  // Refresh approved report markers on mount + whenever a new report is submitted
   useEffect(() => {
     if (!mapRef.current || loading) return
     import("leaflet").then((L) => {

@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
-import ReportSheet from "@/components/shared/ReportSheet"
+import ReportSheet, { type SubmittedReport } from "@/components/shared/ReportSheet"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -92,7 +92,8 @@ export default function HomePage() {
   const [reportPickMode, setReportPickMode] = useState(false)
   const [reportLat, setReportLat]       = useState<number | null>(null)
   const [reportLng, setReportLng]       = useState<number | null>(null)
-  const [reportRefresh, setReportRefresh] = useState(0)
+  const [reportRefresh, setReportRefresh]   = useState(0)
+  const [pendingReports, setPendingReports] = useState<SubmittedReport[]>([])
   const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
   const deepLinkHandled = useRef(false)
 
@@ -321,6 +322,7 @@ export default function HomePage() {
           panRef={mapViewRef}
           resizeKey={showCard ? 1 : 0}
           reportRefresh={reportRefresh}
+          pendingReports={pendingReports}
           reportPickMode={reportPickMode}
           onReportPin={(lat, lng) => {
             setReportLat(lat)
@@ -346,7 +348,13 @@ export default function HomePage() {
           wardNo={pinResult?.ward_no ?? undefined}
           wardName={pinResult?.ward_name ?? undefined}
           onClose={() => { setShowReport(false); setReportLat(null); setReportLng(null) }}
-          onSubmitted={() => { setShowReport(false); setReportLat(null); setReportLng(null); setReportRefresh(r => r + 1) }}
+          onSubmitted={(report) => {
+            setShowReport(false)
+            setReportLat(null)
+            setReportLng(null)
+            setReportRefresh(r => r + 1)
+            setPendingReports(prev => [...prev, report])
+          }}
         />
       )}
     </main>

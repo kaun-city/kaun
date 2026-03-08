@@ -26,16 +26,24 @@ const COMPLAINT_AUTHORITY: Record<string, { name: string; number: string; url?: 
 
 type IssueValue = typeof ISSUE_TYPES[number]["value"]
 
+export interface SubmittedReport {
+  id: number
+  lat: number
+  lng: number
+  issueType: IssueValue
+  wardName?: string
+}
+
 interface ReportSheetProps {
   lat: number
   lng: number
   wardNo?: number
   wardName?: string
   onClose: () => void
-  onSubmitted?: (id: number) => void
+  onSubmitted?: (report: SubmittedReport) => void
 }
 
-type Stage = "form" | "submitting" | "success" | "error"
+type Stage = "form" | "uploading" | "saving" | "success" | "error"
 
 export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSubmitted }: ReportSheetProps) {
   const [issueType, setIssueType]       = useState<IssueValue | null>(null)
@@ -68,12 +76,12 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
 
   const handleSubmit = async () => {
     if (!issueType) return
-    setStage("submitting")
 
     let photo_base64: string | undefined
     let photo_mime: string | undefined
 
     if (photoFile) {
+      setStage("uploading")
       photo_base64 = await new Promise<string>((resolve) => {
         const reader = new FileReader()
         reader.onload = () => resolve(reader.result as string)
@@ -82,17 +90,18 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
       photo_mime = photoFile.type
     }
 
+    setStage("saving")
+
     try {
       const res = await fetch("/api/submit-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           lat, lng,
-          ward_no:       wardNo,
-          ward_name:     wardName,
-          issue_type:    issueType,
-          description:   description.trim() || undefined,
-
+          ward_no:     wardNo,
+          ward_name:   wardName,
+          issue_type:  issueType,
+          description: description.trim() || undefined,
           photo_base64,
           photo_mime,
         }),
@@ -108,7 +117,7 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
 
       setReportId(data.id ?? null)
       setStage("success")
-      if (data.id) onSubmitted?.(data.id)
+      if (data.id) onSubmitted?.({ id: data.id, lat, lng, issueType, wardName })
 
     } catch {
       setStage("error")
@@ -220,10 +229,26 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
           </>
         )}
 
-        {stage === "submitting" && (
-          <div className="flex flex-col items-center gap-4 py-8">
-            <div className="w-8 h-8 border-2 border-[#FF9933]/30 border-t-[#FF9933] rounded-full animate-spin" />
-            <p className="text-white/60 text-sm">Uploading...</p>
+        {(stage === "uploading" || stage === "saving") && (
+          <div className="flex flex-col items-center gap-5 py-10">
+            <div className="relative w-10 h-10">
+              <div className="absolute inset-0 rounded-full border-2 border-[#FF9933]/20" />
+              <div className="absolute inset-0 rounded-full border-2 border-t-[#FF9933] animate-spin" />
+            </div>
+            <div className="text-center space-y-1">
+              <p className="text-white text-sm font-medium">
+                {stage === "uploading" ? "Uploading photo..." : "Saving report..."}
+              </p>
+              <p className="text-white/30 text-xs">
+                {stage === "uploading" ? "Hang on, sending your photo" : "Almost done"}
+              </p>
+            </div>
+            {/* Step dots */}
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[#FF9933]" />
+              <div className={`w-2 h-2 rounded-full ${stage === "saving" ? "bg-[#FF9933]" : "bg-white/20"}`} />
+              <div className="w-2 h-2 rounded-full bg-white/20" />
+            </div>
           </div>
         )}
 

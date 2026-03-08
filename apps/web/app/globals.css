@@ -56,6 +56,11 @@ body {
 }
 
 /* Ward card slide-up animation (mobile only — lg+ uses static sidebar) */
+@keyframes kaun-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(250,204,21,0.35); }
+  50%       { box-shadow: 0 0 0 8px rgba(250,204,21,0.0); }
+}
+
 @keyframes slide-up {
   from {
     transform: translateY(100%);
