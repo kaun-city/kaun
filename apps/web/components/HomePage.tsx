@@ -237,7 +237,7 @@ export default function HomePage() {
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[900]">
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[900]">
             {geoDenied ? (
               <p className="text-white/30 text-xs tracking-wide">Tap anywhere on the map</p>
             ) : (
