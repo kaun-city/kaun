@@ -99,20 +99,35 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
       const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
 
+      const ISSUE_LABELS: Record<string, string> = {
+        hoarding: "Illegal banner / hoarding",
+        pothole: "Pothole / broken road",
+        flooding: "Waterlogging / flooding",
+        construction: "Unauthorized construction",
+        encroachment: "Encroachment / no parking",
+        garbage: "Garbage dump / open waste",
+        signal: "Broken traffic signal",
+        other: "Civic issue",
+      }
+
       // Fetch both pending and approved
-      fetch(`${SUPABASE_URL}/rest/v1/ward_reports?status=in.(pending,approved)&select=id,lat,lng,issue_type,description,ward_name,ai_person,upvotes,status,reported_at&order=reported_at.desc&limit=300`, {
+      fetch(`${SUPABASE_URL}/rest/v1/ward_reports?status=in.(pending,approved)&select=id,lat,lng,issue_type,description,ward_name,ai_person,ai_label,upvotes,status,photo_url,reported_at&order=reported_at.desc&limit=300`, {
         headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` }
       })
         .then(r => r.json())
-        .then((reports: Array<{ id: number; lat: number; lng: number; issue_type: string; description: string; ward_name: string; ai_person: string; upvotes: number; status: string; reported_at: string }>) => {
+        .then((reports: Array<{ id: number; lat: number; lng: number; issue_type: string; description: string; ward_name: string; ai_person: string; ai_label: string; upvotes: number; status: string; photo_url: string | null; reported_at: string }>) => {
           // Track confirmed report IDs in localStorage to prevent double-confirm
           const confirmed: number[] = JSON.parse(localStorage.getItem("kaun_confirmed") ?? "[]")
 
           reports.forEach((report) => {
-            const isPending  = report.status === "pending"
-            const label      = report.issue_type.charAt(0).toUpperCase() + report.issue_type.slice(1)
-            const upvotes    = report.upvotes ?? 0
+            const isPending   = report.status === "pending"
+            const label       = ISSUE_LABELS[report.issue_type] ?? report.issue_type
+            const upvotes     = report.upvotes ?? 0
             const alreadyDone = confirmed.includes(report.id)
+            const photoHtml   = report.photo_url
+              ? `<img src="${report.photo_url}" style="width:100%;height:90px;object-fit:cover;border-radius:6px;margin:6px 0 4px;display:block" />`
+              : ""
+            const summaryText = report.ai_label || report.description || ""
 
             if (isPending) {
               // Yellow pulsing marker for unverified reports
@@ -131,25 +146,26 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               })
               const marker = L.marker([report.lat, report.lng], { icon })
               const confirmLabel = alreadyDone
-                ? `<span style="color:#888;font-size:11px">You confirmed this</span>`
+                ? `<div style="margin-top:8px;text-align:center;color:#888;font-size:11px">You confirmed this</div>`
                 : `<button id="confirm-${report.id}" style="
-                    margin-top:6px;padding:4px 10px;
-                    background:#facc15;border:none;border-radius:6px;
-                    font-size:11px;font-weight:600;cursor:pointer;color:#000;
+                    margin-top:8px;padding:6px 10px;
+                    background:#facc15;border:none;border-radius:8px;
+                    font-size:12px;font-weight:700;cursor:pointer;color:#000;
                     width:100%;
                   ">Confirm (${upvotes}/2)</button>`
               marker.bindPopup(`
-                <div style="font-family:sans-serif;min-width:150px">
-                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-                    <div style="display:flex;align-items:center;gap:6px">
-                      <span style="width:8px;height:8px;background:#facc15;border-radius:50%;display:inline-block"></span>
-                      <strong style="color:#facc15;font-size:12px">Unverified</strong>
+                <div style="font-family:sans-serif;width:200px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                    <div style="display:flex;align-items:center;gap:5px">
+                      <span style="width:7px;height:7px;background:#facc15;border-radius:50%;display:inline-block;flex-shrink:0"></span>
+                      <strong style="color:#facc15;font-size:11px;text-transform:uppercase;letter-spacing:0.05em">Unverified</strong>
                     </div>
-                    <span style="color:#666;font-size:10px">${relativeTime(report.reported_at)}</span>
+                    <span style="color:#555;font-size:10px">${relativeTime(report.reported_at)}</span>
                   </div>
-                  <span style="color:#ccc;font-size:12px">${label}</span>
-                  ${report.ward_name ? `<br><span style="color:#888;font-size:11px">${report.ward_name}</span>` : ""}
-                  ${report.description ? `<br><span style="font-size:11px;color:#aaa;margin-top:2px;display:block">${report.description}</span>` : ""}
+                  ${photoHtml}
+                  <div style="font-size:12px;font-weight:600;color:#eee;margin-bottom:2px">${label}</div>
+                  ${report.ward_name ? `<div style="color:#888;font-size:11px;margin-bottom:3px">${report.ward_name}</div>` : ""}
+                  ${summaryText ? `<div style="font-size:11px;color:#aaa;line-height:1.4">${summaryText}</div>` : ""}
                   ${confirmLabel}
                 </div>
               `)
@@ -194,17 +210,19 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                 weight: 2,
               })
               dot.bindPopup(`
-                <div style="font-family:sans-serif;min-width:160px">
-                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-                    <div style="display:flex;align-items:center;gap:6px">
-                      <span style="width:8px;height:8px;background:#FF9933;border-radius:50%;display:inline-block"></span>
-                      <strong style="color:#FF9933;font-size:12px">${label}</strong>
+                <div style="font-family:sans-serif;width:200px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                    <div style="display:flex;align-items:center;gap:5px">
+                      <span style="width:7px;height:7px;background:#FF9933;border-radius:50%;display:inline-block;flex-shrink:0"></span>
+                      <strong style="color:#FF9933;font-size:11px;text-transform:uppercase;letter-spacing:0.05em">Verified</strong>
                     </div>
-                    <span style="color:#666;font-size:10px">${relativeTime(report.reported_at)}</span>
+                    <span style="color:#555;font-size:10px">${relativeTime(report.reported_at)}</span>
                   </div>
-                  ${report.ward_name ? `<span style="color:#888;font-size:11px">${report.ward_name}</span><br>` : ""}
-                  ${report.ai_person ? `<span style="color:#fff;font-size:12px">${report.ai_person}</span><br>` : ""}
-                  ${report.description ? `<span style="font-size:11px;color:#aaa">${report.description}</span>` : ""}
+                  ${photoHtml}
+                  <div style="font-size:12px;font-weight:600;color:#eee;margin-bottom:2px">${label}</div>
+                  ${report.ward_name ? `<div style="color:#888;font-size:11px;margin-bottom:3px">${report.ward_name}</div>` : ""}
+                  ${report.ai_person ? `<div style="color:#FF9933;font-size:11px;margin-bottom:3px">${report.ai_person}</div>` : ""}
+                  ${summaryText ? `<div style="font-size:11px;color:#aaa;line-height:1.4">${summaryText}</div>` : ""}
                 </div>
               `)
               reportLayerRef.current.addLayer(dot)
