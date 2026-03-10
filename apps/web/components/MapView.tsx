@@ -145,28 +145,30 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                 className: "",
               })
               const marker = L.marker([report.lat, report.lng], { icon })
-              const confirmLabel = alreadyDone
-                ? `<div style="margin-top:8px;text-align:center;color:#888;font-size:11px">You confirmed this</div>`
+              const statusBtn = alreadyDone
+                ? `<div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.3);border-radius:20px">
+                    <span style="width:6px;height:6px;background:#facc15;border-radius:50%;display:inline-block"></span>
+                    <span style="color:#facc15;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; you confirmed</span>
+                   </div>`
                 : `<button id="confirm-${report.id}" style="
-                    margin-top:8px;padding:6px 10px;
-                    background:#facc15;border:none;border-radius:8px;
-                    font-size:12px;font-weight:700;cursor:pointer;color:#000;
-                    width:100%;
-                  ">Confirm (${upvotes}/2)</button>`
+                    display:inline-flex;align-items:center;gap:5px;
+                    padding:3px 8px;border-radius:20px;
+                    background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);
+                    cursor:pointer;
+                  ">
+                    <span style="width:6px;height:6px;background:#facc15;border-radius:50%;display:inline-block;animation:kaun-pulse 1.5s ease-in-out infinite"></span>
+                    <span style="color:#facc15;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; Confirm ${upvotes}/2</span>
+                   </button>`
               marker.bindPopup(`
                 <div style="font-family:sans-serif;width:200px">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                    <div style="display:flex;align-items:center;gap:5px">
-                      <span style="width:7px;height:7px;background:#facc15;border-radius:50%;display:inline-block;flex-shrink:0"></span>
-                      <strong style="color:#facc15;font-size:11px;text-transform:uppercase;letter-spacing:0.05em">Unverified</strong>
-                    </div>
+                    ${statusBtn}
                     <span style="color:#555;font-size:10px">${relativeTime(report.reported_at)}</span>
                   </div>
                   ${photoHtml}
                   <div style="font-size:12px;font-weight:600;color:#eee;margin-bottom:2px">${label}</div>
                   ${report.ward_name ? `<div style="color:#888;font-size:11px;margin-bottom:3px">${report.ward_name}</div>` : ""}
                   ${summaryText ? `<div style="font-size:11px;color:#aaa;line-height:1.4">${summaryText}</div>` : ""}
-                  ${confirmLabel}
                 </div>
               `)
               marker.on("popupopen", () => {
@@ -212,9 +214,9 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               dot.bindPopup(`
                 <div style="font-family:sans-serif;width:200px">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                    <div style="display:flex;align-items:center;gap:5px">
-                      <span style="width:7px;height:7px;background:#FF9933;border-radius:50%;display:inline-block;flex-shrink:0"></span>
-                      <strong style="color:#FF9933;font-size:11px;text-transform:uppercase;letter-spacing:0.05em">Verified</strong>
+                    <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,153,51,0.1);border:1px solid rgba(255,153,51,0.3);border-radius:20px">
+                      <span style="width:6px;height:6px;background:#FF9933;border-radius:50%;display:inline-block"></span>
+                      <span style="color:#FF9933;font-size:10px;font-weight:600;letter-spacing:0.05em">VERIFIED</span>
                     </div>
                     <span style="color:#555;font-size:10px">${relativeTime(report.reported_at)}</span>
                   </div>
