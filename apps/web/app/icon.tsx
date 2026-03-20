@@ -19,7 +19,7 @@ export default function Icon() {
         }}
       >
         <span style={{ color: "white", fontSize: 16, fontWeight: 900, letterSpacing: -1, fontFamily: "sans-serif" }}>K</span>
-        <span style={{ color: "#FF9933", fontSize: 18, fontWeight: 900, marginTop: -2, fontFamily: "sans-serif" }}>?</span>
+        <span style={{ color: "#2dd4bf", fontSize: 18, fontWeight: 900, marginTop: -2, fontFamily: "sans-serif" }}>?</span>
       </div>
     ),
     { ...size }

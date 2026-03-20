@@ -154,12 +154,12 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
                     onClick={() => setIssueType(t.value)}
                     className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all ${
                       issueType === t.value
-                        ? "bg-[#FF9933]/15 border-[#FF9933]/60 text-[#FF9933]"
+                        ? "bg-[#2dd4bf]/15 border-[#2dd4bf]/60 text-[#2dd4bf]"
                         : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
                     }`}
                   >
                     <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold ${
-                      issueType === t.value ? "bg-[#FF9933]/20 text-[#FF9933]" : "bg-white/10 text-white/50"
+                      issueType === t.value ? "bg-[#2dd4bf]/20 text-[#2dd4bf]" : "bg-white/10 text-white/50"
                     }`}>
                       {t.icon}
                     </span>
@@ -172,8 +172,8 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
             {/* Location pinned from map — show confirmation */}
             <div className="flex items-center gap-2 text-white/40 text-xs">
               <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="3" fill="#FF9933"/>
-                <circle cx="8" cy="8" r="6.5" stroke="#FF9933" strokeWidth="1.5"/>
+                <circle cx="8" cy="8" r="3" fill="#2dd4bf"/>
+                <circle cx="8" cy="8" r="6.5" stroke="#2dd4bf" strokeWidth="1.5"/>
               </svg>
               <span>Location pinned at {lat.toFixed(4)}, {lng.toFixed(4)}</span>
             </div>
@@ -218,7 +218,7 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
             <button
               onClick={handleSubmit}
               disabled={!issueType}
-              className="w-full py-3.5 rounded-xl bg-[#FF9933] hover:bg-[#FF9933]/90 disabled:opacity-40 text-black font-semibold text-sm transition-all"
+              className="w-full py-3.5 rounded-xl bg-[#2dd4bf] hover:bg-[#2dd4bf]/90 disabled:opacity-40 text-black font-semibold text-sm transition-all"
             >
               Submit report
             </button>
@@ -232,8 +232,8 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
         {(stage === "uploading" || stage === "saving") && (
           <div className="flex flex-col items-center gap-5 py-10">
             <div className="relative w-10 h-10">
-              <div className="absolute inset-0 rounded-full border-2 border-[#FF9933]/20" />
-              <div className="absolute inset-0 rounded-full border-2 border-t-[#FF9933] animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-[#2dd4bf]/20" />
+              <div className="absolute inset-0 rounded-full border-2 border-t-[#2dd4bf] animate-spin" />
             </div>
             <div className="text-center space-y-1">
               <p className="text-white text-sm font-medium">
@@ -245,8 +245,8 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
             </div>
             {/* Step dots */}
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#FF9933]" />
-              <div className={`w-2 h-2 rounded-full ${stage === "saving" ? "bg-[#FF9933]" : "bg-white/20"}`} />
+              <div className="w-2 h-2 rounded-full bg-[#2dd4bf]" />
+              <div className={`w-2 h-2 rounded-full ${stage === "saving" ? "bg-[#2dd4bf]" : "bg-white/20"}`} />
               <div className="w-2 h-2 rounded-full bg-white/20" />
             </div>
           </div>
@@ -274,14 +274,14 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
               <div className="rounded-xl bg-white/5 border border-white/10 p-4 space-y-2">
                 <p className="text-white/60 text-xs uppercase tracking-wider">Also file a formal complaint</p>
                 <p className="text-white/80 text-sm">
-                  Call <span className="text-[#FF9933] font-semibold">{authority.name} {authority.number}</span> — it creates a ticket and triggers a response deadline under the Sakala Act.
+                  Call <span className="text-[#2dd4bf] font-semibold">{authority.name} {authority.number}</span> — it creates a ticket and triggers a response deadline under the Sakala Act.
                 </p>
                 {authority.url && (
                   <a
                     href={authority.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[#FF9933] text-xs font-medium hover:underline mt-1"
+                    className="inline-flex items-center gap-1.5 text-[#2dd4bf] text-xs font-medium hover:underline mt-1"
                   >
                     File online at {authority.name}
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">

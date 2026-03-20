@@ -143,7 +143,7 @@ export function WhoTab({
                   <p className="text-white/30 text-xs">{rep.constituency} constituency</p>
                   {rep.elected_since && <p className="text-white/25 text-xs">Elected {rep.elected_since}</p>}
                   {rep.phone && (
-                    <a href={`tel:${rep.phone.replace(/\s/g, "")}`} className="text-[#FF9933] text-xs font-mono hover:underline block mt-0.5">
+                    <a href={`tel:${rep.phone.replace(/\s/g, "")}`} className="text-[#2dd4bf] text-xs font-mono hover:underline block mt-0.5">
                       {rep.phone}
                     </a>
                   )}
@@ -151,7 +151,7 @@ export function WhoTab({
                 </div>
                 {rep.profile_url && (
                   <a href={rep.profile_url} target="_blank" rel="noopener noreferrer"
-                    className="text-[#FF9933]/60 hover:text-[#FF9933] text-xs transition-colors whitespace-nowrap mt-1">
+                    className="text-[#2dd4bf]/60 hover:text-[#2dd4bf] text-xs transition-colors whitespace-nowrap mt-1">
                     Profile &rarr;
                   </a>
                 )}
@@ -259,7 +259,7 @@ export function WhoTab({
               {count < 25 && (
                 <button
                   onClick={() => setRtiRequest({ ...rtiBase(), issue_type: "committee_meetings", committee_meetings: count })}
-                  className="text-[10px] text-[#FF9933]/70 hover:text-[#FF9933] underline transition-colors"
+                  className="text-[10px] text-[#2dd4bf]/70 hover:text-[#2dd4bf] underline transition-colors"
                 >
                   File RTI
                 </button>
@@ -320,7 +320,7 @@ export function WhoTab({
                   <p className="text-white text-xs font-semibold truncate">{c.name}</p>
                 </div>
                 {c.phone && (
-                  <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="text-[#FF9933] text-xs font-mono shrink-0 hover:underline">
+                  <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="text-[#2dd4bf] text-xs font-mono shrink-0 hover:underline">
                     {c.phone}
                   </a>
                 )}
@@ -350,7 +350,7 @@ export function WhoTab({
             <div className="flex items-center justify-between">
               <p className="text-white/50 text-[10px] uppercase tracking-wider">MLA LAD Fund</p>
               <div className="flex items-center gap-1.5">
-                <p className="text-[#FF9933] font-bold text-sm">Rs.{Math.round(termRow.total_lakh / 100 * 10) / 10} Cr</p>
+                <p className="text-[#2dd4bf] font-bold text-sm">Rs.{Math.round(termRow.total_lakh / 100 * 10) / 10} Cr</p>
                 <FreshnessBadge label="2013-18" source="opencity.in" />
               </div>
             </div>
@@ -358,7 +358,7 @@ export function WhoTab({
               <p className="text-white/40 text-xs">{termRow.project_count} projects in your constituency</p>
               <button
                 onClick={() => setRtiRequest({ ...rtiBase(), issue_type: "lad_funds", lad_total_lakh: termRow.total_lakh })}
-                className="text-[10px] text-[#FF9933]/70 hover:text-[#FF9933] underline transition-colors"
+                className="text-[10px] text-[#2dd4bf]/70 hover:text-[#2dd4bf] underline transition-colors"
               >
                 File RTI
               </button>
@@ -368,7 +368,7 @@ export function WhoTab({
                 <div key={r.financial_year} className="flex items-center justify-between gap-2">
                   <span className="text-white/30 text-[10px] font-mono">{r.financial_year.trim()}</span>
                   <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#FF9933]/40 rounded-full" style={{ width: `${Math.min(100, (r.total_lakh / termRow.total_lakh) * 100 * fyRows.length)}%` }} />
+                    <div className="h-full bg-[#2dd4bf]/40 rounded-full" style={{ width: `${Math.min(100, (r.total_lakh / termRow.total_lakh) * 100 * fyRows.length)}%` }} />
                   </div>
                   <span className="text-white/40 text-[10px] font-mono shrink-0">Rs.{Math.round(r.total_lakh)} L</span>
                   <span className="text-white/20 text-[10px] shrink-0">{r.project_count}p</span>

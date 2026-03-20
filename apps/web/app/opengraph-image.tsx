@@ -30,7 +30,7 @@ export default function Image() {
         {/* Wordmark */}
         <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
           <span style={{ color: "white", fontSize: "32px", fontWeight: 900, letterSpacing: "-1px" }}>KAUN</span>
-          <span style={{ color: "#FF9933", fontSize: "36px", fontWeight: 900 }}>?</span>
+          <span style={{ color: "#2dd4bf", fontSize: "36px", fontWeight: 900 }}>?</span>
         </div>
 
         {/* Main headline */}

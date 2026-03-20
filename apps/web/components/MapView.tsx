@@ -31,10 +31,10 @@ const BENGALURU_GEOJSON_URL = DEFAULT_CITY.geojsonUrl
 
 // Saffron palette
 const WARD_STYLE = {
-  color: "#FF9933",
+  color: "#2dd4bf",
   weight: 0.8,
   opacity: 0.6,
-  fillColor: "#FF9933",
+  fillColor: "#2dd4bf",
   fillOpacity: 0.05,
 }
 const WARD_HOVER_STYLE = {
@@ -134,7 +134,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               const icon = L.divIcon({
                 html: `<div style="
                   width:13px;height:13px;
-                  background:#facc15;
+                  background:#2dd4bf;
                   border:2px solid rgba(255,255,255,0.8);
                   border-radius:50%;
                   box-shadow:0 0 0 4px rgba(250,204,21,0.3);
@@ -147,8 +147,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               const marker = L.marker([report.lat, report.lng], { icon })
               const statusBtn = alreadyDone
                 ? `<div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.3);border-radius:20px">
-                    <span style="width:6px;height:6px;background:#facc15;border-radius:50%;display:inline-block"></span>
-                    <span style="color:#facc15;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; you confirmed</span>
+                    <span style="width:6px;height:6px;background:#2dd4bf;border-radius:50%;display:inline-block"></span>
+                    <span style="color:#2dd4bf;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; you confirmed</span>
                    </div>`
                 : `<button id="confirm-${report.id}" style="
                     display:inline-flex;align-items:center;gap:5px;
@@ -156,8 +156,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                     background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);
                     cursor:pointer;
                   ">
-                    <span style="width:6px;height:6px;background:#facc15;border-radius:50%;display:inline-block;animation:kaun-pulse 1.5s ease-in-out infinite"></span>
-                    <span style="color:#facc15;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; Confirm ${upvotes}/2</span>
+                    <span style="width:6px;height:6px;background:#2dd4bf;border-radius:50%;display:inline-block;animation:kaun-pulse 1.5s ease-in-out infinite"></span>
+                    <span style="color:#2dd4bf;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; Confirm ${upvotes}/2</span>
                    </button>`
               marker.bindPopup(`
                 <div style="font-family:sans-serif;width:200px">
@@ -190,7 +190,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                     localStorage.setItem("kaun_confirmed", JSON.stringify([...stored, report.id]))
                     if (data.status === "approved") {
                       btn.textContent = "Approved!"
-                      btn.style.background = "#FF9933"
+                      btn.style.background = "#2dd4bf"
                     } else {
                       btn.textContent = `Confirmed (${newUpvotes}/2)`
                       btn.style.background = "#86efac"
@@ -206,8 +206,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               // Orange solid dot for approved reports
               const dot = L.circleMarker([report.lat, report.lng], {
                 radius: 6,
-                color: "#FF9933",
-                fillColor: "#FF9933",
+                color: "#2dd4bf",
+                fillColor: "#2dd4bf",
                 fillOpacity: 0.9,
                 weight: 2,
               })
@@ -215,15 +215,15 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                 <div style="font-family:sans-serif;width:200px">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
                     <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,153,51,0.1);border:1px solid rgba(255,153,51,0.3);border-radius:20px">
-                      <span style="width:6px;height:6px;background:#FF9933;border-radius:50%;display:inline-block"></span>
-                      <span style="color:#FF9933;font-size:10px;font-weight:600;letter-spacing:0.05em">VERIFIED</span>
+                      <span style="width:6px;height:6px;background:#2dd4bf;border-radius:50%;display:inline-block"></span>
+                      <span style="color:#2dd4bf;font-size:10px;font-weight:600;letter-spacing:0.05em">VERIFIED</span>
                     </div>
                     <span style="color:#555;font-size:10px">${relativeTime(report.reported_at)}</span>
                   </div>
                   ${photoHtml}
                   <div style="font-size:12px;font-weight:600;color:#eee;margin-bottom:2px">${label}</div>
                   ${report.ward_name ? `<div style="color:#888;font-size:11px;margin-bottom:3px">${report.ward_name}</div>` : ""}
-                  ${report.ai_person ? `<div style="color:#FF9933;font-size:11px;margin-bottom:3px">${report.ai_person}</div>` : ""}
+                  ${report.ai_person ? `<div style="color:#2dd4bf;font-size:11px;margin-bottom:3px">${report.ai_person}</div>` : ""}
                   ${summaryText ? `<div style="font-size:11px;color:#aaa;line-height:1.4">${summaryText}</div>` : ""}
                 </div>
               `)
@@ -298,7 +298,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       const pinIcon = L.divIcon({
         html: `<div style="
           width:14px;height:14px;
-          background:#FF9933;
+          background:#2dd4bf;
           border:2px solid #fff;
           border-radius:50%;
           box-shadow:0 0 0 3px rgba(255,153,51,0.35)
@@ -342,7 +342,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   return (
     <div className={`relative w-full h-full${reportPickMode ? " [&_.leaflet-container]:cursor-crosshair" : ""}`}>
       {loading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-[#FF9933] text-sm tracking-widest uppercase">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-[#2dd4bf] text-sm tracking-widest uppercase">
           Loading ward boundaries...
         </div>
       )}

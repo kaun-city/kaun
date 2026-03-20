@@ -178,7 +178,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               onClick={() => ward.setTab(t.id)}
               className={`flex-1 py-3 lg:py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors
                 ${ward.tab === t.id
-                  ? "text-[#FF9933] border-b-2 border-[#FF9933]"
+                  ? "text-[#2dd4bf] border-b-2 border-[#2dd4bf]"
                   : "text-white/30 hover:text-white/60 active:text-white/60"
                 }`}
             >

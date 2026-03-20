@@ -63,7 +63,7 @@ export async function GET(req: Request) {
         {/* Wordmark */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <span style={{ color: "white", fontSize: "26px", fontWeight: 900 }}>KAUN</span>
-          <span style={{ color: "#FF9933", fontSize: "30px", fontWeight: 900, marginLeft: "2px" }}>?</span>
+          <span style={{ color: "#2dd4bf", fontSize: "30px", fontWeight: 900, marginLeft: "2px" }}>?</span>
         </div>
 
         {/* Ward name */}
@@ -89,7 +89,7 @@ export async function GET(req: Request) {
             borderRadius: "16px",
             padding: "28px 40px",
           }}>
-            <div style={{ display: "flex", color: "#FF9933", fontSize: "72px", fontWeight: 900, marginRight: "24px" }}>
+            <div style={{ display: "flex", color: "#2dd4bf", fontSize: "72px", fontWeight: 900, marginRight: "24px" }}>
               {stat}
             </div>
             <div style={{ display: "flex", color: "rgba(255,255,255,0.65)", fontSize: "28px", fontWeight: 400 }}>

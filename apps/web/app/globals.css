@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --saffron: #FF9933;
-  --bg: #0A0A0A;
+  --saffron: #2dd4bf;
+  --bg: #080f0e;
 }
 
 * {
@@ -57,8 +57,8 @@ body {
 
 /* Ward card slide-up animation (mobile only — lg+ uses static sidebar) */
 @keyframes kaun-pulse {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(250,204,21,0.35); }
-  50%       { box-shadow: 0 0 0 8px rgba(250,204,21,0.0); }
+  0%, 100% { box-shadow: 0 0 0 4px rgba(45,212,191,0.35); }
+  50%       { box-shadow: 0 0 0 8px rgba(45,212,191,0.0); }
 }
 
 @keyframes slide-up {

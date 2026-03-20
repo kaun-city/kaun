@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        saffron: "#FF9933",
+        saffron: "#2dd4bf",
       },
       animation: {
         "slide-up": "slide-up 0.25s ease-out forwards",

@@ -49,7 +49,7 @@ export async function GET(req: Request) {
         {/* Left accent bar */}
         <div style={{
           position: "absolute", left: 0, top: 0, bottom: 0,
-          width: "8px", backgroundColor: "#FF9933",
+          width: "8px", backgroundColor: "#2dd4bf",
           display: "flex",
         }} />
 
@@ -86,7 +86,7 @@ export async function GET(req: Request) {
           {/* Top: Wordmark */}
           <div style={{ display: "flex", alignItems: "center" }}>
             <span style={{ color: "white", fontSize: "22px", fontWeight: 900 }}>KAUN</span>
-            <span style={{ color: "#FF9933", fontSize: "26px", fontWeight: 900 }}>?</span>
+            <span style={{ color: "#2dd4bf", fontSize: "26px", fontWeight: 900 }}>?</span>
           </div>
 
           {/* Middle: Issue */}
@@ -98,7 +98,7 @@ export async function GET(req: Request) {
               borderRadius: "8px",
               padding: "6px 14px",
             }}>
-              <span style={{ color: "#FF9933", fontSize: "14px", fontWeight: 700, letterSpacing: "0.05em" }}>
+              <span style={{ color: "#2dd4bf", fontSize: "14px", fontWeight: 700, letterSpacing: "0.05em" }}>
                 {issueLabel.toUpperCase()}
               </span>
             </div>
@@ -114,7 +114,7 @@ export async function GET(req: Request) {
                 borderRadius: "8px",
                 padding: "10px 16px",
               }}>
-                <span style={{ color: "#FF9933", fontSize: "18px", fontWeight: 700, marginRight: "8px" }}>!</span>
+                <span style={{ color: "#2dd4bf", fontSize: "18px", fontWeight: 700, marginRight: "8px" }}>!</span>
                 <span style={{ color: "rgba(255,255,255,0.85)", fontSize: "18px", fontWeight: 600 }}>
                   {personLine}
                 </span>
