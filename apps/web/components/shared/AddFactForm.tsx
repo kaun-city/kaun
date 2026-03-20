@@ -55,7 +55,7 @@ export function AddFactForm({ wardNo, cityId, onSubmitted }: Props) {
 
   if (done) {
     return (
-      <div className="mt-3 p-3 rounded-xl bg-teal-400/10 border border-teal-400/20 text-teal-400 text-xs text-center font-medium">
+      <div className="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs text-center font-medium">
         OK Added! Others can now corroborate this.
       </div>
     )
@@ -124,7 +124,7 @@ export function AddFactForm({ wardNo, cityId, onSubmitted }: Props) {
             <button
               type="submit"
               disabled={submitting || !value.trim()}
-              className="flex-1 py-2 rounded-lg bg-[#2dd4bf]/20 border border-[#2dd4bf]/40 text-[#2dd4bf] text-xs font-semibold hover:bg-[#2dd4bf]/30 disabled:opacity-40 transition-colors"
+              className="flex-1 py-2 rounded-lg bg-[#FF9933]/20 border border-[#FF9933]/40 text-[#FF9933] text-xs font-semibold hover:bg-[#FF9933]/30 disabled:opacity-40 transition-colors"
             >
               {submitting ? "Submitting..." : "Submit"}
             </button>

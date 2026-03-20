@@ -37,7 +37,7 @@ export function FactCard({ fact, onCorroborate }: Props) {
           title="I can verify this"
           className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-colors
             ${voted
-              ? "bg-teal-400/20 text-teal-400 cursor-default"
+              ? "bg-amber-500/20 text-amber-400 cursor-default"
               : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70 cursor-pointer"
             }`}
         >

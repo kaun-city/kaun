@@ -63,7 +63,7 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
                 <p className="text-white/30 text-[10px]">Households</p>
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-bold text-[#2dd4bf] truncate">{wardStats.avg_population_density?.toLocaleString("en-IN") ?? "--"}</p>
+                <p className="text-lg font-bold text-[#FF9933] truncate">{wardStats.avg_population_density?.toLocaleString("en-IN") ?? "--"}</p>
                 <p className="text-white/30 text-[10px]">per km²</p>
               </div>
             </div>
@@ -144,10 +144,10 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
           )}
 
           {/* Live reports count */}
-          <div className={`rounded-xl px-4 py-3 flex items-center justify-between ${reportCount > 0 ? "bg-[#2dd4bf]/10 border border-[#2dd4bf]/20" : "bg-white/5"}`}>
+          <div className={`rounded-xl px-4 py-3 flex items-center justify-between ${reportCount > 0 ? "bg-[#FF9933]/10 border border-[#FF9933]/20" : "bg-white/5"}`}>
             <div>
               <p className="text-white/50 text-[10px] uppercase tracking-wider">Civic Reports (last 30 days)</p>
-              <p className={`text-2xl font-bold mt-0.5 ${reportCount > 0 ? "text-[#2dd4bf]" : "text-white/30"}`}>
+              <p className={`text-2xl font-bold mt-0.5 ${reportCount > 0 ? "text-[#FF9933]" : "text-white/30"}`}>
                 {reportCount}
               </p>
               <p className="text-white/30 text-[10px]">
@@ -170,7 +170,7 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
                 <div className="mt-2 flex justify-end">
                   <button
                     onClick={() => setRtiRequest({ issue_type: "pothole_complaints", ward_no: wardNo, ward_name: wardName, assembly_constituency: assemblyConstituency, pothole_complaints: potholes.complaints })}
-                    className="text-[10px] text-[#2dd4bf]/70 hover:text-[#2dd4bf] underline transition-colors"
+                    className="text-[10px] text-[#FF9933]/70 hover:text-[#FF9933] underline transition-colors"
                   >
                     File RTI
                   </button>
@@ -192,9 +192,9 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
           </div>
           {signals.map(s => (
             <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block group">
-              <div className="py-2.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border-l-2 border-[#2dd4bf]/30">
+              <div className="py-2.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border-l-2 border-[#FF9933]/30">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#2dd4bf]/70">{s.issue_type}</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#FF9933]/70">{s.issue_type}</span>
                   <span className="text-white/15 text-[10px]">·</span>
                   <span className="text-white/25 text-[10px]">{s.source}</span>
                 </div>
@@ -222,7 +222,7 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
           {buzz.map((post, i) => (
             <a key={i} href={post.url} target="_blank" rel="noopener noreferrer" className="block group">
               <div className="py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                <p className="text-white text-xs leading-snug group-hover:text-[#2dd4bf] transition-colors line-clamp-2">{post.title}</p>
+                <p className="text-white text-xs leading-snug group-hover:text-[#FF9933] transition-colors line-clamp-2">{post.title}</p>
                 <p className="text-white/25 text-xs mt-1">+{post.score} · {post.num_comments} comments · {timeAgo(post.created_utc)}</p>
               </div>
             </a>

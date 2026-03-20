@@ -119,7 +119,7 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala, 
       <div className="space-y-2">
         <button
           onClick={() => setShowIssues(v => !v)}
-          className="w-full py-3.5 rounded-xl bg-[#2dd4bf]/15 border border-[#2dd4bf]/40 text-[#2dd4bf] text-sm font-semibold hover:bg-[#2dd4bf]/25 active:scale-[0.98] transition-all"
+          className="w-full py-3.5 rounded-xl bg-[#FF9933]/15 border border-[#FF9933]/40 text-[#FF9933] text-sm font-semibold hover:bg-[#FF9933]/25 active:scale-[0.98] transition-all"
         >
           {showIssues ? "Pick an issue below" : "File an RTI Application"}
         </button>
@@ -166,12 +166,12 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala, 
             <div key={o.boundary_type} className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <span className="text-white/30 text-xs block">{OFFICE_LABELS[o.boundary_type] ?? o.boundary_type}</span>
-                <p className={`text-xs font-semibold ${o.boundary_type === "pincode" ? "text-[#2dd4bf]" : "text-white"}`}>
+                <p className={`text-xs font-semibold ${o.boundary_type === "pincode" ? "text-[#FF9933]" : "text-white"}`}>
                   {formatOfficeName(o.boundary_type, o.name)}
                 </p>
               </div>
               {o.phone && (
-                <a href={`tel:${o.phone.replace(/\s/g, "")}`} className="text-[#2dd4bf] text-xs font-mono shrink-0 hover:underline mt-0.5">
+                <a href={`tel:${o.phone.replace(/\s/g, "")}`} className="text-[#FF9933] text-xs font-mono shrink-0 hover:underline mt-0.5">
                   {o.phone}
                 </a>
               )}
@@ -204,7 +204,7 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala, 
               </div>
               <div className="text-right shrink-0 ml-2">
                 {dept.toll_free
-                  ? <span className="text-[#2dd4bf] text-sm font-mono font-semibold">{dept.toll_free}</span>
+                  ? <span className="text-[#FF9933] text-sm font-mono font-semibold">{dept.toll_free}</span>
                   : dept.helpline
                     ? <span className="text-white/40 text-xs font-mono">{dept.helpline}</span>
                     : <span className="text-white/20 text-xs">File online &rarr;</span>}

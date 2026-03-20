@@ -46,11 +46,11 @@ export function WardStoryCard({ storyData }: Props) {
   if (!storyData) return null
 
   return (
-    <div className="rounded-xl overflow-hidden bg-gradient-to-br from-[#2dd4bf]/10 to-white/5 border border-white/10">
+    <div className="rounded-xl overflow-hidden bg-gradient-to-br from-[#FF9933]/10 to-white/5 border border-white/10">
       <div className="px-4 py-3">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#2dd4bf]/20 text-[#2dd4bf] uppercase tracking-wider">AI</span>
+            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#FF9933]/20 text-[#FF9933] uppercase tracking-wider">AI</span>
             <span className="text-white/40 text-[10px] uppercase tracking-wider">Ward Brief</span>
           </div>
           {story && !loading && (

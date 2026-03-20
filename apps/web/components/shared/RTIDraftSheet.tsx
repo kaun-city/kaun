@@ -68,7 +68,7 @@ export function RTIDraftSheet({ request, onClose }: Props) {
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#2dd4bf]/20 text-[#2dd4bf] uppercase tracking-wider">RTI</span>
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#FF9933]/20 text-[#FF9933] uppercase tracking-wider">RTI</span>
                 <span className="text-white/70 text-sm font-medium">{ISSUE_LABELS[request.issue_type]}</span>
               </div>
               <p className="text-white/30 text-xs">{request.ward_name} Ward</p>
@@ -128,7 +128,7 @@ export function RTIDraftSheet({ request, onClose }: Props) {
             <div className="flex gap-2">
               <button
                 onClick={handleCopy}
-                className="flex-1 py-2.5 rounded-xl bg-[#2dd4bf] text-black font-semibold text-sm hover:bg-[#2dd4bf]/90 transition-colors"
+                className="flex-1 py-2.5 rounded-xl bg-[#FF9933] text-black font-semibold text-sm hover:bg-[#FF9933]/90 transition-colors"
               >
                 {copied ? "Copied!" : "Copy RTI Draft"}
               </button>

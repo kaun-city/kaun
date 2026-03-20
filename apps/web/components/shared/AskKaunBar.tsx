@@ -97,12 +97,12 @@ export function AskKaunBar({ wardContext }: Props) {
           {messages.map((m, i) => (
             <div key={i} className={`flex gap-2 ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               {m.role === "assistant" && (
-                <span className="text-[10px] font-bold text-[#2dd4bf] mt-1 shrink-0">K</span>
+                <span className="text-[10px] font-bold text-[#FF9933] mt-1 shrink-0">K</span>
               )}
               <p className={`text-sm leading-relaxed max-w-[85%] rounded-2xl px-3 py-2 ${
                 m.role === "user"
                   ? "bg-white/10 text-white/80 rounded-br-sm"
-                  : "bg-[#2dd4bf]/10 text-white/70 rounded-bl-sm"
+                  : "bg-[#FF9933]/10 text-white/70 rounded-bl-sm"
               }`}>
                 {m.text}
               </p>
@@ -110,11 +110,11 @@ export function AskKaunBar({ wardContext }: Props) {
           ))}
           {loading && (
             <div className="flex gap-2 justify-start">
-              <span className="text-[10px] font-bold text-[#2dd4bf] mt-1 shrink-0">K</span>
-              <div className="bg-[#2dd4bf]/10 rounded-2xl rounded-bl-sm px-3 py-2 flex gap-1 items-center">
-                <span className="w-1.5 h-1.5 bg-[#2dd4bf]/50 rounded-full animate-bounce" style={{animationDelay:"0ms"}} />
-                <span className="w-1.5 h-1.5 bg-[#2dd4bf]/50 rounded-full animate-bounce" style={{animationDelay:"150ms"}} />
-                <span className="w-1.5 h-1.5 bg-[#2dd4bf]/50 rounded-full animate-bounce" style={{animationDelay:"300ms"}} />
+              <span className="text-[10px] font-bold text-[#FF9933] mt-1 shrink-0">K</span>
+              <div className="bg-[#FF9933]/10 rounded-2xl rounded-bl-sm px-3 py-2 flex gap-1 items-center">
+                <span className="w-1.5 h-1.5 bg-[#FF9933]/50 rounded-full animate-bounce" style={{animationDelay:"0ms"}} />
+                <span className="w-1.5 h-1.5 bg-[#FF9933]/50 rounded-full animate-bounce" style={{animationDelay:"150ms"}} />
+                <span className="w-1.5 h-1.5 bg-[#FF9933]/50 rounded-full animate-bounce" style={{animationDelay:"300ms"}} />
               </div>
             </div>
           )}
@@ -146,7 +146,7 @@ export function AskKaunBar({ wardContext }: Props) {
 
       {/* Input bar */}
       <div className="flex items-center gap-2 px-4 py-3">
-        <span className="text-[#2dd4bf] font-bold text-sm shrink-0">Ask</span>
+        <span className="text-[#FF9933] font-bold text-sm shrink-0">Ask</span>
         <input
           ref={inputRef}
           value={input}
@@ -160,7 +160,7 @@ export function AskKaunBar({ wardContext }: Props) {
         <button
           onClick={() => ask(input)}
           disabled={!input.trim() || loading}
-          className="shrink-0 w-8 h-8 rounded-full bg-[#2dd4bf] disabled:bg-white/10 flex items-center justify-center transition-colors"
+          className="shrink-0 w-8 h-8 rounded-full bg-[#FF9933] disabled:bg-white/10 flex items-center justify-center transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M12 7L2 2l2 5-2 5 10-5z" fill={input.trim() && !loading ? "#000" : "#666"} />

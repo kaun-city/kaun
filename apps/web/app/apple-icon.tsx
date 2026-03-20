@@ -19,7 +19,7 @@ export default function AppleIcon() {
         }}
       >
         <span style={{ color: "white", fontSize: 80, fontWeight: 900, letterSpacing: -4, fontFamily: "sans-serif" }}>K</span>
-        <span style={{ color: "#2dd4bf", fontSize: 96, fontWeight: 900, marginTop: -8, fontFamily: "sans-serif" }}>?</span>
+        <span style={{ color: "#FF9933", fontSize: 96, fontWeight: 900, marginTop: -8, fontFamily: "sans-serif" }}>?</span>
       </div>
     ),
     { ...size }
