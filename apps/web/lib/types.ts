@@ -101,6 +101,7 @@ export interface WardProfile {
 export interface PinResult {
   found: boolean
   city_id: string
+  // Legacy BBMP fields (used for all historical data joins)
   ward_no: number | null
   ward_name: string | null
   zone: string | null
@@ -109,6 +110,17 @@ export interface PinResult {
   primary_agency?: Agency | null
   lat?: number
   lng?: number
+  // GBA fields (new structure from Oct 2025)
+  gba_ward_no: number | null
+  gba_ward_name: string | null
+  gba_ward_name_kn: string | null
+  gba_corporation: string | null       // 'Central'|'East'|'North'|'South'|'West'
+  gba_corporation_id: number | null
+  gba_ac: string | null
+  gba_ac_no: number | null
+  gba_zone: string | null
+  gba_zone_name: string | null
+  gba_population: number | null
 }
 
 export interface Department {

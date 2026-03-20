@@ -15,11 +15,23 @@ import { rpc, query, insert } from "./supabase"
 export async function pinLookup(lat: number, lng: number): Promise<PinResult | null> {
   const data = await rpc<{
     found: boolean
+    // BBMP legacy
     city_id?: string
     ward_no?: number
     ward_name?: string
     zone?: string | null
     assembly_constituency?: string | null
+    // GBA
+    gba_ward_no?: number | null
+    gba_ward_name?: string | null
+    gba_ward_name_kn?: string | null
+    gba_corporation?: string | null
+    gba_corporation_id?: number | null
+    gba_ac?: string | null
+    gba_ac_no?: number | null
+    gba_zone?: string | null
+    gba_zone_name?: string | null
+    gba_population?: number | null
   }>("pin_lookup", { lat, lng })
 
   if (!data || !data.found) {
@@ -28,12 +40,24 @@ export async function pinLookup(lat: number, lng: number): Promise<PinResult | n
 
   return {
     found: true,
+    // BBMP legacy (all existing tabs continue to work)
     city_id: data.city_id ?? "bengaluru",
     ward_no: data.ward_no ?? 0,
     ward_name: data.ward_name ?? "",
     zone: data.zone ?? null,
     assembly_constituency: data.assembly_constituency ?? null,
     agencies: [],
+    // GBA
+    gba_ward_no: data.gba_ward_no ?? null,
+    gba_ward_name: data.gba_ward_name ?? null,
+    gba_ward_name_kn: data.gba_ward_name_kn ?? null,
+    gba_corporation: data.gba_corporation ?? null,
+    gba_corporation_id: data.gba_corporation_id ?? null,
+    gba_ac: data.gba_ac ?? null,
+    gba_ac_no: data.gba_ac_no ?? null,
+    gba_zone: data.gba_zone ?? null,
+    gba_zone_name: data.gba_zone_name ?? null,
+    gba_population: data.gba_population ?? null,
   }
 }
 

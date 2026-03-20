@@ -110,12 +110,16 @@ export default function WardCard({ result, loading, onClose }: Props) {
           </div>
         ) : result?.found ? (
           <div className="flex-1 min-w-0">
-            <h2 className="text-white font-semibold text-base leading-snug truncate">{result.ward_name}</h2>
+            {/* GBA ward name (primary), falls back to legacy BBMP name */}
+            <h2 className="text-white font-semibold text-base leading-snug truncate">
+              {result.gba_ward_name ?? result.ward_name}
+            </h2>
             <p className="text-white/40 text-xs mt-0.5 truncate">
-              Ward {result.ward_no}
-              {result.zone ? `  ·  ${result.zone}` : ""}
-              {result.assembly_constituency ? `  ·  ${result.assembly_constituency}` : ""}
-            </p>
+              {result.gba_corporation
+                ? `Bengaluru ${result.gba_corporation} Â· Ward ${result.gba_ward_no}${result.assembly_constituency ? ` Â· ${result.assembly_constituency}` : ""}`
+                : `Ward ${result.ward_no}${result.zone ? ` Â· ${result.zone}` : ""}${result.assembly_constituency ? ` Â· ${result.assembly_constituency}` : ""}`
+              }
+            </p>            </p>
           </div>
         ) : (
           <div className="flex-1 min-w-0">
