@@ -407,6 +407,42 @@ export async function fetchWardInfraStats(wardNo: number): Promise<import('./typ
 }
 
 /**
+ * Fetch BMTC bus stop count and daily trips for a ward (ward_bus_stops table).
+ */
+export async function fetchWardBusStats(wardNo: number): Promise<import('./types').WardBusStats | null> {
+  const rows = await query<import('./types').WardBusStats>('ward_bus_stops', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'ward_no,stop_count,total_trips',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
+
+/**
+ * Fetch road crash data for a ward (ward_road_crashes table).
+ */
+export async function fetchWardRoadCrashes(wardNo: number): Promise<import('./types').WardRoadCrashes | null> {
+  const rows = await query<import('./types').WardRoadCrashes>('ward_road_crashes', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'ward_no,crashes_2024,fatal_2024,crashes_2025,fatal_2025',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
+
+/**
+ * Fetch air quality data for nearest monitoring station to a ward.
+ */
+export async function fetchWardAirQuality(wardNo: number): Promise<import('./types').WardAirQuality | null> {
+  const rows = await query<import('./types').WardAirQuality>('ward_air_quality', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'ward_no,station_name,avg_pm25,avg_pm10,data_year',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
+
+/**
  * Fetch ward spend breakdown by category (BBMP work orders 2018-2023).
  */
 export async function fetchWardReportCount(wardNo: number): Promise<number> {

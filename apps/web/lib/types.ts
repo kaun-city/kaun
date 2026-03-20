@@ -316,3 +316,25 @@ export interface WardInfraStats {
   daily_trips: number
 }
 
+export interface WardBusStats {
+  ward_no: number
+  stop_count: number
+  total_trips: number
+}
+
+export interface WardRoadCrashes {
+  ward_no: number
+  crashes_2024: number
+  fatal_2024: number
+  crashes_2025: number
+  fatal_2025: number
+}
+
+export interface WardAirQuality {
+  ward_no: number
+  station_name: string
+  avg_pm25: number | null
+  avg_pm10: number | null
+  data_year: string
+}
+

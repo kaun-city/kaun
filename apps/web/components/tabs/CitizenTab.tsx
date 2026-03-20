@@ -3,7 +3,7 @@
 import { timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
 import { useState } from "react"
-import type { RedditPost, WardInfraStats, WardPotholes, WardStats } from "@/lib/types"
+import type { RedditPost, WardAirQuality, WardBusStats, WardInfraStats, WardPotholes, WardRoadCrashes, WardStats } from "@/lib/types"
 import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
 import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
@@ -19,6 +19,9 @@ interface Props {
   wardStats: WardStats | null
   potholes: WardPotholes | null
   infraStats: WardInfraStats | null
+  wardBusStats: WardBusStats | null
+  roadCrashes: WardRoadCrashes | null
+  airQuality: WardAirQuality | null
   buzz: RedditPost[] | null
   buzzLoading: boolean
   wardNo: number
@@ -28,7 +31,7 @@ interface Props {
   signals?: CivicSignal[]
 }
 
-export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLoading, wardNo, wardName, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
+export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats, roadCrashes, airQuality, buzz, buzzLoading, wardNo, wardName, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   return (
     <>
@@ -176,6 +179,80 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, buzz, buzzLo
                   </button>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Bus connectivity (BMTC 2026) */}
+          {wardBusStats && wardBusStats.stop_count > 0 && (
+            <div className="rounded-xl bg-white/5 px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/50 text-[10px] uppercase tracking-wider">Bus Connectivity</p>
+                  <p className="text-white/30 text-xs mt-0.5">BMTC 2026</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-white text-lg font-bold">{wardBusStats.stop_count}</p>
+                  <p className="text-white/30 text-[10px]">stops</p>
+                </div>
+              </div>
+              {wardBusStats.total_trips > 0 && (
+                <p className="text-white/20 text-[10px] mt-1">{wardBusStats.total_trips.toLocaleString("en-IN")} daily trips through this ward</p>
+              )}
+            </div>
+          )}
+
+          {/* Road safety (BTP 2024-25) */}
+          {roadCrashes && (roadCrashes.crashes_2024 > 0 || roadCrashes.crashes_2025 > 0) && (
+            <div className="rounded-xl bg-white/5 px-4 py-3">
+              <div className="flex items-center justify-between">
+                <p className="text-white/50 text-[10px] uppercase tracking-wider">Road Safety</p>
+                <FreshnessBadge label="BTP 2025" source="Bengaluru Traffic Police" />
+              </div>
+              <div className="grid grid-cols-2 gap-3 mt-2">
+                {roadCrashes.crashes_2024 > 0 && (
+                  <div>
+                    <p className="text-red-400 text-lg font-bold">{roadCrashes.crashes_2024}</p>
+                    <p className="text-white/30 text-[10px]">crashes in 2024</p>
+                    {roadCrashes.fatal_2024 > 0 && <p className="text-white/20 text-[10px]">{roadCrashes.fatal_2024} fatal</p>}
+                  </div>
+                )}
+                {roadCrashes.crashes_2025 > 0 && (
+                  <div>
+                    <p className="text-red-400 text-lg font-bold">{roadCrashes.crashes_2025}</p>
+                    <p className="text-white/30 text-[10px]">crashes in 2025</p>
+                    {roadCrashes.fatal_2025 > 0 && <p className="text-white/20 text-[10px]">{roadCrashes.fatal_2025} fatal</p>}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Air quality (KSPCB/CPCB 2024-25) */}
+          {airQuality && (airQuality.avg_pm25 || airQuality.avg_pm10) && (
+            <div className="rounded-xl bg-white/5 px-4 py-3">
+              <div className="flex items-center justify-between">
+                <p className="text-white/50 text-[10px] uppercase tracking-wider">Air Quality</p>
+                <FreshnessBadge label="2024-25" source="KSPCB / CPCB" />
+              </div>
+              <p className="text-white/30 text-[10px] mt-0.5">Nearest station: {airQuality.station_name}</p>
+              <div className="grid grid-cols-2 gap-3 mt-2">
+                {airQuality.avg_pm25 && (
+                  <div>
+                    <p className={`text-lg font-bold ${Number(airQuality.avg_pm25) > 60 ? "text-red-400" : Number(airQuality.avg_pm25) > 35 ? "text-yellow-400" : "text-green-400"}`}>
+                      {airQuality.avg_pm25}
+                    </p>
+                    <p className="text-white/30 text-[10px]">PM2.5 avg (ug/m3)</p>
+                  </div>
+                )}
+                {airQuality.avg_pm10 && (
+                  <div>
+                    <p className={`text-lg font-bold ${Number(airQuality.avg_pm10) > 100 ? "text-red-400" : Number(airQuality.avg_pm10) > 60 ? "text-yellow-400" : "text-green-400"}`}>
+                      {airQuality.avg_pm10}
+                    </p>
+                    <p className="text-white/30 text-[10px]">PM10 avg (ug/m3)</p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
