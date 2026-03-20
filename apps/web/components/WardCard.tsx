@@ -115,11 +115,20 @@ export default function WardCard({ result, loading, onClose }: Props) {
               {result.gba_ward_name ?? result.ward_name}
             </h2>
             <p className="text-white/40 text-xs mt-0.5 truncate">
-              {result.gba_corporation
-                ? `Bengaluru ${result.gba_corporation} Â· Ward ${result.gba_ward_no}${result.assembly_constituency ? ` Â· ${result.assembly_constituency}` : ""}`
-                : `Ward ${result.ward_no}${result.zone ? ` Â· ${result.zone}` : ""}${result.assembly_constituency ? ` Â· ${result.assembly_constituency}` : ""}`
-              }
-            </p>            </p>
+              {result.gba_corporation ? (
+                <>
+                  Bengaluru {result.gba_corporation}
+                  {result.gba_ward_no != null && <> &middot; Ward {result.gba_ward_no}</>}
+                  {result.assembly_constituency && <> &middot; {result.assembly_constituency}</>}
+                </>
+              ) : (
+                <>
+                  Ward {result.ward_no}
+                  {result.zone && <> &middot; {result.zone}</>}
+                  {result.assembly_constituency && <> &middot; {result.assembly_constituency}</>}
+                </>
+              )}
+            </p>
           </div>
         ) : (
           <div className="flex-1 min-w-0">
