@@ -9,6 +9,7 @@ import { SpendTab } from "@/components/tabs/SpendTab"
 import { CitizenTab } from "@/components/tabs/CitizenTab"
 import { ReachTab } from "@/components/tabs/ReachTab"
 import { AskKaunBar } from "@/components/shared/AskKaunBar"
+import { WardHeadline } from "@/components/WardHeadline"
 import type { AskKaunRequest } from "@/app/api/ask-kaun/route"
 
 interface Props {
@@ -168,6 +169,16 @@ export default function WardCard({ result, loading, onClose }: Props) {
           &times;
         </button>
       </div>
+
+      {/* Ward Headline — most alarming finding, above tabs */}
+      {!loading && result?.found && (
+        <WardHeadline
+          reportCard={ward.reportCard}
+          committeeMeetings={ward.committeeMeetings}
+          infraStats={ward.infraStats}
+          wardContractors={ward.wardContractors ?? []}
+        />
+      )}
 
       {/* Tabs */}
       {!loading && result?.found && (

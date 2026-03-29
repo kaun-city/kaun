@@ -38,7 +38,7 @@ import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { PartyBadge } from "@/components/shared/PartyBadge"
 import { SkeletonCard, SkeletonRepCard, SkeletonScorecard } from "@/components/shared/Skeleton"
 import { TrustBadge } from "@/components/shared/TrustBadge"
-// import { WardStoryCard } from "@/components/shared/WardStoryCard" // hidden until AI is reliable
+import { WardStoryCard } from "@/components/shared/WardStoryCard"
 import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
 import type { WardStoryRequest } from "@/app/api/ward-story/route"
 import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
@@ -107,8 +107,8 @@ export function WhoTab({
     <>
     <RTIDraftSheet request={rtiRequest} onClose={() => setRtiRequest(null)} />
     <div className="px-5 py-4 space-y-4 pb-safe-content">
-      {/* WardStoryCard hidden — re-enable once AI brief is reliable */}
-
+      {/* AI Ward Brief — 2-3 sentence accountability narrative */}
+      <WardStoryCard storyData={storyData} />
 
 
       {/* Governance alert — skip the "No elected corporator" noise (applies to all 243 wards) */}
