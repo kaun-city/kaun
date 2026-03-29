@@ -25,5 +25,7 @@ export const bengaluru: CityConfig = {
     sakala:                true,
     budget:                true,
     buzz:                  true,
+    wardAmenities:         true,
+    wardWaterQuality:      true,
   },
 }

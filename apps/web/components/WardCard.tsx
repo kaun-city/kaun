@@ -237,6 +237,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
               wardBusStats={ward.wardBusStats ?? null}
               roadCrashes={ward.roadCrashes ?? null}
               airQuality={ward.airQuality ?? null}
+              amenities={ward.amenities ?? null}
+              waterQuality={ward.waterQuality ?? []}
               buzz={ward.buzz}
               buzzLoading={ward.buzzLoading}
               wardNo={result.ward_no ?? 0}

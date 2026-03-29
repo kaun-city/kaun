@@ -30,6 +30,15 @@ export interface AskKaunRequest {
     grievance_count?: number | null
     bbmp_ward_office?: string | null
     bbmp_complaint_no?: string | null
+    // OSM amenities
+    hospitals?: number | null
+    clinics?: number | null
+    pharmacies?: number | null
+    atms?: number | null
+    banks?: number | null
+    public_toilets?: number | null
+    ev_charging?: number | null
+    metro_stations?: number | null
   }
 }
 
@@ -48,6 +57,15 @@ function buildContext(c: AskKaunRequest["ward_context"]): string {
   if (c.ward_spend_total_lakh != null) lines.push(`BBMP ward spend: Rs ${c.ward_spend_total_lakh} lakh (2018-2023)`)
   if (c.ward_spend_roads_pct != null) lines.push(`Roads share of spend: ${c.ward_spend_roads_pct.toFixed(1)}%`)
   if (c.grievance_count != null)     lines.push(`BBMP grievances: ${c.grievance_count}`)
+  // Amenities (OSM)
+  if (c.hospitals != null)           lines.push(`Hospitals: ${c.hospitals}`)
+  if (c.clinics != null)             lines.push(`Clinics: ${c.clinics}`)
+  if (c.pharmacies != null)          lines.push(`Pharmacies: ${c.pharmacies}`)
+  if (c.atms != null)                lines.push(`ATMs: ${c.atms}`)
+  if (c.banks != null)               lines.push(`Banks: ${c.banks}`)
+  if (c.public_toilets != null)      lines.push(`Public toilets: ${c.public_toilets}`)
+  if (c.ev_charging != null)         lines.push(`EV charging stations: ${c.ev_charging}`)
+  if (c.metro_stations != null)      lines.push(`Metro stations: ${c.metro_stations}`)
   return lines.join("\n")
 }
 
@@ -57,7 +75,7 @@ function makeTools(supabase: any) {
     rank_wards: tool({
       description: "Get top or bottom N wards across Bengaluru for a specific metric. Use for questions like 'which ward has the most signals', 'worst MLA attendance', 'where are the most potholes'.",
       inputSchema: zodSchema(z.object({
-        metric: z.enum(["signals", "bus_stops", "committee_meetings", "mla_attendance", "lad_utilization", "criminal_cases"]),
+        metric: z.enum(["signals", "bus_stops", "committee_meetings", "mla_attendance", "lad_utilization", "criminal_cases", "hospitals", "pharmacies", "atms", "public_toilets", "ev_charging", "metro_stations"]),
         order: z.enum(["top", "bottom"]).describe("top = highest/best, bottom = lowest/worst"),
         limit: z.number().min(1).max(10).default(5),
       })),
@@ -78,6 +96,15 @@ function makeTools(supabase: any) {
             .from("ward_committee_meetings")
             .select("ward_no, ward_name, meetings_count")
             .order("meetings_count", { ascending: asc })
+            .limit(limit)
+          return data ?? []
+        }
+        if (["hospitals", "pharmacies", "atms", "public_toilets", "ev_charging", "metro_stations"].includes(metric)) {
+          const { data } = await supabase
+            .from("ward_amenities")
+            .select("ward_no, hospitals, clinics, pharmacies, atms, banks, public_toilets, ev_charging, metro_stations")
+            .not(metric, "is", null)
+            .order(metric, { ascending: asc })
             .limit(limit)
           return data ?? []
         }
@@ -115,14 +142,16 @@ function makeTools(supabase: any) {
           const ward = wardRes.data as { ward_no: number; ward_name: string; assembly_constituency: string } | null
           if (!ward) { results.push({ searched: name, found: false }); continue }
 
-          const [infra, report, meetings] = await Promise.all([
+          const [infra, report, meetings, amenities] = await Promise.all([
             supabase.from("ward_infra_stats").select("signal_count, bus_stop_count").eq("ward_no", ward.ward_no).single(),
             supabase.from("rep_report_cards").select("attendance_pct, lad_utilization_pct, criminal_cases").eq("constituency", ward.assembly_constituency).eq("role", "MLA").single(),
             supabase.from("ward_committee_meetings").select("meetings_count").eq("ward_no", ward.ward_no).single(),
+            supabase.from("ward_amenities").select("hospitals, clinics, pharmacies, atms, banks, public_toilets, ev_charging, metro_stations").eq("ward_no", ward.ward_no).single(),
           ])
           const i = infra.data as { signal_count: number; bus_stop_count: number } | null
           const r = report.data as { attendance_pct: number; lad_utilization_pct: number; criminal_cases: number } | null
           const m = meetings.data as { meetings_count: number } | null
+          const a = amenities.data as { hospitals: number; clinics: number; pharmacies: number; atms: number; banks: number; public_toilets: number; ev_charging: number; metro_stations: number } | null
 
           results.push({
             ward_name: ward.ward_name,
@@ -134,6 +163,12 @@ function makeTools(supabase: any) {
             lad_utilization_pct: r?.lad_utilization_pct ?? null,
             criminal_cases: r?.criminal_cases ?? null,
             committee_meetings: m?.meetings_count ?? null,
+            hospitals: a?.hospitals ?? null,
+            clinics: a?.clinics ?? null,
+            pharmacies: a?.pharmacies ?? null,
+            public_toilets: a?.public_toilets ?? null,
+            ev_charging: a?.ev_charging ?? null,
+            metro_stations: a?.metro_stations ?? null,
           })
         }
         return results
