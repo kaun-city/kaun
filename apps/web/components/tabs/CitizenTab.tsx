@@ -3,7 +3,7 @@
 import { timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
 import { useState } from "react"
-import type { RedditPost, WardAirQuality, WardBusStats, WardInfraStats, WardPotholes, WardRoadCrashes, WardStats } from "@/lib/types"
+import type { RedditPost, WardAirQuality, WardAmenities, WardBusStats, WardInfraStats, WardPotholes, WardRoadCrashes, WardStats, WardWaterQuality } from "@/lib/types"
 import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
 import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
@@ -22,6 +22,8 @@ interface Props {
   wardBusStats: WardBusStats | null
   roadCrashes: WardRoadCrashes | null
   airQuality: WardAirQuality | null
+  amenities: WardAmenities | null
+  waterQuality: WardWaterQuality[]
   buzz: RedditPost[] | null
   buzzLoading: boolean
   wardNo: number
@@ -31,7 +33,7 @@ interface Props {
   signals?: CivicSignal[]
 }
 
-export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats, roadCrashes, airQuality, buzz, buzzLoading, wardNo, wardName, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
+export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality, buzz, buzzLoading, wardNo, wardName, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   return (
     <>
@@ -253,6 +255,128 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {/* Neighbourhood Amenities (OSM) */}
+          {amenities && (
+            <div className="rounded-xl bg-white/5 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-white/50 text-[10px] uppercase tracking-wider">Neighbourhood Amenities</p>
+                <FreshnessBadge label="2026" source="OpenStreetMap" />
+              </div>
+
+              {/* Healthcare */}
+              {(amenities.hospitals > 0 || amenities.clinics > 0 || amenities.pharmacies > 0) && (
+                <div>
+                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Healthcare</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {amenities.hospitals > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.hospitals}</p><p className="text-white/30 text-[10px]">Hospitals</p></div>}
+                    {amenities.clinics > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.clinics}</p><p className="text-white/30 text-[10px]">Clinics</p></div>}
+                    {amenities.pharmacies > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.pharmacies}</p><p className="text-white/30 text-[10px]">Pharmacies</p></div>}
+                  </div>
+                </div>
+              )}
+
+              {/* Financial */}
+              {(amenities.atms > 0 || amenities.banks > 0) && (
+                <div>
+                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Financial</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {amenities.atms > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.atms}</p><p className="text-white/30 text-[10px]">ATMs</p></div>}
+                    {amenities.banks > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.banks}</p><p className="text-white/30 text-[10px]">Banks</p></div>}
+                    {amenities.post_offices > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.post_offices}</p><p className="text-white/30 text-[10px]">Post Offices</p></div>}
+                  </div>
+                </div>
+              )}
+
+              {/* Mobility & Energy */}
+              {(amenities.metro_stations > 0 || amenities.ev_charging > 0 || amenities.petrol_pumps > 0) && (
+                <div>
+                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Mobility</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {amenities.metro_stations > 0 && <div className="min-w-0"><p className="text-purple-400 text-sm font-semibold">{amenities.metro_stations}</p><p className="text-white/30 text-[10px]">Metro Stations</p></div>}
+                    {amenities.ev_charging > 0 && <div className="min-w-0"><p className="text-green-400 text-sm font-semibold">{amenities.ev_charging}</p><p className="text-white/30 text-[10px]">EV Charging</p></div>}
+                    {amenities.petrol_pumps > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.petrol_pumps}</p><p className="text-white/30 text-[10px]">Petrol Pumps</p></div>}
+                  </div>
+                </div>
+              )}
+
+              {/* Civic & Public */}
+              {(amenities.public_toilets > 0 || amenities.libraries > 0 || amenities.community_halls > 0) && (
+                <div>
+                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Public Facilities</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {amenities.public_toilets > 0 && (
+                      <div className="min-w-0">
+                        <p className={`text-sm font-semibold ${amenities.public_toilets === 0 ? "text-red-400" : "text-white"}`}>{amenities.public_toilets}</p>
+                        <p className="text-white/30 text-[10px]">Public Toilets</p>
+                      </div>
+                    )}
+                    {amenities.libraries > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.libraries}</p><p className="text-white/30 text-[10px]">Libraries</p></div>}
+                    {amenities.community_halls > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.community_halls}</p><p className="text-white/30 text-[10px]">Community Halls</p></div>}
+                  </div>
+                </div>
+              )}
+
+              {/* Food & Commerce */}
+              {(amenities.restaurants > 0 || amenities.cafes > 0) && (
+                <div>
+                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Food & Commerce</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {amenities.restaurants > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.restaurants}</p><p className="text-white/30 text-[10px]">Restaurants</p></div>}
+                    {amenities.cafes > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.cafes}</p><p className="text-white/30 text-[10px]">Cafes</p></div>}
+                    {amenities.places_of_worship > 0 && <div className="min-w-0"><p className="text-white text-sm font-semibold">{amenities.places_of_worship}</p><p className="text-white/30 text-[10px]">Places of Worship</p></div>}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Water Body Quality */}
+          {waterQuality.length > 0 && (
+            <div className="rounded-xl bg-white/5 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-white/50 text-[10px] uppercase tracking-wider">Water Body Health</p>
+                <FreshnessBadge label={waterQuality[0].data_year} source={waterQuality[0].data_source} />
+              </div>
+              {waterQuality.map((wq, i) => (
+                <div key={i} className="rounded-lg bg-white/5 px-3 py-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-white text-xs font-medium">{wq.water_body_name}</p>
+                    {wq.quality_class && (
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded ${
+                        wq.quality_class === "A" || wq.quality_class === "B" ? "bg-green-400/20 text-green-400" :
+                        wq.quality_class === "C" ? "bg-yellow-400/20 text-yellow-400" :
+                        "bg-red-400/20 text-red-400"
+                      }`}>
+                        Class {wq.quality_class}
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-4 gap-2 text-center">
+                    {wq.ph != null && <div><p className="text-white/80 text-xs font-semibold">{wq.ph}</p><p className="text-white/30 text-[10px]">pH</p></div>}
+                    {wq.do_level != null && (
+                      <div>
+                        <p className={`text-xs font-semibold ${wq.do_level < 4 ? "text-red-400" : wq.do_level < 6 ? "text-yellow-400" : "text-green-400"}`}>{wq.do_level}</p>
+                        <p className="text-white/30 text-[10px]">DO mg/L</p>
+                      </div>
+                    )}
+                    {wq.bod != null && (
+                      <div>
+                        <p className={`text-xs font-semibold ${wq.bod > 6 ? "text-red-400" : wq.bod > 3 ? "text-yellow-400" : "text-green-400"}`}>{wq.bod}</p>
+                        <p className="text-white/30 text-[10px]">BOD mg/L</p>
+                      </div>
+                    )}
+                    {wq.coliform != null && (
+                      <div>
+                        <p className={`text-xs font-semibold ${wq.coliform > 5000 ? "text-red-400" : wq.coliform > 500 ? "text-yellow-400" : "text-green-400"}`}>{wq.coliform.toLocaleString("en-IN")}</p>
+                        <p className="text-white/30 text-[10px]">Coliform</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

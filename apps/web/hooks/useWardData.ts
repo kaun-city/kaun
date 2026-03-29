@@ -4,15 +4,15 @@ import { useEffect, useState } from "react"
 import type {
   BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice,
   MlaLadFunds, PinResult, PropertyTaxData, RedditPost, RepReportCard,
-  SakalaPerformance, WardAirQuality, WardBusStats, WardCommitteeMeetings, WardGrievances, WardInfraStats, WardPotholes,
-  WardProfile, WardRoadCrashes, WardSpendCategory, WardStats, WardTradeLicenses, WorkOrder,
+  SakalaPerformance, WardAirQuality, WardAmenities, WardBusStats, WardCommitteeMeetings, WardGrievances, WardInfraStats, WardPotholes,
+  WardProfile, WardRoadCrashes, WardSpendCategory, WardStats, WardTradeLicenses, WardWaterQuality, WorkOrder,
 } from "@/lib/types"
 import {
   fetchBudgetSummary, fetchBuzz, fetchCorpContacts, fetchDepartments,
   fetchMlaLadFunds, fetchPropertyTax, fetchRepReportCard, fetchSakalaPerformance,
-  fetchTradeLicenses, fetchWardAirQuality, fetchWardBusStats, fetchWardCommitteeMeetings, fetchWardGrievances, fetchWardInfraStats,
+  fetchTradeLicenses, fetchWardAirQuality, fetchWardAmenities, fetchWardBusStats, fetchWardCommitteeMeetings, fetchWardGrievances, fetchWardInfraStats,
   fetchWardPotholes, fetchWardProfile, fetchWardReportCount, fetchWardRoadCrashes, fetchWardSignals, fetchWardSpend, fetchWardStats,
-  fetchWardUnknowns, fetchWorkOrders, lookupLocalOffices, voteFact,
+  fetchWardUnknowns, fetchWardWaterQuality, fetchWorkOrders, lookupLocalOffices, voteFact,
 } from "@/lib/api"
 import { getCity } from "@/lib/cities"
 import type { CityConfig } from "@/lib/cities"
@@ -61,6 +61,8 @@ export function useWardData(result: PinResult | null) {
   const [wardBusStats, setWardBusStats] = useState<WardBusStats | null>(null)
   const [roadCrashes, setRoadCrashes]   = useState<WardRoadCrashes | null>(null)
   const [airQuality, setAirQuality]     = useState<WardAirQuality | null>(null)
+  const [amenities, setAmenities]       = useState<WardAmenities | null>(null)
+  const [waterQuality, setWaterQuality] = useState<WardWaterQuality[]>([])
   const [wardSpend, setWardSpend] = useState<WardSpendCategory | null>(null)
   const [propertyTax, setPropertyTax] = useState<PropertyTaxData | null>(null)
   const [sakala, setSakala] = useState<SakalaPerformance | null>(null)
@@ -97,6 +99,8 @@ export function useWardData(result: PinResult | null) {
     setWardBusStats(null)
     setRoadCrashes(null)
     setAirQuality(null)
+    setAmenities(null)
+    setWaterQuality([])
     setWardSpend(null)
     setPropertyTax(null)
     setSakala(null)
@@ -235,7 +239,9 @@ export function useWardData(result: PinResult | null) {
     if (!wardBusStats) fetchWardBusStats(result.ward_no).then(setWardBusStats)
     if (!roadCrashes)  fetchWardRoadCrashes(result.ward_no).then(setRoadCrashes)
     if (!airQuality)   fetchWardAirQuality(result.ward_no).then(setAirQuality)
-  }, [tab, result?.ward_no, wardBusStats, roadCrashes, airQuality])
+    if (city.features.wardAmenities && !amenities) fetchWardAmenities(result.ward_no).then(setAmenities)
+    if (city.features.wardWaterQuality && waterQuality.length === 0) fetchWardWaterQuality(result.ward_no).then(setWaterQuality)
+  }, [tab, result?.ward_no, wardBusStats, roadCrashes, airQuality, amenities, waterQuality.length, city.features.wardAmenities, city.features.wardWaterQuality])
 
   // ── SPEND: ward-number-level data (ward spend) ────────────
   useEffect(() => {
@@ -278,7 +284,7 @@ export function useWardData(result: PinResult | null) {
     // expenses
     budget, workOrders, tradeLicenses, buzz, buzzLoading,
     // stats
-    wardStats, grievances, potholes, infraStats, wardBusStats, roadCrashes, airQuality,
+    wardStats, grievances, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality,
     wardSpend, propertyTax, sakala, reportCount, signals,
     // report
     localOffices, departments,

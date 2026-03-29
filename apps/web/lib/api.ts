@@ -477,6 +477,30 @@ export async function fetchWardSignals(wardNo: number): Promise<CivicSignal[]> {
   })
 }
 
+/**
+ * Fetch ward amenities from OSM data (hospitals, pharmacies, ATMs, EV charging, etc.)
+ */
+export async function fetchWardAmenities(wardNo: number): Promise<import('./types').WardAmenities | null> {
+  const rows = await query<import('./types').WardAmenities>('ward_amenities', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'ward_no,city_id,hospitals,clinics,pharmacies,atms,banks,public_toilets,ev_charging,petrol_pumps,post_offices,libraries,community_halls,places_of_worship,restaurants,cafes,metro_stations,data_source,updated_at',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
+
+/**
+ * Fetch water body quality data near a ward.
+ */
+export async function fetchWardWaterQuality(wardNo: number): Promise<import('./types').WardWaterQuality[]> {
+  return await query<import('./types').WardWaterQuality>('ward_water_quality', {
+    'ward_no': `eq.${wardNo}`,
+    'select': 'ward_no,water_body_name,water_body_type,ph,bod,do_level,coliform,quality_class,data_year,data_source',
+    'order': 'data_year.desc',
+    'limit': '5',
+  })
+}
+
 export async function fetchWardSpend(wardNo: number): Promise<import('./types').WardSpendCategory | null> {
   const rows = await query<import('./types').WardSpendCategory>('ward_spend_category', {
     'ward_no': `eq.${wardNo}`,

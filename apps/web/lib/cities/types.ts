@@ -11,6 +11,8 @@ export interface CityFeatures {
   sakala: boolean
   budget: boolean
   buzz: boolean
+  wardAmenities: boolean
+  wardWaterQuality: boolean
 }
 
 export interface CityConfig {
