@@ -251,10 +251,30 @@ export interface WorkOrder {
   ward_no: number
   description: string
   contractor: string | null
+  contractor_name: string | null
+  contractor_phone: string | null
   sanctioned_amount: number
   net_paid: number
   deduction: number
   fy: string
+}
+
+export interface ContractorProfile {
+  entity_id: string
+  canonical_name: string
+  aliases: string[]
+  phone: string | null
+  total_contracts: number
+  total_value_lakh: number
+  total_paid_lakh: number
+  total_deduction_lakh: number
+  avg_deduction_pct: number
+  ward_count: number
+  wards: number[]
+  first_seen: string | null
+  last_seen: string | null
+  is_govt_entity: boolean
+  blacklist_flags: string[]
 }
 
 export interface WardPotholes {

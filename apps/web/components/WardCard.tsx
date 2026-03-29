@@ -222,6 +222,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               profileLoading={ward.profileLoading}
               budget={ward.budget}
               workOrders={ward.workOrders}
+              wardContractors={ward.wardContractors ?? []}
               tradeLicenses={ward.tradeLicenses}
               wardSpend={ward.wardSpend}
               propertyTax={ward.propertyTax}
