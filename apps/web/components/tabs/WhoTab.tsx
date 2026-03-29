@@ -38,9 +38,7 @@ import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { PartyBadge } from "@/components/shared/PartyBadge"
 import { SkeletonCard, SkeletonRepCard, SkeletonScorecard } from "@/components/shared/Skeleton"
 import { TrustBadge } from "@/components/shared/TrustBadge"
-import { WardStoryCard } from "@/components/shared/WardStoryCard"
 import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
-import type { WardStoryRequest } from "@/app/api/ward-story/route"
 import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import type { WardInfraStats, WardPotholes } from "@/lib/types"
 
@@ -82,33 +80,10 @@ export function WhoTab({
 
   // Build story payload once we have the key data points
   // Wait for profile to load before building storyData
-  // so mla_name is never undefined (prevents AI hallucinating MLA from training data)
-  const storyData: WardStoryRequest | null =
-    !profileLoading && result.ward_no && result.assembly_constituency
-      ? {
-          ward_no: result.ward_no,
-          ward_name: result.ward_name ?? "",
-          assembly_constituency: result.assembly_constituency,
-          mla_name: profile?.elected_reps?.find(r => r.role === "MLA")?.name ?? undefined,
-          mla_party: profile?.elected_reps?.find(r => r.role === "MLA")?.party ?? undefined,
-          mla_attendance_pct: reportCard?.attendance_pct ?? undefined,
-          mla_questions_asked: reportCard?.questions_asked ?? undefined,
-          mla_lad_utilization_pct: reportCard?.lad_utilization_pct !== null && reportCard?.lad_utilization_pct !== undefined ? Number(reportCard.lad_utilization_pct) : undefined,
-          mla_criminal_cases: reportCard?.criminal_cases !== null && reportCard?.criminal_cases !== undefined ? Number(reportCard.criminal_cases) : undefined,
-          mla_net_worth_growth_pct: reportCard?.net_worth_growth_pct !== null && reportCard?.net_worth_growth_pct !== undefined ? Number(reportCard.net_worth_growth_pct) : undefined,
-          committee_meetings: committeeMeetings?.meetings_count ?? undefined,
-          signal_count: infraStats?.signal_count ?? undefined,
-          bus_stop_count: infraStats?.bus_stop_count ?? undefined,
-          pothole_complaints: potholes?.complaints ?? undefined,
-        }
-      : null
-
   return (
     <>
     <RTIDraftSheet request={rtiRequest} onClose={() => setRtiRequest(null)} />
     <div className="px-5 py-4 space-y-4 pb-safe-content">
-      {/* AI Ward Brief — 2-3 sentence accountability narrative */}
-      <WardStoryCard storyData={storyData} />
 
 
       {/* Governance alert — skip the "No elected corporator" noise (applies to all 243 wards) */}
