@@ -24,8 +24,8 @@ const HISTORICAL = process.argv.includes("--historical")
 
 // ─── Data sources ─────────────────────────────────────────────
 const SOURCES = {
-  // Single CSV covering all 243 wards under new delimitation
-  fy2024_25: "https://data.opencity.in/dataset/9db1f0a5-42fe-49fc-a057-f4715916b65e/resource/7b43174d-fa07-46f5-b27b-e7b6ccb1a4bd/download/bbmp-work-orders-243-wards-2024-25.csv",
+  // Single CSV covering all wards under new delimitation (updated URL 2026-03)
+  fy2024_25: "https://data.opencity.in/dataset/4e539082-aca3-4df0-b676-dc1655cf17d2/resource/67637545-30aa-4a6c-80fa-b46bc22bdc24/download",
   // CKAN package ID for per-ward historical CSVs (2013-2022)
   historical_package: "bbmp-work-orders-by-ward-2013-2022",
   ckan_api: "https://data.opencity.in/api/3/action",
@@ -277,12 +277,12 @@ async function buildContractorProfiles() {
         MODE() WITHIN GROUP (ORDER BY contractor_name) as canonical_name,
         ARRAY_AGG(DISTINCT contractor_name) FILTER (WHERE contractor_name IS NOT NULL) as aliases,
         COUNT(*) as total_contracts,
-        ROUND(SUM(sanctioned_amount) / 100000, 2) as total_value_lakh,
-        ROUND(SUM(net_paid) / 100000, 2) as total_paid_lakh,
-        ROUND(SUM(deduction) / 100000, 2) as total_deduction_lakh,
+        ROUND(SUM(sanctioned_amount)::numeric / 100000, 2) as total_value_lakh,
+        ROUND(SUM(net_paid)::numeric / 100000, 2) as total_paid_lakh,
+        ROUND(SUM(deduction)::numeric / 100000, 2) as total_deduction_lakh,
         ROUND(
           CASE WHEN SUM(sanctioned_amount) > 0
-            THEN SUM(deduction) * 100.0 / SUM(sanctioned_amount)
+            THEN (SUM(deduction) * 100.0 / SUM(sanctioned_amount))::numeric
             ELSE 0 END, 2
         ) as avg_deduction_pct,
         COUNT(DISTINCT ward_no) as ward_count,
