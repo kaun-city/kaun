@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
+import { CityPulse } from "@/components/CityPulse"
 import ReportSheet from "@/components/shared/ReportSheet"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
@@ -237,6 +238,9 @@ export default function HomePage() {
             KAUN<span className="text-[#FF9933]">?</span>
           </span>
         </div>
+
+        {/* City Pulse — accountability headlines before pin drop */}
+        {!showCard && !outOfBounds && <CityPulse />}
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
