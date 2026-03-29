@@ -338,3 +338,38 @@ export interface WardAirQuality {
   data_year: string
 }
 
+export interface WardAmenities {
+  ward_no: number
+  city_id: string
+  hospitals: number
+  clinics: number
+  pharmacies: number
+  atms: number
+  banks: number
+  public_toilets: number
+  ev_charging: number
+  petrol_pumps: number
+  post_offices: number
+  libraries: number
+  community_halls: number
+  places_of_worship: number
+  restaurants: number
+  cafes: number
+  metro_stations: number
+  data_source: string
+  updated_at: string
+}
+
+export interface WardWaterQuality {
+  ward_no: number
+  water_body_name: string
+  water_body_type: string
+  ph: number | null
+  bod: number | null
+  do_level: number | null
+  coliform: number | null
+  quality_class: string | null
+  data_year: string
+  data_source: string
+}
+
