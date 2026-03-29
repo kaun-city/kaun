@@ -83,14 +83,15 @@ function normalizeRow(raw, wardNo, fy) {
   const amount = parseFloat(raw.amount || raw.Amount || raw.sanctioned_amount || "0")
   const nett = parseFloat(raw.nett || raw.Nett || raw.net_paid || raw["Amount Paid"] || "0")
   const deduction = parseFloat(raw.deduction || raw.Deduction || raw.Balance || "0")
-  const woId = raw["wo num"] || raw["Work Order Reference Number"] || raw.work_order_id || ""
+  const woId = raw["wo num"] || raw["Work Order Reference Number"] || raw.work_order_id || (raw.id ? String(raw.id) : "") || ""
   const desc = raw.wodetails || raw["Work Order Code & Description"] || raw.description || ""
   const contractorRaw = raw.contractor || raw["Contractor Name & Phone"] || ""
   const { name, phone } = extractContractor(contractorRaw)
 
-  // Try to extract ward from work order number (format: WARD-YY-XXXXXX)
+  // Try to extract ward from work order number (format: WARD-YY-XXXXXX) or raw Ward column
   const woWardMatch = woId.match(/^(\d+)-/)
-  const resolvedWard = wardNo || (woWardMatch ? parseInt(woWardMatch[1], 10) : null)
+  const rawWard = raw.Ward || raw.ward || raw.ward_no || raw["ward no"]
+  const resolvedWard = wardNo || (woWardMatch ? parseInt(woWardMatch[1], 10) : null) || (rawWard ? parseInt(rawWard, 10) : null)
 
   return {
     work_order_id: woId.trim(),
@@ -212,9 +213,14 @@ async function main() {
   const allRows = [...rows2024, ...rowsHistorical]
   console.log(`\nTotal rows to upsert: ${allRows.length}`)
 
-  const dbRows = allRows
-    .filter(r => r.work_order_id && r.ward_no)
-    .map(r => ({
+  // Deduplicate by (work_order_id, ward_no) — keep last occurrence
+  const seen = new Map()
+  for (const r of allRows) {
+    if (!r.work_order_id || !r.ward_no) continue
+    const key = r.work_order_id + "|" + r.ward_no
+    seen.set(key, r)
+  }
+  const dbRows = Array.from(seen.values()).map(r => ({
       work_order_id: r.work_order_id,
       ward_no: r.ward_no,
       description: r.description,
