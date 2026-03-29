@@ -4,7 +4,7 @@ import { STATUS_STYLES } from "@/lib/constants"
 import { formatLakh, timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
 import type {
-  BudgetSummary, PinResult, PropertyTaxData,
+  BudgetSummary, ContractorProfile, PinResult, PropertyTaxData,
   WardProfile, WardSpendCategory, WardTradeLicenses, WorkOrder,
 } from "@/lib/types"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
@@ -20,11 +20,12 @@ interface Props {
   tradeLicenses: WardTradeLicenses[]
   wardSpend: WardSpendCategory | null
   propertyTax: PropertyTaxData | null
+  wardContractors: ContractorProfile[]
 }
 
 export function SpendTab({
   result, city, profile, profileLoading, budget,
-  workOrders, tradeLicenses, wardSpend, propertyTax,
+  workOrders, tradeLicenses, wardSpend, propertyTax, wardContractors,
 }: Props) {
   return (
     <div className="px-5 py-4 space-y-4 pb-safe-content">
@@ -202,6 +203,61 @@ export function SpendTab({
           <p className="text-white/15 text-xs">BBMP 2024-25</p>
         </div>
       ) : null}
+
+      {/* Contractor Accountability */}
+      {wardContractors.length > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-white/30 text-xs uppercase tracking-wider">Contractors in this Ward</p>
+            <FreshnessBadge label="2013-25" source="BBMP / opencity.in" />
+          </div>
+          {wardContractors.map(c => {
+            const isFlagged = c.blacklist_flags.length > 0
+            return (
+              <div key={c.entity_id} className={`rounded-xl p-3 ${isFlagged ? "bg-red-500/10 border border-red-500/20" : "bg-white/5"}`}>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      {isFlagged && <span className="text-red-400 text-[10px] font-bold uppercase tracking-wider shrink-0">Flagged</span>}
+                      <p className={`text-sm font-semibold truncate ${isFlagged ? "text-red-300" : "text-white"}`}>{c.canonical_name}</p>
+                    </div>
+                    {c.aliases.length > 1 && (
+                      <p className="text-white/20 text-[10px] truncate mt-0.5">
+                        Also: {c.aliases.filter(a => a !== c.canonical_name).slice(0, 2).join(", ")}
+                      </p>
+                    )}
+                  </div>
+                  <p className="text-[#FF9933] text-sm font-bold shrink-0">Rs.{c.total_value_lakh >= 100 ? `${(c.total_value_lakh / 100).toFixed(1)} Cr` : `${c.total_value_lakh.toFixed(0)} L`}</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2 mt-2 text-center">
+                  <div>
+                    <p className="text-white/80 text-xs font-semibold">{c.total_contracts}</p>
+                    <p className="text-white/30 text-[10px]">Contracts</p>
+                  </div>
+                  <div>
+                    <p className="text-white/80 text-xs font-semibold">{c.ward_count}</p>
+                    <p className="text-white/30 text-[10px]">Wards</p>
+                  </div>
+                  <div>
+                    <p className={`text-xs font-semibold ${c.avg_deduction_pct > 15 ? "text-red-400" : c.avg_deduction_pct > 10 ? "text-yellow-400" : "text-green-400"}`}>
+                      {c.avg_deduction_pct}%
+                    </p>
+                    <p className="text-white/30 text-[10px]">Deduction</p>
+                  </div>
+                </div>
+                {isFlagged && (
+                  <div className="mt-2 pt-2 border-t border-red-500/10">
+                    {c.blacklist_flags.map((flag, i) => (
+                      <p key={i} className="text-red-400/80 text-[10px] leading-relaxed">▸ {flag}</p>
+                    ))}
+                  </div>
+                )}
+                {c.is_govt_entity && <p className="text-white/20 text-[10px] mt-1">Government entity</p>}
+              </div>
+            )
+          })}
+        </div>
+      )}
 
       {/* Trade Licenses */}
       {tradeLicenses.length > 0 && (

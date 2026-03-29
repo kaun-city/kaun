@@ -340,8 +340,57 @@ export async function lookupLocalOffices(lat: number, lng: number): Promise<impo
 export async function fetchWorkOrders(wardNo: number): Promise<import('./types').WorkOrder[]> {
   return await query<import('./types').WorkOrder>('bbmp_work_orders', {
     'ward_no': `eq.${wardNo}`,
-    'select': 'id,work_order_id,description,contractor,sanctioned_amount,net_paid,deduction,fy',
+    'select': 'id,work_order_id,description,contractor,contractor_name,contractor_phone,sanctioned_amount,net_paid,deduction,fy',
     'order': 'net_paid.desc',
+    'limit': '10',
+  })
+}
+
+/**
+ * Fetch contractor profile by phone number or entity ID.
+ */
+export async function fetchContractorProfile(phone: string): Promise<import('./types').ContractorProfile | null> {
+  const rows = await query<import('./types').ContractorProfile>('contractor_profiles', {
+    'phone': `eq.${phone}`,
+    'select': 'entity_id,canonical_name,aliases,phone,total_contracts,total_value_lakh,total_paid_lakh,total_deduction_lakh,avg_deduction_pct,ward_count,wards,first_seen,last_seen,is_govt_entity,blacklist_flags',
+    'limit': '1',
+  })
+  return rows[0] ?? null
+}
+
+/**
+ * Fetch top contractors for the city by total value.
+ */
+export async function fetchTopContractors(limit = 10): Promise<import('./types').ContractorProfile[]> {
+  return await query<import('./types').ContractorProfile>('contractor_profiles', {
+    'city_id': 'eq.bengaluru',
+    'select': 'entity_id,canonical_name,aliases,phone,total_contracts,total_value_lakh,total_paid_lakh,total_deduction_lakh,avg_deduction_pct,ward_count,wards,first_seen,last_seen,is_govt_entity,blacklist_flags',
+    'order': 'total_value_lakh.desc',
+    'limit': String(limit),
+  })
+}
+
+/**
+ * Fetch contractors flagged on any blacklist.
+ */
+export async function fetchFlaggedContractors(): Promise<import('./types').ContractorProfile[]> {
+  return await query<import('./types').ContractorProfile>('contractor_profiles', {
+    'blacklist_flags': 'neq.{}',
+    'city_id': 'eq.bengaluru',
+    'select': 'entity_id,canonical_name,aliases,phone,total_contracts,total_value_lakh,total_paid_lakh,total_deduction_lakh,avg_deduction_pct,ward_count,wards,first_seen,last_seen,is_govt_entity,blacklist_flags',
+    'order': 'total_value_lakh.desc',
+  })
+}
+
+/**
+ * Fetch contractors active in a specific ward.
+ */
+export async function fetchWardContractors(wardNo: number): Promise<import('./types').ContractorProfile[]> {
+  return await query<import('./types').ContractorProfile>('contractor_profiles', {
+    'wards': `cs.{${wardNo}}`,
+    'city_id': 'eq.bengaluru',
+    'select': 'entity_id,canonical_name,aliases,phone,total_contracts,total_value_lakh,total_paid_lakh,total_deduction_lakh,avg_deduction_pct,ward_count,wards,first_seen,last_seen,is_govt_entity,blacklist_flags',
+    'order': 'total_value_lakh.desc',
     'limit': '10',
   })
 }

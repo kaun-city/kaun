@@ -189,6 +189,66 @@ function makeTools(supabase: any) {
         return data ?? []
       },
     }),
+
+    search_contractor: tool({
+      description: "Search for a contractor by name to see their full profile: total contracts, value, wards active in, deduction rate, and blacklist flags. Use for 'who is this contractor', 'is X contractor blacklisted', 'how much has X received'.",
+      inputSchema: zodSchema(z.object({
+        name: z.string().describe("Contractor name or partial name to search"),
+      })),
+      execute: async ({ name }): Promise<unknown> => {
+        const { data } = await supabase
+          .from("contractor_profiles")
+          .select("canonical_name, aliases, phone, total_contracts, total_value_lakh, avg_deduction_pct, ward_count, wards, first_seen, last_seen, is_govt_entity, blacklist_flags")
+          .ilike("canonical_name", `%${name}%`)
+          .order("total_value_lakh", { ascending: false })
+          .limit(5)
+        return data ?? []
+      },
+    }),
+
+    top_contractors: tool({
+      description: "Get the top contractors in Bengaluru by total value, or the most flagged/suspicious ones. Use for 'biggest contractors', 'who gets the most BBMP contracts', 'any blacklisted contractors', 'most suspicious contractors'.",
+      inputSchema: zodSchema(z.object({
+        filter: z.enum(["by_value", "by_contracts", "flagged", "high_deduction", "multi_ward"]).describe("by_value=highest total value, by_contracts=most contracts, flagged=blacklisted, high_deduction=>15% deduction rate, multi_ward=active in >10 wards"),
+        limit: z.number().min(1).max(10).default(5),
+      })),
+      execute: async ({ filter, limit }): Promise<unknown> => {
+        let query = supabase
+          .from("contractor_profiles")
+          .select("canonical_name, aliases, phone, total_contracts, total_value_lakh, avg_deduction_pct, ward_count, first_seen, last_seen, is_govt_entity, blacklist_flags")
+
+        if (filter === "flagged") {
+          query = query.neq("blacklist_flags", "{}").order("total_value_lakh", { ascending: false })
+        } else if (filter === "high_deduction") {
+          query = query.gt("avg_deduction_pct", 15).gte("total_contracts", 3).order("avg_deduction_pct", { ascending: false })
+        } else if (filter === "multi_ward") {
+          query = query.gt("ward_count", 10).order("ward_count", { ascending: false })
+        } else if (filter === "by_contracts") {
+          query = query.order("total_contracts", { ascending: false })
+        } else {
+          query = query.order("total_value_lakh", { ascending: false })
+        }
+
+        const { data } = await query.limit(limit)
+        return data ?? []
+      },
+    }),
+
+    ward_contractors: tool({
+      description: "Get contractors active in a specific ward. Use for 'who are the contractors in my ward', 'which companies work in ward X'.",
+      inputSchema: zodSchema(z.object({
+        ward_no: z.number().describe("Ward number to look up"),
+      })),
+      execute: async ({ ward_no }): Promise<unknown> => {
+        const { data } = await supabase
+          .from("contractor_profiles")
+          .select("canonical_name, aliases, total_contracts, total_value_lakh, avg_deduction_pct, ward_count, blacklist_flags, is_govt_entity")
+          .contains("wards", [ward_no])
+          .order("total_value_lakh", { ascending: false })
+          .limit(10)
+        return data ?? []
+      },
+    }),
   }
 }
 
@@ -227,6 +287,7 @@ Bengaluru civic structure:
 When to use tools:
 - "which ward / best / worst / most / least / compare / how does X compare" → use rank_wards or compare_wards
 - User mentions another ward by name → use find_ward first
+- "contractor / who builds / who gets contracts / blacklisted / flagged" → use search_contractor, top_contractors, or ward_contractors
 - Otherwise → answer from the ward context provided
 
 Rules:

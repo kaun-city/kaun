@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import type {
-  BudgetSummary, CommunityFact, Department, GbaContact, LocalOffice,
+  BudgetSummary, CommunityFact, ContractorProfile, Department, GbaContact, LocalOffice,
   MlaLadFunds, PinResult, PropertyTaxData, RedditPost, RepReportCard,
   SakalaPerformance, WardAirQuality, WardAmenities, WardBusStats, WardCommitteeMeetings, WardGrievances, WardInfraStats, WardPotholes,
   WardProfile, WardRoadCrashes, WardSpendCategory, WardStats, WardTradeLicenses, WardWaterQuality, WorkOrder,
@@ -10,7 +10,7 @@ import type {
 import {
   fetchBudgetSummary, fetchBuzz, fetchCorpContacts, fetchDepartments,
   fetchMlaLadFunds, fetchPropertyTax, fetchRepReportCard, fetchSakalaPerformance,
-  fetchTradeLicenses, fetchWardAirQuality, fetchWardAmenities, fetchWardBusStats, fetchWardCommitteeMeetings, fetchWardGrievances, fetchWardInfraStats,
+  fetchTradeLicenses, fetchWardAirQuality, fetchWardAmenities, fetchWardBusStats, fetchWardCommitteeMeetings, fetchWardContractors, fetchWardGrievances, fetchWardInfraStats,
   fetchWardPotholes, fetchWardProfile, fetchWardReportCount, fetchWardRoadCrashes, fetchWardSignals, fetchWardSpend, fetchWardStats,
   fetchWardUnknowns, fetchWardWaterQuality, fetchWorkOrders, lookupLocalOffices, voteFact,
 } from "@/lib/api"
@@ -47,6 +47,7 @@ export function useWardData(result: PinResult | null) {
   // ── EXPENSES tab ─────────────────────────────────────────
   const [budget, setBudget] = useState<BudgetSummary | null>(null)
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([])
+  const [wardContractors, setWardContractors] = useState<ContractorProfile[]>([])
   const [tradeLicenses, setTradeLicenses] = useState<WardTradeLicenses[]>([])
   const [buzz, setBuzz] = useState<RedditPost[] | null>(null)
   const [buzzLoading, setBuzzLoading] = useState(false)
@@ -89,6 +90,7 @@ export function useWardData(result: PinResult | null) {
     setCorpName(null)
     setBudget(null)
     setWorkOrders([])
+    setWardContractors([])
     setTradeLicenses([])
     setBuzz(null)
     setBuzzLoading(false)
@@ -170,8 +172,9 @@ export function useWardData(result: PinResult | null) {
     }
     if (city.features.workOrders && workOrders.length === 0) {
       fetchWorkOrders(result.ward_no).then(setWorkOrders)
+      if (wardContractors.length === 0) fetchWardContractors(result.ward_no).then(setWardContractors)
     }
-  }, [tab, budget, workOrders.length, result?.ward_no, city.features.budget, city.features.workOrders, city.budgetYear])
+  }, [tab, budget, workOrders.length, wardContractors.length, result?.ward_no, city.features.budget, city.features.workOrders, city.budgetYear])
 
   // ── SPEND: trade licenses + ward spend + property tax ────
   useEffect(() => {
@@ -282,7 +285,7 @@ export function useWardData(result: PinResult | null) {
     allFacts, officerGroups,
     handleCorroborate, handleNewFact, refreshUnknowns,
     // expenses
-    budget, workOrders, tradeLicenses, buzz, buzzLoading,
+    budget, workOrders, wardContractors, tradeLicenses, buzz, buzzLoading,
     // stats
     wardStats, grievances, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality,
     wardSpend, propertyTax, sakala, reportCount, signals,
