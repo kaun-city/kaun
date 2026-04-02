@@ -91,10 +91,10 @@ export function CityPulse() {
     <div className="absolute top-12 inset-x-4 md:inset-x-auto md:left-4 md:right-auto md:max-w-[380px] z-[900] pointer-events-auto">
       <button
         onClick={handleTap}
-        className={`w-full text-left rounded-xl backdrop-blur-md px-4 py-2.5 shadow-lg border transition-all duration-300 ${
+        className={`w-full text-left rounded-xl backdrop-blur-xl px-4 py-2.5 shadow-lg border transition-all duration-300 ${
           fact.severity === "red"
-            ? "bg-red-500/8 border-red-500/15"
-            : "bg-yellow-500/8 border-yellow-500/15"
+            ? "bg-[#1a0505]/90 border-red-500/30"
+            : "bg-[#1a1505]/90 border-yellow-500/30"
         }`}
       >
         <div className="flex items-start gap-3">
