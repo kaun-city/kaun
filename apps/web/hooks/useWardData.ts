@@ -172,9 +172,8 @@ export function useWardData(result: PinResult | null) {
     }
     if (city.features.workOrders && workOrders.length === 0) {
       fetchWorkOrders(result.ward_no).then(setWorkOrders)
-      if (wardContractors.length === 0) fetchWardContractors(result.ward_no).then(setWardContractors)
     }
-  }, [tab, budget, workOrders.length, wardContractors.length, result?.ward_no, city.features.budget, city.features.workOrders, city.budgetYear])
+  }, [tab, budget, workOrders.length, result?.ward_no, city.features.budget, city.features.workOrders, city.budgetYear])
 
   // ── SPEND: trade licenses + ward spend + property tax ────
   useEffect(() => {
@@ -230,11 +229,12 @@ export function useWardData(result: PinResult | null) {
     fetchWardSignals(result.ward_no).then(setSignals)
   }, [result?.ward_no])
 
-  // ── CITIZEN: potholes ────────────────────────────────────
+  // ── Eager: potholes + contractors (needed for WardGrade in header) ──
   useEffect(() => {
-    if (tab !== "citizen" || !result?.ward_no) return
+    if (!result?.ward_no) return
     if (city.features.wardPotholes && !potholes) fetchWardPotholes(result.ward_no).then(setPotholes)
-  }, [tab, potholes, result?.ward_no, city.features.wardPotholes])
+    if (city.features.workOrders && wardContractors.length === 0) fetchWardContractors(result.ward_no).then(setWardContractors)
+  }, [result?.ward_no, potholes, wardContractors.length, city.features.wardPotholes, city.features.workOrders])
 
   // ── CITIZEN: bus stats + road crashes + air quality ──────
   useEffect(() => {

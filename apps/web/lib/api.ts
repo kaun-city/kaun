@@ -492,6 +492,23 @@ export async function fetchWardAirQuality(wardNo: number): Promise<import('./typ
 }
 
 /**
+ * Fetch active city pulse facts for the homepage ticker.
+ */
+export async function fetchCityPulseFacts(cityId = "bengaluru"): Promise<{ category: string; severity: string; headline: string; source_name: string; source_url: string | null }[]> {
+  try {
+    return await query<{ category: string; severity: string; headline: string; source_name: string; source_url: string | null }>('city_pulse_facts', {
+      'city_id': `eq.${cityId}`,
+      'is_active': 'eq.true',
+      'select': 'category,severity,headline,source_name,source_url',
+      'order': 'is_editorial.desc,published_at.desc',
+      'limit': '20',
+    })
+  } catch {
+    return []
+  }
+}
+
+/**
  * Fetch ward spend breakdown by category (BBMP work orders 2018-2023).
  */
 export async function fetchWardReportCount(wardNo: number): Promise<number> {

@@ -1,8 +1,9 @@
 name: Refresh Sakala Performance
 
 on:
-  # sakala.kar.nic.in blocks GitHub Actions IPs — run manually from local machine
-  # schedule disabled: was '0 2 1 * *'
+  schedule:
+    # 1st of every month at 02:00 UTC
+    - cron: '0 2 1 * *'
   workflow_dispatch:
     inputs:
       year:
