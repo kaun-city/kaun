@@ -3,6 +3,10 @@
     {
       "path": "/api/ingest-signals",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/refresh-pulse",
+      "schedule": "0 6 * * *"
     }
   ]
 }
