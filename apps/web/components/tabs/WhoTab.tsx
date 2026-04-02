@@ -217,10 +217,10 @@ export function WhoTab({
           <div className="rounded-xl bg-white/5 p-3 space-y-2">
             <div className="flex items-center justify-between">
               <p className="text-white/50 text-[10px] uppercase tracking-wider">Ward Committee</p>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: grade.color + "22", color: grade.color }}>{grade.label}</span>
-                <FreshnessBadge label="2020-22" source="opencity.in" />
-              </div>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: grade.color + "22", color: grade.color }}>{grade.label}</span>
+            </div>
+            <div className="flex justify-end -mt-1">
+              <FreshnessBadge label="2020-22" source="opencity.in" />
             </div>
             <div className="flex items-center gap-3">
               <p style={{ color: grade.color }} className="text-2xl font-bold">{count}</p>
