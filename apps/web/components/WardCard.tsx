@@ -10,6 +10,7 @@ import { CitizenTab } from "@/components/tabs/CitizenTab"
 import { ReachTab } from "@/components/tabs/ReachTab"
 import { AskKaunBar } from "@/components/shared/AskKaunBar"
 import { WardHeadline } from "@/components/WardHeadline"
+import { WardGrade } from "@/components/WardGrade"
 import type { AskKaunRequest } from "@/app/api/ask-kaun/route"
 
 interface Props {
@@ -130,6 +131,14 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 </>
               )}
             </p>
+            {/* Ward Grade — composite score visible at a glance */}
+            <WardGrade
+              reportCard={ward.reportCard}
+              committeeMeetings={ward.committeeMeetings}
+              infraStats={ward.infraStats}
+              potholes={ward.potholes}
+              wardContractors={ward.wardContractors ?? []}
+            />
           </div>
         ) : (
           <div className="flex-1 min-w-0">
