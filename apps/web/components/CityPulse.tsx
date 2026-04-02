@@ -1,15 +1,12 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { fetchFlaggedContractors, fetchCityPulseFacts } from "@/lib/api"
+import { fetchCityPulseFacts } from "@/lib/api"
 
 /**
  * CityPulse — compact rotating ticker of city-wide accountability facts.
- * Sits below the wordmark, never blocks the map or "Find my ward" button.
+ * Sits below the wordmark, leaves room for map zoom controls on the right.
  * One fact at a time, auto-rotates every 5 seconds. Tap to cycle.
- *
- * Fetches live facts from city_pulse_facts table (populated by refresh-city-pulse.mjs).
- * Falls back to hardcoded editorial baseline if table is empty or unavailable.
  */
 
 interface PulseFact {
@@ -34,40 +31,18 @@ export function CityPulse() {
   const [index, setIndex] = useState(0)
   const [dismissed, setDismissed] = useState(false)
 
-  // Fetch from DB + contractor alert
+  // Fetch from DB if available
   useEffect(() => {
-    Promise.all([
-      fetchCityPulseFacts().catch(() => []),
-      fetchFlaggedContractors().catch(() => []),
-    ]).then(([dbFacts, flagged]) => {
-      const live: PulseFact[] = []
-
-      // Contractor alert first if exists
-      if (flagged.length > 0) {
-        const total = flagged.reduce((s, c) => s + c.total_value_lakh, 0)
-        const amt = total >= 100 ? `Rs ${(total / 100).toFixed(0)} Cr` : `Rs ${total.toFixed(0)} L`
-        live.push({
-          severity: "red",
-          category: "CONTRACTORS",
-          headline: `${amt} in public contracts to ${flagged.length} debarment-flagged contractor${flagged.length > 1 ? "s" : ""}`,
-          source: "kaun.city",
-        })
-      }
-
-      // DB facts
+    fetchCityPulseFacts().then(dbFacts => {
       if (dbFacts.length > 0) {
-        for (const f of dbFacts) {
-          live.push({
-            severity: (f.severity === "red" ? "red" : "yellow") as "red" | "yellow",
-            category: f.category,
-            headline: f.headline,
-            source: f.source_name,
-          })
-        }
+        setFacts(dbFacts.map(f => ({
+          severity: (f.severity === "red" ? "red" : "yellow") as "red" | "yellow",
+          category: f.category,
+          headline: f.headline,
+          source: f.source_name,
+        })))
       }
-
-      if (live.length > 0) setFacts(live)
-    })
+    }).catch(() => {})
   }, [])
 
   // Auto-rotate every 5s
@@ -88,7 +63,7 @@ export function CityPulse() {
   if (!fact) return null
 
   return (
-    <div className="absolute top-12 inset-x-4 md:inset-x-auto md:left-4 md:right-auto md:max-w-[380px] z-[900] pointer-events-auto">
+    <div className="absolute top-12 left-4 right-16 md:right-auto md:max-w-[380px] z-[900] pointer-events-auto">
       <button
         onClick={handleTap}
         className={`w-full text-left rounded-xl backdrop-blur-xl px-4 py-2.5 shadow-lg border transition-all duration-300 ${
