@@ -1,17 +1,26 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import type { ContractorProfile } from "@/lib/types"
-import { fetchFlaggedContractors } from "@/lib/api"
+import { fetchFlaggedContractors, fetchCityPulseFacts } from "@/lib/api"
 
 /**
  * CityPulse — compact rotating ticker of city-wide accountability facts.
  * Sits below the wordmark, never blocks the map or "Find my ward" button.
  * One fact at a time, auto-rotates every 5 seconds. Tap to cycle.
+ *
+ * Fetches live facts from city_pulse_facts table (populated by refresh-city-pulse.mjs).
+ * Falls back to hardcoded editorial baseline if table is empty or unavailable.
  */
 
-// Verified editorial facts — update quarterly or fetch from city_pulse_facts table
-const CITY_FACTS: { severity: "red" | "yellow"; category: string; headline: string; source: string }[] = [
+interface PulseFact {
+  severity: "red" | "yellow"
+  category: string
+  headline: string
+  source: string
+}
+
+// Hardcoded fallback — used when DB is empty or unreachable
+const FALLBACK_FACTS: PulseFact[] = [
   { severity: "red",    category: "PUBLIC MONEY",   headline: "Rs 934 Cr siphoned via 6,600 ghost sanitation workers over 10 years", source: "The News Minute" },
   { severity: "red",    category: "ROAD SAFETY",    headline: "20 pothole deaths in 2023 — worst among 18 metro cities. Zero compensated.", source: "Deccan Herald" },
   { severity: "red",    category: "ELECTED REPS",   headline: "55% of Karnataka MLAs face criminal charges. Avg assets: Rs 64 Cr.", source: "ADR / MyNeta" },
@@ -21,42 +30,61 @@ const CITY_FACTS: { severity: "red" | "yellow"; category: string; headline: stri
 ]
 
 export function CityPulse() {
+  const [facts, setFacts] = useState<PulseFact[]>(FALLBACK_FACTS)
   const [index, setIndex] = useState(0)
-  const [flaggedLine, setFlaggedLine] = useState<string | null>(null)
   const [dismissed, setDismissed] = useState(false)
 
-  // Fetch live contractor alert
+  // Fetch from DB + contractor alert
   useEffect(() => {
-    fetchFlaggedContractors().then(flagged => {
+    Promise.all([
+      fetchCityPulseFacts().catch(() => []),
+      fetchFlaggedContractors().catch(() => []),
+    ]).then(([dbFacts, flagged]) => {
+      const live: PulseFact[] = []
+
+      // Contractor alert first if exists
       if (flagged.length > 0) {
         const total = flagged.reduce((s, c) => s + c.total_value_lakh, 0)
         const amt = total >= 100 ? `Rs ${(total / 100).toFixed(0)} Cr` : `Rs ${total.toFixed(0)} L`
-        setFlaggedLine(`${amt} in public contracts to ${flagged.length} debarment-flagged contractor${flagged.length > 1 ? "s" : ""}`)
+        live.push({
+          severity: "red",
+          category: "CONTRACTORS",
+          headline: `${amt} in public contracts to ${flagged.length} debarment-flagged contractor${flagged.length > 1 ? "s" : ""}`,
+          source: "kaun.city",
+        })
       }
-    }).catch(() => {})
-  }, [])
 
-  // Build full fact list (contractor alert first if exists, then editorial)
-  const allFacts = [
-    ...(flaggedLine ? [{ severity: "red" as const, category: "CONTRACTORS", headline: flaggedLine, source: "kaun.city" }] : []),
-    ...CITY_FACTS,
-  ]
+      // DB facts
+      if (dbFacts.length > 0) {
+        for (const f of dbFacts) {
+          live.push({
+            severity: (f.severity === "red" ? "red" : "yellow") as "red" | "yellow",
+            category: f.category,
+            headline: f.headline,
+            source: f.source_name,
+          })
+        }
+      }
+
+      if (live.length > 0) setFacts(live)
+    })
+  }, [])
 
   // Auto-rotate every 5s
   useEffect(() => {
     const timer = setInterval(() => {
-      setIndex(i => (i + 1) % allFacts.length)
+      setIndex(i => (i + 1) % facts.length)
     }, 5000)
     return () => clearInterval(timer)
-  }, [allFacts.length])
+  }, [facts.length])
 
   const handleTap = useCallback(() => {
-    setIndex(i => (i + 1) % allFacts.length)
-  }, [allFacts.length])
+    setIndex(i => (i + 1) % facts.length)
+  }, [facts.length])
 
   if (dismissed) return null
 
-  const fact = allFacts[index % allFacts.length]
+  const fact = facts[index % facts.length]
   if (!fact) return null
 
   return (
@@ -90,11 +118,11 @@ export function CityPulse() {
         </div>
         {/* Progress dots */}
         <div className="flex items-center justify-center gap-1 mt-2">
-          {allFacts.map((_, i) => (
+          {facts.map((_, i) => (
             <div
               key={i}
               className={`h-0.5 rounded-full transition-all duration-300 ${
-                i === index % allFacts.length ? "w-3 bg-white/40" : "w-1.5 bg-white/10"
+                i === index % facts.length ? "w-3 bg-white/40" : "w-1.5 bg-white/10"
               }`}
             />
           ))}
