@@ -29,8 +29,17 @@ export async function GET(req: Request) {
         return csvResponse(spending ?? [], "kaun-ward-spending.csv")
       }
 
-      // For "all" — get demographics via RPC (same path as frontend)
-      // Get unique ACs from wards table, then call ward_stats_by_ac for each
+      // For "all" — get demographics via direct fetch to PostgREST RPC
+      // (supabase.rpc() JS client silently fails; the raw fetch approach
+      // used by lib/supabase.ts rpc() works — use the same method)
+      const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+      const SUPA_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      const rpcHeaders = {
+        "apikey": SUPA_KEY,
+        "Authorization": `Bearer ${SUPA_KEY}`,
+        "Content-Type": "application/json",
+      }
+
       const { data: wardsPreload } = await supabase
         .from("wards")
         .select("assembly_constituency")
@@ -39,15 +48,20 @@ export async function GET(req: Request) {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const acStatsResults: any[] = []
-      // Batch RPC calls in parallel groups of 5
+      // Batch RPC calls in parallel groups of 5 using raw fetch
       for (let i = 0; i < uniqueACs.length; i += 5) {
         const batch = uniqueACs.slice(i, i + 5)
         const results = await Promise.all(
-          batch.map(ac => supabase.rpc("ward_stats_by_ac", { p_assembly_constituency: ac }))
+          batch.map(ac =>
+            fetch(`${SUPA_URL}/rest/v1/rpc/ward_stats_by_ac`, {
+              method: "POST",
+              headers: rpcHeaders,
+              body: JSON.stringify({ p_assembly_constituency: ac }),
+            }).then(r => r.ok ? r.json() : null).catch(() => null)
+          )
         )
         for (let j = 0; j < results.length; j++) {
-          const { data } = results[j]
-          if (data) acStatsResults.push({ ...data, assembly_constituency: batch[j] })
+          if (results[j]) acStatsResults.push({ ...results[j], assembly_constituency: batch[j] })
         }
       }
 
