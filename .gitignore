@@ -19,3 +19,4 @@ test_*.py
 # TypeScript incremental build artifacts
 *.tsbuildinfo
 .claude/settings.local.json
+.mcp.json
