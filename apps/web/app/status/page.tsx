@@ -211,7 +211,7 @@ export default function StatusPage() {
                 ))}
               </div>
 
-              <div className="divide-y divide-white/5 max-h-[400px] overflow-y-auto">
+              <div className="divide-y divide-white/5">
                 {/* Reports */}
                 {activeTab === "reports" && (
                   data.recent_reports.length > 0 ? data.recent_reports.map((r, i) => (
