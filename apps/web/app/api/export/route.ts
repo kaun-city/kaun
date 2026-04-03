@@ -29,11 +29,29 @@ export async function GET(req: Request) {
         return csvResponse(spending ?? [], "kaun-ward-spending.csv")
       }
 
-      // For "all" — join with demographics
-      const { data: stats } = await supabase
+      // For "all" — get demographics via RPC (same path as frontend)
+      // First try direct table, then fall back to RPC per AC
+      const { data: directStats } = await supabase
         .from("ward_stats")
-        .select("assembly_constituency, total_population, total_households, total_area_sqkm, avg_population_density, total_road_length_km, total_lakes, total_parks, total_playgrounds, total_govt_schools, total_police_stations, total_fire_stations, total_bus_stops, total_bus_routes, total_streetlights, streetlights, trees, namma_clinics, dwcc_count, ward_count, data_year, source")
+        .select("*")
         .order("assembly_constituency")
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let acStatsResults: any[] = directStats ?? []
+
+      // If direct query returned nothing (RLS or table structure issue), use RPC
+      if (acStatsResults.length === 0) {
+        const { data: wardsPreload } = await supabase
+          .from("wards")
+          .select("assembly_constituency")
+          .eq("city_id", "bengaluru")
+        const uniqueACs = [...new Set((wardsPreload ?? []).map(w => w.assembly_constituency).filter(Boolean))]
+
+        for (const ac of uniqueACs) {
+          const { data } = await supabase.rpc("ward_stats_by_ac", { p_assembly_constituency: ac })
+          if (data) acStatsResults.push({ ...data, assembly_constituency: ac })
+        }
+      }
 
       const [infraRes, potholesRes, crashesRes, airRes, workOrderRes] = await Promise.all([
         supabase.from("ward_infra_stats").select("ward_no, ward_name, signal_count, bus_stop_count, daily_trips").order("ward_no"),
@@ -67,8 +85,9 @@ export async function GET(req: Request) {
         .eq("city_id", "bengaluru")
         .order("ward_no")
 
-      // Stats are AC-level — normalize keys for case-insensitive matching
-      const acStats = new Map((stats ?? []).map(s => [s.assembly_constituency?.toLowerCase().trim(), s]))
+      // Stats are AC-level — normalize for matching
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const acStats = new Map(acStatsResults.map((s: any) => [(s.assembly_constituency ?? s._ac ?? "").toLowerCase().trim(), s]))
 
       const combined = (wards ?? []).map(w => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
