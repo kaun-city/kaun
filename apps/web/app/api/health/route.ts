@@ -58,6 +58,11 @@ interface HealthResult {
     signals_7d: number | null
     facts_active: number | null
   }
+  analytics: {
+    pin_drops_24h: number | null
+    pin_drops_7d: number | null
+    top_wards_7d: { ward_name: string; count: number }[]
+  }
   recent_reports: RecentReport[]
   recent_questions: RecentQuestion[]
   recent_signals: RecentSignal[]
@@ -125,6 +130,11 @@ export async function GET() {
       signals_7d: null,
       facts_active: null,
     },
+    analytics: {
+      pin_drops_24h: null,
+      pin_drops_7d: null,
+      top_wards_7d: [],
+    },
     recent_reports: [],
     recent_questions: [],
     recent_signals: [],
@@ -169,6 +179,24 @@ export async function GET() {
       questions_7d: find("ask_kaun_logs")?.recent_7d ?? null,
       signals_7d: find("civic_signals")?.recent_7d ?? null,
       facts_active: find("city_pulse_facts")?.total ?? null,
+    }
+
+    // Analytics — pin drop counts
+    try {
+      const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+      const [drops24h, drops7d, topWards] = await Promise.all([
+        supabase.from("analytics_events").select("*", { count: "exact", head: true }).eq("event", "pin_drop").gte("created_at", since24h),
+        supabase.from("analytics_events").select("*", { count: "exact", head: true }).eq("event", "pin_drop").gte("created_at", since7d),
+        supabase.rpc("top_pin_drop_wards", { p_days: 7 }).then((r: { data: { ward_name: string; count: number }[] | null }) => r.data ?? []),
+      ])
+      result.analytics = {
+        pin_drops_24h: drops24h.count ?? 0,
+        pin_drops_7d: drops7d.count ?? 0,
+        top_wards_7d: topWards.slice(0, 5),
+      }
+    } catch {
+      // analytics_events table may not exist yet
     }
 
     // Recent activity feeds

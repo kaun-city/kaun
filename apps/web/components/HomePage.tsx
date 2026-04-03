@@ -176,6 +176,12 @@ export default function HomePage() {
         setPinResult({ ...result, lat, lng })
         setPinLoading(false)
         setOutOfBounds(false)
+        // Track pin drop
+        fetch("/api/track", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ event: "pin_drop", ward_no: result.ward_no, ward_name: result.ward_name }),
+        }).catch(() => {})
       }
     }
   }, [pinLoading])

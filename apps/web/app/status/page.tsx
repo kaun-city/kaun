@@ -27,6 +27,11 @@ interface HealthData {
     signals_7d: number | null
     facts_active: number | null
   }
+  analytics: {
+    pin_drops_24h: number | null
+    pin_drops_7d: number | null
+    top_wards_7d: { ward_name: string; count: number }[]
+  }
   recent_reports: { ward_name: string | null; issue_type: string | null; status: string | null; reported_at: string }[]
   recent_questions: { ward_name: string; question: string; created_at: string }[]
   recent_signals: { ward_no: number; issue_type: string; title: string; source: string; signal_at: string }[]
@@ -163,6 +168,35 @@ export default function StatusPage() {
                   </p>
                 </div>
               ))}
+            </div>
+
+            {/* User Engagement */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+              <div className="rounded-xl bg-[#FF9933]/5 border border-[#FF9933]/10 p-4">
+                <p className="text-white/40 text-[10px] uppercase tracking-wider">Pin Drops (24h)</p>
+                <p className={`text-2xl font-bold mt-1 ${(data.analytics?.pin_drops_24h ?? 0) > 0 ? "text-[#FF9933]" : "text-white/20"}`}>
+                  {data.analytics?.pin_drops_24h ?? "--"}
+                </p>
+              </div>
+              <div className="rounded-xl bg-[#FF9933]/5 border border-[#FF9933]/10 p-4">
+                <p className="text-white/40 text-[10px] uppercase tracking-wider">Pin Drops (7d)</p>
+                <p className={`text-2xl font-bold mt-1 ${(data.analytics?.pin_drops_7d ?? 0) > 0 ? "text-[#FF9933]" : "text-white/20"}`}>
+                  {data.analytics?.pin_drops_7d ?? "--"}
+                </p>
+              </div>
+              {data.analytics?.top_wards_7d && data.analytics.top_wards_7d.length > 0 && (
+                <div className="rounded-xl bg-white/5 p-4 col-span-2 md:col-span-1">
+                  <p className="text-white/40 text-[10px] uppercase tracking-wider mb-2">Top Wards (7d)</p>
+                  <div className="space-y-1">
+                    {data.analytics.top_wards_7d.slice(0, 5).map((w, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <p className="text-white/60 text-xs truncate">{w.ward_name}</p>
+                        <p className="text-[#FF9933] text-xs font-mono shrink-0">{w.count}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Database + Crons */}
