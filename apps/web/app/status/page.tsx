@@ -105,7 +105,7 @@ export default function StatusPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white">
+    <div className="fixed inset-0 overflow-y-auto bg-[#0A0A0A] text-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
 
         {/* Header */}
