@@ -18,8 +18,11 @@ export async function GET(req: Request) {
   const url = new URL(req.url)
   const secret = url.searchParams.get("secret")
   const cronSecret = process.env.CRON_SECRET?.trim()
-  if (!cronSecret || secret !== cronSecret) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 })
+  if (!cronSecret) {
+    return Response.json({ error: "CRON_SECRET env var is not set on this deployment" }, { status: 401 })
+  }
+  if (secret !== cronSecret) {
+    return Response.json({ error: "Secret mismatch", hint: `Expected length: ${cronSecret.length}, received length: ${secret?.length ?? 0}` }, { status: 401 })
   }
 
   const supabase = createClient(
