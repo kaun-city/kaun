@@ -194,19 +194,19 @@ export default function StatusPage() {
 
             {/* Activity Feed */}
             <div className="rounded-xl bg-white/5 overflow-hidden mb-8">
-              <div className="flex border-b border-white/5">
+              <div className="flex border-b border-white/5 overflow-x-auto">
                 {activityTabs.map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 px-4 py-3 text-xs font-medium transition-colors ${
+                    className={`flex-1 min-w-0 px-2 py-3 text-[11px] font-medium transition-colors whitespace-nowrap ${
                       activeTab === tab.id
                         ? "text-[#FF9933] border-b-2 border-[#FF9933]"
                         : "text-white/30 hover:text-white/50"
                     }`}
                   >
                     {tab.label}
-                    {tab.count > 0 && <span className="ml-1.5 text-[10px] text-white/20">{tab.count}</span>}
+                    {tab.count > 0 && <span className="ml-1 text-[10px] text-white/20">{tab.count}</span>}
                   </button>
                 ))}
               </div>
