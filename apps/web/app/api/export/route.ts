@@ -1,0 +1,151 @@
+import { createClient } from "@supabase/supabase-js"
+
+export const runtime = "nodejs"
+export const maxDuration = 30
+
+/**
+ * GET /api/export?type=ward-spending|ward-demographics|all
+ *
+ * Exports ward-level data as CSV for media/research use.
+ * No auth required — this is public data.
+ */
+export async function GET(req: Request) {
+  const url = new URL(req.url)
+  const type = url.searchParams.get("type") || "all"
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  )
+
+  try {
+    if (type === "ward-spending" || type === "all") {
+      const { data: spending } = await supabase
+        .from("ward_spend_category")
+        .select("ward_no, ward_name, buildings_facilities, drainage, roads_and_drains, roads_and_infrastructure, streetlighting, waste_management, water_and_sanitation, grand_total, period")
+        .order("ward_no")
+
+      if (type === "ward-spending") {
+        return csvResponse(spending ?? [], "kaun-ward-spending.csv")
+      }
+
+      // For "all" — join with demographics
+      const { data: stats } = await supabase
+        .from("ward_stats")
+        .select("assembly_constituency, total_population, total_households, total_area_sqkm, avg_population_density, total_road_length_km, total_lakes, total_parks, total_playgrounds, total_govt_schools, total_police_stations, total_fire_stations, total_bus_stops, total_bus_routes, total_streetlights, streetlights, trees, namma_clinics, dwcc_count, ward_count, data_year, source")
+        .order("assembly_constituency")
+
+      const { data: infraStats } = await supabase
+        .from("ward_infra_stats")
+        .select("ward_no, ward_name, signal_count, bus_stop_count, daily_trips")
+        .order("ward_no")
+
+      // Build combined export
+      const spendMap = new Map((spending ?? []).map(s => [s.ward_no, s]))
+      const infraMap = new Map((infraStats ?? []).map(i => [i.ward_no, i]))
+
+      // Get ward list with AC mapping
+      const { data: wards } = await supabase
+        .from("wards")
+        .select("ward_no, ward_name, assembly_constituency, zone")
+        .eq("city_id", "bengaluru")
+        .order("ward_no")
+
+      // Stats are AC-level, so we need to map
+      const acStats = new Map((stats ?? []).map(s => [s.assembly_constituency, s]))
+
+      const combined = (wards ?? []).map(w => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const spend: any = spendMap.get(w.ward_no) ?? {}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const infra: any = infraMap.get(w.ward_no) ?? {}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const acStat: any = acStats.get(w.assembly_constituency) ?? {}
+        return {
+          ward_no: w.ward_no,
+          ward_name: w.ward_name,
+          assembly_constituency: w.assembly_constituency,
+          zone: w.zone,
+          // Demographics (AC level — shared across wards in same AC)
+          ac_total_population: acStat.total_population ?? "",
+          ac_total_households: acStat.total_households ?? "",
+          ac_area_sqkm: acStat.total_area_sqkm ?? "",
+          ac_population_density: acStat.avg_population_density ?? "",
+          ac_road_length_km: acStat.total_road_length_km ?? "",
+          ac_lakes: acStat.total_lakes ?? "",
+          ac_parks: acStat.total_parks ?? "",
+          ac_playgrounds: acStat.total_playgrounds ?? "",
+          ac_govt_schools: acStat.total_govt_schools ?? "",
+          ac_police_stations: acStat.total_police_stations ?? "",
+          ac_fire_stations: acStat.total_fire_stations ?? "",
+          ac_streetlights: acStat.streetlights ?? acStat.total_streetlights ?? "",
+          ac_trees: acStat.trees ?? "",
+          ac_namma_clinics: acStat.namma_clinics ?? "",
+          ac_dwcc: acStat.dwcc_count ?? "",
+          ac_ward_count: acStat.ward_count ?? "",
+          demographics_source: acStat.source ?? "",
+          demographics_year: acStat.data_year ?? "",
+          // Infrastructure (ward level)
+          traffic_signals: infra.signal_count ?? "",
+          bus_stops: infra.bus_stop_count ?? "",
+          daily_bus_trips: infra.daily_trips ?? "",
+          // Spending (ward level, Rs)
+          spend_buildings_facilities: spend.buildings_facilities ?? "",
+          spend_drainage: spend.drainage ?? "",
+          spend_roads_and_drains: spend.roads_and_drains ?? "",
+          spend_roads_and_infrastructure: spend.roads_and_infrastructure ?? "",
+          spend_streetlighting: spend.streetlighting ?? "",
+          spend_waste_management: spend.waste_management ?? "",
+          spend_water_and_sanitation: spend.water_and_sanitation ?? "",
+          spend_grand_total: spend.grand_total ?? "",
+          spend_period: spend.period ?? "",
+        }
+      })
+
+      return csvResponse(combined, "kaun-bengaluru-ward-data.csv")
+    }
+
+    if (type === "ward-demographics") {
+      const { data: stats } = await supabase
+        .from("ward_stats")
+        .select("*")
+        .order("assembly_constituency")
+
+      return csvResponse(stats ?? [], "kaun-ward-demographics.csv")
+    }
+
+    return Response.json({ error: "Invalid type. Use: ward-spending, ward-demographics, or all" }, { status: 400 })
+  } catch (e) {
+    return Response.json({ error: e instanceof Error ? e.message : "Export failed" }, { status: 500 })
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function csvResponse(rows: any[], filename: string): Response {
+  if (!rows.length) {
+    return new Response("No data available", { status: 404, headers: { "Content-Type": "text/plain" } })
+  }
+
+  const headers = Object.keys(rows[0])
+  const csvLines = [
+    headers.join(","),
+    ...rows.map(row =>
+      headers.map(h => {
+        const val = row[h]
+        if (val === null || val === undefined) return ""
+        const str = String(val)
+        return str.includes(",") || str.includes('"') || str.includes("\n")
+          ? `"${str.replace(/"/g, '""')}"`
+          : str
+      }).join(",")
+    ),
+  ]
+
+  return new Response(csvLines.join("\n"), {
+    headers: {
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Cache-Control": "public, max-age=3600",
+    },
+  })
+}
