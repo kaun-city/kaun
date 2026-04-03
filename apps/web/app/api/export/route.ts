@@ -35,14 +35,30 @@ export async function GET(req: Request) {
         .select("assembly_constituency, total_population, total_households, total_area_sqkm, avg_population_density, total_road_length_km, total_lakes, total_parks, total_playgrounds, total_govt_schools, total_police_stations, total_fire_stations, total_bus_stops, total_bus_routes, total_streetlights, streetlights, trees, namma_clinics, dwcc_count, ward_count, data_year, source")
         .order("assembly_constituency")
 
-      const { data: infraStats } = await supabase
-        .from("ward_infra_stats")
-        .select("ward_no, ward_name, signal_count, bus_stop_count, daily_trips")
-        .order("ward_no")
+      const [infraRes, potholesRes, crashesRes, airRes, workOrderRes] = await Promise.all([
+        supabase.from("ward_infra_stats").select("ward_no, ward_name, signal_count, bus_stop_count, daily_trips").order("ward_no"),
+        supabase.from("ward_potholes").select("ward_no, ward_name, complaints, data_year").order("ward_no"),
+        supabase.from("ward_road_crashes").select("ward_no, crashes_2024, fatal_2024, crashes_2025, fatal_2025").order("ward_no"),
+        supabase.from("ward_air_quality").select("ward_no, station_name, avg_pm25, avg_pm10, data_year").order("ward_no"),
+        supabase.from("bbmp_work_orders").select("ward_no").order("ward_no"),
+      ])
+      const infraStats = infraRes.data ?? []
+      const potholes = potholesRes.data ?? []
+      const crashes = crashesRes.data ?? []
+      const airQuality = airRes.data ?? []
+      // Count work orders per ward
+      const woCountMap = new Map<number, number>()
+      for (const wo of workOrderRes.data ?? []) {
+        woCountMap.set(wo.ward_no, (woCountMap.get(wo.ward_no) ?? 0) + 1)
+      }
 
-      // Build combined export
+      // Build lookup maps
       const spendMap = new Map((spending ?? []).map(s => [s.ward_no, s]))
-      const infraMap = new Map((infraStats ?? []).map(i => [i.ward_no, i]))
+      const spendByName = new Map((spending ?? []).map(s => [s.ward_name?.toLowerCase().trim(), s]))
+      const infraMap = new Map(infraStats.map(i => [i.ward_no, i]))
+      const potholesMap = new Map(potholes.map(p => [p.ward_no, p]))
+      const crashesMap = new Map(crashes.map(c => [c.ward_no, c]))
+      const airMap = new Map(airQuality.map(a => [a.ward_no, a]))
 
       // Get ward list with AC mapping
       const { data: wards } = await supabase
@@ -51,16 +67,16 @@ export async function GET(req: Request) {
         .eq("city_id", "bengaluru")
         .order("ward_no")
 
-      // Stats are AC-level, so we need to map
-      const acStats = new Map((stats ?? []).map(s => [s.assembly_constituency, s]))
+      // Stats are AC-level — normalize keys for case-insensitive matching
+      const acStats = new Map((stats ?? []).map(s => [s.assembly_constituency?.toLowerCase().trim(), s]))
 
       const combined = (wards ?? []).map(w => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const spend: any = spendMap.get(w.ward_no) ?? {}
+        const spend: any = spendMap.get(w.ward_no) ?? spendByName.get(w.ward_name?.toLowerCase().trim()) ?? {}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const infra: any = infraMap.get(w.ward_no) ?? {}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const acStat: any = acStats.get(w.assembly_constituency) ?? {}
+        const acStat: any = acStats.get(w.assembly_constituency?.toLowerCase().trim()) ?? {}
         return {
           ward_no: w.ward_no,
           ward_name: w.ward_name,
@@ -99,6 +115,20 @@ export async function GET(req: Request) {
           spend_water_and_sanitation: spend.water_and_sanitation ?? "",
           spend_grand_total: spend.grand_total ?? "",
           spend_period: spend.period ?? "",
+          // Potholes
+          pothole_complaints: (potholesMap.get(w.ward_no) as any)?.complaints ?? "",
+          pothole_data_year: (potholesMap.get(w.ward_no) as any)?.data_year ?? "",
+          // Road crashes
+          road_crashes_2024: (crashesMap.get(w.ward_no) as any)?.crashes_2024 ?? "",
+          fatal_crashes_2024: (crashesMap.get(w.ward_no) as any)?.fatal_2024 ?? "",
+          road_crashes_2025: (crashesMap.get(w.ward_no) as any)?.crashes_2025 ?? "",
+          fatal_crashes_2025: (crashesMap.get(w.ward_no) as any)?.fatal_2025 ?? "",
+          // Air quality
+          air_quality_station: (airMap.get(w.ward_no) as any)?.station_name ?? "",
+          avg_pm25: (airMap.get(w.ward_no) as any)?.avg_pm25 ?? "",
+          avg_pm10: (airMap.get(w.ward_no) as any)?.avg_pm10 ?? "",
+          // Work orders
+          total_work_orders: woCountMap.get(w.ward_no) ?? "",
         }
       })
 
