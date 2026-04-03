@@ -27,6 +27,10 @@ interface HealthData {
     signals_7d: number | null
     facts_active: number | null
   }
+  recent_reports: { ward_name: string | null; issue_type: string | null; status: string | null; reported_at: string }[]
+  recent_questions: { ward_name: string; question: string; created_at: string }[]
+  recent_signals: { ward_no: number; issue_type: string; title: string; source: string; signal_at: string }[]
+  recent_community_facts: { ward_no: number | null; category: string; subject: string; field: string; value: string; created_at: string }[]
 }
 
 function timeAgo(dateStr: string | null): string {
@@ -50,11 +54,22 @@ function StatusDot({ status }: { status: string }) {
   return <span className={`inline-block w-2 h-2 rounded-full ${color}`} />
 }
 
+function ReportStatusBadge({ status }: { status: string | null }) {
+  if (!status) return null
+  const styles: Record<string, string> = {
+    pending: "bg-yellow-500/20 text-yellow-400",
+    approved: "bg-green-500/20 text-green-400",
+    rejected: "bg-red-500/20 text-red-400",
+  }
+  return <span className={`text-[10px] px-1.5 py-0.5 rounded ${styles[status] ?? "bg-white/10 text-white/40"}`}>{status}</span>
+}
+
 export default function StatusPage() {
   const [data, setData] = useState<HealthData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
+  const [activeTab, setActiveTab] = useState<"reports" | "questions" | "signals" | "facts">("reports")
 
   const refresh = useCallback(async () => {
     setLoading(true)
@@ -72,12 +87,17 @@ export default function StatusPage() {
   }, [])
 
   useEffect(() => { refresh() }, [refresh])
-
-  // Auto-refresh every 30s
   useEffect(() => {
     const timer = setInterval(refresh, 30000)
     return () => clearInterval(timer)
   }, [refresh])
+
+  const activityTabs = [
+    { id: "reports" as const, label: "Reports", count: data?.recent_reports.length ?? 0 },
+    { id: "questions" as const, label: "Ask Kaun", count: data?.recent_questions.length ?? 0 },
+    { id: "signals" as const, label: "Signals", count: data?.recent_signals.length ?? 0 },
+    { id: "facts" as const, label: "Community", count: data?.recent_community_facts.length ?? 0 },
+  ]
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white">
@@ -145,30 +165,123 @@ export default function StatusPage() {
               ))}
             </div>
 
-            {/* Database Connection */}
-            <div className="rounded-xl bg-white/5 p-4 mb-4">
-              <div className="flex items-center gap-2">
-                <StatusDot status={data.supabase} />
-                <span className="text-white/60 text-sm">Supabase (PostgreSQL + PostGIS)</span>
-                <span className={`text-xs ml-auto ${data.supabase === "connected" ? "text-green-400/60" : "text-red-400"}`}>
+            {/* Database + Crons */}
+            <div className="grid md:grid-cols-2 gap-4 mb-8">
+              <div className="rounded-xl bg-white/5 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <StatusDot status={data.supabase} />
+                  <span className="text-white/60 text-sm">Supabase (PostgreSQL + PostGIS)</span>
+                </div>
+                <p className={`text-xs ${data.supabase === "connected" ? "text-green-400/60" : "text-red-400"}`}>
                   {data.supabase}
-                </span>
+                </p>
+              </div>
+              <div className="rounded-xl bg-white/5 p-4">
+                <p className="text-white/40 text-[10px] uppercase tracking-wider mb-3">Scheduled Jobs</p>
+                <div className="space-y-2">
+                  {data.crons.map(cron => (
+                    <div key={cron.name} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <StatusDot status={cron.status} />
+                        <span className="text-white/70 text-xs">{cron.name}</span>
+                      </div>
+                      <span className="text-white/30 text-xs">{timeAgo(cron.last_data_at)}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Cron Jobs */}
-            <div className="rounded-xl bg-white/5 p-4 mb-4">
-              <p className="text-white/40 text-[10px] uppercase tracking-wider mb-3">Scheduled Jobs</p>
-              <div className="space-y-2">
-                {data.crons.map(cron => (
-                  <div key={cron.name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <StatusDot status={cron.status} />
-                      <span className="text-white/70 text-sm">{cron.name}</span>
-                    </div>
-                    <span className="text-white/30 text-xs">{timeAgo(cron.last_data_at)}</span>
-                  </div>
+            {/* Activity Feed */}
+            <div className="rounded-xl bg-white/5 overflow-hidden mb-8">
+              <div className="flex border-b border-white/5">
+                {activityTabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 px-4 py-3 text-xs font-medium transition-colors ${
+                      activeTab === tab.id
+                        ? "text-[#FF9933] border-b-2 border-[#FF9933]"
+                        : "text-white/30 hover:text-white/50"
+                    }`}
+                  >
+                    {tab.label}
+                    {tab.count > 0 && <span className="ml-1.5 text-[10px] text-white/20">{tab.count}</span>}
+                  </button>
                 ))}
+              </div>
+
+              <div className="divide-y divide-white/5 max-h-[400px] overflow-y-auto">
+                {/* Reports */}
+                {activeTab === "reports" && (
+                  data.recent_reports.length > 0 ? data.recent_reports.map((r, i) => (
+                    <div key={i} className="px-4 py-3 flex items-center justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-white/70 text-sm truncate">{r.ward_name ?? "Unknown ward"}</p>
+                          <ReportStatusBadge status={r.status} />
+                        </div>
+                        <p className="text-white/30 text-xs mt-0.5">{r.issue_type ?? "General"}</p>
+                      </div>
+                      <span className="text-white/20 text-xs shrink-0">{timeAgo(r.reported_at)}</span>
+                    </div>
+                  )) : (
+                    <div className="px-4 py-8 text-center"><p className="text-white/20 text-sm">No recent reports</p></div>
+                  )
+                )}
+
+                {/* Ask Kaun Questions */}
+                {activeTab === "questions" && (
+                  data.recent_questions.length > 0 ? data.recent_questions.map((q, i) => (
+                    <div key={i} className="px-4 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-[#FF9933]/60 text-xs">{q.ward_name}</p>
+                        <span className="text-white/20 text-xs shrink-0">{timeAgo(q.created_at)}</span>
+                      </div>
+                      <p className="text-white/70 text-sm mt-0.5 line-clamp-2">{q.question}</p>
+                    </div>
+                  )) : (
+                    <div className="px-4 py-8 text-center"><p className="text-white/20 text-sm">No recent questions</p></div>
+                  )
+                )}
+
+                {/* Civic Signals */}
+                {activeTab === "signals" && (
+                  data.recent_signals.length > 0 ? data.recent_signals.map((s, i) => (
+                    <div key={i} className="px-4 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#FF9933]/50 text-[10px] font-semibold uppercase">{s.issue_type}</span>
+                          <span className="text-white/15 text-[10px]">Ward {s.ward_no}</span>
+                          <span className="text-white/15 text-[10px]">{s.source}</span>
+                        </div>
+                        <span className="text-white/20 text-xs shrink-0">{timeAgo(s.signal_at)}</span>
+                      </div>
+                      <p className="text-white/70 text-sm mt-0.5 line-clamp-2">{s.title}</p>
+                    </div>
+                  )) : (
+                    <div className="px-4 py-8 text-center"><p className="text-white/20 text-sm">No recent signals</p></div>
+                  )
+                )}
+
+                {/* Community Facts */}
+                {activeTab === "facts" && (
+                  data.recent_community_facts.length > 0 ? data.recent_community_facts.map((f, i) => (
+                    <div key={i} className="px-4 py-3 flex items-center justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-white/30 text-[10px] uppercase">{f.category}</span>
+                          {f.ward_no && <span className="text-white/15 text-[10px]">Ward {f.ward_no}</span>}
+                        </div>
+                        <p className="text-white/70 text-sm mt-0.5">{f.subject}: {f.field}</p>
+                        <p className="text-white/40 text-xs mt-0.5">{f.value}</p>
+                      </div>
+                      <span className="text-white/20 text-xs shrink-0">{timeAgo(f.created_at)}</span>
+                    </div>
+                  )) : (
+                    <div className="px-4 py-8 text-center"><p className="text-white/20 text-sm">No community facts yet</p></div>
+                  )
+                )}
               </div>
             </div>
 

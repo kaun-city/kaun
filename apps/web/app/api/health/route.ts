@@ -12,6 +12,36 @@ interface TableCheck {
   status: "ok" | "empty" | "error"
 }
 
+interface RecentReport {
+  ward_name: string | null
+  issue_type: string | null
+  status: string | null
+  reported_at: string
+}
+
+interface RecentQuestion {
+  ward_name: string
+  question: string
+  created_at: string
+}
+
+interface RecentSignal {
+  ward_no: number
+  issue_type: string
+  title: string
+  source: string
+  signal_at: string
+}
+
+interface RecentFact {
+  ward_no: number | null
+  category: string
+  subject: string
+  field: string
+  value: string
+  created_at: string
+}
+
 interface HealthResult {
   status: "healthy" | "degraded" | "down"
   timestamp: string
@@ -28,6 +58,10 @@ interface HealthResult {
     signals_7d: number | null
     facts_active: number | null
   }
+  recent_reports: RecentReport[]
+  recent_questions: RecentQuestion[]
+  recent_signals: RecentSignal[]
+  recent_community_facts: RecentFact[]
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,26 +71,22 @@ async function checkTable(
   dateCol: string,
 ): Promise<TableCheck> {
   try {
-    // Total count
     const { count: total } = await supabase
       .from(table)
       .select("*", { count: "exact", head: true })
 
-    // Recent 24h
     const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
     const { count: recent24h } = await supabase
       .from(table)
       .select("*", { count: "exact", head: true })
       .gte(dateCol, since24h)
 
-    // Recent 7d
     const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
     const { count: recent7d } = await supabase
       .from(table)
       .select("*", { count: "exact", head: true })
       .gte(dateCol, since7d)
 
-    // Latest entry
     const { data: latest } = await supabase
       .from(table)
       .select(dateCol)
@@ -95,6 +125,10 @@ export async function GET() {
       signals_7d: null,
       facts_active: null,
     },
+    recent_reports: [],
+    recent_questions: [],
+    recent_signals: [],
+    recent_community_facts: [],
   }
 
   try {
@@ -137,7 +171,36 @@ export async function GET() {
       facts_active: find("city_pulse_facts")?.total ?? null,
     }
 
-    // Cron health — check freshness of data each cron produces
+    // Recent activity feeds
+    const [reports, questions, signals, facts] = await Promise.all([
+      supabase.from("ward_reports")
+        .select("ward_name,issue_type,status,reported_at")
+        .order("reported_at", { ascending: false })
+        .limit(15)
+        .then((r: { data: RecentReport[] | null }) => r.data ?? []),
+      supabase.from("ask_kaun_logs")
+        .select("ward_name,question,created_at")
+        .order("created_at", { ascending: false })
+        .limit(15)
+        .then((r: { data: RecentQuestion[] | null }) => r.data ?? []),
+      supabase.from("civic_signals")
+        .select("ward_no,issue_type,title,source,signal_at")
+        .order("signal_at", { ascending: false })
+        .limit(10)
+        .then((r: { data: RecentSignal[] | null }) => r.data ?? []),
+      supabase.from("community_facts")
+        .select("ward_no,category,subject,field,value,created_at")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .limit(10)
+        .then((r: { data: RecentFact[] | null }) => r.data ?? []),
+    ])
+    result.recent_reports = reports
+    result.recent_questions = questions
+    result.recent_signals = signals
+    result.recent_community_facts = facts
+
+    // Cron health
     const signalsLatest = find("civic_signals")?.latest_at
     const pulseLatest = find("city_pulse_facts")?.latest_at
     result.crons = [
@@ -159,7 +222,7 @@ export async function GET() {
     if (errors.length > 0 || coreEmpty) result.status = "degraded"
     if (result.supabase !== "connected") result.status = "down"
 
-  } catch (e) {
+  } catch {
     result.status = "down"
     result.supabase = "error"
   }
