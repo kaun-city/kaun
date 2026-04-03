@@ -2,89 +2,108 @@
 
 **Pin a place. Know who's responsible.**
 
-Civic accountability for Indian cities — drop a pin anywhere in Bengaluru and instantly see your elected representative, how they've voted with public funds, ward infrastructure data, and what you can do about it.
+Civic accountability for Indian cities — drop a pin anywhere in Bengaluru and instantly see your elected representative, who gets the contracts, how public money is spent, and what you can do about it.
 
-**[kaun.city](https://kaun.city)** — live for Bengaluru
+**[kaun.city](https://kaun.city)** — live for Bengaluru (243 wards). Open source. City-agnostic architecture.
 
 ---
 
-## What It Does
+## What You See
 
-Tap anywhere on the map (or hit "Find My Ward") and see:
+### Before dropping a pin
+
+**City Pulse** — a rotating ticker of verified civic facts sourced from Deccan Herald, The News Minute, Citizen Matters, and CPCB/NCRB data. Auto-refreshed daily via RSS classification. No interaction needed — the city's accountability picture is on the face.
+
+### After dropping a pin
+
+**Ward Grade (A-F)** appears in the card header — a composite score from MLA attendance, LAD fund utilization, criminal cases, ward committee meetings, infrastructure gaps, and flagged contractors. Visible at a glance, no scrolling.
+
+**Ward Headline** — the single most alarming finding for your ward, shown as a red/yellow alert above the tabs.
 
 | Tab | What you get |
 |---|---|
-| **Who** | Your MLA and corporator — party, criminal cases, asset growth, assembly attendance, LAD fund utilization. AI-generated ward brief. |
-| **Spend** | BBMP budget breakdown for your constituency. LAD fund allocation vs actual spend. |
-| **Citizen** | Traffic signals and BMTC bus stops in your ward vs city average. Pothole complaints on record. |
-| **Reach** | RTI draft generator for 5 civic issues. BBMP, BTP, BWSSB, BESCOM, BMTC helplines. |
+| **Who** | Your MLA and corporator — party, criminal cases, asset growth, assembly attendance, LAD fund utilization. Ward committee meeting count. GBA corporation contacts. Community-submitted facts. RTI draft generator. |
+| **Spend** | BBMP budget breakdown by department. Ward-level spending by category (roads, drainage, water, waste). Work orders with contractor names. **Contractor profiles** — total value, ward spread, deduction rate, blacklist flags. Property tax collections. Trade licenses. |
+| **Citizen** | Demographics, infrastructure (road length, streetlights, schools, police/fire stations, clinics). Traffic signals + bus stops vs city average. Neighbourhood amenities (hospitals, pharmacies, ATMs, public toilets, EV charging, metro stations — from OSM). Water body health (pH, BOD, DO, coliform — from KSPCB). Road crashes. Air quality. Pothole complaints. Civic reports. Reddit community buzz. |
+| **Reach** | Civic agency helplines (GBA, BWSSB, BESCOM, BTP, BDA). Local offices (BESCOM division, police station, SRO). RTI draft generator for 5 civic issues. Service delivery performance (Sakala). Grievance trends. |
 
-**Ask Kaun** — AI assistant that can answer questions about any of the 243 Bengaluru wards. Compare wards, find who has the worst attendance, ask what you can do about a problem.
+**Ask Kaun** — AI assistant (GPT-4o with tool use) that can answer questions about any of the 243 wards. Compare wards, find who has the worst attendance, look up contractors, check if someone is blacklisted.
 
 ---
 
-## Stack
+## Contractor Accountability
 
-| Layer | Tech |
-|---|---|
-| Frontend | Next.js 15 + Leaflet.js + Tailwind CSS |
-| Database | Supabase (PostgreSQL + PostGIS) |
-| AI | OpenAI GPT-4o (Ask Kaun tools) + GPT-4o mini (ward story cache) |
-| Hosting | Vercel (Edge runtime for OG images) |
-| DNS / Protection | Cloudflare (Bot Fight Mode + WAF) |
+The platform includes an investigative-grade contractor intelligence layer:
 
-No separate API server. Frontend talks directly to Supabase via PostgREST + RPC.
+- **Entity resolution** — contractor names in BBMP work orders have phone numbers embedded. Same phone, different company names = same entity. Grouped by phone to collapse aliases.
+- **Blacklist cross-referencing** — every contractor profile is checked against GeM suspended sellers, World Bank debarment (via OpenSanctions), CPPP national debarment list, KPCL Karnataka blacklisted firms, and documented BBMP cases.
+- **AI tools** — Ask Kaun can search contractors by name, show top contractors by value/contracts/deduction rate, and list who operates in any ward.
 
 ---
 
 ## Data Sources & Attribution
 
-All data is sourced from public records and open datasets. We are grateful to the organisations that publish and maintain this data.
+All data is sourced from public records and open datasets.
 
-| Dataset | Source | Link |
-|---|---|---|
-| BBMP ward boundaries (243 wards) | datameet — Municipal Spatial Data | [github.com/datameet](https://github.com/datameet/Municipal_Spatial_Data/tree/master/Bangalore) |
-| MLA affidavits (criminal cases, assets, net worth) | Election Commission of India via MyNeta | [myneta.info](https://www.myneta.info) |
-| MLA LAD fund utilization | CIVIC Bengaluru via opencity.in | [opencity.in](https://opencity.in) |
-| Ward committee meetings | opencity.in / BBMP | [opencity.in](https://opencity.in) |
-| Rep report cards (attendance, questions asked) | CIVIC Bengaluru via opencity.in | [opencity.in](https://opencity.in) |
-| BBMP Budget 2025-26 | opencity.in / BBMP | [opencity.in](https://opencity.in) |
-| BMTC bus stops | opencity.in / BMTC | [opencity.in](https://opencity.in) |
-| Pothole complaints | opencity.in / BBMP | [opencity.in](https://opencity.in) |
-| BBMP work orders | opencity.in / BBMP | [opencity.in](https://opencity.in) |
-| Traffic signals | OpenStreetMap contributors (Overpass API) | [openstreetmap.org](https://www.openstreetmap.org) |
+| Dataset | Source |
+|---|---|
+| Ward boundaries (243 wards, PostGIS) | [datameet](https://github.com/datameet/Municipal_Spatial_Data/tree/master/Bangalore) |
+| MLA affidavits (criminal cases, assets) | Election Commission via [MyNeta](https://www.myneta.info) |
+| MLA performance (attendance, LAD, questions) | CIVIC Bengaluru via [opencity.in](https://opencity.in) |
+| BBMP budget, work orders, grievances, tenders | [opencity.in](https://opencity.in) / BBMP |
+| Ward amenities (hospitals, ATMs, toilets, etc.) | [OpenStreetMap](https://www.openstreetmap.org) via Overpass API |
+| Water body quality (pH, BOD, DO, coliform) | KSPCB / CPCB |
+| Traffic signals | OpenStreetMap via Overpass API |
+| Bus stops + routes | BMTC via opencity.in |
+| Road crashes | Bengaluru Traffic Police |
+| Air quality | KSPCB / CPCB |
+| Contractor blacklists | GeM, World Bank/OpenSanctions, CPPP, KPCL |
+| Civic news (City Pulse) | Deccan Herald, The News Minute, Citizen Matters, India Today RSS |
 
-**Key organisations:**
-- [**datameet**](https://datameet.org) — civic data community that publishes and maintains open spatial datasets for Indian cities
-- [**opencity.in**](https://opencity.in) — Open City Foundation's open data portal for Indian municipal data
-- [**CIVIC Bengaluru**](https://civicbengaluru.org) — citizen platform that compiles and publishes elected rep performance data
-- [**OpenStreetMap**](https://www.openstreetmap.org) — community-maintained map data used for infrastructure (signals, stops)
-- [**Election Commission of India**](https://eci.gov.in) — source of all candidate affidavit data (criminal cases, assets)
+**Key organisations:** [datameet](https://datameet.org), [opencity.in](https://opencity.in), [CIVIC Bengaluru](https://civicbengaluru.org), [OpenStreetMap](https://www.openstreetmap.org), [ADR/MyNeta](https://adrindia.org)
 
-> All elected representative data is self-declared in EC nomination affidavits and sourced from public records. Ward-level statistics reflect data available at the time of last update.
+> All elected representative data is self-declared in EC nomination affidavits. Contractor data is from BBMP work orders (public records). Ward statistics reflect data available at time of last update.
 
 ---
 
-## Repo Structure
+## Architecture
+
+| Layer | Tech |
+|---|---|
+| Frontend | Next.js 15 + Leaflet.js + Tailwind CSS |
+| Database | Supabase (PostgreSQL + PostGIS) |
+| AI | OpenAI GPT-4o (Ask Kaun tools) |
+| Hosting | Vercel |
+| DNS / Protection | Cloudflare (Bot Fight Mode + WAF) |
+| Monitoring | [kaun.city/status](https://kaun.city/status) |
+
+No separate API server. Frontend talks directly to Supabase via PostgREST + RPC.
+
+### Data Pipeline
 
 ```
-kaun/
-├── apps/
-│   └── web/                  # Next.js frontend
-│       ├── app/              # Pages + API routes
-│       │   ├── api/ask-kaun/ # GPT-4o tool-use AI assistant
-│       │   ├── api/ward-story/ # GPT-4o mini narrative cache
-│       │   ├── api/rti-draft/  # RTI letter generator
-│       │   └── api/og/       # Dynamic ward OG images (edge)
-│       ├── components/
-│       │   ├── WardCard.tsx  # 4-tab ward card
-│       │   ├── MapView.tsx   # Leaflet map
-│       │   └── shared/       # AskKaunBar, RTIDraftSheet, WardStoryCard
-│       └── lib/              # api.ts, types.ts, supabase.ts
-└── .github/
-    └── ISSUE_TEMPLATE/
-        └── city-request.yml  # Request Kaun for your city
+scripts/
+├── seed-boundaries.mjs          # Load ward GeoJSON to PostGIS
+├── seed-work-orders-full.mjs    # Full BBMP work orders (243 wards) + contractor profiles
+├── seed-osm-amenities.mjs       # 15 amenity categories from OpenStreetMap
+├── seed-water-quality.mjs       # Lake water quality from KSPCB
+├── seed-mla-contacts.mjs        # MLA contact info from MyNeta
+├── seed-mla-lad-funds.mjs       # LAD fund data from opencity.in
+├── seed-kgis-ward-data.mjs      # Trees, clinics, waste centers from KGIS
+├── scrape-blacklists.mjs        # Cross-ref contractors against debarment lists
+├── refresh-grievances.mjs       # BBMP complaint data from opencity.in
+├── refresh-city-pulse.mjs       # Civic news from RSS feeds (daily cron)
+├── refresh-kppp.mjs             # KPPP tender sync
+├── refresh-sakala.mjs           # Service delivery performance
+└── refresh-trade-licenses.mjs   # Trade license stats
 ```
+
+### Vercel Crons
+
+| Schedule | Endpoint | Purpose |
+|---|---|---|
+| Daily 2am UTC | `/api/ingest-signals` | Reddit civic signal ingestion |
+| Daily 6am UTC | `/api/refresh-pulse` | RSS news classification for City Pulse |
 
 ---
 
@@ -94,42 +113,34 @@ kaun/
 git clone https://github.com/kaun-city/kaun
 cd kaun/apps/web
 cp .env.example .env.local
-# Fill in:
-#   NEXT_PUBLIC_SUPABASE_URL
-#   NEXT_PUBLIC_SUPABASE_ANON_KEY
-#   OPENAI_API_KEY
+# Fill in NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, OPENAI_API_KEY
 npm install
 npm run dev
 ```
 
 ---
 
+## Adding a City
+
+Kaun is designed to work for any Indian city. To add yours:
+
+1. **Ward boundary GeoJSON** — usually available via datameet or municipal GIS portals
+2. **City config** — create a file in `apps/web/lib/cities/` (see `bengaluru.ts` as template)
+3. **Elected rep data** — MyNeta has every state
+4. **Seed scripts** — adapt the existing scripts for your city's data sources
+
+Open a [City Request issue](https://github.com/kaun-city/kaun/issues/new?template=city-request.yml&labels=city-request) if you want to help bring Kaun to your city.
+
+---
+
 ## Contributing
+
+All code comes in via pull request to `master`. PRs require review from a maintainer before merge.
 
 - **Request your city** — open an issue using the [City Request template](https://github.com/kaun-city/kaun/issues/new?template=city-request.yml&labels=city-request)
 - **Add data** — fix ward stats, add missing corporator names, update budget figures
 - **Build features** — pick an open issue labeled `good first issue`
-- **Add a city** — city configs live in `apps/web/lib/cities/`; ward boundary GeoJSON + Supabase seed is all you need to get started
-
----
-
-## Status
-
-- [x] Leaflet map with 243 BBMP ward boundaries (PostGIS pin lookup)
-- [x] Who tab — MLA/corporator with EC affidavit data (criminal cases, asset growth, attendance, LAD utilization)
-- [x] Spend tab — BBMP budget 2025-26 by department
-- [x] Citizen tab — traffic signals + BMTC bus stops vs city average
-- [x] Reach tab — RTI draft generator (postal) + civic helplines
-- [x] Ask Kaun — GPT-4o with live DB tools (rank, compare, find any of 243 wards)
-- [x] AI ward brief — GPT-4o mini narrative, 7-day cache in Supabase
-- [x] Share button — Web Share API + per-ward dynamic OG image
-- [x] Find My Ward — geolocation with graceful denial handling
-- [x] Out-of-Bengaluru detection — city request flow via GitHub issues
-- [x] Cloudflare protection — Bot Fight Mode + WAF
-- [ ] Ward percentile rankings ("bottom 15% for signals")
-- [ ] More cities — open a request if you want yours
-- [ ] Rate limiting on AI routes (Upstash)
-- [ ] Test suite (Vitest + Playwright)
+- **Report bugs** — open an issue with steps to reproduce
 
 ---
 
