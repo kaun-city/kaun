@@ -30,26 +30,24 @@ export async function GET(req: Request) {
       }
 
       // For "all" — get demographics via RPC (same path as frontend)
-      // First try direct table, then fall back to RPC per AC
-      const { data: directStats } = await supabase
-        .from("ward_stats")
-        .select("*")
-        .order("assembly_constituency")
+      // Get unique ACs from wards table, then call ward_stats_by_ac for each
+      const { data: wardsPreload } = await supabase
+        .from("wards")
+        .select("assembly_constituency")
+        .eq("city_id", "bengaluru")
+      const uniqueACs = [...new Set((wardsPreload ?? []).map(w => w.assembly_constituency).filter(Boolean))]
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let acStatsResults: any[] = directStats ?? []
-
-      // If direct query returned nothing (RLS or table structure issue), use RPC
-      if (acStatsResults.length === 0) {
-        const { data: wardsPreload } = await supabase
-          .from("wards")
-          .select("assembly_constituency")
-          .eq("city_id", "bengaluru")
-        const uniqueACs = [...new Set((wardsPreload ?? []).map(w => w.assembly_constituency).filter(Boolean))]
-
-        for (const ac of uniqueACs) {
-          const { data } = await supabase.rpc("ward_stats_by_ac", { p_assembly_constituency: ac })
-          if (data) acStatsResults.push({ ...data, assembly_constituency: ac })
+      const acStatsResults: any[] = []
+      // Batch RPC calls in parallel groups of 5
+      for (let i = 0; i < uniqueACs.length; i += 5) {
+        const batch = uniqueACs.slice(i, i + 5)
+        const results = await Promise.all(
+          batch.map(ac => supabase.rpc("ward_stats_by_ac", { p_assembly_constituency: ac }))
+        )
+        for (let j = 0; j < results.length; j++) {
+          const { data } = results[j]
+          if (data) acStatsResults.push({ ...data, assembly_constituency: batch[j] })
         }
       }
 
