@@ -908,5 +908,110 @@
     "lon": 78.497168,
     "lat": 17.486026,
     "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 136,
+    "ward_name": "Neredmet",
+    "lon": 78.539548,
+    "lat": 17.494618,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 137,
+    "ward_name": "Vinayak Nagar",
+    "lon": 78.543154,
+    "lat": 17.465709,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 138,
+    "ward_name": "Moula Ali",
+    "lon": 78.55271,
+    "lat": 17.467261,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 139,
+    "ward_name": "East Anand Bagh",
+    "lon": 78.546632,
+    "lat": 17.453515,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 140,
+    "ward_name": "Malkajgiri",
+    "lon": 78.536771,
+    "lat": 17.459783,
+    "assembly_constituency": "Malkajgiri mandal"
+  },
+  {
+    "ward_no": 141,
+    "ward_name": "Gautham Nagar",
+    "lon": 78.52886,
+    "lat": 17.450483,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 142,
+    "ward_name": "Addagutta",
+    "lon": 78.518896,
+    "lat": 17.439131,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 143,
+    "ward_name": "Tarnaka",
+    "lon": 78.535301,
+    "lat": 17.431754,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 144,
+    "ward_name": "Mettuguda",
+    "lon": 78.518665,
+    "lat": 17.431789,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 145,
+    "ward_name": "Seethaphalmandi",
+    "lon": 78.514467,
+    "lat": 17.4245,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 146,
+    "ward_name": "Boudha Nagar",
+    "lon": 78.514395,
+    "lat": 17.415682,
+    "assembly_constituency": "Musheerabad mandal"
+  },
+  {
+    "ward_no": 147,
+    "ward_name": "Bansilapet",
+    "lon": 78.503067,
+    "lat": 17.426391,
+    "assembly_constituency": "Marredpally mandal"
+  },
+  {
+    "ward_no": 148,
+    "ward_name": "Ramgopalpet",
+    "lon": 78.487638,
+    "lat": 17.433007,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 149,
+    "ward_name": "Begumpet",
+    "lon": 78.472709,
+    "lat": 17.44185,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 150,
+    "ward_name": "Monda Market",
+    "lon": 78.504351,
+    "lat": 17.439543,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
   }
 ]

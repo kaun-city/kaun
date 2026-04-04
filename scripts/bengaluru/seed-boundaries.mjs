@@ -35,7 +35,7 @@ async function dbq(sql) {
   return JSON.parse(text)
 }
 
-const topoPath = resolve(__dirname, '../data/bengawalk-boundaries.json')
+const topoPath = resolve(__dirname, '../../data/bengaluru/bengawalk-boundaries.json')
 const topology = JSON.parse(readFileSync(topoPath, 'utf8'))
 const geojson = topojson.feature(topology, topology.objects.boundaries)
 const features = geojson.features.filter(f => TYPES_TO_SEED.has(f.properties?.id))
