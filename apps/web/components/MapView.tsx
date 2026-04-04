@@ -11,7 +11,8 @@ import { useEffect, useRef, useState, MutableRefObject } from "react"
 import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
-import { bengaluru } from "@/lib/cities"
+import { bengaluru, getCity } from "@/lib/cities"
+import type { CityConfig } from "@/lib/cities"
 
 function relativeTime(isoStr: string): string {
   const diffMs = Date.now() - new Date(isoStr).getTime()
@@ -24,10 +25,7 @@ function relativeTime(isoStr: string): string {
   return `${d}d ago`
 }
 
-// Default to Bengaluru; future: accept city prop when multi-city map is needed
-const DEFAULT_CITY = bengaluru
-const BENGALURU_CENTER: [number, number] = DEFAULT_CITY.center
-const BENGALURU_GEOJSON_URL = DEFAULT_CITY.geojsonUrl
+// City-aware: uses bengaluru as default, overridable via cityId prop
 
 // Saffron palette
 const WARD_STYLE = {
@@ -50,12 +48,17 @@ interface Props {
   panRef?: MutableRefObject<{ panTo: (lat: number, lng: number) => void } | null>
   /** Increment to refresh report markers after a new submission */
   reportRefresh?: number
+  /** City to display — defaults to bengaluru */
+  cityId?: string
   /** When true, next tap captures a report location instead of a ward lookup */
   reportPickMode?: boolean
   onReportPin?: (lat: number, lng: number) => void
 }
 
-export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin }: Props) {
+export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin, cityId }: Props) {
+  const city = getCity(cityId)
+  const CITY_CENTER: [number, number] = city.center
+  const CITY_GEOJSON_URL = city.geojsonUrl
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
@@ -256,8 +259,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
 
     import("leaflet").then((L) => {
       const map = L.map(containerRef.current!, {
-        center: BENGALURU_CENTER,
-        zoom: 12,
+        center: CITY_CENTER,
+        zoom: city.zoom,
         zoomControl: false,
         attributionControl: true,
       })
@@ -278,7 +281,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       ).addTo(map)
 
       // Load ward GeoJSON overlay
-      fetch(BENGALURU_GEOJSON_URL)
+      fetch(CITY_GEOJSON_URL)
         .then((r) => r.json())
         .then((data) => {
           geojsonRef.current = L.geoJSON(data, {

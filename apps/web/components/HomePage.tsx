@@ -8,6 +8,7 @@ import { pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
 import ReportSheet from "@/components/shared/ReportSheet"
+import { getCity } from "@/lib/cities"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -27,9 +28,9 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
       ">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-white font-semibold text-base">Not in Bengaluru?</p>
+            <p className="text-white font-semibold text-base">Outside {city.name}?</p>
             <p className="text-white/50 text-sm mt-1">
-              Kaun only covers Bengaluru right now.
+              This map covers {city.name}. Pin a location within the city.
             </p>
           </div>
           <button
@@ -83,7 +84,13 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
 
 interface WardOption { ward_no: number; ward_name: string; lat: number; lng: number }
 
-export default function HomePage() {
+interface HomePageProps {
+  cityId?: string
+  initialWard?: string
+}
+
+export default function HomePage({ cityId = "bengaluru", initialWard }: HomePageProps = {}) {
+  const city = getCity(cityId)
   const searchParams = useSearchParams()
   const [pinResult, setPinResult]     = useState<PinResult | null>(null)
   const [pinLoading, setPinLoading]   = useState(false)
@@ -150,7 +157,7 @@ export default function HomePage() {
     if (deepLinkHandled.current) return
     deepLinkHandled.current = true
 
-    const wardParam   = searchParams.get("ward")
+    const wardParam   = initialWard ?? searchParams.get("ward")
     const reportParam = searchParams.get("report")
 
     if (reportParam) {
@@ -200,10 +207,10 @@ export default function HomePage() {
             ward_name: ward.ward_name,
             assembly_constituency: ward.assembly_constituency ?? "",
             zone: ward.zone ?? "",
-            city_id: "bengaluru",
+            city_id: cityId,
             found: true,
-            lat: 12.9716,
-            lng: 77.5946,
+            lat: city.center[0],
+            lng: city.center[1],
           } as PinResult)
         })
         .catch(() => {})
@@ -430,6 +437,7 @@ export default function HomePage() {
           resizeKey={showCard ? 1 : 0}
           reportRefresh={reportRefresh}
           reportPickMode={reportPickMode}
+          cityId={cityId}
           onReportPin={(lat, lng) => {
             setReportLat(lat)
             setReportLng(lng)
