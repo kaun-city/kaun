@@ -17,17 +17,21 @@ interface PulseFact {
   url: string | null
 }
 
-// Hardcoded fallback — used when DB is empty or unreachable
+// Hardcoded fallback — city-agnostic facts used when DB is empty or unreachable
 const FALLBACK_FACTS: PulseFact[] = [
-  { severity: "red",    category: "PUBLIC MONEY",   headline: "Rs 934 Cr siphoned via 6,600 ghost sanitation workers over 10 years", source: "The News Minute", url: null },
-  { severity: "red",    category: "ROAD SAFETY",    headline: "20 pothole deaths in 2023 — worst among 18 metro cities. Zero compensated.", source: "Deccan Herald", url: null },
-  { severity: "red",    category: "ELECTED REPS",   headline: "55% of Karnataka MLAs face criminal charges. Avg assets: Rs 64 Cr.", source: "ADR / MyNeta", url: null },
-  { severity: "yellow", category: "ENVIRONMENT",    headline: "172 of 187 Bengaluru lakes fail water quality. 550 MLD untreated sewage daily.", source: "CPCB", url: null },
-  { severity: "yellow", category: "BUDGET",         headline: "Rs 2,154 Cr unspent in 2024-25. Education: only 43.7% spent.", source: "OpenCity / BBMP", url: null },
-  { severity: "red",    category: "PEDESTRIANS",    headline: "292 pedestrian deaths in 2023 — highest among 53 Indian cities.", source: "NCRB", url: null },
+  { severity: "red",    category: "ELECTED REPS",   headline: "46% of Indian MPs have declared criminal charges against them.", source: "ADR / MyNeta 2024", url: null },
+  { severity: "red",    category: "PUBLIC MONEY",   headline: "India loses an estimated Rs 1.76 lakh Cr annually to municipal corruption.", source: "Transparency International", url: null },
+  { severity: "yellow", category: "ROAD SAFETY",    headline: "1.68 lakh road deaths in India in 2022 -- one every 3 minutes.", source: "MoRTH 2023", url: null },
+  { severity: "yellow", category: "ENVIRONMENT",    headline: "Only 28% of India's urban sewage is treated before discharge.", source: "CPCB 2023", url: null },
+  { severity: "red",    category: "CIVIC BUDGET",   headline: "Average Indian city spends less than Rs 1,000 per citizen per year on civic services.", source: "RBI Municipal Finance Report", url: null },
+  { severity: "yellow", category: "ACCOUNTABILITY", headline: "Less than 5% of ward committee meetings are open to the public in most Indian cities.", source: "Janaagraha", url: null },
 ]
 
-export function CityPulse() {
+interface CityPulseProps {
+  cityId?: string
+}
+
+export function CityPulse({ cityId = "bengaluru" }: CityPulseProps) {
   const [facts, setFacts] = useState<PulseFact[]>(FALLBACK_FACTS)
   const [index, setIndex] = useState(0)
   const [dismissed, setDismissed] = useState(false)
@@ -35,7 +39,7 @@ export function CityPulse() {
 
   // Fetch from DB if available
   useEffect(() => {
-    fetchCityPulseFacts().then(dbFacts => {
+    fetchCityPulseFacts(cityId).then(dbFacts => {
       if (dbFacts.length > 0) {
         setFacts(dbFacts.map(f => ({
           severity: (f.severity === "red" ? "red" : "yellow") as "red" | "yellow",

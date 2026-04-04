@@ -6,7 +6,7 @@ export const hyderabad: CityConfig = {
   state: "Telangana",
   country: "India",
   center: [17.385, 78.4867],
-  zoom: 11,
+  zoom: 12,
   geojsonUrl:
     "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Hyderabad/ghmc-wards.geojson",
   wardAcMapUrl: "/geo/hyderabad/ward-ac-mapping.json",

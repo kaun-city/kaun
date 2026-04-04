@@ -86,18 +86,7 @@ export function WhoTab({
     <div className="px-5 py-4 space-y-4 pb-safe-content">
 
 
-      {/* GHMC administrator notice (Hyderabad) */}
-      {city.civicBody === "GHMC" && (
-        <div className="flex gap-2.5 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
-          <span className="text-yellow-400 text-base mt-0.5">!</span>
-          <div>
-            <p className="text-yellow-400 text-xs font-semibold">GHMC under administrator rule</p>
-            <p className="text-white/40 text-xs leading-snug mt-0.5">Elected corporators’ term ended in Feb 2023. GHMC has been under an administrator since then. The 2020 election results are shown as historical reference.</p>
-          </div>
-        </div>
-      )}
-
-      {/* Governance alert — skip the "No elected corporator" noise (applies to all 243 wards) */}
+      {/* Governance alert from RPC — covers GHMC admin rule, no-rep states, etc. */}
       {profile?.governance_alert && profile.governance_alert.title !== "No elected corporator" && (
         <div className="flex gap-2.5 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
           <span className="text-yellow-400 text-base mt-0.5">!</span>
@@ -272,7 +261,7 @@ export function WhoTab({
         )
       })() : null}
 
-      {/* Ward Officers — only show if data exists */}
+      {/* Ward Officers - only show if data exists */}
       {(profileLoading || (profile && (profile.officers.length > 0 || Object.keys(officerGroups).length > 0)) || corpContacts.length > 0) && (
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -306,7 +295,7 @@ export function WhoTab({
           ))
         ) : null}
 
-        {/* GBA Corporation contacts — Bengaluru only */}
+        {/* GBA Corporation contacts - Bengaluru only */}
         {city.id === "bengaluru" && corpContacts.length > 0 && corpName && (
           <div className="rounded-xl bg-white/5 p-3 space-y-2 mt-2">
             <div className="flex items-center justify-between">

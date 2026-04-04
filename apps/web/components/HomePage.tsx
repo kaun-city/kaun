@@ -351,7 +351,7 @@ export default function HomePage({ cityId = "bengaluru", initialWard }: HomePage
         </div>
 
         {/* City Pulse — accountability headlines before pin drop */}
-        {!showCard && !outOfBounds && <CityPulse />}
+        {!showCard && !outOfBounds && <CityPulse cityId={cityId} />}
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
