@@ -17,10 +17,11 @@ function isAuthorized(req: Request): boolean {
 
 // ─── RSS parsing ────────────────────────────────────────────────
 const RSS_FEEDS = [
-  { name: "Deccan Herald",   url: "https://www.deccanherald.com/bengaluru/rss" },
-  { name: "The News Minute", url: "https://www.thenewsminute.com/rss/karnataka" },
-  { name: "Citizen Matters",  url: "https://citizenmatters.in/feed" },
-  { name: "India Today BLR",  url: "https://www.indiatoday.in/rss/cities/bengaluru" },
+  { name: "Google News BBMP",  url: "https://news.google.com/rss/search?q=BBMP+bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "Google News BDA",   url: "https://news.google.com/rss/search?q=BDA+bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "Google News BWSSB", url: "https://news.google.com/rss/search?q=BWSSB+bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "The News Minute",   url: "https://www.thenewsminute.com/feed" },
+  { name: "Citizen Matters",   url: "https://citizenmatters.in/feed" },
 ]
 
 const CIVIC_KEYWORDS: Record<string, string[]> = {
