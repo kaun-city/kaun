@@ -1,4 +1,5 @@
 import { bengaluru } from "./bengaluru"
+import { hyderabad } from "./hyderabad"
 import type { CityConfig } from "./types"
 
 export type { CityConfig, CityFeatures } from "./types"
@@ -6,6 +7,7 @@ export type { CityConfig, CityFeatures } from "./types"
 /** All registered cities keyed by city_id */
 const REGISTRY: Record<string, CityConfig> = {
   bengaluru,
+  hyderabad,
 }
 
 /**
@@ -16,4 +18,4 @@ export function getCity(cityId?: string | null): CityConfig {
   return REGISTRY[cityId ?? "bengaluru"] ?? bengaluru
 }
 
-export { bengaluru }
+export { bengaluru, hyderabad }
