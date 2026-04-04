@@ -86,6 +86,17 @@ export function WhoTab({
     <div className="px-5 py-4 space-y-4 pb-safe-content">
 
 
+      {/* GHMC administrator notice (Hyderabad) */}
+      {city.civicBody === "GHMC" && (
+        <div className="flex gap-2.5 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
+          <span className="text-yellow-400 text-base mt-0.5">!</span>
+          <div>
+            <p className="text-yellow-400 text-xs font-semibold">GHMC under administrator rule</p>
+            <p className="text-white/40 text-xs leading-snug mt-0.5">Elected corporators’ term ended in Feb 2023. GHMC has been under an administrator since then. The 2020 election results are shown as historical reference.</p>
+          </div>
+        </div>
+      )}
+
       {/* Governance alert — skip the "No elected corporator" noise (applies to all 243 wards) */}
       {profile?.governance_alert && profile.governance_alert.title !== "No elected corporator" && (
         <div className="flex gap-2.5 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
@@ -101,7 +112,10 @@ export function WhoTab({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <p className="text-white/30 text-xs uppercase tracking-wider">Elected Representatives</p>
-          <FreshnessBadge label="Current term" source="GBA" />
+          <FreshnessBadge
+            label={city.id === "hyderabad" ? "2020 (historical)" : "Current term"}
+            source={city.id === "hyderabad" ? "Wikipedia" : "GBA"}
+          />
         </div>
         {profileLoading && !profile ? (
           <><SkeletonRepCard /><SkeletonRepCard /></>
@@ -140,6 +154,19 @@ export function WhoTab({
           </div>
         ) : null}
       </div>
+
+      {/* GHMC helpline (Hyderabad) */}
+      {city.helplineNumber && city.id === "hyderabad" && (
+        <div className="p-3 rounded-xl bg-white/5 flex items-center justify-between">
+          <div>
+            <p className="text-white/30 text-xs uppercase tracking-wider">GHMC Helpline</p>
+            <p className="text-white/60 text-xs mt-0.5">Report civic issues: roads, drainage, garbage</p>
+          </div>
+          <a href={`tel:${city.helplineNumber}`} className="text-[#FF9933] font-mono text-sm font-semibold hover:underline">
+            {city.helplineNumber}
+          </a>
+        </div>
+      )}
 
       {/* MLA Report Card */}
       {reportCard ? (
@@ -279,8 +306,8 @@ export function WhoTab({
           ))
         ) : null}
 
-        {/* GBA Corporation contacts */}
-        {corpContacts.length > 0 && corpName && (
+        {/* GBA Corporation contacts — Bengaluru only */}
+        {city.id === "bengaluru" && corpContacts.length > 0 && corpName && (
           <div className="rounded-xl bg-white/5 p-3 space-y-2 mt-2">
             <div className="flex items-center justify-between">
               <p className="text-white/50 text-[10px] uppercase tracking-wider">

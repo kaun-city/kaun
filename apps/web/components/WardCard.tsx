@@ -21,7 +21,7 @@ interface Props {
 
 type Tab = "who" | "spend" | "citizen" | "reach"
 
-const TABS: { id: Tab; label: string }[] = [
+const ALL_TABS: { id: Tab; label: string }[] = [
   { id: "who",     label: "Who" },
   { id: "spend",   label: "Spend" },
   { id: "citizen", label: "Citizen" },
@@ -41,9 +41,11 @@ function buildShareText(result: PinResult, ward: ReturnType<typeof useWardData>)
   } else if (report?.attendance_pct != null && report.attendance_pct < 60) {
     lines.push(`${mla?.name ?? "The MLA"} representing ${result.ward_name} attends only ${report.attendance_pct}% of assembly sessions.`)
   } else if (mla?.name) {
-    lines.push(`${mla.name} (${mla.party ?? ""}) represents ${result.ward_name} — Ward ${result.ward_no}, ${result.assembly_constituency}.`)
+    const loc = result.assembly_constituency ? `${result.ward_name}, ${result.assembly_constituency}` : result.ward_name
+    lines.push(`${mla.name} (${mla.party ?? ""}) represents ${loc}.`)
   } else {
-    lines.push(`Ward ${result.ward_no} — ${result.ward_name}, Bengaluru.`)
+    const cityName = ward.city?.name ?? "the city"
+    lines.push(`Ward ${result.ward_no} — ${result.ward_name}, ${cityName}.`)
   }
 
   lines.push(`Find out who is accountable for your ward: kaun.city`)
@@ -53,6 +55,15 @@ function buildShareText(result: PinResult, ward: ReturnType<typeof useWardData>)
 export default function WardCard({ result, loading, onClose }: Props) {
   const ward = useWardData(result)
   const [copied, setCopied] = useState(false)
+
+  // Show only tabs that have relevant features for this city
+  const city = ward.city
+  const TABS = ALL_TABS.filter(t => {
+    if (t.id === "spend")   return city.features.budget || city.features.workOrders || city.features.tradeLicenses || city.features.wardSpend || city.features.propertyTax
+    if (t.id === "citizen") return city.features.grievances || city.features.wardPotholes || city.features.buzz || city.features.wardAmenities || city.features.wardWaterQuality
+    if (t.id === "reach")   return city.features.sakala || city.features.grievances
+    return true // WHO always shown
+  })
 
   const handleShare = useCallback(async () => {
     if (!result?.found) return
@@ -125,20 +136,22 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 </>
               ) : (
                 <>
-                  Ward {result.ward_no}
+                  {ward.city.civicBody ?? "Ward"} &middot; Ward {result.ward_no}
                   {result.zone && <> &middot; {result.zone}</>}
                   {result.assembly_constituency && <> &middot; {result.assembly_constituency}</>}
                 </>
               )}
             </p>
-            {/* Ward Grade — composite score visible at a glance */}
-            <WardGrade
-              reportCard={ward.reportCard}
-              committeeMeetings={ward.committeeMeetings}
-              infraStats={ward.infraStats}
-              potholes={ward.potholes}
-              wardContractors={ward.wardContractors ?? []}
-            />
+            {/* Ward Grade — composite score visible at a glance (only when data exists) */}
+            {(ward.reportCard || ward.committeeMeetings || ward.infraStats || ward.potholes || (ward.wardContractors?.length ?? 0) > 0) && (
+              <WardGrade
+                reportCard={ward.reportCard}
+                committeeMeetings={ward.committeeMeetings}
+                infraStats={ward.infraStats}
+                potholes={ward.potholes}
+                wardContractors={ward.wardContractors ?? []}
+              />
+            )}
           </div>
         ) : (
           <div className="flex-1 min-w-0">
@@ -179,8 +192,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
         </button>
       </div>
 
-      {/* Ward Headline — most alarming finding, above tabs */}
-      {!loading && result?.found && (
+      {/* Ward Headline — most alarming finding, above tabs (only if any data exists) */}
+      {!loading && result?.found && (ward.reportCard || ward.committeeMeetings || ward.infraStats || (ward.wardContractors?.length ?? 0) > 0) && (
         <WardHeadline
           reportCard={ward.reportCard}
           committeeMeetings={ward.committeeMeetings}
