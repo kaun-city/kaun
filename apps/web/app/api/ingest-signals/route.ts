@@ -487,7 +487,8 @@ async function moderatePendingReports(
       let ai_person: string | null = null
       let ai_party: string | null = null
       let ai_confidence = 0
-      let newStatus = "approved"
+      // Default to pending — must pass moderation checks to become approved
+      let newStatus = "pending"
 
       // Text moderation on description
       if (report.description) {
@@ -534,7 +535,7 @@ async function moderatePendingReports(
             if (path) await supabase.storage.from("report-photos").move(path, path.replace("pending/", "approved/"))
             report.photo_url = report.photo_url.replace("pending/", "approved/")
           }
-        } catch { newStatus = "approved" }
+        } catch { newStatus = "pending" }
       } else if (report.description) {
         // Text-only — extract politician name
         try {
@@ -550,6 +551,7 @@ async function moderatePendingReports(
           ai_party  = parsed.politician_party ?? null
           ai_label  = parsed.summary ?? report.description
           ai_confidence = ai_person ? 75 : 50
+          newStatus = "approved" // passed text moderation above
         } catch { ai_label = report.description }
       }
 

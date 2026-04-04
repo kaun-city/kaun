@@ -32,17 +32,11 @@ export async function POST(req: Request) {
       if (!current) return Response.json({ error: "Report not found" }, { status: 404 })
 
       const newUpvotes = (current.upvotes ?? 0) + 1
-      const newStatus = newUpvotes >= 2 ? "approved" : current.status
-
+      // Upvotes only boost priority — never auto-approve.
+      // Approval happens only via ingest-signals moderation cron.
       const { data: updated } = await supabase
         .from("ward_reports")
-        .update({
-          upvotes: newUpvotes,
-          status: newStatus,
-          ...(newStatus === "approved" && current.status !== "approved"
-            ? { moderated_at: new Date().toISOString() }
-            : {}),
-        })
+        .update({ upvotes: newUpvotes })
         .eq("id", id)
         .select("id, upvotes, status")
         .single()
