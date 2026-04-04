@@ -87,7 +87,7 @@ export default function AdminPage() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center overflow-y-auto p-4">
         <div className="w-80 bg-zinc-900 border border-white/10 rounded-2xl p-6">
           <p className="text-white font-semibold mb-1">KAUN? Admin</p>
           <p className="text-white/40 text-sm mb-4">Enter your admin password</p>
@@ -113,8 +113,8 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-zinc-950 text-white overflow-y-auto">
+      <div className="max-w-3xl mx-auto px-4 py-8 pb-24">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-xl font-bold">KAUN? Admin</h1>
