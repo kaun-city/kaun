@@ -11,6 +11,9 @@ export const bengaluru: CityConfig = {
     "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson",
   subreddit: "bangalore",
   budgetYear: "2025-26",
+  clientSidePinLookup: false,
+  civicBody: "BBMP",
+  helplineNumber: "1533",
   sakalaNote: "Bengaluru Urban ranks 31st of 32 districts statewide",
   features: {
     mlaLadFunds:           true,

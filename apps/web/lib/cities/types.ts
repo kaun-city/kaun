@@ -32,6 +32,15 @@ export interface CityConfig {
   budgetYear: string
   /** Optional note shown in Stats/Sakala section */
   sakalaNote?: string
+  /**
+   * If true: pin lookup uses client-side point-in-polygon against geojsonUrl.
+   * If false (default): uses the PostGIS pin_lookup RPC in Supabase.
+   */
+  clientSidePinLookup?: boolean
+  /** Civic body name (e.g. 'BBMP', 'GHMC') */
+  civicBody?: string
+  /** Primary complaint helpline number */
+  helplineNumber?: string
   /** Feature flags - gates data fetches and UI sections */
   features: CityFeatures
 }

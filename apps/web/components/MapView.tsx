@@ -11,6 +11,7 @@ import { useEffect, useRef, useState, MutableRefObject } from "react"
 import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
+import { clientPinLookup } from "@/lib/geo/cityPinLookup"
 import { bengaluru, getCity } from "@/lib/cities"
 import type { CityConfig } from "@/lib/cities"
 
@@ -387,7 +388,10 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
 
         onPinRef.current(null, lat, lng) // signal loading state
 
-        const result = await pinLookup(lat, lng)
+        // Route to client-side or PostGIS lookup based on city config
+        const result = city.clientSidePinLookup
+          ? await clientPinLookup(lat, lng, city)
+          : await pinLookup(lat, lng)
         onPinRef.current(result, lat, lng)
       })
     })

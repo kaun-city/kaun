@@ -12,6 +12,9 @@ export const hyderabad: CityConfig = {
   subreddit: "hyderabad",
   budgetYear: "2024-25",
   sakalaNote: "Telangana has its own citizen services portal (meeseva.telangana.gov.in)",
+  clientSidePinLookup: true,
+  civicBody: "GHMC",
+  helplineNumber: "040-21111111",
   features: {
     // Available
     budget:                true,   // GHMC budget PDFs via opencity.in
