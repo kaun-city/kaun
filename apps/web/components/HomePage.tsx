@@ -15,7 +15,7 @@ const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 const CITY_REQUEST_URL =
   "https://github.com/kaun-city/kaun/issues/new?template=city-request.yml&labels=city-request"
 
-function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
+function OutOfBoundsCard({ onClose, cityName }: { onClose: () => void; cityName: string }) {
   return (
     <div className="
       fixed inset-x-0 bottom-0 z-[1000]
@@ -28,9 +28,9 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
       ">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-white font-semibold text-base">Outside {city.name}?</p>
+            <p className="text-white font-semibold text-base">Outside {cityName}?</p>
             <p className="text-white/50 text-sm mt-1">
-              This map covers {city.name}. Pin a location within the city.
+              This map covers {cityName}. Pin a location within the city.
             </p>
           </div>
           <button
@@ -452,7 +452,7 @@ export default function HomePage({ cityId = "bengaluru", initialWard }: HomePage
       )}
 
       {outOfBounds && (
-        <OutOfBoundsCard onClose={handleClose} />
+        <OutOfBoundsCard onClose={handleClose} cityName={city.name} />
       )}
 
       {showReport && reportLat !== null && reportLng !== null && (
