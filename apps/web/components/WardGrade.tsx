@@ -96,6 +96,71 @@ function scoreColor(score: number) {
   return { bar: "bg-red-400", text: "text-red-400" }
 }
 
+const INFO_TEXT = `Accountability Score (0-100)
+
+A number — not a grade — based on publicly available data about your ward's MLA and BBMP contractors.
+
+What's counted:
+- MLA assembly attendance
+- LAD fund utilisation
+- Declared criminal cases (from election affidavits)
+- Contractors with blacklist flags on ward tenders
+
+What's not counted:
+- Road or drainage quality (ward-level delivery data is not reliably public)
+- Corporator performance (not yet available for all wards)
+
+Sources: Myneta.info, Karnataka assembly records, KPPP tender portal.
+
+This score reflects available data only and is not a comprehensive assessment of the ward.`
+
+function InfoTip() {
+  const [show, setShow] = useState(false)
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setShow(v => !v)}
+        className="w-4 h-4 rounded-full border border-white/20 text-white/30 hover:text-white/60 hover:border-white/40 text-[10px] font-bold leading-none flex items-center justify-center transition-colors"
+        aria-label="How this score is calculated"
+      >
+        i
+      </button>
+      {show && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setShow(false)} />
+          <div className="absolute right-0 top-6 z-50 w-72 rounded-xl bg-zinc-900 border border-white/15 shadow-2xl p-4 text-left">
+            <div className="flex items-start justify-between mb-2">
+              <p className="text-white/80 text-[12px] font-semibold">How this score works</p>
+              <button onClick={() => setShow(false)} className="text-white/30 hover:text-white/60 text-sm ml-2">&times;</button>
+            </div>
+            <div className="space-y-2 text-[11px] text-white/50 leading-relaxed">
+              <p>A number from 0 to 100 based on publicly available data about your ward&apos;s MLA and BBMP contractors. Not a grade &mdash; not a ranking.</p>
+              <div>
+                <p className="text-white/70 font-medium mb-1">What&apos;s counted</p>
+                <ul className="space-y-0.5 list-disc list-inside">
+                  <li>MLA assembly attendance</li>
+                  <li>LAD constituency fund utilisation</li>
+                  <li>Declared criminal cases (election affidavits)</li>
+                  <li>Contractors with blacklist flags on ward tenders</li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-white/70 font-medium mb-1">What&apos;s not counted</p>
+                <ul className="space-y-0.5 list-disc list-inside">
+                  <li>Road or drainage quality</li>
+                  <li>Corporator performance</li>
+                  <li>Service delivery or complaints resolved</li>
+                </ul>
+              </div>
+              <p className="text-white/30 text-[10px] pt-1 border-t border-white/10">Sources: Myneta.info, Karnataka assembly records, KPPP tender portal. Score reflects available data only.</p>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 export function WardGrade(props: Props) {
   const [open, setOpen] = useState(false)
   const result = computeScore(props)
@@ -107,19 +172,21 @@ export function WardGrade(props: Props) {
   return (
     <div className="mt-1">
       {/* Compact bar — always visible */}
-      <button
-        onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-2 group w-full text-left"
-        title="Tap to see accountability score breakdown"
-      >
-        <div className="h-1.5 w-20 rounded-full bg-white/10 overflow-hidden shrink-0">
-          <div className={`h-full rounded-full transition-all ${bar}`} style={{ width: `${score}%` }} />
-        </div>
-        <span className={`text-[11px] font-semibold ${text}`}>{score}<span className="text-white/30 font-normal">/100</span></span>
-        <span className="text-white/20 text-[10px] group-hover:text-white/40 transition-colors">
-          accountability {open ? "▲" : "▼"}
-        </span>
-      </button>
+      <div className="flex items-center gap-1.5">
+        <button
+          onClick={() => setOpen(v => !v)}
+          className="flex items-center gap-2 group flex-1 text-left"
+        >
+          <div className="h-1.5 w-20 rounded-full bg-white/10 overflow-hidden shrink-0">
+            <div className={`h-full rounded-full transition-all ${bar}`} style={{ width: `${score}%` }} />
+          </div>
+          <span className={`text-[11px] font-semibold ${text}`}>{score}<span className="text-white/30 font-normal">/100</span></span>
+          <span className="text-white/20 text-[10px] group-hover:text-white/40 transition-colors">
+            accountability {open ? "▲" : "▼"}
+          </span>
+        </button>
+        <InfoTip />
+      </div>
 
       {/* Expanded breakdown */}
       {open && (

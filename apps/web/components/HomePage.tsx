@@ -239,10 +239,18 @@ export default function HomePage() {
       <div className="relative flex-1 min-w-0 h-full transition-all duration-300">
 
         {/* Wordmark */}
-        <div className="absolute top-4 left-4 z-[900] select-none pointer-events-none">
-          <span className="text-white font-bold text-xl tracking-tight">
+        <div className="absolute top-4 left-4 z-[900] select-none">
+          <span className="text-white font-bold text-xl tracking-tight pointer-events-none">
             KAUN<span className="text-[#FF9933]">?</span>
           </span>
+          <div>
+            <a
+              href="/how-it-works"
+              className="text-white/25 text-[10px] hover:text-white/50 transition-colors tracking-wide"
+            >
+              how it works
+            </a>
+          </div>
         </div>
 
         {/* City Pulse — accountability headlines before pin drop */}
