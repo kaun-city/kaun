@@ -1,0 +1,752 @@
+[
+  {
+    "ward_no": 1,
+    "ward_name": "Kapra",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 2,
+    "ward_name": "Dr A S Rao Nagar",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 3,
+    "ward_name": "Cherlapally",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 4,
+    "ward_name": "Meerpet HB Colony",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 5,
+    "ward_name": "Mallapur",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 6,
+    "ward_name": "Nacharam",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 7,
+    "ward_name": "Chilka Nagar",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 8,
+    "ward_name": "Habsiguda",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 9,
+    "ward_name": "Ramanthapur",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 10,
+    "ward_name": "Uppal",
+    "assembly_constituency": "Uppal"
+  },
+  {
+    "ward_no": 11,
+    "ward_name": "Nagole",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 12,
+    "ward_name": "Mansoorabad",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 13,
+    "ward_name": "Hayaathnagar",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 14,
+    "ward_name": "BN Reddy Nagar",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 15,
+    "ward_name": "Vanasthalipuram",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 16,
+    "ward_name": "Hasthinapuram",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 17,
+    "ward_name": "Champapet",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 18,
+    "ward_name": "Lingojiguda",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 19,
+    "ward_name": "Saroornagar",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 20,
+    "ward_name": "RK Puram",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 21,
+    "ward_name": "Kothapet",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 22,
+    "ward_name": "Chaitanyapuri",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 23,
+    "ward_name": "Gaddiannaram",
+    "assembly_constituency": "LB Nagar"
+  },
+  {
+    "ward_no": 24,
+    "ward_name": "Saidabad",
+    "assembly_constituency": "Malakpet"
+  },
+  {
+    "ward_no": 25,
+    "ward_name": "Moosarambagh",
+    "assembly_constituency": "Malakpet"
+  },
+  {
+    "ward_no": 26,
+    "ward_name": "Old Malakpet",
+    "assembly_constituency": "Malakpet"
+  },
+  {
+    "ward_no": 27,
+    "ward_name": "Akbarbagh",
+    "assembly_constituency": "Malakpet"
+  },
+  {
+    "ward_no": 28,
+    "ward_name": "Azampura",
+    "assembly_constituency": "Malakpet"
+  },
+  {
+    "ward_no": 29,
+    "ward_name": "Chavni",
+    "assembly_constituency": "Malakpet"
+  },
+  {
+    "ward_no": 30,
+    "ward_name": "Dabeerpura",
+    "assembly_constituency": "Malakpet"
+  },
+  {
+    "ward_no": 31,
+    "ward_name": "Rein Bazar",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 32,
+    "ward_name": "Pathergatti",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 33,
+    "ward_name": "Moghalpura",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 34,
+    "ward_name": "Talab Chanchalam",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 35,
+    "ward_name": "Gowlipura",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 36,
+    "ward_name": "Lalithabagh",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 37,
+    "ward_name": "Kurmaguda",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 38,
+    "ward_name": "IS Sadan",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 39,
+    "ward_name": "Santoshnagar",
+    "assembly_constituency": "Charminar"
+  },
+  {
+    "ward_no": 40,
+    "ward_name": "Riyasath Nagar",
+    "assembly_constituency": "Charminar"
+  },
+  {
+    "ward_no": 41,
+    "ward_name": "Kanchanbagh",
+    "assembly_constituency": "Charminar"
+  },
+  {
+    "ward_no": 42,
+    "ward_name": "Barkas",
+    "assembly_constituency": "Chandrayangutta"
+  },
+  {
+    "ward_no": 43,
+    "ward_name": "Chandrayangutta",
+    "assembly_constituency": "Chandrayangutta"
+  },
+  {
+    "ward_no": 44,
+    "ward_name": "Uppuguda",
+    "assembly_constituency": "Chandrayangutta"
+  },
+  {
+    "ward_no": 45,
+    "ward_name": "Jangammet",
+    "assembly_constituency": "Chandrayangutta"
+  },
+  {
+    "ward_no": 46,
+    "ward_name": "Falaknuma",
+    "assembly_constituency": "Chandrayangutta"
+  },
+  {
+    "ward_no": 47,
+    "ward_name": "Nawab Saheb Kunta",
+    "assembly_constituency": "Chandrayangutta"
+  },
+  {
+    "ward_no": 48,
+    "ward_name": "Shali Banda",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 49,
+    "ward_name": "Ghansi Bazar",
+    "assembly_constituency": "Bahadurpura"
+  },
+  {
+    "ward_no": 50,
+    "ward_name": "Begum Bazar",
+    "assembly_constituency": "Goshamahal"
+  },
+  {
+    "ward_no": 51,
+    "ward_name": "Goshamahal",
+    "assembly_constituency": "Goshamahal"
+  },
+  {
+    "ward_no": 52,
+    "ward_name": "Puranapool",
+    "assembly_constituency": "Charminar"
+  },
+  {
+    "ward_no": 53,
+    "ward_name": "Doodbowli",
+    "assembly_constituency": "Charminar"
+  },
+  {
+    "ward_no": 54,
+    "ward_name": "Jahanuma",
+    "assembly_constituency": "Charminar"
+  },
+  {
+    "ward_no": 55,
+    "ward_name": "Ramanastpura",
+    "assembly_constituency": "Charminar"
+  },
+  {
+    "ward_no": 56,
+    "ward_name": "Kishanbagh",
+    "assembly_constituency": "Charminar"
+  },
+  {
+    "ward_no": 57,
+    "ward_name": "Suleman Nagar",
+    "assembly_constituency": "Yakutpura"
+  },
+  {
+    "ward_no": 58,
+    "ward_name": "Shastripuram",
+    "assembly_constituency": "Yakutpura"
+  },
+  {
+    "ward_no": 59,
+    "ward_name": "Mylardevpally",
+    "assembly_constituency": "Chandrayangutta"
+  },
+  {
+    "ward_no": 60,
+    "ward_name": "Rajendra Nagar",
+    "assembly_constituency": "Chandrayangutta"
+  },
+  {
+    "ward_no": 61,
+    "ward_name": "Attapur",
+    "assembly_constituency": "Chandrayangutta"
+  },
+  {
+    "ward_no": 62,
+    "ward_name": "Ziaguda",
+    "assembly_constituency": "Goshamahal"
+  },
+  {
+    "ward_no": 63,
+    "ward_name": "Manghalhat",
+    "assembly_constituency": "Goshamahal"
+  },
+  {
+    "ward_no": 64,
+    "ward_name": "Dattathreyanagar",
+    "assembly_constituency": "Goshamahal"
+  },
+  {
+    "ward_no": 65,
+    "ward_name": "Karwan",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 66,
+    "ward_name": "Lunger House",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 67,
+    "ward_name": "Golkonda",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 68,
+    "ward_name": "Tolichowki",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 69,
+    "ward_name": "Nanalnagar",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 70,
+    "ward_name": "Mehdipatnam",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 71,
+    "ward_name": "Gudimalkapur",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 72,
+    "ward_name": "Asif Nagar",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 73,
+    "ward_name": "Vijayanagar Colony",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 74,
+    "ward_name": "Ahmed Nagar",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 75,
+    "ward_name": "Red Hills",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 76,
+    "ward_name": "Mallepally",
+    "assembly_constituency": "Karwan"
+  },
+  {
+    "ward_no": 77,
+    "ward_name": "Jambagh",
+    "assembly_constituency": "Nampally"
+  },
+  {
+    "ward_no": 78,
+    "ward_name": "Gunfoundry",
+    "assembly_constituency": "Nampally"
+  },
+  {
+    "ward_no": 79,
+    "ward_name": "Himayathnagar",
+    "assembly_constituency": "Nampally"
+  },
+  {
+    "ward_no": 80,
+    "ward_name": "Kachiguda",
+    "assembly_constituency": "Nampally"
+  },
+  {
+    "ward_no": 81,
+    "ward_name": "Nallakunta",
+    "assembly_constituency": "Amberpet"
+  },
+  {
+    "ward_no": 82,
+    "ward_name": "Golnaka",
+    "assembly_constituency": "Amberpet"
+  },
+  {
+    "ward_no": 83,
+    "ward_name": "Amberpet",
+    "assembly_constituency": "Amberpet"
+  },
+  {
+    "ward_no": 84,
+    "ward_name": "Bagh Amberpet",
+    "assembly_constituency": "Amberpet"
+  },
+  {
+    "ward_no": 85,
+    "ward_name": "Adikmet",
+    "assembly_constituency": "Amberpet"
+  },
+  {
+    "ward_no": 86,
+    "ward_name": "Musheerabad",
+    "assembly_constituency": "Musheerabad"
+  },
+  {
+    "ward_no": 87,
+    "ward_name": "Ramnagar",
+    "assembly_constituency": "Musheerabad"
+  },
+  {
+    "ward_no": 88,
+    "ward_name": "Bholakpur",
+    "assembly_constituency": "Musheerabad"
+  },
+  {
+    "ward_no": 89,
+    "ward_name": "Gandhinagar",
+    "assembly_constituency": "Musheerabad"
+  },
+  {
+    "ward_no": 90,
+    "ward_name": "Kavadiguda",
+    "assembly_constituency": "Musheerabad"
+  },
+  {
+    "ward_no": 91,
+    "ward_name": "Khairtabad",
+    "assembly_constituency": "Khairatabad"
+  },
+  {
+    "ward_no": 92,
+    "ward_name": "Venkateshwara Colony",
+    "assembly_constituency": "Khairatabad"
+  },
+  {
+    "ward_no": 93,
+    "ward_name": "Banjara Hills",
+    "assembly_constituency": "Khairatabad"
+  },
+  {
+    "ward_no": 94,
+    "ward_name": "Shaikhpet",
+    "assembly_constituency": "Khairatabad"
+  },
+  {
+    "ward_no": 95,
+    "ward_name": "Jubilee Hills",
+    "assembly_constituency": "Khairatabad"
+  },
+  {
+    "ward_no": 96,
+    "ward_name": "Yousufguda",
+    "assembly_constituency": "Khairatabad"
+  },
+  {
+    "ward_no": 97,
+    "ward_name": "Somajiguda",
+    "assembly_constituency": "Khairatabad"
+  },
+  {
+    "ward_no": 98,
+    "ward_name": "Ameerpet",
+    "assembly_constituency": "Jubilee Hills"
+  },
+  {
+    "ward_no": 99,
+    "ward_name": "Vengal Rao Nagar",
+    "assembly_constituency": "Jubilee Hills"
+  },
+  {
+    "ward_no": 100,
+    "ward_name": "Sanathnagar",
+    "assembly_constituency": "Jubilee Hills"
+  },
+  {
+    "ward_no": 101,
+    "ward_name": "Erragadda",
+    "assembly_constituency": "Sanathnagar"
+  },
+  {
+    "ward_no": 102,
+    "ward_name": "Rahmath Nagar",
+    "assembly_constituency": "Sanathnagar"
+  },
+  {
+    "ward_no": 103,
+    "ward_name": "Borabanda",
+    "assembly_constituency": "Sanathnagar"
+  },
+  {
+    "ward_no": 104,
+    "ward_name": "Kondapur",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 105,
+    "ward_name": "Gachibowli",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 106,
+    "ward_name": "Serilingampally",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 107,
+    "ward_name": "Madhapur",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 108,
+    "ward_name": "Miyapur",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 109,
+    "ward_name": "Hafeezpet",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 110,
+    "ward_name": "Chanda Nagar",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 111,
+    "ward_name": "Bharathi Nagar",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 112,
+    "ward_name": "Ramachandrapuram",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 113,
+    "ward_name": "Patancheru",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 114,
+    "ward_name": "KPHB Colony",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 115,
+    "ward_name": "Balaji Nagar",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 116,
+    "ward_name": "Allapur",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 117,
+    "ward_name": "Moosapet",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 118,
+    "ward_name": "Fathe Nagar",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 119,
+    "ward_name": "Old Bowenpally",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 120,
+    "ward_name": "Bala Nagar",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 121,
+    "ward_name": "Kukatpally",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 122,
+    "ward_name": "VV Nagar Colony",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 123,
+    "ward_name": "Hyder Nagar",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 124,
+    "ward_name": "Allwyn Colony",
+    "assembly_constituency": "Kukatpally"
+  },
+  {
+    "ward_no": 125,
+    "ward_name": "Gajula Ramaram",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 126,
+    "ward_name": "Jagadgirigutta",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 127,
+    "ward_name": "Rangareddy Nagar",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 128,
+    "ward_name": "Chintal",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 129,
+    "ward_name": "Suraram",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 130,
+    "ward_name": "Subhash Nagar",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 131,
+    "ward_name": "Quthbullapur",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 132,
+    "ward_name": "Jeedimetla",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 133,
+    "ward_name": "Macha Bollaram",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 134,
+    "ward_name": "Alwal",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 135,
+    "ward_name": "Venkatapuram",
+    "assembly_constituency": "Quthbullapur"
+  },
+  {
+    "ward_no": 136,
+    "ward_name": "Neredmet",
+    "assembly_constituency": "Malkajgiri"
+  },
+  {
+    "ward_no": 137,
+    "ward_name": "Vinayak Nagar",
+    "assembly_constituency": "Malkajgiri"
+  },
+  {
+    "ward_no": 138,
+    "ward_name": "Moula Ali",
+    "assembly_constituency": "Malkajgiri"
+  },
+  {
+    "ward_no": 139,
+    "ward_name": "East Anandbagh",
+    "assembly_constituency": "Malkajgiri"
+  },
+  {
+    "ward_no": 140,
+    "ward_name": "Malkajgiri",
+    "assembly_constituency": "Malkajgiri"
+  },
+  {
+    "ward_no": 141,
+    "ward_name": "Gautham Nagar",
+    "assembly_constituency": "Malkajgiri"
+  },
+  {
+    "ward_no": 142,
+    "ward_name": "Addagutta",
+    "assembly_constituency": "Secunderabad"
+  },
+  {
+    "ward_no": 143,
+    "ward_name": "Tarnaka",
+    "assembly_constituency": "Secunderabad"
+  },
+  {
+    "ward_no": 144,
+    "ward_name": "Mettuguda",
+    "assembly_constituency": "Secunderabad"
+  },
+  {
+    "ward_no": 145,
+    "ward_name": "Sitaphalmandi",
+    "assembly_constituency": "Secunderabad"
+  },
+  {
+    "ward_no": 146,
+    "ward_name": "Boudha Nagar",
+    "assembly_constituency": "Secunderabad"
+  },
+  {
+    "ward_no": 147,
+    "ward_name": "Bansilalpet",
+    "assembly_constituency": "Secunderabad"
+  },
+  {
+    "ward_no": 148,
+    "ward_name": "Ramgopalpet",
+    "assembly_constituency": "Secunderabad"
+  },
+  {
+    "ward_no": 149,
+    "ward_name": "Begumpet",
+    "assembly_constituency": "Secunderabad"
+  },
+  {
+    "ward_no": 150,
+    "ward_name": "Monda Market",
+    "assembly_constituency": "Secunderabad"
+  }
+]

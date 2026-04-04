@@ -13,6 +13,24 @@ import type { CityConfig } from "@/lib/cities"
 // Cache loaded GeoJSON per city to avoid re-fetching on every pin drop
 const geojsonCache: Record<string, Feature<Polygon | MultiPolygon, GeoJsonProperties>[]> = {}
 
+// Cache ward -> AC mapping per city
+const acMapCache: Record<string, Record<number, string>> = {}
+
+async function loadAcMap(city: CityConfig): Promise<Record<number, string>> {
+  if (acMapCache[city.id]) return acMapCache[city.id]
+  if (!city.wardAcMapUrl) return {}
+  try {
+    const res = await fetch(city.wardAcMapUrl)
+    const rows: { ward_no: number; assembly_constituency: string }[] = await res.json()
+    const map: Record<number, string> = {}
+    for (const r of rows) map[r.ward_no] = r.assembly_constituency
+    acMapCache[city.id] = map
+    return map
+  } catch {
+    return {}
+  }
+}
+
 async function loadFeatures(geojsonUrl: string, cityId: string) {
   if (geojsonCache[cityId]) return geojsonCache[cityId]
   const res = await fetch(geojsonUrl)
@@ -80,13 +98,15 @@ export async function clientPinLookup(
 
       if (booleanPointInPolygon(pt, feature as Feature<Polygon | MultiPolygon>)) {
         const { ward_no, ward_name, zone, assembly_constituency } = parseWardFromFeature(feature)
+        const acMap = await loadAcMap(city)
+        const resolvedAc = assembly_constituency ?? (ward_no ? (acMap[ward_no] ?? null) : null)
         return {
           found: true,
           city_id: city.id,
           ward_no: ward_no ?? 0,
           ward_name: ward_name ?? "",
           zone,
-          assembly_constituency,
+          assembly_constituency: resolvedAc,
           // GBA fields not applicable for non-Bengaluru cities
           gba_ward_no: null,
           gba_ward_name: null,

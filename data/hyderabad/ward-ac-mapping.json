@@ -1,0 +1,912 @@
+[
+  {
+    "ward_no": 1,
+    "ward_name": "Kapra",
+    "lon": 78.556134,
+    "lat": 17.495956,
+    "assembly_constituency": "Kapra mandal"
+  },
+  {
+    "ward_no": 2,
+    "ward_name": "Dr A S Rao Nagar",
+    "lon": 78.568694,
+    "lat": 17.480058,
+    "assembly_constituency": "Kapra mandal"
+  },
+  {
+    "ward_no": 5,
+    "ward_name": "Mallapur",
+    "lon": 78.571259,
+    "lat": 17.44495,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 6,
+    "ward_name": "Nacharam",
+    "lon": 78.553945,
+    "lat": 17.4278,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 7,
+    "ward_name": "Chilka Nagar",
+    "lon": 78.558596,
+    "lat": 17.413214,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 8,
+    "ward_name": "Habsiguda",
+    "lon": 78.53639,
+    "lat": 17.399766,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 9,
+    "ward_name": "Ramanthapur",
+    "lon": 78.537125,
+    "lat": 17.388623,
+    "assembly_constituency": "Uppal mandal"
+  },
+  {
+    "ward_no": 10,
+    "ward_name": "Uppal",
+    "lon": 78.560076,
+    "lat": 17.396315,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 12,
+    "ward_name": "Mansoorabad",
+    "lon": 78.582723,
+    "lat": 17.343299,
+    "assembly_constituency": "Hayathnagar mandal"
+  },
+  {
+    "ward_no": 14,
+    "ward_name": "BN Reddy Nagar",
+    "lon": 78.570856,
+    "lat": 17.319426,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 15,
+    "ward_name": "Vanasthalipuram",
+    "lon": 78.559108,
+    "lat": 17.335245,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 16,
+    "ward_name": "Hasthinapuram",
+    "lon": 78.528418,
+    "lat": 17.330075,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 17,
+    "ward_name": "Champapet",
+    "lon": 78.523699,
+    "lat": 17.343846,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 18,
+    "ward_name": "Lingojiguda",
+    "lon": 78.539064,
+    "lat": 17.349748,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 19,
+    "ward_name": "Saroornagar",
+    "lon": 78.538988,
+    "lat": 17.362311,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 20,
+    "ward_name": "RK Puram",
+    "lon": 78.550067,
+    "lat": 17.360821,
+    "assembly_constituency": "Saroornagar mandal"
+  },
+  {
+    "ward_no": 21,
+    "ward_name": "Kothapet",
+    "lon": 78.548916,
+    "lat": 17.369707,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 22,
+    "ward_name": "Chaitanyapuri",
+    "lon": 78.535098,
+    "lat": 17.373966,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 23,
+    "ward_name": "Gaddiannaram",
+    "lon": 78.52917,
+    "lat": 17.363273,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 24,
+    "ward_name": "Saidabad",
+    "lon": 78.514659,
+    "lat": 17.362564,
+    "assembly_constituency": "Saidabad mandal"
+  },
+  {
+    "ward_no": 25,
+    "ward_name": "Moosarambagh",
+    "lon": 78.518236,
+    "lat": 17.372475,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 26,
+    "ward_name": "Old Malakpet",
+    "lon": 78.507031,
+    "lat": 17.379135,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 27,
+    "ward_name": "Akbarbagh",
+    "lon": 78.504134,
+    "lat": 17.368907,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 28,
+    "ward_name": "Azampura",
+    "lon": 78.492466,
+    "lat": 17.373021,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 29,
+    "ward_name": "Chawni",
+    "lon": 78.497416,
+    "lat": 17.365113,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 30,
+    "ward_name": "Dabeerpura",
+    "lon": 78.486385,
+    "lat": 17.369803,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 32,
+    "ward_name": "Patthergatti",
+    "lon": 78.481376,
+    "lat": 17.36472,
+    "assembly_constituency": "Charminar mandal"
+  },
+  {
+    "ward_no": 33,
+    "ward_name": "Moghalpura",
+    "lon": 78.477564,
+    "lat": 17.35309,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 34,
+    "ward_name": "Talab Chanchalam",
+    "lon": 78.486196,
+    "lat": 17.351973,
+    "assembly_constituency": "Charminar mandal"
+  },
+  {
+    "ward_no": 35,
+    "ward_name": "Gowlipura",
+    "lon": 78.478148,
+    "lat": 17.345654,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 36,
+    "ward_name": "Lalithabagh",
+    "lon": 78.490853,
+    "lat": 17.346372,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 37,
+    "ward_name": "Rein Bazar",
+    "lon": 78.490168,
+    "lat": 17.358185,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 37,
+    "ward_name": "Kurmaguda",
+    "lon": 78.497895,
+    "lat": 17.355352,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 38,
+    "ward_name": "IS Sadan",
+    "lon": 78.516723,
+    "lat": 17.351764,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 39,
+    "ward_name": "Santhosh Nagar",
+    "lon": 78.500969,
+    "lat": 17.349964,
+    "assembly_constituency": "Bandlaguda mandal"
+  },
+  {
+    "ward_no": 40,
+    "ward_name": "Riyasat Nagar",
+    "lon": 78.496098,
+    "lat": 17.342821,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 41,
+    "ward_name": "Kanchanbagh",
+    "lon": 78.495665,
+    "lat": 17.324693,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 42,
+    "ward_name": "Barkas",
+    "lon": 78.474863,
+    "lat": 17.317175,
+    "assembly_constituency": "Bandlaguda mandal"
+  },
+  {
+    "ward_no": 43,
+    "ward_name": "Chandrayangutta",
+    "lon": 78.47952,
+    "lat": 17.322182,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 44,
+    "ward_name": "Uppuguda",
+    "lon": 78.485016,
+    "lat": 17.335556,
+    "assembly_constituency": "Bandlaguda mandal"
+  },
+  {
+    "ward_no": 45,
+    "ward_name": "Jangammet",
+    "lon": 78.474384,
+    "lat": 17.335738,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 46,
+    "ward_name": "Falaknuma",
+    "lon": 78.465805,
+    "lat": 17.32792,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 47,
+    "ward_name": "Nawab Saheb Kunta",
+    "lon": 78.461803,
+    "lat": 17.334972,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 48,
+    "ward_name": "Shalibanda",
+    "lon": 78.469668,
+    "lat": 17.346068,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 49,
+    "ward_name": "Ghansi Bazar",
+    "lon": 78.469685,
+    "lat": 17.36231,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 50,
+    "ward_name": "Begum Bazar",
+    "lon": 78.474267,
+    "lat": 17.375127,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 51,
+    "ward_name": "Goshamahal",
+    "lon": 78.465069,
+    "lat": 17.375694,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 52,
+    "ward_name": "Puranapool",
+    "lon": 78.46339,
+    "lat": 17.360587,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 53,
+    "ward_name": "Doodh Bowli",
+    "lon": 78.459697,
+    "lat": 17.355044,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 54,
+    "ward_name": "Jahanuma",
+    "lon": 78.457531,
+    "lat": 17.340632,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 55,
+    "ward_name": "Ramnaspura",
+    "lon": 78.447557,
+    "lat": 17.347789,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 56,
+    "ward_name": "Kishanbagh",
+    "lon": 78.44445,
+    "lat": 17.358026,
+    "assembly_constituency": "Bahadurpura mandal"
+  },
+  {
+    "ward_no": 57,
+    "ward_name": "Suleman Nagar",
+    "lon": 78.431424,
+    "lat": 17.344307,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 58,
+    "ward_name": "Shastripuram",
+    "lon": 78.449343,
+    "lat": 17.329925,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 59,
+    "ward_name": "Mailardevpally",
+    "lon": 78.427124,
+    "lat": 17.313355,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 60,
+    "ward_name": "Rajendra Nagar",
+    "lon": 78.410689,
+    "lat": 17.335965,
+    "assembly_constituency": "Rajendranagar mandal"
+  },
+  {
+    "ward_no": 61,
+    "ward_name": "Attapur",
+    "lon": 78.428498,
+    "lat": 17.36078,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 62,
+    "ward_name": "Ziaguda",
+    "lon": 78.449114,
+    "lat": 17.368415,
+    "assembly_constituency": "Asif Nagar mandal"
+  },
+  {
+    "ward_no": 63,
+    "ward_name": "Mangalhat",
+    "lon": 78.456575,
+    "lat": 17.376895,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 64,
+    "ward_name": "Dattatreya Nagar",
+    "lon": 78.452162,
+    "lat": 17.376488,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 65,
+    "ward_name": "Karwan",
+    "lon": 78.440636,
+    "lat": 17.374533,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 66,
+    "ward_name": "Langar Houz",
+    "lon": 78.397765,
+    "lat": 17.381045,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 67,
+    "ward_name": "Golconda",
+    "lon": 78.414632,
+    "lat": 17.38747,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 68,
+    "ward_name": "Tolichowki",
+    "lon": 78.409088,
+    "lat": 17.392734,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 69,
+    "ward_name": "Nanal Nagar",
+    "lon": 78.42552,
+    "lat": 17.396868,
+    "assembly_constituency": "Shaikpet mandal"
+  },
+  {
+    "ward_no": 70,
+    "ward_name": "Mehdipatnam",
+    "lon": 78.437619,
+    "lat": 17.391575,
+    "assembly_constituency": "Asif Nagar mandal"
+  },
+  {
+    "ward_no": 71,
+    "ward_name": "Gudimalkapur",
+    "lon": 78.435302,
+    "lat": 17.383159,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 72,
+    "ward_name": "Asif Nagar",
+    "lon": 78.445722,
+    "lat": 17.384174,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 73,
+    "ward_name": "Vijay Nagar Colony",
+    "lon": 78.450872,
+    "lat": 17.395337,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 74,
+    "ward_name": "Ahmed Nagar",
+    "lon": 78.443248,
+    "lat": 17.402765,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 75,
+    "ward_name": "Red Hills",
+    "lon": 78.460448,
+    "lat": 17.399556,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 76,
+    "ward_name": "Mallepally",
+    "lon": 78.459086,
+    "lat": 17.388837,
+    "assembly_constituency": "Nampally mandal"
+  },
+  {
+    "ward_no": 77,
+    "ward_name": "Jambagh",
+    "lon": 78.471887,
+    "lat": 17.385382,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 78,
+    "ward_name": "Gunfoundry",
+    "lon": 78.478797,
+    "lat": 17.394585,
+    "assembly_constituency": "Nampally mandal"
+  },
+  {
+    "ward_no": 79,
+    "ward_name": "Himayath Nagar",
+    "lon": 78.484633,
+    "lat": 17.399029,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 80,
+    "ward_name": "Kachiguda",
+    "lon": 78.492997,
+    "lat": 17.388238,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 81,
+    "ward_name": "Nallakunta",
+    "lon": 78.50804,
+    "lat": 17.398448,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 82,
+    "ward_name": "Golnaka",
+    "lon": 78.504614,
+    "lat": 17.386308,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 83,
+    "ward_name": "Amberpet",
+    "lon": 78.522855,
+    "lat": 17.38606,
+    "assembly_constituency": "Amberpet mandal"
+  },
+  {
+    "ward_no": 84,
+    "ward_name": "Bagh Amberpet",
+    "lon": 78.518969,
+    "lat": 17.397215,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 85,
+    "ward_name": "Adikmet",
+    "lon": 78.511262,
+    "lat": 17.407246,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 86,
+    "ward_name": "Musheerabad",
+    "lon": 78.508108,
+    "lat": 17.415484,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 87,
+    "ward_name": "Ramnagar",
+    "lon": 78.500202,
+    "lat": 17.407264,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 88,
+    "ward_name": "Bholakpur",
+    "lon": 78.494358,
+    "lat": 17.418684,
+    "assembly_constituency": "Musheerabad mandal"
+  },
+  {
+    "ward_no": 89,
+    "ward_name": "Gandhinagar",
+    "lon": 78.493055,
+    "lat": 17.407623,
+    "assembly_constituency": "Musheerabad mandal"
+  },
+  {
+    "ward_no": 90,
+    "ward_name": "Kavadiguda",
+    "lon": 78.486065,
+    "lat": 17.415633,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 91,
+    "ward_name": "Khairatabad",
+    "lon": 78.467054,
+    "lat": 17.422243,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 92,
+    "ward_name": "Venkateshwara Colony",
+    "lon": 78.437652,
+    "lat": 17.422061,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 93,
+    "ward_name": "Banjara Hills",
+    "lon": 78.439913,
+    "lat": 17.410512,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 94,
+    "ward_name": "Shaikpet",
+    "lon": 78.399222,
+    "lat": 17.404079,
+    "assembly_constituency": "Shaikpet mandal"
+  },
+  {
+    "ward_no": 95,
+    "ward_name": "Jubilee Hills",
+    "lon": 78.412085,
+    "lat": 17.426672,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 96,
+    "ward_name": "Yousufguda",
+    "lon": 78.424965,
+    "lat": 17.436308,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 97,
+    "ward_name": "Somajiguda",
+    "lon": 78.45033,
+    "lat": 17.430124,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 98,
+    "ward_name": "Ameerpet",
+    "lon": 78.451094,
+    "lat": 17.440508,
+    "assembly_constituency": "Ameerpet mandal"
+  },
+  {
+    "ward_no": 99,
+    "ward_name": "Vengal Rao Nagar",
+    "lon": 78.433287,
+    "lat": 17.441348,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 100,
+    "ward_name": "Sanath Nagar",
+    "lon": 78.443305,
+    "lat": 17.452872,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 101,
+    "ward_name": "Erragadda",
+    "lon": 78.426541,
+    "lat": 17.452398,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 102,
+    "ward_name": "Rahmath Nagar",
+    "lon": 78.418835,
+    "lat": 17.446054,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 103,
+    "ward_name": "Borabanda",
+    "lon": 78.411661,
+    "lat": 17.450006,
+    "assembly_constituency": "Khairatabad mandal"
+  },
+  {
+    "ward_no": 104,
+    "ward_name": "Kondapur",
+    "lon": 78.379517,
+    "lat": 17.441962,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 105,
+    "ward_name": "Gachibowli",
+    "lon": 78.34661,
+    "lat": 17.438649,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 106,
+    "ward_name": "Serilingampally",
+    "lon": 78.333224,
+    "lat": 17.474497,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 107,
+    "ward_name": "Madhapur",
+    "lon": 78.379481,
+    "lat": 17.467687,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 108,
+    "ward_name": "Miyapur",
+    "lon": 78.35768,
+    "lat": 17.509318,
+    "assembly_constituency": "Serilingampalle mandal"
+  },
+  {
+    "ward_no": 109,
+    "ward_name": "Hafeezpet",
+    "lon": 78.344028,
+    "lat": 17.489531,
+    "assembly_constituency": "Serilingampalle mandal"
+  },
+  {
+    "ward_no": 110,
+    "ward_name": "Chandanagar",
+    "lon": 78.327184,
+    "lat": 17.499856,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 111,
+    "ward_name": "Bharati Nagar",
+    "lon": 78.296214,
+    "lat": 17.490999,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 112,
+    "ward_name": "Ramachandrapuram",
+    "lon": 78.29921,
+    "lat": 17.509255,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 114,
+    "ward_name": "KPHB Colony",
+    "lon": 78.383508,
+    "lat": 17.486765,
+    "assembly_constituency": "Kukatpally mandal"
+  },
+  {
+    "ward_no": 115,
+    "ward_name": "Balaji Nagar",
+    "lon": 78.406924,
+    "lat": 17.475088,
+    "assembly_constituency": "Kukatpally mandal"
+  },
+  {
+    "ward_no": 116,
+    "ward_name": "Allapur",
+    "lon": 78.400945,
+    "lat": 17.460957,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 117,
+    "ward_name": "Moosapet",
+    "lon": 78.42421,
+    "lat": 17.460017,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 118,
+    "ward_name": "Fateh Nagar",
+    "lon": 78.445428,
+    "lat": 17.460445,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 119,
+    "ward_name": "Old Bowenpally",
+    "lon": 78.487398,
+    "lat": 17.479952,
+    "assembly_constituency": "Balanagar mandal"
+  },
+  {
+    "ward_no": 120,
+    "ward_name": "Balanagar",
+    "lon": 78.442868,
+    "lat": 17.479941,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 121,
+    "ward_name": "Kukatpally",
+    "lon": 78.42371,
+    "lat": 17.487157,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 122,
+    "ward_name": "Vivekananda Nagar Colony",
+    "lon": 78.414675,
+    "lat": 17.494941,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 123,
+    "ward_name": "Hydernagar",
+    "lon": 78.391251,
+    "lat": 17.501364,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 124,
+    "ward_name": "Alwyn Colony",
+    "lon": 78.40926,
+    "lat": 17.504856,
+    "assembly_constituency": "Kukatpally mandal"
+  },
+  {
+    "ward_no": 125,
+    "ward_name": "Gajularamaram",
+    "lon": 78.417273,
+    "lat": 17.526045,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 126,
+    "ward_name": "Jagathgirigutta",
+    "lon": 78.425867,
+    "lat": 17.507061,
+    "assembly_constituency": "Kukatpally mandal"
+  },
+  {
+    "ward_no": 127,
+    "ward_name": "Rangareddy Nagar",
+    "lon": 78.438151,
+    "lat": 17.490059,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 128,
+    "ward_name": "Chintal",
+    "lon": 78.439073,
+    "lat": 17.503768,
+    "assembly_constituency": "Quthbullapur mandal"
+  },
+  {
+    "ward_no": 129,
+    "ward_name": "Suraram",
+    "lon": 78.430705,
+    "lat": 17.533054,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 130,
+    "ward_name": "Subash Nagar",
+    "lon": 78.453126,
+    "lat": 17.522937,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 131,
+    "ward_name": "Quthbullapur",
+    "lon": 78.456993,
+    "lat": 17.494961,
+    "assembly_constituency": "ERROR:HTTP Error 504: Gateway Timeout"
+  },
+  {
+    "ward_no": 132,
+    "ward_name": "Jeedimetla",
+    "lon": 78.471888,
+    "lat": 17.511038,
+    "assembly_constituency": "Quthbullapur mandal"
+  },
+  {
+    "ward_no": 133,
+    "ward_name": "Macha Bolarum",
+    "lon": 78.518315,
+    "lat": 17.523903,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  },
+  {
+    "ward_no": 134,
+    "ward_name": "Alwal",
+    "lon": 78.500424,
+    "lat": 17.499849,
+    "assembly_constituency": "Alwal mandal"
+  },
+  {
+    "ward_no": 135,
+    "ward_name": "Venkatapuram",
+    "lon": 78.497168,
+    "lat": 17.486026,
+    "assembly_constituency": "ERROR:HTTP Error 429: Too Many Requests"
+  }
+]

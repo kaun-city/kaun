@@ -26,6 +26,8 @@ export interface CityConfig {
   zoom: number
   /** Ward boundary GeoJSON URL */
   geojsonUrl: string
+  /** Optional URL to JSON mapping ward_no -> assembly_constituency (for client-side lookup) */
+  wardAcMapUrl?: string
   /** Reddit community (subreddit name without r/) */
   subreddit: string
   /** Budget financial year shown in Expenses tab */

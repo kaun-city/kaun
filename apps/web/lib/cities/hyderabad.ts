@@ -9,6 +9,7 @@ export const hyderabad: CityConfig = {
   zoom: 11,
   geojsonUrl:
     "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Hyderabad/ghmc-wards.geojson",
+  wardAcMapUrl: "/geo/hyderabad/ward-ac-mapping.json",
   subreddit: "hyderabad",
   budgetYear: "2024-25",
   sakalaNote: "Telangana has its own citizen services portal (meeseva.telangana.gov.in)",
