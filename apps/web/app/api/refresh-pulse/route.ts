@@ -5,8 +5,10 @@ export const maxDuration = 60
 
 // Vercel Cron guard
 function isAuthorized(req: Request): boolean {
+  // Vercel strips x-vercel-cron from external requests; only its scheduler can set it
+  if (req.headers.get("x-vercel-cron")) return true
   const cronSecret = process.env.CRON_SECRET?.trim()
-  if (!cronSecret) return false // require CRON_SECRET to be set
+  if (!cronSecret) return false
   const authHeader = req.headers.get("authorization") ?? ""
   if (authHeader === `Bearer ${cronSecret}`) return true
   if (req.headers.get("x-cron-secret") === cronSecret) return true
