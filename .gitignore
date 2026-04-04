@@ -20,3 +20,7 @@ test_*.py
 *.tsbuildinfo
 .claude/settings.local.json
 .mcp.json
+
+.env.production
+*.env.production
+data/hyderabad/*.pdf
