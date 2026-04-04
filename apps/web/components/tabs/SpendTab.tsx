@@ -176,12 +176,12 @@ export function SpendTab({
       {budget ? (
         <div className="rounded-xl bg-white/5 p-3 space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-white/50 text-[10px] uppercase tracking-wider">BBMP Budget</p>
+            <p className="text-white/50 text-[10px] uppercase tracking-wider">{city.civicBody} Budget</p>
             <div className="flex items-center gap-1.5">
               <p className="text-[#FF9933] text-lg font-bold">
                 Rs.{budget.total_expenditure_lakh ? Math.round(budget.total_expenditure_lakh / 100).toLocaleString("en-IN") : "--"} Cr
               </p>
-              <FreshnessBadge label={city.budgetYear} source="BBMP" />
+              <FreshnessBadge label={city.budgetYear} source={city.civicBody} />
             </div>
           </div>
           {budget.departments && budget.departments.length > 0 && (
@@ -243,7 +243,7 @@ export function SpendTab({
       ) : wardSpend !== undefined && (!wardSpend || wardSpend.grand_total === 0) ? (
         <div className="p-4 rounded-xl bg-white/5 text-center">
           <p className="text-white/25 text-sm">No ward spend data</p>
-          <p className="text-white/15 text-xs mt-0.5">BBMP 2018-23 · Not yet available for this ward</p>
+          <p className="text-white/15 text-xs mt-0.5">{city.civicBody} · Not yet available for this ward</p>
         </div>
       ) : null}
 
