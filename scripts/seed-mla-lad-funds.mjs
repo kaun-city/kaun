@@ -21,8 +21,10 @@ const RAW_DIR = join(CACHE_DIR, 'mla-lad-raw')
 mkdirSync(RAW_DIR, { recursive: true })
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://xgygxfyfsvccqqmtboeu.supabase.co'
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneWd4Znlmc3ZjY3FxbXRib2V1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjU0ODU3MiwiZXhwIjoyMDg4MTI0NTcyfQ.zCPcKcaQizydhiaCbzk67ron7zKax07Uxj5YkcZ5Dbo'
-const MGMT_TOKEN = 'sbp_8226477e680b438942c021e7b534bd0ba53bf56b'
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY
+if (!SUPABASE_KEY) { console.error('Set SUPABASE_SERVICE_KEY env var'); process.exit(1) }
+const MGMT_TOKEN = process.env.SUPABASE_MANAGEMENT_TOKEN
+if (!MGMT_TOKEN) { console.error('Set SUPABASE_MANAGEMENT_TOKEN env var'); process.exit(1) }
 const PROJECT_ID = 'xgygxfyfsvccqqmtboeu'
 
 const PACKAGE_ID = 'c4c0b7a1-a90c-438b-841e-e33d6cca8504'
