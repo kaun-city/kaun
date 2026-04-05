@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { STATUS_STYLES } from "@/lib/constants"
 import { formatLakh, timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
@@ -9,6 +10,82 @@ import type {
 } from "@/lib/types"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { SkeletonBarRow, SkeletonCard } from "@/components/shared/Skeleton"
+
+const TENDERS_PREVIEW = 5
+
+function TendersList({ profile, profileLoading }: { profile: WardProfile | null; profileLoading: boolean }) {
+  const [expanded, setExpanded] = useState(false)
+  const tenders = profile?.tenders ?? []
+  const visible = expanded ? tenders : tenders.slice(0, TENDERS_PREVIEW)
+  const hidden = tenders.length - TENDERS_PREVIEW
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <p className="text-white/30 text-xs uppercase tracking-wider">
+          {profileLoading && !profile ? "Tenders" : profile ? `${profile.tender_count} Tender${profile.tender_count !== 1 ? "s" : ""}` : "Tenders"}
+        </p>
+        <div className="flex items-center gap-1.5">
+          {profile && <span className="text-[#FF9933] text-xs font-semibold">{formatLakh(profile.tender_total_lakh)} total</span>}
+          <FreshnessBadge label="2023-present" source="KPPP" />
+        </div>
+      </div>
+
+      {profileLoading && !profile ? (
+        <><SkeletonCard lines={3} /><SkeletonCard lines={2} /><SkeletonCard lines={3} /></>
+      ) : tenders.length > 0 ? (
+        <>
+          {visible.map(t => {
+            const st = STATUS_STYLES[t.status] ?? STATUS_STYLES.OPEN
+            return (
+              <div key={t.id} className="p-3 rounded-xl bg-white/5">
+                <p className="text-white text-sm leading-snug line-clamp-2">{t.title}</p>
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${st.bg} ${st.text}`}>{st.label}</span>
+                  {t.value_lakh != null && <span className="text-[#FF9933] text-xs font-semibold">{formatLakh(t.value_lakh)}</span>}
+                  {t.issued_date && <span className="text-white/30 text-xs">{t.issued_date}</span>}
+                </div>
+                {t.contractor_name && (
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    {t.contractor_blacklisted && <span className="text-amber-400 text-xs font-bold">Govt. Record</span>}
+                    <p className={`text-xs ${t.contractor_blacklisted ? "text-amber-200" : "text-white/40"}`}>{t.contractor_name}</p>
+                  </div>
+                )}
+                {t.source_url && (
+                  <a href={t.source_url} target="_blank" rel="noopener noreferrer"
+                    className="text-[#FF9933]/50 hover:text-[#FF9933] text-xs transition-colors mt-1 inline-block">
+                    View on KPPP &rarr;
+                  </a>
+                )}
+              </div>
+            )
+          })}
+          {!expanded && hidden > 0 && (
+            <button
+              onClick={() => setExpanded(true)}
+              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/40 hover:text-white/70 text-xs"
+            >
+              Show {hidden} more tender{hidden !== 1 ? "s" : ""} &darr;
+            </button>
+          )}
+          {expanded && hidden > 0 && (
+            <button
+              onClick={() => setExpanded(false)}
+              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/40 hover:text-white/70 text-xs"
+            >
+              Show less &uarr;
+            </button>
+          )}
+        </>
+      ) : !profileLoading ? (
+        <div className="p-5 rounded-xl bg-white/5 text-center space-y-1">
+          <p className="text-white/30 text-sm">No tenders found</p>
+          <p className="text-white/20 text-xs">File an RTI to get the complete works register.</p>
+        </div>
+      ) : null}
+    </div>
+  )
+}
 
 interface Props {
   result: PinResult
@@ -125,52 +202,7 @@ export function SpendTab({
       ) : null}
 
       {/* Tenders */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <p className="text-white/30 text-xs uppercase tracking-wider">
-            {profileLoading && !profile ? "Tenders" : profile ? `${profile.tender_count} Tender${profile.tender_count !== 1 ? "s" : ""}` : "Tenders"}
-          </p>
-          <div className="flex items-center gap-1.5">
-            {profile && <span className="text-[#FF9933] text-xs font-semibold">{formatLakh(profile.tender_total_lakh)} total</span>}
-            <FreshnessBadge label="2024" source="KPPP" />
-          </div>
-        </div>
-
-        {profileLoading && !profile ? (
-          <><SkeletonCard lines={3} /><SkeletonCard lines={2} /><SkeletonCard lines={3} /></>
-        ) : profile && profile.tenders.length > 0 ? (
-          profile.tenders.map(t => {
-            const st = STATUS_STYLES[t.status] ?? STATUS_STYLES.OPEN
-            return (
-              <div key={t.id} className="p-3 rounded-xl bg-white/5">
-                <p className="text-white text-sm leading-snug line-clamp-2">{t.title}</p>
-                <div className="flex items-center gap-2 mt-2 flex-wrap">
-                  <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${st.bg} ${st.text}`}>{st.label}</span>
-                  {t.value_lakh != null && <span className="text-[#FF9933] text-xs font-semibold">{formatLakh(t.value_lakh)}</span>}
-                  {t.issued_date && <span className="text-white/30 text-xs">{t.issued_date}</span>}
-                </div>
-                {t.contractor_name && (
-                  <div className="flex items-center gap-1.5 mt-1.5">
-                    {t.contractor_blacklisted && <span className="text-red-400 text-xs font-bold">FLAGGED</span>}
-                    <p className={`text-xs ${t.contractor_blacklisted ? "text-red-300" : "text-white/40"}`}>{t.contractor_name}</p>
-                  </div>
-                )}
-                {t.source_url && (
-                  <a href={t.source_url} target="_blank" rel="noopener noreferrer"
-                    className="text-[#FF9933]/50 hover:text-[#FF9933] text-xs transition-colors mt-1 inline-block">
-                    View on KPPP &rarr;
-                  </a>
-                )}
-              </div>
-            )
-          })
-        ) : !profileLoading ? (
-          <div className="p-5 rounded-xl bg-white/5 text-center space-y-1">
-            <p className="text-white/30 text-sm">No tenders found</p>
-            <p className="text-white/20 text-xs">File an RTI to get the complete works register.</p>
-          </div>
-        ) : null}
-      </div>
+      <TendersList profile={profile} profileLoading={profileLoading} />
 
       {/* Work Orders */}
       {workOrders.length > 0 ? (
