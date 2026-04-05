@@ -48,27 +48,53 @@ export default function HowItWorksPage() {
             </div>
             <div className="rounded-lg bg-white/5 border border-white/10 p-4">
               <p className="text-white/70 font-medium mb-1">Tenders and contractors</p>
-              <p>Public works tenders and contractor records are sourced from the{" "}
+              <p>Public works tenders are sourced from the{" "}
               <a href="https://kppp.karnataka.gov.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Karnataka Public Procurement Portal (KPPP)</a>.
-              Contractor blacklist flags are drawn from the same portal. Tenders are refreshed weekly.</p>
+              Contractor records (total contracts, wards covered, payment deductions) are derived from BBMP work order data via{" "}
+              <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenCity.in</a>.
+              Where shown, official blacklisting information is sourced from KPPP and BBMP published records.
+              Payment deduction percentages reflect BBMP work order data — high deductions may indicate quality disputes, delays, or scope changes. Tenders refresh weekly.</p>
             </div>
             <div className="rounded-lg bg-white/5 border border-white/10 p-4">
-              <p className="text-white/70 font-medium mb-1">Budget and spending</p>
+              <p className="text-white/70 font-medium mb-1">Budget and ward spending</p>
               <p>BBMP budget data and ward-level spending figures come from{" "}
               <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenCity.in</a> (CKAN open data portal)
               and BBMP&apos;s published budget documents. Years covered: 2018&ndash;23.</p>
             </div>
             <div className="rounded-lg bg-white/5 border border-white/10 p-4">
               <p className="text-white/70 font-medium mb-1">Grievances and Sakala</p>
-              <p>Complaint and grievance counts per ward are sourced from BBMP&apos;s grievance portal.
+              <p>Ward grievance counts are sourced from BBMP&apos;s grievance portal via{" "}
+              <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenCity.in</a>, refreshed monthly.
               Sakala performance rankings (government service delivery timelines) come from
-              the Karnataka Sakala portal, updated monthly.</p>
+              the Karnataka Sakala portal, updated manually each month (the site blocks automated access).</p>
+            </div>
+            <div className="rounded-lg bg-white/5 border border-white/10 p-4">
+              <p className="text-white/70 font-medium mb-1">Infrastructure & amenities</p>
+              <p>Ward-level counts for hospitals, pharmacies, ATMs, metro stations, public toilets, and EV charging points
+              are sourced from{" "}
+              <a href="https://www.openstreetmap.org" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenStreetMap</a> (OSM),
+              cross-referenced with BBMP ward boundaries. Data reflects OSM contributor coverage and may be incomplete in some areas.</p>
+            </div>
+            <div className="rounded-lg bg-white/5 border border-white/10 p-4">
+              <p className="text-white/70 font-medium mb-1">Road crashes</p>
+              <p>Road accident data is sourced from NCRB (National Crime Records Bureau) and Karnataka state transport department records,
+              aggregated to ward level. Data reflects reported accidents only.</p>
+            </div>
+            <div className="rounded-lg bg-white/5 border border-white/10 p-4">
+              <p className="text-white/70 font-medium mb-1">Water quality</p>
+              <p>Lake water quality data (good / moderate / poor) is sourced from Karnataka State Pollution Control Board (KSPCB)
+              monitoring reports, mapped to the nearest ward.</p>
+            </div>
+            <div className="rounded-lg bg-white/5 border border-white/10 p-4">
+              <p className="text-white/70 font-medium mb-1">Trade licences</p>
+              <p>Ward-level trade licence counts are sourced from BBMP trade licence records via{" "}
+              <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenCity.in</a>, refreshed monthly.</p>
             </div>
             <div className="rounded-lg bg-white/5 border border-white/10 p-4">
               <p className="text-white/70 font-medium mb-1">News and civic signals</p>
               <p>The CityPulse ticker shows recent news about BBMP, BWSSB, and Bengaluru civic issues
-              from public RSS feeds (Google News, Citizen Matters, The News Minute). Articles are
-              keyword-filtered for accountability relevance &mdash; public money, road safety, environment,
+              from public RSS feeds (Citizen Matters, The News Minute, Deccan Herald).
+              Articles are filtered for civic relevance &mdash; public money, road safety, environment,
               water, and elected representatives.</p>
             </div>
           </div>
@@ -86,7 +112,7 @@ export default function HowItWorksPage() {
               <li><span className="text-white/70">MLA assembly attendance</span> &mdash; percentage of sessions attended (weight: high)</li>
               <li><span className="text-white/70">LAD fund utilisation</span> &mdash; % of constituency development funds spent (weight: high)</li>
               <li><span className="text-white/70">Criminal cases</span> &mdash; declared cases from election affidavits, inverted (weight: medium)</li>
-              <li><span className="text-white/70">Contractor flags</span> &mdash; number of KPPP-flagged contractors on ward tenders (weight: medium)</li>
+              <li><span className="text-white/70">Contractor records</span> &mdash; official blacklisting on ward work orders per KPPP/BBMP records (weight: medium)</li>
             </ul>
           </div>
           <div className="rounded-lg bg-white/5 border border-white/10 p-4 space-y-2">
