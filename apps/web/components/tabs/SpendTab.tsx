@@ -209,17 +209,18 @@ export function SpendTab({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-white/30 text-xs uppercase tracking-wider">Contractors in this Ward</p>
+            <p className="text-white/20 text-[10px] mt-0.5">Payment deductions recorded in BBMP work orders. High deductions may reflect quality disputes, delays, or scope changes.</p>
             <FreshnessBadge label="2013-25" source="BBMP / opencity.in" />
           </div>
           {wardContractors.map(c => {
             const isFlagged = c.blacklist_flags.length > 0
             return (
-              <div key={c.entity_id} className={`rounded-xl p-3 ${isFlagged ? "bg-red-500/10 border border-red-500/20" : "bg-white/5"}`}>
+              <div key={c.entity_id} className={`rounded-xl p-3 ${isFlagged ? "bg-amber-500/10 border border-amber-500/20" : "bg-white/5"}`}>
                 <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      {isFlagged && <span className="text-red-400 text-[10px] font-bold uppercase tracking-wider shrink-0">Flagged</span>}
-                      <p className={`text-sm font-semibold truncate ${isFlagged ? "text-red-300" : "text-white"}`}>{c.canonical_name}</p>
+                      {isFlagged && <span className="text-amber-400 text-[10px] font-bold uppercase tracking-wider shrink-0">Govt. Record</span>}
+                      <p className={`text-sm font-semibold truncate ${isFlagged ? "text-amber-200" : "text-white"}`}>{c.canonical_name}</p>
                     </div>
                     {c.aliases.length > 1 && (
                       <p className="text-white/20 text-[10px] truncate mt-0.5">
@@ -242,14 +243,15 @@ export function SpendTab({
                     <p className={`text-xs font-semibold ${c.avg_deduction_pct > 15 ? "text-red-400" : c.avg_deduction_pct > 10 ? "text-yellow-400" : "text-green-400"}`}>
                       {c.avg_deduction_pct}%
                     </p>
-                    <p className="text-white/30 text-[10px]">Deduction</p>
+                    <p className="text-white/30 text-[10px]">Deductions</p>
                   </div>
                 </div>
                 {isFlagged && (
-                  <div className="mt-2 pt-2 border-t border-red-500/10">
+                  <div className="mt-2 pt-2 border-t border-amber-500/10">
                     {c.blacklist_flags.map((flag, i) => (
-                      <p key={i} className="text-red-400/80 text-[10px] leading-relaxed">▸ {flag}</p>
+                      <p key={i} className="text-amber-400/80 text-[10px] leading-relaxed">▸ {flag}</p>
                     ))}
+                    <p className="text-white/20 text-[10px] mt-1 italic">Source: KPPP / BBMP official records</p>
                   </div>
                 )}
                 {c.is_govt_entity && <p className="text-white/20 text-[10px] mt-1">Government entity</p>}

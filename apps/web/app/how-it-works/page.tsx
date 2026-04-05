@@ -159,6 +159,31 @@ export default function HowItWorksPage() {
           </p>
         </Section>
 
+        <Section title="Legal & disclaimer">
+          <p>
+            kaun.city presents data sourced entirely from public government records, official portals, and open civic datasets.
+            We do not create, modify, or editorially characterise government data beyond what is stated in the source records.
+          </p>
+          <p>
+            Data accuracy depends on the source agencies. kaun.city is not responsible for errors, omissions, or outdated
+            information in source data. If you find an error, please report it to{" "}
+            <a href="mailto:hello@kaun.city" className="text-blue-400 hover:underline">hello@kaun.city</a> and we will prioritise correcting it.
+          </p>
+          <p>
+            Contractor records shown on kaun.city are derived from BBMP work order data and the Karnataka Public Procurement Portal (KPPP).
+            Blacklist information, where shown, refers to official government blacklisting records as per KPPP / BBMP published records.
+            Payment deduction percentages reflect data in BBMP work orders and may reflect legitimate scope changes, quality disputes, or administrative adjustments.
+          </p>
+          <p>
+            Criminal cases shown for elected representatives refer to cases self-declared by the candidate in their Election Commission
+            of India nomination affidavit. These are not convictions. kaun.city makes no editorial judgment about individuals.
+          </p>
+          <p>
+            Net worth figures are self-declared in Election Commission nomination affidavits and are presented as-is.
+            Percentage changes between election cycles are calculated by kaun.city from successive affidavit data.
+          </p>
+        </Section>
+
         <div className="pt-6 border-t border-white/10 text-white/20 text-xs">
           <p>Kaun is open source (MIT licence). Data sources are public government records and open civic datasets.</p>
           <p className="mt-1">
