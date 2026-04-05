@@ -15,7 +15,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 
 export default function HowItWorksPage() {
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="bg-zinc-950 text-white" style={{ minHeight: "100dvh", overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
       <div className="max-w-2xl mx-auto px-5 py-12">
 
         {/* Header */}
@@ -48,27 +48,53 @@ export default function HowItWorksPage() {
             </div>
             <div className="rounded-lg bg-white/5 border border-white/10 p-4">
               <p className="text-white/70 font-medium mb-1">Tenders and contractors</p>
-              <p>Public works tenders and contractor records are sourced from the{" "}
+              <p>Public works tenders are sourced from the{" "}
               <a href="https://kppp.karnataka.gov.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Karnataka Public Procurement Portal (KPPP)</a>.
-              Contractor blacklist flags are drawn from the same portal. Tenders are refreshed weekly.</p>
+              Contractor records (total contracts, wards covered, payment deductions) are derived from BBMP work order data via{" "}
+              <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenCity.in</a>.
+              Where shown, official blacklisting information is sourced from KPPP and BBMP published records.
+              Payment deduction percentages reflect BBMP work order data — high deductions may indicate quality disputes, delays, or scope changes. Tenders refresh weekly.</p>
             </div>
             <div className="rounded-lg bg-white/5 border border-white/10 p-4">
-              <p className="text-white/70 font-medium mb-1">Budget and spending</p>
+              <p className="text-white/70 font-medium mb-1">Budget and ward spending</p>
               <p>BBMP budget data and ward-level spending figures come from{" "}
               <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenCity.in</a> (CKAN open data portal)
               and BBMP&apos;s published budget documents. Years covered: 2018&ndash;23.</p>
             </div>
             <div className="rounded-lg bg-white/5 border border-white/10 p-4">
               <p className="text-white/70 font-medium mb-1">Grievances and Sakala</p>
-              <p>Complaint and grievance counts per ward are sourced from BBMP&apos;s grievance portal.
+              <p>Ward grievance counts are sourced from BBMP&apos;s grievance portal via{" "}
+              <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenCity.in</a>, refreshed monthly.
               Sakala performance rankings (government service delivery timelines) come from
-              the Karnataka Sakala portal, updated monthly.</p>
+              the Karnataka Sakala portal, updated manually each month (the site blocks automated access).</p>
+            </div>
+            <div className="rounded-lg bg-white/5 border border-white/10 p-4">
+              <p className="text-white/70 font-medium mb-1">Infrastructure & amenities</p>
+              <p>Ward-level counts for hospitals, pharmacies, ATMs, metro stations, public toilets, and EV charging points
+              are sourced from{" "}
+              <a href="https://www.openstreetmap.org" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenStreetMap</a> (OSM),
+              cross-referenced with BBMP ward boundaries. Data reflects OSM contributor coverage and may be incomplete in some areas.</p>
+            </div>
+            <div className="rounded-lg bg-white/5 border border-white/10 p-4">
+              <p className="text-white/70 font-medium mb-1">Road crashes</p>
+              <p>Road accident data is sourced from NCRB (National Crime Records Bureau) and Karnataka state transport department records,
+              aggregated to ward level. Data reflects reported accidents only.</p>
+            </div>
+            <div className="rounded-lg bg-white/5 border border-white/10 p-4">
+              <p className="text-white/70 font-medium mb-1">Water quality</p>
+              <p>Lake water quality data (good / moderate / poor) is sourced from Karnataka State Pollution Control Board (KSPCB)
+              monitoring reports, mapped to the nearest ward.</p>
+            </div>
+            <div className="rounded-lg bg-white/5 border border-white/10 p-4">
+              <p className="text-white/70 font-medium mb-1">Trade licences</p>
+              <p>Ward-level trade licence counts are sourced from BBMP trade licence records via{" "}
+              <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">OpenCity.in</a>, refreshed monthly.</p>
             </div>
             <div className="rounded-lg bg-white/5 border border-white/10 p-4">
               <p className="text-white/70 font-medium mb-1">News and civic signals</p>
               <p>The CityPulse ticker shows recent news about BBMP, BWSSB, and Bengaluru civic issues
-              from public RSS feeds (Google News, Citizen Matters, The News Minute). Articles are
-              keyword-filtered for accountability relevance &mdash; public money, road safety, environment,
+              from public RSS feeds (Citizen Matters, The News Minute, Deccan Herald).
+              Articles are filtered for civic relevance &mdash; public money, road safety, environment,
               water, and elected representatives.</p>
             </div>
           </div>
@@ -86,7 +112,7 @@ export default function HowItWorksPage() {
               <li><span className="text-white/70">MLA assembly attendance</span> &mdash; percentage of sessions attended (weight: high)</li>
               <li><span className="text-white/70">LAD fund utilisation</span> &mdash; % of constituency development funds spent (weight: high)</li>
               <li><span className="text-white/70">Criminal cases</span> &mdash; declared cases from election affidavits, inverted (weight: medium)</li>
-              <li><span className="text-white/70">Contractor flags</span> &mdash; number of KPPP-flagged contractors on ward tenders (weight: medium)</li>
+              <li><span className="text-white/70">Contractor records</span> &mdash; official blacklisting on ward work orders per KPPP/BBMP records (weight: medium)</li>
             </ul>
           </div>
           <div className="rounded-lg bg-white/5 border border-white/10 p-4 space-y-2">
@@ -156,6 +182,31 @@ export default function HowItWorksPage() {
             <a href="mailto:hello@kaun.city" className="text-blue-400 hover:underline">hello@kaun.city</a>
             {" "}or file an issue on{" "}
             <a href="https://github.com/kaun-city/kaun" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">GitHub</a>.
+          </p>
+        </Section>
+
+        <Section title="Legal & disclaimer">
+          <p>
+            kaun.city presents data sourced entirely from public government records, official portals, and open civic datasets.
+            We do not create, modify, or editorially characterise government data beyond what is stated in the source records.
+          </p>
+          <p>
+            Data accuracy depends on the source agencies. kaun.city is not responsible for errors, omissions, or outdated
+            information in source data. If you find an error, please report it to{" "}
+            <a href="mailto:hello@kaun.city" className="text-blue-400 hover:underline">hello@kaun.city</a> and we will prioritise correcting it.
+          </p>
+          <p>
+            Contractor records shown on kaun.city are derived from BBMP work order data and the Karnataka Public Procurement Portal (KPPP).
+            Blacklist information, where shown, refers to official government blacklisting records as per KPPP / BBMP published records.
+            Payment deduction percentages reflect data in BBMP work orders and may reflect legitimate scope changes, quality disputes, or administrative adjustments.
+          </p>
+          <p>
+            Criminal cases shown for elected representatives refer to cases self-declared by the candidate in their Election Commission
+            of India nomination affidavit. These are not convictions. kaun.city makes no editorial judgment about individuals.
+          </p>
+          <p>
+            Net worth figures are self-declared in Election Commission nomination affidavits and are presented as-is.
+            Percentage changes between election cycles are calculated by kaun.city from successive affidavit data.
           </p>
         </Section>
 
