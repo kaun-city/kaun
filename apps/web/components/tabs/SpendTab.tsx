@@ -12,6 +12,71 @@ import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { SkeletonBarRow, SkeletonCard } from "@/components/shared/Skeleton"
 
 const TENDERS_PREVIEW = 5
+const WORK_ORDERS_PREVIEW = 5
+
+function stripHtml(str: string): string {
+  return str.replace(/<[^>]*>/g, "").replace(/^\d{3}-\d{2}-\d{6}/, "").trim()
+}
+
+function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: WorkOrder[]; profileLoading: boolean; profile: WardProfile | null }) {
+  const [expanded, setExpanded] = useState(false)
+  const visible = expanded ? workOrders : workOrders.slice(0, WORK_ORDERS_PREVIEW)
+  const hidden = workOrders.length - WORK_ORDERS_PREVIEW
+
+  if (workOrders.length === 0) {
+    if (!profileLoading && profile !== null) {
+      return (
+        <div className="p-4 rounded-xl bg-white/5 text-center space-y-1">
+          <p className="text-white/25 text-sm">No work orders on record</p>
+          <p className="text-white/15 text-xs">BBMP 2024-25</p>
+        </div>
+      )
+    }
+    return null
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <p className="text-white/30 text-xs uppercase tracking-wider">Works ({workOrders.length})</p>
+        <FreshnessBadge label="2024-25" source="BBMP" />
+      </div>
+      <div className="space-y-2">
+        {visible.map(wo => {
+          const desc = stripHtml(wo.description)
+          const contractor = wo.contractor
+            ? wo.contractor.replace(/^\d{6}\s*/, "").replace(/\d{10}$/, "").trim()
+            : null
+          return (
+            <div key={wo.id} className="rounded-xl bg-white/5 p-3">
+              <p className="text-white text-xs leading-snug line-clamp-2">{desc}</p>
+              <div className="flex items-center justify-between mt-2 gap-2">
+                <p className="text-white/30 text-[10px] truncate">{contractor}</p>
+                <p className="text-[#FF9933] text-xs font-semibold shrink-0">Rs.{(wo.net_paid / 100000).toFixed(1)}L</p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      {!expanded && hidden > 0 && (
+        <button
+          onClick={() => setExpanded(true)}
+          className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/40 hover:text-white/70 text-xs"
+        >
+          Show {hidden} more work order{hidden !== 1 ? "s" : ""} &darr;
+        </button>
+      )}
+      {expanded && hidden > 0 && (
+        <button
+          onClick={() => setExpanded(false)}
+          className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/40 hover:text-white/70 text-xs"
+        >
+          Show less &uarr;
+        </button>
+      )}
+    </div>
+  )
+}
 
 function TendersList({ profile, profileLoading }: { profile: WardProfile | null; profileLoading: boolean }) {
   const [expanded, setExpanded] = useState(false)
@@ -205,45 +270,16 @@ export function SpendTab({
       <TendersList profile={profile} profileLoading={profileLoading} />
 
       {/* Work Orders */}
-      {workOrders.length > 0 ? (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-white/30 text-xs uppercase tracking-wider">Works ({workOrders.length})</p>
-            <FreshnessBadge label="2024-25" source="BBMP" />
-          </div>
-          <div className="space-y-2">
-            {workOrders.map(wo => {
-              const desc = wo.description.replace(/^\d{3}-\d{2}-\d{6}/, "").trim()
-              const contractor = wo.contractor
-                ? wo.contractor.replace(/^\d{6}\s*/, "").replace(/\d{10}$/, "").trim()
-                : null
-              return (
-                <div key={wo.id} className="rounded-xl bg-white/5 p-3">
-                  <p className="text-white text-xs leading-snug line-clamp-2">{desc}</p>
-                  <div className="flex items-center justify-between mt-2 gap-2">
-                    <p className="text-white/30 text-[10px] truncate">{contractor}</p>
-                    <p className="text-[#FF9933] text-xs font-semibold shrink-0">Rs.{(wo.net_paid / 100000).toFixed(1)}L</p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      ) : !profileLoading && profile !== null ? (
-        <div className="p-4 rounded-xl bg-white/5 text-center space-y-1">
-          <p className="text-white/25 text-sm">No work orders on record</p>
-          <p className="text-white/15 text-xs">BBMP 2024-25</p>
-        </div>
-      ) : null}
+      <WorkOrdersList workOrders={workOrders} profileLoading={profileLoading} profile={profile} />
 
       {/* Contractor Accountability */}
       {wardContractors.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-white/30 text-xs uppercase tracking-wider">Contractors in this Ward</p>
-            <p className="text-white/20 text-[10px] mt-0.5">Payment deductions recorded in BBMP work orders. High deductions may reflect quality disputes, delays, or scope changes.</p>
             <FreshnessBadge label="2013-25" source="BBMP / opencity.in" />
           </div>
+          <p className="text-white/20 text-[10px]">Payment deductions recorded in BBMP work orders. High deductions may reflect quality disputes, delays, or scope changes.</p>
           {wardContractors.map(c => {
             const isFlagged = c.blacklist_flags.length > 0
             return (
