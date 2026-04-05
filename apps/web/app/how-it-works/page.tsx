@@ -15,7 +15,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 
 export default function HowItWorksPage() {
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="bg-zinc-950 text-white" style={{ minHeight: "100dvh", overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
       <div className="max-w-2xl mx-auto px-5 py-12">
 
         {/* Header */}
