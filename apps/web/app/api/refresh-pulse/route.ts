@@ -31,16 +31,17 @@ const RSS_FEEDS = [
 
 const CIVIC_KEYWORDS: Record<string, string[]> = {
   "PUBLIC MONEY": ["bbmp scam", "bbmp fraud", "crore misuse", "crore irregularit", "siphon", "fake bill", "ghost worker", "pourakarmika scam", "embezzl", "misappropriat", "lokayukta raid", "acb raid", "ed raid bbmp", "corruption bbmp", "gba scam"],
-  "ROAD SAFETY": ["pothole death", "pothole accident", "road death bengaluru", "road accident bbmp", "pedestrian death", "pedestrian killed", "road fatality", "road crash bengaluru"],
-  "CONTRACTORS": ["kridl", "blacklisted contractor", "contractor scam", "tender scam", "4(g)", "without tender", "contractor fraud"],
-  "ENVIRONMENT": ["lake encroach", "lake pollut", "sewage lake", "untreated sewage", "lake dead fish", "bellandur foam", "kspcb action", "ngt bengaluru", "tree fell", "tree cut illegal"],
-  "BUDGET": ["bbmp budget unspent", "bbmp budget gap", "gba budget", "fund unutilized", "budget allocation bbmp"],
-  "ELECTED REPS": ["mla criminal", "mla arrested", "corporator arrested", "mla assets", "mla attendance"],
-  "WATER": ["bwssb", "water shortage", "water crisis bengaluru", "cauvery water", "borewell dry", "water tanker mafia"],
-  "WASTE": ["garbage crisis", "waste management bbmp", "landfill", "solid waste", "garbage contractor"],
+  "ROAD SAFETY": ["pothole", "road death", "road accident", "pedestrian death", "pedestrian killed", "road fatality", "road crash", "cave in", "cave-in", "road damage", "footpath broken", "signal broken"],
+  "CONTRACTORS": ["kridl", "blacklisted contractor", "contractor scam", "tender scam", "4(g)", "without tender", "contractor fraud", "bbmp contractor"],
+  "ENVIRONMENT": ["lake encroach", "lake pollut", "sewage", "untreated sewage", "lake dead fish", "bellandur foam", "kspcb action", "ngt bengaluru", "tree fell", "tree cut illegal", "sewage overflow"],
+  "BUDGET": ["bbmp budget", "gba budget", "fund unutilized", "budget allocation", "unspent fund"],
+  "ELECTED REPS": ["mla criminal", "mla arrested", "corporator arrested", "mla assets", "mla attendance", "corporator complaint"],
+  "WATER": ["bwssb", "water shortage", "water crisis", "cauvery water", "borewell dry", "water tanker", "water supply", "water problem", "water cut"],
+  "WASTE": ["garbage", "waste management", "landfill", "solid waste", "garbage contractor", "waste pickup", "trash"],
+  "POWER": ["bescom", "power cut", "power outage", "electricity", "transformer"],
 }
 
-const RED_CATEGORIES = new Set(["PUBLIC MONEY", "ROAD SAFETY", "CONTRACTORS", "ELECTED REPS"])
+const RED_CATEGORIES = new Set(["PUBLIC MONEY", "ROAD SAFETY", "CONTRACTORS", "ELECTED REPS", "POWER"])
 
 function parseRss(xml: string): { title: string; description: string; link: string; pubDate: string }[] {
   const items: { title: string; description: string; link: string; pubDate: string }[] = []
