@@ -70,6 +70,22 @@ function classifyArticle(title: string, description: string): string | null {
   return bestScore > 0 ? bestCategory : null
 }
 
+// ─── Headline cleanup ──────────────────────────────────────────
+function cleanHeadline(raw: string): string {
+  return raw
+    .replace(/\s*[-|]\s*(MSN|x\.com|Deccan Herald|The Hindu|Asianet Newsable|Times of India|NDTV|Hindustan Times|Economic Times|The News Minute|Citizen Matters|New Indian Express|Bangalore Mirror|India Today).*$/i, "")
+    .replace(/\s*[-|]\s*$/, "")
+    .replace(/#\w+/g, "")           // strip hashtags
+    .replace(/@\w+/g, "")           // strip @mentions
+    .replace(/\s{2,}/g, " ")        // collapse whitespace
+    .trim()
+}
+
+// Fuzzy dedup: normalize headline to a comparable key
+function dedupeKey(headline: string): string {
+  return headline.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim().substring(0, 60)
+}
+
 // ─── Handler ────────────────────────────────────────────────────
 export async function GET(req: Request) {
   if (!isAuthorized(req)) {
@@ -82,7 +98,15 @@ export async function GET(req: Request) {
   )
 
   let totalNew = 0
+  let skipped = 0
   const errors: string[] = []
+
+  // Load existing headlines for fuzzy dedup
+  const { data: existing } = await supabase
+    .from("city_pulse_facts")
+    .select("headline")
+    .eq("is_active", true)
+  const seenKeys = new Set((existing ?? []).map(f => dedupeKey(f.headline)))
 
   for (const feed of RSS_FEEDS) {
     try {
@@ -99,7 +123,16 @@ export async function GET(req: Request) {
         const category = classifyArticle(item.title, item.description)
         if (!category) continue
 
-        const headline = item.title.replace(/\s*\|.*$/, "").replace(/\s*-\s*$/, "").trim().substring(0, 200)
+        const headline = cleanHeadline(item.title).substring(0, 200)
+
+        // Skip junk: too short or just an account name
+        if (headline.length < 30) { skipped++; continue }
+
+        // Fuzzy dedup: skip if a similar headline already exists
+        const key = dedupeKey(headline)
+        if (seenKeys.has(key)) { skipped++; continue }
+        seenKeys.add(key)
+
         const severity = RED_CATEGORIES.has(category) ? "red" : "yellow"
 
         const { error } = await supabase.from("city_pulse_facts").upsert({
@@ -130,5 +163,5 @@ export async function GET(req: Request) {
     .lt("expires_at", new Date().toISOString())
     .eq("is_editorial", false)
 
-  return Response.json({ ok: true, new_facts: totalNew, errors })
+  return Response.json({ ok: true, new_facts: totalNew, skipped, errors })
 }
