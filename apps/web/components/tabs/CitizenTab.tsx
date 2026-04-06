@@ -3,7 +3,7 @@
 import { timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
 import { useState } from "react"
-import type { RedditPost, WardAirQuality, WardAmenities, WardBusStats, WardInfraStats, WardPotholes, WardRoadCrashes, WardStats, WardWaterQuality } from "@/lib/types"
+import type { WardAirQuality, WardAmenities, WardBusStats, WardInfraStats, WardPotholes, WardRoadCrashes, WardStats, WardWaterQuality } from "@/lib/types"
 import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
 import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
@@ -24,8 +24,6 @@ interface Props {
   airQuality: WardAirQuality | null
   amenities: WardAmenities | null
   waterQuality: WardWaterQuality[]
-  buzz: RedditPost[] | null
-  buzzLoading: boolean
   wardNo: number
   wardName: string
   assemblyConstituency: string
@@ -33,7 +31,7 @@ interface Props {
   signals?: CivicSignal[]
 }
 
-export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality, buzz, buzzLoading, wardNo, wardName, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
+export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality, wardNo, wardName, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   return (
     <>
@@ -384,12 +382,12 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
         </>
       )}
 
-      {/* Ward Pulse — geotagged signals from reddit ingestion agent */}
+      {/* Ward Pulse — geotagged civic signals from news + twitter RSS */}
       {signals.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-white/30 text-xs uppercase tracking-wider">Ward Pulse</p>
-            <FreshnessBadge label="7d" source="reddit / kaun" />
+            <FreshnessBadge label="7d" source="news + X" />
           </div>
           {signals.map(s => (
             <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block group">
@@ -407,34 +405,7 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
         </div>
       )}
 
-      {/* Community Buzz */}
-      {buzzLoading ? (
-        <div className="space-y-2">
-          <div className="h-3 w-32 bg-white/10 rounded animate-pulse" />
-          <SkeletonCard lines={2} />
-          <SkeletonCard lines={2} />
-        </div>
-      ) : buzz && buzz.length > 0 ? (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-white/30 text-xs uppercase tracking-wider">r/{city.subreddit} chatter</p>
-            <FreshnessBadge label="Live" source={`reddit.com/r/${city.subreddit}`} />
-          </div>
-          {buzz.map((post, i) => (
-            <a key={i} href={post.url} target="_blank" rel="noopener noreferrer" className="block group">
-              <div className="py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                <p className="text-white text-xs leading-snug group-hover:text-[#FF9933] transition-colors line-clamp-2">{post.title}</p>
-                <p className="text-white/25 text-xs mt-1">+{post.score} · {post.num_comments} comments · {timeAgo(post.created_utc)}</p>
-              </div>
-            </a>
-          ))}
-        </div>
-      ) : buzz !== null && buzz.length === 0 ? (
-        <div className="p-4 rounded-xl bg-white/5 text-center space-y-1">
-          <p className="text-white/25 text-sm">No recent community posts</p>
-          <p className="text-white/15 text-xs">r/{city.subreddit}</p>
-        </div>
-      ) : null}
+      {/* Community Buzz — Reddit removed, civic signals now cover this via Ward Pulse above */}
     </div>
     </>
   )
