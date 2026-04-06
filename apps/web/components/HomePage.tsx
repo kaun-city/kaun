@@ -81,6 +81,8 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
   )
 }
 
+interface WardOption { ward_no: number; ward_name: string; lat: number; lng: number }
+
 export default function HomePage() {
   const searchParams = useSearchParams()
   const [pinResult, setPinResult]     = useState<PinResult | null>(null)
@@ -96,6 +98,52 @@ export default function HomePage() {
   const [reportRefresh, setReportRefresh] = useState(0)
   const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
   const deepLinkHandled = useRef(false)
+
+  // Ward search state
+  const [searchOpen, setSearchOpen]     = useState(false)
+  const [searchQuery, setSearchQuery]   = useState("")
+  const [wardOptions, setWardOptions]   = useState<WardOption[]>([])
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  // Load ward centroids for search (once)
+  useEffect(() => {
+    fetch("https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson")
+      .then(r => r.json())
+      .then(data => {
+        const opts: WardOption[] = []
+        for (const f of data.features) {
+          const name = f.properties?.KGISWardName
+          const no = parseInt(f.properties?.KGISWardNo, 10)
+          if (!name || !no) continue
+          const coords = f.geometry?.type === "MultiPolygon" ? f.geometry.coordinates[0][0] : f.geometry?.coordinates?.[0]
+          if (!coords || coords.length === 0) continue
+          let sLat = 0, sLng = 0
+          for (const [lng, lat] of coords) { sLat += lat; sLng += lng }
+          opts.push({ ward_no: no, ward_name: name.replace(/ Ward$/i, ""), lat: sLat / coords.length, lng: sLng / coords.length })
+        }
+        setWardOptions(opts.sort((a, b) => a.ward_no - b.ward_no))
+      })
+      .catch(() => {})
+  }, [])
+
+  const searchResults = searchQuery.length >= 2
+    ? wardOptions.filter(w =>
+        w.ward_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(w.ward_no) === searchQuery.trim()
+      ).slice(0, 8)
+    : []
+
+  const handleSearchSelect = async (ward: WardOption) => {
+    setSearchOpen(false)
+    setSearchQuery("")
+    mapViewRef.current?.panTo(ward.lat, ward.lng)
+    setPinLoading(true)
+    setShowCard(true)
+    setOutOfBounds(false)
+    const result = await pinLookup(ward.lat, ward.lng)
+    setPinResult(result)
+    setPinLoading(false)
+  }
 
   // Handle ?ward=X or ?report=X deep links
   useEffect(() => {
@@ -238,18 +286,61 @@ export default function HomePage() {
 
       <div className="relative flex-1 min-w-0 h-full transition-all duration-300">
 
-        {/* Wordmark */}
-        <div className="absolute top-4 left-4 z-[900] select-none flex items-center gap-3">
-          <span className="text-white font-bold text-xl tracking-tight pointer-events-none">
+        {/* Wordmark + Search */}
+        <div className="absolute top-4 left-4 right-16 z-[900] select-none flex items-center gap-3">
+          <span className="text-white font-bold text-xl tracking-tight pointer-events-none shrink-0">
             KAUN<span className="text-[#FF9933]">?</span>
           </span>
           <a
             href="/how-it-works"
-            className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white/60 hover:text-white text-xs font-bold"
+            className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white/60 hover:text-white text-xs font-bold shrink-0"
             title="How it works & data sources"
           >
             i
           </a>
+
+          {/* Ward search */}
+          <div className="relative ml-auto z-[1000]" style={{ pointerEvents: "auto" }}>
+            {searchOpen ? (
+              <div className="flex items-center">
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  onBlur={() => setTimeout(() => { setSearchOpen(false); setSearchQuery("") }, 200)}
+                  placeholder="Search ward..."
+                  autoFocus
+                  className="w-48 md:w-56 bg-black/80 backdrop-blur-xl border border-white/20 rounded-lg px-3 py-1.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#FF9933]/40"
+                />
+                {searchResults.length > 0 && (
+                  <div className="absolute top-full mt-1 left-0 right-0 bg-[#111] border border-white/10 rounded-lg overflow-hidden shadow-xl max-h-60 overflow-y-auto z-[1000]">
+                    {searchResults.map(w => (
+                      <button
+                        key={w.ward_no}
+                        onMouseDown={() => handleSearchSelect(w)}
+                        className="w-full text-left px-3 py-2 hover:bg-white/10 transition-colors flex items-center justify-between"
+                      >
+                        <span className="text-white/80 text-xs">{w.ward_name}</span>
+                        <span className="text-white/20 text-[10px] font-mono">#{w.ward_no}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="flex items-center justify-center w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                title="Search wards"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5" strokeLinecap="round">
+                  <circle cx="10.5" cy="10.5" r="7" />
+                  <line x1="15.5" y1="15.5" x2="21" y2="21" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* City Pulse — accountability headlines before pin drop */}

@@ -42,6 +42,8 @@ const WARD_HOVER_STYLE = {
   weight: 1.5,
 }
 
+const LABEL_ZOOM_THRESHOLD = 14
+
 interface Props {
   onPin: (result: PinResult | null, lat: number, lng: number) => void
   resizeKey?: number
@@ -59,6 +61,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const reportLayerRef = useRef<any>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const labelLayerRef = useRef<any>(null)
   const onPinRef = useRef(onPin)
   const reportPickRef = useRef(reportPickMode)
   const onReportPinRef = useRef(onReportPin)
@@ -290,6 +294,58 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               })
             },
           }).addTo(map)
+
+          // Ward name labels — visible only when zoomed in
+          labelLayerRef.current = L.layerGroup()
+          for (const feature of data.features) {
+            const name = feature.properties?.KGISWardName
+            if (!name) continue
+            // Calculate centroid from polygon coordinates
+            const coords = feature.geometry?.coordinates
+            if (!coords) continue
+            let ring = coords[0]
+            // Handle MultiPolygon
+            if (feature.geometry.type === "MultiPolygon") ring = coords[0][0]
+            if (!ring || ring.length === 0) continue
+            let sumLat = 0, sumLng = 0
+            for (const [lng, lat] of ring) { sumLat += lat; sumLng += lng }
+            const centroid: [number, number] = [sumLat / ring.length, sumLng / ring.length]
+
+            const label = L.marker(centroid, {
+              icon: L.divIcon({
+                html: `<span style="
+                  font-size:9px;
+                  color:rgba(255,255,255,0.45);
+                  text-shadow:0 1px 3px rgba(0,0,0,0.8);
+                  white-space:nowrap;
+                  pointer-events:none;
+                  font-family:system-ui,sans-serif;
+                  letter-spacing:0.02em;
+                ">${name.replace(/ Ward$/i, "")}</span>`,
+                className: "",
+                iconAnchor: [0, 0],
+              }),
+              interactive: false,
+            })
+            labelLayerRef.current.addLayer(label)
+          }
+
+          // Show/hide labels based on zoom
+          function updateLabels() {
+            if (!mapRef.current || !labelLayerRef.current) return
+            if (mapRef.current.getZoom() >= LABEL_ZOOM_THRESHOLD) {
+              if (!mapRef.current.hasLayer(labelLayerRef.current)) {
+                labelLayerRef.current.addTo(mapRef.current)
+              }
+            } else {
+              if (mapRef.current.hasLayer(labelLayerRef.current)) {
+                mapRef.current.removeLayer(labelLayerRef.current)
+              }
+            }
+          }
+          map.on("zoomend", updateLabels)
+          updateLabels()
+
           setLoading(false)
         })
         .catch(() => setLoading(false)) // show map even if GeoJSON fails
