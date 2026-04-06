@@ -1,0 +1,31 @@
+name: Refresh CityPulse RSS
+
+on:
+  schedule:
+    # Daily at 06:00 UTC (11:30am IST)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger refresh-pulse API
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          URL="${SITE_URL:-https://kaun.city}/api/refresh-pulse"
+          echo "Calling $URL ..."
+          RESPONSE=$(curl -sf -w "\n%{http_code}" \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$URL")
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+          echo "HTTP $HTTP_CODE"
+          echo "$BODY" | jq . 2>/dev/null || echo "$BODY"
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "::error::refresh-pulse returned HTTP $HTTP_CODE"
+            exit 1
+          fi
