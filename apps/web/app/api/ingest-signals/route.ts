@@ -400,6 +400,17 @@ const GOOGLE_NEWS_QUERIES = [
   "Bengaluru+garbage+BBMP", "Bengaluru+traffic+signal+broken",
   "BBMP+road+repair", "Bengaluru+encroachment+complaint",
   "Bengaluru+water+supply+shortage", "BESCOM+power+cut+Bengaluru",
+  // Neighbourhood-specific queries (fills gap left by Reddit)
+  "BBMP+contractor+scam", "BBMP+corporator+complaint",
+  "Bengaluru+sewage+overflow", "Bengaluru+footpath+broken",
+  "BBMP+lake+encroachment", "Bengaluru+road+cave+in",
+]
+
+// Twitter/X via Google News RSS — captures tweets cited in news + viral civic threads
+const TWITTER_RSS_QUERIES = [
+  "site:x.com+BBMP+Bengaluru", "site:x.com+pothole+Bengaluru",
+  "site:x.com+BWSSB+water", "site:x.com+BESCOM+power+cut",
+  "site:x.com+Bengaluru+garbage", "site:x.com+BBMP+road",
 ]
 
 async function fetchGoogleNews(query: string): Promise<NewsItem[]> {
@@ -423,7 +434,7 @@ export async function GET(req: Request) {
   )
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
 
-  const results = { twitter: 0, news: 0, civic_media: 0, skipped: 0, errors: 0 }
+  const results = { twitter: 0, twitter_rss: 0, news: 0, civic_media: 0, skipped: 0, errors: 0 }
 
   // Helper: upsert one news/RSS item — fans out to multiple rows if multiple wards mentioned
   async function upsertNewsItem(item: NewsItem, sourceKey: string) {
@@ -447,6 +458,7 @@ export async function GET(req: Request) {
       )
       if (error) results.errors++
       else if (sourceKey === "gnews") results.news++
+      else if (sourceKey === "twitter_rss") results.twitter_rss++
       else results.civic_media++
     } else {
       // Fan out: one row per ward
@@ -457,33 +469,29 @@ export async function GET(req: Request) {
         )
         if (error) results.errors++
         else if (sourceKey === "gnews") results.news++
+        else if (sourceKey === "twitter_rss") results.twitter_rss++
         else results.civic_media++
       }
     }
   }
 
-  // ── Twitter/X civic signals ──
-  const xTweets = await fetchTwitter()
-  for (const tweet of xTweets) {
-    const cls = await classifySignal(openai, tweet.text, "")
-    if (!cls.is_civic) { results.skipped++; continue }
-
-    const geoHint = cls.ward_hint ? guessWardFromText(cls.ward_hint) : { ward_no: null, ward_name: null }
-    const geoText = guessWardFromText(tweet.text)
-    const { ward_no, ward_name } = geoHint.ward_no ? geoHint : geoText
-
-    const { error } = await supabase.from("civic_signals").upsert({
-      source: "twitter", source_id: tweet.id,
-      url: tweet.url,
-      author: tweet.author,
-      title: tweet.text.substring(0, 200),
-      body: tweet.text.substring(0, 500),
-      ward_no, ward_name, issue_type: cls.issue_type,
-      upvotes: tweet.metrics.likes + tweet.metrics.retweets,
-      signal_at: tweet.created_at,
-    }, { onConflict: "source,source_id", ignoreDuplicates: true })
-    if (error) results.errors++; else results.twitter++
-  }
+  // ── Twitter/X API (disabled — no credits; keeping code for future use) ──
+  // To re-enable: set TWITTER_BEARER_TOKEN env var and uncomment below
+  // const xTweets = await fetchTwitter()
+  // for (const tweet of xTweets) {
+  //   const cls = await classifySignal(openai, tweet.text, "")
+  //   if (!cls.is_civic) { results.skipped++; continue }
+  //   const geoHint = cls.ward_hint ? guessWardFromText(cls.ward_hint) : { ward_no: null, ward_name: null }
+  //   const geoText = guessWardFromText(tweet.text)
+  //   const { ward_no, ward_name } = geoHint.ward_no ? geoHint : geoText
+  //   const { error } = await supabase.from("civic_signals").upsert({
+  //     source: "twitter", source_id: tweet.id, url: tweet.url, author: tweet.author,
+  //     title: tweet.text.substring(0, 200), body: tweet.text.substring(0, 500),
+  //     ward_no, ward_name, issue_type: cls.issue_type,
+  //     upvotes: tweet.metrics.likes + tweet.metrics.retweets, signal_at: tweet.created_at,
+  //   }, { onConflict: "source,source_id", ignoreDuplicates: true })
+  //   if (error) results.errors++; else results.twitter++
+  // }
 
   // ── Direct civic RSS feeds (citizenmatters, Deccan Herald, The Hindu, etc.) ──
   // All feeds run every day — ignoreDuplicates handles seen items
@@ -497,12 +505,21 @@ export async function GET(req: Request) {
     }
   }
 
-  // ── Google News RSS — 2 random civic queries ─────────────────────────
-  const gnQueries = GOOGLE_NEWS_QUERIES.sort(() => Math.random() - 0.5).slice(0, 2)
+  // ── Google News RSS — 4 random civic queries (expanded to cover Reddit gap) ──
+  const gnQueries = GOOGLE_NEWS_QUERIES.sort(() => Math.random() - 0.5).slice(0, 4)
   for (const query of gnQueries) {
     const items = await fetchGoogleNews(query)
     for (const item of items) {
       await upsertNewsItem(item, "gnews")
+    }
+  }
+
+  // ── Twitter/X via Google News RSS — captures viral tweets cited in news ──
+  const twRssQueries = TWITTER_RSS_QUERIES.sort(() => Math.random() - 0.5).slice(0, 2)
+  for (const query of twRssQueries) {
+    const items = await fetchGoogleNews(query)
+    for (const item of items) {
+      await upsertNewsItem(item, "twitter_rss")
     }
   }
 
