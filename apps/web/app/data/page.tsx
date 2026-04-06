@@ -128,10 +128,10 @@ export default function DataPage() {
     { key: "ward_no", label: "#", format: r => String(r.ward_no) },
     { key: "ward_name", label: "Ward", format: r => r.ward_name },
     { key: "assembly_constituency", label: "AC", format: r => r.assembly_constituency ?? "--" },
-    { key: "spend_grand_total", label: "Total Spend", format: r => crores(r.spend_grand_total), align: "right" },
-    { key: "spend_roads_and_infrastructure", label: "Roads & Infra", format: r => crores(r.spend_roads_and_infrastructure), align: "right" },
-    { key: "spend_water_and_sanitation", label: "Water & Sanitation", format: r => crores(r.spend_water_and_sanitation), align: "right" },
-    { key: "pothole_complaints", label: "Potholes", format: r => num(r.pothole_complaints), align: "right" },
+    { key: "spend_grand_total", label: "Total Spend (2018-23)", format: r => crores(r.spend_grand_total), align: "right" },
+    { key: "spend_roads_and_infrastructure", label: "Roads & Infra (2018-23)", format: r => crores(r.spend_roads_and_infrastructure), align: "right" },
+    { key: "spend_water_and_sanitation", label: "Water & Sanitation (2018-23)", format: r => crores(r.spend_water_and_sanitation), align: "right" },
+    { key: "pothole_complaints", label: "Potholes (2022)", format: r => num(r.pothole_complaints), align: "right" },
     { key: "total_work_orders", label: "Work Orders", format: r => num(r.total_work_orders), align: "right" },
   ]
 
