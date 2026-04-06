@@ -159,7 +159,7 @@ export async function GET() {
       checkTable(supabase, "bbmp_work_orders", "created_at"),
       checkTable(supabase, "contractor_profiles", "updated_at"),
       checkTable(supabase, "ward_reports", "reported_at"),
-      checkTable(supabase, "ask_kaun_logs", "created_at"),
+      checkTable(supabase, "ask_kaun_logs", "asked_at"),
       checkTable(supabase, "civic_signals", "signal_at"),
       checkTable(supabase, "community_facts", "created_at"),
       checkTable(supabase, "city_pulse_facts", "created_at"),
@@ -207,10 +207,12 @@ export async function GET() {
         .limit(15)
         .then((r: { data: RecentReport[] | null }) => r.data ?? []),
       supabase.from("ask_kaun_logs")
-        .select("ward_name,question,created_at")
-        .order("created_at", { ascending: false })
+        .select("ward_name,question,asked_at")
+        .order("asked_at", { ascending: false })
         .limit(15)
-        .then((r: { data: RecentQuestion[] | null }) => r.data ?? []),
+        .then((r: { data: Array<{ ward_name: string; question: string; asked_at: string }> | null }) =>
+          (r.data ?? []).map(q => ({ ward_name: q.ward_name, question: q.question, created_at: q.asked_at }))
+        ),
       supabase.from("civic_signals")
         .select("ward_no,issue_type,title,source,signal_at")
         .order("signal_at", { ascending: false })
