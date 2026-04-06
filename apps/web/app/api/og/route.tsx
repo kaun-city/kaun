@@ -68,13 +68,13 @@ export async function GET(req: Request) {
 
         {/* Ward name */}
         <div style={{ display: "flex", flexDirection: "column", marginTop: "48px" }}>
-          <div style={{ color: "white", fontSize: "76px", fontWeight: 800, letterSpacing: "-2px" }}>
+          <span style={{ color: "white", fontSize: "76px", fontWeight: 800, letterSpacing: "-2px" }}>
             {wardName}
-          </div>
+          </span>
           {constituency ? (
-            <div style={{ display: "flex", color: "rgba(255,255,255,0.35)", fontSize: "24px", marginTop: "10px" }}>
-              Ward {wardNo} · {constituency} · Bengaluru
-            </div>
+            <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "24px", marginTop: "10px" }}>
+              Ward {wardNo} - {constituency} - Bengaluru
+            </span>
           ) : null}
         </div>
 
@@ -89,12 +89,12 @@ export async function GET(req: Request) {
             borderRadius: "16px",
             padding: "28px 40px",
           }}>
-            <div style={{ display: "flex", color: "#FF9933", fontSize: "72px", fontWeight: 900, marginRight: "24px" }}>
+            <span style={{ color: "#FF9933", fontSize: "72px", fontWeight: 900, marginRight: "24px" }}>
               {stat}
-            </div>
-            <div style={{ display: "flex", color: "rgba(255,255,255,0.65)", fontSize: "28px", fontWeight: 400 }}>
+            </span>
+            <span style={{ color: "rgba(255,255,255,0.65)", fontSize: "28px", fontWeight: 400 }}>
               {statLabel}
-            </div>
+            </span>
           </div>
         ) : null}
 
@@ -103,12 +103,12 @@ export async function GET(req: Request) {
 
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div style={{ display: "flex", color: "rgba(255,255,255,0.25)", fontSize: "20px" }}>
+          <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "20px" }}>
             Find out who is accountable for your ward
-          </div>
-          <div style={{ display: "flex", color: "rgba(255,255,255,0.55)", fontSize: "22px", fontWeight: 700 }}>
+          </span>
+          <span style={{ color: "rgba(255,255,255,0.55)", fontSize: "22px", fontWeight: 700 }}>
             kaun.city
-          </div>
+          </span>
         </div>
       </div>
     ),

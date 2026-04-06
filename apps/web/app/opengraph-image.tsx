@@ -62,12 +62,12 @@ export default function Image() {
 
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ color: "rgba(255,255,255,0.25)", fontSize: "20px" }}>
+          <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "20px" }}>
             Pin a place. Know who is responsible.
-          </div>
-          <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "22px", fontWeight: 700, letterSpacing: "0.5px" }}>
+          </span>
+          <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "22px", fontWeight: 700, letterSpacing: "0.5px" }}>
             kaun.city
-          </div>
+          </span>
         </div>
       </div>
     ),
