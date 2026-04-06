@@ -21,7 +21,8 @@
     "next": "^16.1.6",
     "openai": "^6.27.0",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "twitter-api-v2": "^1.29.0"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.14",

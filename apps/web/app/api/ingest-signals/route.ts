@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import OpenAI from "openai"
+import { TwitterApi } from "twitter-api-v2"
 
 export const runtime  = "nodejs"
 export const maxDuration = 60
@@ -16,45 +17,95 @@ function isAuthorized(req: Request): boolean {
   return false
 }
 
-// ─── Reddit ──────────────────────────────────────────────────────────────────
+// ─── Twitter/X ──────────────────────────────────────────────────────────────
 
-const REDDIT_QUERIES = [
-  "pothole", "bbmp", "traffic signal broken", "flooding", "garbage",
-  "encroachment", "road damage", "water supply", "bescom", "bwssb",
+const TWITTER_QUERIES = [
+  "BBMP pothole", "BBMP garbage", "Bengaluru flooding ward",
+  "Bengaluru traffic signal broken", "BWSSB water supply",
+  "BESCOM power cut Bengaluru", "BBMP road repair",
+  "Bengaluru encroachment", "BBMP contractor",
 ]
 
-interface RedditPost {
+// Known civic accounts to pull from if search endpoint is unavailable (Free tier)
+const CIVIC_ACCOUNTS = [
+  "ABORAD_BBMP", "OfficialBBMP", "BWSSBOnline", "BaboradBbmp",
+  "BMaborad", "BESCOMOfficial",
+]
+
+interface NormalizedTweet {
   id: string
-  title: string
-  selftext: string
-  url: string
+  text: string
   author: string
-  score: number
-  created_utc: number
-  permalink: string
+  created_at: string
+  url: string
+  metrics: { likes: number; retweets: number }
 }
 
-async function fetchReddit(subreddit: string, query: string): Promise<RedditPost[]> {
-  // Try old.reddit.com first (less aggressive bot blocking from cloud IPs)
-  const urls = [
-    `https://old.reddit.com/r/${subreddit}/search.json?q=${encodeURIComponent(query)}&restrict_sr=1&sort=new&limit=10&t=week`,
-    `https://www.reddit.com/r/${subreddit}/search.json?q=${encodeURIComponent(query)}&restrict_sr=1&sort=new&limit=10&t=week`,
-  ]
-  for (const url of urls) {
-    try {
-      const res = await fetch(url, {
-        headers: { "User-Agent": "kaun-city-civic-bot/1.0 (https://kaun.city; civic accountability tool)" },
+async function fetchTwitter(): Promise<NormalizedTweet[]> {
+  const bearerToken = process.env.TWITTER_BEARER_TOKEN?.trim()
+  if (!bearerToken) return []
+
+  const client = new TwitterApi(bearerToken).readOnly
+  const tweets: NormalizedTweet[] = []
+  const tweetFields = ["created_at", "public_metrics", "author_id"] as const
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+
+  // Try search/recent first (requires Basic tier or above)
+  try {
+    const queries = TWITTER_QUERIES.sort(() => Math.random() - 0.5).slice(0, 2)
+    for (const query of queries) {
+      const result = await client.v2.search(query, {
+        max_results: 10,
+        "tweet.fields": tweetFields.join(","),
+        start_time: oneWeekAgo.toISOString(),
       })
-      if (!res.ok) continue
-      const text = await res.text()
-      // Reddit sometimes returns HTML instead of JSON when blocking
-      if (!text.startsWith("{") && !text.startsWith("[")) continue
-      const data = JSON.parse(text)
-      const posts = (data?.data?.children ?? []).map((c: { data: RedditPost }) => c.data)
-      if (posts.length > 0) return posts
+      for (const tweet of result.data?.data ?? []) {
+        tweets.push({
+          id: tweet.id,
+          text: tweet.text,
+          author: tweet.author_id ?? "unknown",
+          created_at: tweet.created_at ?? new Date().toISOString(),
+          url: `https://x.com/i/status/${tweet.id}`,
+          metrics: {
+            likes: tweet.public_metrics?.like_count ?? 0,
+            retweets: tweet.public_metrics?.retweet_count ?? 0,
+          },
+        })
+      }
+    }
+    if (tweets.length > 0) return tweets
+  } catch (e) {
+    // Search unavailable (Free tier returns 403) -- fall through to timeline
+    console.log("twitter search unavailable, trying timelines:", e instanceof Error ? e.message : String(e))
+  }
+
+  // Fallback: pull recent tweets from known civic accounts (works on Free tier)
+  for (const username of CIVIC_ACCOUNTS.slice(0, 3)) {
+    try {
+      const user = await client.v2.userByUsername(username)
+      if (!user.data) continue
+      const timeline = await client.v2.userTimeline(user.data.id, {
+        max_results: 10,
+        "tweet.fields": tweetFields.join(","),
+        start_time: oneWeekAgo.toISOString(),
+      })
+      for (const tweet of timeline.data?.data ?? []) {
+        tweets.push({
+          id: tweet.id,
+          text: tweet.text,
+          author: username,
+          created_at: tweet.created_at ?? new Date().toISOString(),
+          url: `https://x.com/${username}/status/${tweet.id}`,
+          metrics: {
+            likes: tweet.public_metrics?.like_count ?? 0,
+            retweets: tweet.public_metrics?.retweet_count ?? 0,
+          },
+        })
+      }
     } catch { continue }
   }
-  return []
+
+  return tweets
 }
 
 // ─── GPT classification ───────────────────────────────────────────────────────
@@ -372,7 +423,7 @@ export async function GET(req: Request) {
   )
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
 
-  const results = { reddit: 0, news: 0, civic_media: 0, skipped: 0, errors: 0 }
+  const results = { twitter: 0, news: 0, civic_media: 0, skipped: 0, errors: 0 }
 
   // Helper: upsert one news/RSS item — fans out to multiple rows if multiple wards mentioned
   async function upsertNewsItem(item: NewsItem, sourceKey: string) {
@@ -411,30 +462,27 @@ export async function GET(req: Request) {
     }
   }
 
-  // ── Reddit (may fail from cloud IPs — keeping for future OAuth upgrade) ──
-  const redditQueries = REDDIT_QUERIES.sort(() => Math.random() - 0.5).slice(0, 2)
-  for (const query of redditQueries) {
-    const posts = await fetchReddit("bangalore", query)
-    for (const post of posts) {
-      const text = `${post.title} ${post.selftext}`
-      const ageHours = (Date.now() / 1000 - post.created_utc) / 3600
-      if (ageHours > 168) { results.skipped++; continue }
-      const cls = await classifySignal(openai, post.title, post.selftext)
-      if (!cls.is_civic) { results.skipped++; continue }
-      const geoHint = cls.ward_hint ? guessWardFromText(cls.ward_hint) : { ward_no: null, ward_name: null }
-      const geoText = guessWardFromText(text)
-      const { ward_no, ward_name } = geoHint.ward_no ? geoHint : geoText
-      const { error } = await supabase.from("civic_signals").upsert({
-        source: "reddit", source_id: post.id,
-        url: `https://reddit.com${post.permalink}`,
-        author: post.author, title: post.title,
-        body: post.selftext.substring(0, 500),
-        ward_no, ward_name, issue_type: cls.issue_type,
-        upvotes: post.score,
-        signal_at: new Date(post.created_utc * 1000).toISOString(),
-      }, { onConflict: "source,source_id", ignoreDuplicates: true })
-      if (error) results.errors++; else results.reddit++
-    }
+  // ── Twitter/X civic signals ──
+  const xTweets = await fetchTwitter()
+  for (const tweet of xTweets) {
+    const cls = await classifySignal(openai, tweet.text, "")
+    if (!cls.is_civic) { results.skipped++; continue }
+
+    const geoHint = cls.ward_hint ? guessWardFromText(cls.ward_hint) : { ward_no: null, ward_name: null }
+    const geoText = guessWardFromText(tweet.text)
+    const { ward_no, ward_name } = geoHint.ward_no ? geoHint : geoText
+
+    const { error } = await supabase.from("civic_signals").upsert({
+      source: "twitter", source_id: tweet.id,
+      url: tweet.url,
+      author: tweet.author,
+      title: tweet.text.substring(0, 200),
+      body: tweet.text.substring(0, 500),
+      ward_no, ward_name, issue_type: cls.issue_type,
+      upvotes: tweet.metrics.likes + tweet.metrics.retweets,
+      signal_at: tweet.created_at,
+    }, { onConflict: "source,source_id", ignoreDuplicates: true })
+    if (error) results.errors++; else results.twitter++
   }
 
   // ── Direct civic RSS feeds (citizenmatters, Deccan Herald, The Hindu, etc.) ──
