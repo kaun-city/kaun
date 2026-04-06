@@ -260,8 +260,6 @@ export default function WardCard({ result, loading, onClose }: Props) {
               airQuality={ward.airQuality ?? null}
               amenities={ward.amenities ?? null}
               waterQuality={ward.waterQuality ?? []}
-              buzz={ward.buzz}
-              buzzLoading={ward.buzzLoading}
               wardNo={result.ward_no ?? 0}
               wardName={result.ward_name ?? ""}
               assemblyConstituency={result.assembly_constituency ?? ""}
