@@ -22,6 +22,11 @@ const RSS_FEEDS = [
   { name: "Google News BWSSB", url: "https://news.google.com/rss/search?q=BWSSB+bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "The News Minute",   url: "https://www.thenewsminute.com/feed" },
   { name: "Citizen Matters",   url: "https://citizenmatters.in/feed" },
+  // Twitter/X civic signals via Google News RSS
+  { name: "X/BBMP",            url: "https://news.google.com/rss/search?q=site:x.com+BBMP+Bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "X/Pothole",         url: "https://news.google.com/rss/search?q=site:x.com+pothole+Bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "X/BWSSB",           url: "https://news.google.com/rss/search?q=site:x.com+BWSSB+water+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "X/BESCOM",          url: "https://news.google.com/rss/search?q=site:x.com+BESCOM+power+cut+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
 ]
 
 const CIVIC_KEYWORDS: Record<string, string[]> = {
