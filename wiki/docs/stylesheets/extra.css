@@ -30,30 +30,37 @@
   box-shadow: none;
 }
 
-/* Hide the default Material site-name and page-title text in the header.
-   We replace with a custom KAUN? wordmark via pseudo-elements on the title. */
-.md-header__title .md-ellipsis {
-  display: none;
-}
-
+/* Custom KAUN? wordmark in the header.
+   Material's .md-header__title normally contains the site name and the
+   current page title via .md-header__ellipsis > .md-header__topic spans.
+   We hide those entirely and render our own wordmark via pseudo-elements
+   attached to .md-header__title. The !important override is deliberate —
+   Material's own rules set display on .md-header__ellipsis with high
+   specificity at certain breakpoints, and we need to win at all widths. */
 .md-header__title {
   font-weight: 700;
   letter-spacing: -0.01em;
+  display: flex !important;
+  align-items: center;
 }
-/* Attach the wordmark to the first header-topic wrapper (site name slot)
-   so it lives inline where the site name used to be. */
-.md-header__title .md-header__topic:first-of-type::before {
+.md-header__title .md-header__ellipsis,
+.md-header__title .md-header__topic,
+.md-header__title .md-ellipsis {
+  display: none !important;
+}
+.md-header__title::before {
   content: "KAUN";
   color: white;
   font-weight: 800;
   font-size: 1rem;
   letter-spacing: -0.01em;
 }
-.md-header__title .md-header__topic:first-of-type::after {
+.md-header__title::after {
   content: "?";
   color: #FF9933;
   font-weight: 800;
   font-size: 1rem;
+  margin-right: 12px;
 }
 
 /* Tabs (top navigation) */
