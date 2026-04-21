@@ -61,4 +61,4 @@ The [kaun.city view for Ward 183](https://kaun.city/?ward=183) covers everything
 
 ---
 
-_Auto-generated on 2026-04-21. If anything looks wrong, the source of truth is the kaun.city Supabase database — please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the ward number and the correction._
+_Auto-generated from the kaun.city public APIs. If anything looks wrong, the source of truth is the kaun.city Supabase database — please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the ward number and the correction._

@@ -216,7 +216,7 @@ function renderWardPage(w, mla, contractorsHere, workOrdersHere) {
   lines.push("")
   lines.push("---")
   lines.push("")
-  lines.push(`_Auto-generated on ${TODAY}. If anything looks wrong, the source of truth is the kaun.city Supabase database — please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the ward number and the correction._`)
+  lines.push(`_Auto-generated from the kaun.city public APIs. If anything looks wrong, the source of truth is the kaun.city Supabase database — please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the ward number and the correction._`)
   lines.push("")
 
   return lines.join("\n")
