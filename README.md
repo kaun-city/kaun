@@ -6,6 +6,8 @@ Civic accountability for Indian cities — drop a pin anywhere in Bengaluru and 
 
 **[kaun.city](https://kaun.city)** — live for Bengaluru (243 wards). Open source. City-agnostic architecture.
 
+**[data.kaun.city](https://data.kaun.city)** — the civic data commons that powers kaun.city. Every source, methodology, and dataset used by the platform is documented here with citations, so anyone (journalists, researchers, citizens, other civic tech builders) can verify, reuse, or challenge the data.
+
 ---
 
 ## What You See
@@ -50,7 +52,8 @@ All data is sourced from public records and open datasets.
 | Ward boundaries (243 wards, PostGIS) | [datameet](https://github.com/datameet/Municipal_Spatial_Data/tree/master/Bangalore) |
 | MLA affidavits (criminal cases, assets) | Election Commission via [MyNeta](https://www.myneta.info) |
 | MLA performance (attendance, LAD, questions) | CIVIC Bengaluru via [opencity.in](https://opencity.in) |
-| BBMP budget, work orders, grievances, tenders | [opencity.in](https://opencity.in) / BBMP |
+| BBMP budget, work orders, grievances | [opencity.in](https://opencity.in) / BBMP |
+| Tenders across BBMP, BWSSB, BDA, BESCOM | [KPPP](https://kppp.karnataka.gov.in) (Karnataka Public Procurement Portal) |
 | Ward amenities (hospitals, ATMs, toilets, etc.) | [OpenStreetMap](https://www.openstreetmap.org) via Overpass API |
 | Water body quality (pH, BOD, DO, coliform) | KSPCB / CPCB |
 | Traffic signals | OpenStreetMap via Overpass API |
@@ -70,40 +73,51 @@ All data is sourced from public records and open datasets.
 
 | Layer | Tech |
 |---|---|
-| Frontend | Next.js 15 + Leaflet.js + Tailwind CSS |
+| Frontend — kaun.city | Next.js 15 + Leaflet.js + Tailwind CSS, hosted on Vercel |
+| Wiki — data.kaun.city | MkDocs Material, hosted on GitHub Pages |
+| Public JSON APIs | Next.js route handlers under `apps/web/app/api/data/*`, CORS-open, 1-hour cache |
 | Database | Supabase (PostgreSQL + PostGIS) |
 | AI | OpenAI GPT-4o (Ask Kaun tools) |
-| Hosting | Vercel |
 | DNS / Protection | Cloudflare (Bot Fight Mode + WAF) |
 | Monitoring | [kaun.city/status](https://kaun.city/status) |
 
-No separate API server. Frontend talks directly to Supabase via PostgREST + RPC.
+No separate API server. The Next.js app talks directly to Supabase via PostgREST + RPC. The wiki is a static site built from `wiki/` and deployed on push to `master`.
 
 ### Data Pipeline
 
+Each government portal has one adapter. Every adapter writes to Supabase in a normalized shape, so adding a new source is one new file — no changes to the frontend, APIs, or wiki.
+
 ```
 scripts/
-├── seed-boundaries.mjs          # Load ward GeoJSON to PostGIS
-├── seed-work-orders-full.mjs    # Full BBMP work orders (243 wards) + contractor profiles
+├── adapters/                    # One file per portal
+│   └── kppp.mjs                 # KPPP tenders (BBMP, BWSSB, BDA, BESCOM)
+├── lib/
+│   └── db.mjs                   # Shared Supabase helpers
+├── seed-boundaries.mjs          # Ward GeoJSON → PostGIS
+├── seed-work-orders-full.mjs    # BBMP work orders + contractor profiles
 ├── seed-osm-amenities.mjs       # 15 amenity categories from OpenStreetMap
 ├── seed-water-quality.mjs       # Lake water quality from KSPCB
 ├── seed-mla-contacts.mjs        # MLA contact info from MyNeta
 ├── seed-mla-lad-funds.mjs       # LAD fund data from opencity.in
-├── seed-kgis-ward-data.mjs      # Trees, clinics, waste centers from KGIS
+├── seed-kgis-ward-data.mjs      # Trees, clinics, waste centres from KGIS
 ├── scrape-blacklists.mjs        # Cross-ref contractors against debarment lists
-├── refresh-grievances.mjs       # BBMP complaint data from opencity.in
-├── refresh-city-pulse.mjs       # Civic news from RSS feeds (daily cron)
-├── refresh-kppp.mjs             # KPPP tender sync
-├── refresh-sakala.mjs           # Service delivery performance
-└── refresh-trade-licenses.mjs   # Trade license stats
+├── refresh-grievances.mjs       # BBMP complaints from opencity.in
+├── refresh-city-pulse.mjs       # Civic news from RSS feeds
+├── refresh-sakala-browser.mjs   # Sakala service delivery (local Playwright — site blocks cloud IPs)
+└── refresh-trade-licenses.mjs   # Trade licence stats
 ```
 
-### Vercel Crons
+### Scheduled Refreshes
 
-| Schedule | Endpoint | Purpose |
-|---|---|---|
-| Daily 2am UTC | `/api/ingest-signals` | Reddit civic signal ingestion |
-| Daily 6am UTC | `/api/refresh-pulse` | RSS news classification for City Pulse |
+| Schedule | Job | Runs on | Purpose |
+|---|---|---|---|
+| Daily 02:00 UTC | `/api/ingest-signals` | Vercel cron | RSS + Twitter-via-Google-News civic signal ingestion |
+| Daily 06:00 UTC | `refresh-pulse` | GitHub Actions | Civic news classification for City Pulse ticker |
+| Sundays 01:00 UTC | `refresh-kppp` | GitHub Actions | KPPP tenders across BBMP / BWSSB / BDA / BESCOM |
+| 2nd of month | `refresh-grievances` | GitHub Actions | BBMP grievance counts |
+| 3rd of month | `refresh-trade-licenses` | GitHub Actions | Trade licence stats |
+| 1st of month (manual) | `refresh-sakala` | Local Playwright | Sakala service delivery (cloud-blocked) |
+| On push to `master` | `deploy-wiki` | GitHub Actions | Build MkDocs and deploy data.kaun.city |
 
 ---
 
@@ -127,7 +141,8 @@ Kaun is designed to work for any Indian city. To add yours:
 1. **Ward boundary GeoJSON** — usually available via datameet or municipal GIS portals
 2. **City config** — create a file in `apps/web/lib/cities/` (see `bengaluru.ts` as template)
 3. **Elected rep data** — MyNeta has every state
-4. **Seed scripts** — adapt the existing scripts for your city's data sources
+4. **Adapters** — write one adapter per data portal your city has (see `scripts/adapters/kppp.mjs` as template) and add a GitHub Actions workflow to cron it
+5. **Wiki** — add a `wiki/docs/<your-city>/` folder documenting what data you have and where it came from
 
 Open a [City Request issue](https://github.com/kaun-city/kaun/issues/new?template=city-request.yml&labels=city-request) if you want to help bring Kaun to your city.
 
