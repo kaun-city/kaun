@@ -23,34 +23,37 @@
   --md-code-fg-color: rgba(255, 255, 255, 0.87);
 }
 
-/* Header — minimal, kaun-style wordmark vibe */
+/* Header — minimal, kaun-style wordmark */
 [data-md-color-scheme="slate"] .md-header {
   background-color: #0A0A0A;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: none;
 }
 
+/* Hide the default Material site-name and page-title text in the header.
+   We replace with a custom KAUN? wordmark via pseudo-elements on the title. */
+.md-header__title .md-ellipsis {
+  display: none;
+}
+
 .md-header__title {
   font-weight: 700;
   letter-spacing: -0.01em;
 }
-
-.md-header__title::before {
+/* Attach the wordmark to the first header-topic wrapper (site name slot)
+   so it lives inline where the site name used to be. */
+.md-header__title .md-header__topic:first-of-type::before {
   content: "KAUN";
   color: white;
   font-weight: 800;
-  margin-right: 2px;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
 }
-.md-header__title::after {
+.md-header__title .md-header__topic:first-of-type::after {
   content: "?";
   color: #FF9933;
   font-weight: 800;
-  margin-right: 12px;
-}
-.md-header__topic:first-child .md-ellipsis {
-  font-weight: 400;
-  opacity: 0.6;
-  font-size: 0.9em;
+  font-size: 1rem;
 }
 
 /* Tabs (top navigation) */
