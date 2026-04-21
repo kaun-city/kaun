@@ -1,288 +1,204 @@
 "use client"
 
-import { useState, useEffect, useCallback, useMemo } from "react"
+const API_BASE = "https://kaun.city/api/data"
 
-interface WardRow {
-  ward_no: number
-  ward_name: string
-  assembly_constituency: string
-  zone: string | null
-  spend_grand_total: number | null
-  spend_roads_and_infrastructure: number | null
-  spend_water_and_sanitation: number | null
-  spend_period: string | null
-  pothole_complaints: number | null
-  total_work_orders: number
-}
+const ENDPOINTS = [
+  {
+    name: "Wards",
+    path: "/api/data/wards",
+    description: "All 243 Bengaluru wards with assembly constituency and zone mapping.",
+    params: [
+      { name: "ward", description: "Ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality)" },
+    ],
+    examples: [
+      { label: "All wards", url: `${API_BASE}/wards` },
+      { label: "Ward 42 detail", url: `${API_BASE}/wards?ward=42` },
+    ],
+  },
+  {
+    name: "Contractors",
+    path: "/api/data/contractors",
+    description: "1,300+ contractor profiles with entity resolution (phone-based alias grouping), total contract value, ward spread, deduction rates, and blacklist flags.",
+    params: [
+      { name: "ward", description: "Filter contractors active in a specific ward" },
+      { name: "flagged", description: "Set to 'true' to get only blacklist-flagged contractors" },
+      { name: "limit", description: "Max results (default 100, max 500)" },
+    ],
+    examples: [
+      { label: "Top contractors by value", url: `${API_BASE}/contractors?limit=10` },
+      { label: "Flagged contractors", url: `${API_BASE}/contractors?flagged=true` },
+      { label: "Contractors in ward 42", url: `${API_BASE}/contractors?ward=42` },
+    ],
+  },
+  {
+    name: "Elected Representatives",
+    path: "/api/data/reps",
+    description: "MLA and corporator data with criminal cases, assets, attendance, LAD fund utilization, and report cards from EC affidavits.",
+    params: [
+      { name: "constituency", description: "Filter by assembly constituency name (partial match)" },
+      { name: "role", description: "Filter by role: MLA, MP, CORPORATOR" },
+    ],
+    examples: [
+      { label: "All MLAs", url: `${API_BASE}/reps?role=MLA` },
+      { label: "Yelahanka constituency", url: `${API_BASE}/reps?constituency=Yelahanka` },
+    ],
+  },
+  {
+    name: "Spending",
+    path: "/api/data/spending",
+    description: "BBMP budget, work orders, ward-level spending by category, and property tax collections.",
+    params: [
+      { name: "ward", description: "Ward number for ward-specific data" },
+      { name: "type", description: "budget, work-orders, ward-spending, property-tax, or all" },
+    ],
+    examples: [
+      { label: "City budget", url: `${API_BASE}/spending?type=budget` },
+      { label: "Work orders ward 42", url: `${API_BASE}/spending?ward=42&type=work-orders` },
+    ],
+  },
+  {
+    name: "CSV Export",
+    path: "/api/export",
+    description: "Full ward-level dataset as downloadable CSV. Demographics, infrastructure, spending by category, potholes, crashes, air quality, work order counts. Source attribution footer included.",
+    params: [
+      { name: "type", description: "all, ward-spending, or ward-demographics" },
+    ],
+    examples: [
+      { label: "Full dataset (CSV)", url: "https://kaun.city/api/export?type=all" },
+    ],
+  },
+]
 
-type SortKey = keyof WardRow
-type SortDir = "asc" | "desc"
+const DATA_SOURCES = [
+  { name: "BBMP Work Orders", records: "7,136", period: "2024-25", source: "opencity.in", url: "https://data.opencity.in" },
+  { name: "Contractor Profiles", records: "1,305", period: "2024-25", source: "Entity-resolved from work orders", url: null },
+  { name: "Elected Representatives", records: "28 ACs", period: "2023 election", source: "MyNeta / EC affidavits", url: "https://myneta.info" },
+  { name: "Rep Report Cards", records: "28 MLAs", period: "2018-23 term", source: "CIVIC Bengaluru via opencity.in", url: "https://opencity.in" },
+  { name: "Ward Boundaries", records: "243 wards", period: "2022 delimitation", source: "datameet", url: "https://github.com/datameet" },
+  { name: "Traffic Signals", records: "Per ward", period: "2026", source: "OpenStreetMap Overpass API", url: "https://openstreetmap.org" },
+  { name: "Bus Stops + Routes", records: "Per ward", period: "2026", source: "BMTC via opencity.in", url: "https://data.opencity.in" },
+  { name: "Ward Spending", records: "198 wards", period: "2018-2023", source: "BBMP work orders categorised", url: "https://data.opencity.in/dataset/bbmp-work-orders-categorised-2018-2023" },
+  { name: "Pothole Complaints", records: "Per ward", period: "2022", source: "Fix My Street via opencity.in", url: "https://opencity.in" },
+  { name: "Road Crashes", records: "Per ward", period: "2024-25", source: "Bengaluru Traffic Police", url: null },
+  { name: "Air Quality", records: "Per station", period: "2024-25", source: "KSPCB / CPCB", url: null },
+  { name: "BBMP Budget", records: "City-wide", period: "2025-26", source: "BBMP via opencity.in", url: "https://opencity.in" },
+  { name: "Blacklist Cross-Reference", records: "4 flagged", period: "Live", source: "GeM, World Bank, CPPP, KPCL, BNP/RTI", url: null },
+]
 
-function crores(val: number | null): string {
-  if (val === null || val === 0) return "--"
-  return `Rs ${(val / 10000000).toFixed(1)} Cr`
-}
-
-function num(val: number | null): string {
-  if (val === null) return "--"
-  return val.toLocaleString("en-IN")
-}
-
-export default function DataPage() {
-  const [rows, setRows] = useState<WardRow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [search, setSearch] = useState("")
-  const [sortKey, setSortKey] = useState<SortKey>("ward_no")
-  const [sortDir, setSortDir] = useState<SortDir>("asc")
-
-  const fetchData = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const SUPA_URL = "https://xgygxfyfsvccqqmtboeu.supabase.co"
-      const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneWd4Znlmc3ZjY3FxbXRib2V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NDg1NzIsImV4cCI6MjA4ODEyNDU3Mn0.5dzsC5-Ex-Umk-9DTM5xNsQB-t0my-MtWq9WUPhidD4"
-      const headers = { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` }
-
-      const [wardsRes, spendRes, potholesRes, woRes] = await Promise.all([
-        fetch(`${SUPA_URL}/rest/v1/wards?city_id=eq.bengaluru&select=ward_no,ward_name,assembly_constituency,zone&order=ward_no`, { headers }),
-        fetch(`${SUPA_URL}/rest/v1/ward_spend_category?select=ward_no,grand_total,roads_and_infrastructure,water_and_sanitation,period&order=ward_no`, { headers }),
-        fetch(`${SUPA_URL}/rest/v1/ward_potholes?select=ward_no,complaints&order=ward_no`, { headers }),
-        fetch(`${SUPA_URL}/rest/v1/bbmp_work_orders?select=ward_no&order=ward_no`, { headers }),
-      ])
-
-      const [wards, spend, potholes, wos] = await Promise.all([
-        wardsRes.json(), spendRes.json(), potholesRes.json(), woRes.json(),
-      ])
-
-      const spendMap = new Map(spend.map((s: { ward_no: number; grand_total: number; roads_and_infrastructure: number; water_and_sanitation: number; period: string }) =>
-        [s.ward_no, s]
-      ))
-      const potholesMap = new Map(potholes.map((p: { ward_no: number; complaints: number }) =>
-        [p.ward_no, p.complaints]
-      ))
-      const woCount = new Map<number, number>()
-      for (const wo of wos) {
-        woCount.set(wo.ward_no, (woCount.get(wo.ward_no) ?? 0) + 1)
-      }
-
-      const combined: WardRow[] = wards.map((w: { ward_no: number; ward_name: string; assembly_constituency: string; zone: string | null }) => {
-        const s = spendMap.get(w.ward_no) as { grand_total: number; roads_and_infrastructure: number; water_and_sanitation: number; period: string } | undefined
-        return {
-          ward_no: w.ward_no,
-          ward_name: w.ward_name,
-          assembly_constituency: w.assembly_constituency,
-          zone: w.zone,
-          spend_grand_total: s?.grand_total ?? null,
-          spend_roads_and_infrastructure: s?.roads_and_infrastructure ?? null,
-          spend_water_and_sanitation: s?.water_and_sanitation ?? null,
-          spend_period: s?.period ?? null,
-          pothole_complaints: potholesMap.get(w.ward_no) ?? null,
-          total_work_orders: woCount.get(w.ward_no) ?? 0,
-        }
-      })
-
-      setRows(combined)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to fetch")
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => { fetchData() }, [fetchData])
-
-  const handleSort = (key: SortKey) => {
-    if (sortKey === key) {
-      setSortDir(d => d === "asc" ? "desc" : "asc")
-    } else {
-      setSortKey(key)
-      setSortDir(key === "ward_no" ? "asc" : "desc")
-    }
-  }
-
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim()
-    if (!q) return rows
-    return rows.filter(r =>
-      r.ward_name.toLowerCase().includes(q) ||
-      r.assembly_constituency?.toLowerCase().includes(q) ||
-      String(r.ward_no).includes(q)
-    )
-  }, [rows, search])
-
-  const sorted = useMemo(() => {
-    return [...filtered].sort((a, b) => {
-      const av = a[sortKey]
-      const bv = b[sortKey]
-      if (av === null || av === undefined) return 1
-      if (bv === null || bv === undefined) return -1
-      if (typeof av === "number" && typeof bv === "number") return sortDir === "asc" ? av - bv : bv - av
-      return sortDir === "asc"
-        ? String(av).localeCompare(String(bv))
-        : String(bv).localeCompare(String(av))
-    })
-  }, [filtered, sortKey, sortDir])
-
-  const columns: { key: SortKey; label: string; format: (r: WardRow) => string; align?: "right" }[] = [
-    { key: "ward_no", label: "#", format: r => String(r.ward_no) },
-    { key: "ward_name", label: "Ward", format: r => r.ward_name },
-    { key: "assembly_constituency", label: "AC", format: r => r.assembly_constituency ?? "--" },
-    { key: "spend_grand_total", label: "Total Spend (2018-23)", format: r => crores(r.spend_grand_total), align: "right" },
-    { key: "spend_roads_and_infrastructure", label: "Roads & Infra (2018-23)", format: r => crores(r.spend_roads_and_infrastructure), align: "right" },
-    { key: "spend_water_and_sanitation", label: "Water & Sanitation (2018-23)", format: r => crores(r.spend_water_and_sanitation), align: "right" },
-    { key: "pothole_complaints", label: "Potholes (2022)", format: r => num(r.pothole_complaints), align: "right" },
-    { key: "total_work_orders", label: "Work Orders", format: r => num(r.total_work_orders), align: "right" },
-  ]
-
-  const sortArrow = (key: SortKey) => {
-    if (sortKey !== key) return ""
-    return sortDir === "asc" ? " ^" : " v"
-  }
-
+export default function DataCatalog() {
   return (
-    <div className="fixed inset-0 overflow-y-auto bg-[#0A0A0A] text-white" style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="fixed inset-0 overflow-y-auto bg-[#0A0A0A] text-white">
+      <div className="max-w-4xl mx-auto px-4 py-8">
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              <a href="/" className="hover:text-[#FF9933] transition-colors">KAUN<span className="text-[#FF9933]">?</span></a>
-              <span className="text-white/30 font-normal ml-3 text-lg">Open Data</span>
-            </h1>
-            <p className="text-white/30 text-sm mt-1">Ward-level civic data for Bengaluru -- free for journalism, research, and civic use</p>
-          </div>
-          <a
-            href="/api/export?type=all"
-            className="hidden md:flex items-center gap-2 text-sm px-4 py-2 rounded-lg bg-[#FF9933]/10 text-[#FF9933] border border-[#FF9933]/20 hover:bg-[#FF9933]/20 transition-colors shrink-0"
-          >
-            Download CSV
-          </a>
-        </div>
-
-        {/* Data Context */}
-        <div className="rounded-xl bg-white/5 border border-white/10 p-5 mb-6 space-y-3">
-          <p className="text-white/50 text-xs uppercase tracking-wider font-semibold">About this data</p>
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
-            <div className="space-y-2">
-              <div>
-                <p className="text-white/70">Ward Expenditure</p>
-                <p className="text-white/30 text-xs">BBMP ward-level spending, 2018-2023 (5 fiscal years, cumulative). Source: <a href="https://data.opencity.in/dataset/bbmp-work-orders-categorised-2018-2023" target="_blank" rel="noopener noreferrer" className="text-[#FF9933]/60 hover:text-[#FF9933]">opencity.in</a></p>
-              </div>
-              <div>
-                <p className="text-white/70">Pothole Complaints</p>
-                <p className="text-white/30 text-xs">BBMP citizen complaint data, 2022. Source: <a href="https://data.opencity.in" target="_blank" rel="noopener noreferrer" className="text-[#FF9933]/60 hover:text-[#FF9933]">opencity.in</a></p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div>
-                <p className="text-white/70">Work Orders</p>
-                <p className="text-white/30 text-xs">KPPP (Karnataka Public Procurement Platform) tender data, updated weekly. Source: <a href="https://eproc.karnataka.gov.in" target="_blank" rel="noopener noreferrer" className="text-[#FF9933]/60 hover:text-[#FF9933]">eproc.karnataka.gov.in</a></p>
-              </div>
-              <div>
-                <p className="text-white/70">Why do some wards spend more?</p>
-                <p className="text-white/30 text-xs">Spending varies by ward size, urbanization rate, and infrastructure needs. Outer wards (Horamavu, Atturu) have higher totals due to new roads, drainage, and water connections. This is cumulative across 7 categories over 5 years.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Search + mobile download */}
-        <div className="flex items-center gap-3 mb-4">
-          <input
-            type="text"
-            placeholder="Search ward, AC, or ward number..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#FF9933]/30"
-          />
-          <a
-            href="/api/export?type=all"
-            className="md:hidden flex items-center gap-2 text-xs px-3 py-2.5 rounded-lg bg-[#FF9933]/10 text-[#FF9933] border border-[#FF9933]/20 shrink-0"
-          >
-            CSV
-          </a>
-        </div>
-
-        {/* Count */}
-        <p className="text-white/20 text-xs mb-2">{filtered.length} ward{filtered.length !== 1 ? "s" : ""} {search && `matching "${search}"`}</p>
-
-        {/* Error */}
-        {error && (
-          <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 mb-6">
-            <p className="text-red-400 text-sm">{error}</p>
-          </div>
-        )}
-
-        {/* Loading */}
-        {loading && (
-          <div className="text-center py-20">
-            <div className="w-6 h-6 border-2 border-white/20 border-t-[#FF9933] rounded-full animate-spin mx-auto" />
-            <p className="text-white/30 text-sm mt-4">Loading ward data...</p>
-          </div>
-        )}
-
-        {/* Table */}
-        {!loading && sorted.length > 0 && (
-          <div className="rounded-xl bg-white/5 border border-white/10 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs border-collapse min-w-[700px]">
-                <thead>
-                  <tr className="border-b border-white/10">
-                    {columns.map(col => (
-                      <th
-                        key={col.key}
-                        onClick={() => handleSort(col.key)}
-                        className={`py-3 px-3 font-medium cursor-pointer hover:text-white/60 transition-colors select-none whitespace-nowrap ${
-                          col.align === "right" ? "text-right" : "text-left"
-                        } ${sortKey === col.key ? "text-[#FF9933]/70" : "text-white/40"}`}
-                      >
-                        {col.label}{sortArrow(col.key)}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {sorted.map(row => (
-                    <tr key={row.ward_no} className="hover:bg-white/5 transition-colors">
-                      {columns.map(col => (
-                        <td
-                          key={col.key}
-                          className={`py-2.5 px-3 whitespace-nowrap ${
-                            col.align === "right" ? "text-right font-mono" : ""
-                          } ${col.key === "ward_name" ? "text-white/80 font-medium" : "text-white/50"}`}
-                        >
-                          {col.key === "ward_name" ? (
-                            <a href={`/?ward=${row.ward_no}`} className="hover:text-[#FF9933] transition-colors">
-                              {col.format(row)}
-                            </a>
-                          ) : (
-                            col.format(row)
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Footer */}
-        <div className="mt-8 space-y-3 text-center">
-          <p className="text-white/20 text-xs">
-            All data is from public records and open datasets. kaun.city aggregates and maps it.
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold tracking-tight">
+            <a href="/" className="hover:text-[#FF9933] transition-colors">KAUN<span className="text-[#FF9933]">?</span></a>
+            <span className="text-white/30 font-normal ml-3 text-lg">Open Data</span>
+          </h1>
+          <p className="text-white/50 text-sm mt-2 max-w-2xl leading-relaxed">
+            Public APIs for Bengaluru civic data. Free, open, CORS-enabled. Built for civic tools,
+            journalism, research, and public interest. All data from public records.
           </p>
+          <div className="flex gap-3 mt-3">
+            <a href="https://github.com/kaun-city/kaun" target="_blank" rel="noopener noreferrer" className="text-[#FF9933] text-xs hover:underline">GitHub</a>
+            <span className="text-white/15">·</span>
+            <a href="/status" className="text-white/40 text-xs hover:text-white/60">System Status</a>
+            <span className="text-white/15">·</span>
+            <a href="/api/export?type=all" className="text-white/40 text-xs hover:text-white/60">Download CSV</a>
+          </div>
+        </div>
+
+        {/* API Endpoints */}
+        <div className="space-y-6 mb-12">
+          <h2 className="text-white/40 text-xs uppercase tracking-wider">API Endpoints</h2>
+          {ENDPOINTS.map(ep => (
+            <div key={ep.path} className="rounded-xl bg-white/5 p-5">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-green-400 text-xs font-mono font-bold">GET</span>
+                <code className="text-white font-mono text-sm">{ep.path}</code>
+              </div>
+              <p className="text-white/50 text-sm leading-relaxed">{ep.description}</p>
+
+              {ep.params.length > 0 && (
+                <div className="mt-3">
+                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Parameters</p>
+                  <div className="space-y-1">
+                    {ep.params.map(p => (
+                      <div key={p.name} className="flex gap-2 text-xs">
+                        <code className="text-[#FF9933]/70 font-mono shrink-0">{p.name}</code>
+                        <span className="text-white/30">{p.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-3">
+                <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Try it</p>
+                <div className="flex flex-wrap gap-2">
+                  {ep.examples.map(ex => (
+                    <a
+                      key={ex.url}
+                      href={ex.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-mono transition-colors"
+                    >
+                      {ex.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Data Sources */}
+        <div className="mb-8">
+          <h2 className="text-white/40 text-xs uppercase tracking-wider mb-4">Data Sources</h2>
+          <div className="rounded-xl bg-white/5 overflow-hidden">
+            <div className="divide-y divide-white/5">
+              {DATA_SOURCES.map(ds => (
+                <div key={ds.name} className="px-4 py-3 flex items-center justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-white/80 text-sm">{ds.name}</p>
+                    <p className="text-white/30 text-xs mt-0.5">
+                      {ds.records} · {ds.period}
+                      {ds.url && (
+                        <> · <a href={ds.url} target="_blank" rel="noopener noreferrer" className="text-[#FF9933]/50 hover:text-[#FF9933]">{ds.source}</a></>
+                      )}
+                      {!ds.url && <> · {ds.source}</>}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Usage */}
+        <div className="rounded-xl bg-white/5 p-5 mb-8">
+          <h2 className="text-white/40 text-xs uppercase tracking-wider mb-3">Usage</h2>
+          <p className="text-white/50 text-sm leading-relaxed mb-3">
+            All endpoints return JSON with CORS headers enabled. No API key required. Rate limited to 60 requests/minute per IP.
+          </p>
+          <pre className="text-xs font-mono text-white/60 bg-black/30 p-3 rounded-lg overflow-x-auto">
+{`curl -s "https://kaun.city/api/data/contractors?flagged=true" | jq .
+
+fetch("https://kaun.city/api/data/wards?ward=42")
+  .then(r => r.json())
+  .then(data => console.log(data))`}
+          </pre>
+        </div>
+
+        <div className="text-center space-y-1">
           <p className="text-white/15 text-xs">
-            Sources: BBMP via <a href="https://data.opencity.in" className="text-[#FF9933]/40 hover:text-[#FF9933]/60">opencity.in</a> | <a href="https://eproc.karnataka.gov.in" className="text-[#FF9933]/40 hover:text-[#FF9933]/60">KPPP</a> | <a href="https://myneta.info" className="text-[#FF9933]/40 hover:text-[#FF9933]/60">MyNeta/ADR</a> | Census 2011
+            All data is from public records. kaun.city aggregates and serves — we don&apos;t generate the underlying data.
           </p>
           <p className="text-white/10 text-xs">
-            <a href="/" className="hover:text-white/30">kaun.city</a> -- open source civic accountability
+            kaun.city · open source civic accountability · MIT license
           </p>
         </div>
-
       </div>
     </div>
   )
