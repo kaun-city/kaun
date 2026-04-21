@@ -27,8 +27,8 @@ Summarize what the response revealed:
 
 ## Documents
 
-- [response-scan.pdf](./files/response-scan.pdf) (upload the scanned response)
-- [data-table.xlsx](./files/data-table.xlsx) (any data attachments)
+- `files/response-scan.pdf` (upload the scanned response alongside this page)
+- `files/data-table.xlsx` (any data attachments)
 
 ## Relevance
 
@@ -36,7 +36,7 @@ Which wards/contractors/issues does this RTI response relate to?
 
 - Ward(s): 
 - Contractor(s): 
-- Finding: [link to related finding](../findings/)
+- Finding: [link to related finding](../findings/index.md)
 
 ---
 *Last updated: YYYY-MM-DD by [contributor]*
