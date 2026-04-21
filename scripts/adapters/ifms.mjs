@@ -270,33 +270,50 @@ async function main() {
     await new Promise(r => setTimeout(r, 250))
   }
 
-  console.log(`  Done scraping: ${allRows.length} rows kept from ${wardsWithData}/${list.length} wards (${failed} failures)`)
+  console.log(`  Done scraping: ${allRows.length} raw rows from ${wardsWithData}/${list.length} wards (${failed} failures)`)
+
+  // IFMS returns one row per bill-stage (work order raised → SBR → BR →
+  // payment released), so the same work_order_id appears multiple times
+  // as the bill progresses. The canonical bbmp_work_orders table has a
+  // UNIQUE (work_order_id, fy) constraint, so collapse to one row per
+  // (work_order_id, fy) keeping the most advanced bill — that's the
+  // highest ifms_wbid, which corresponds to the latest bill raised.
+  const byKey = new Map()
+  for (const r of allRows) {
+    const key = `${r.work_order_id}|${r.fy ?? ""}`
+    const existing = byKey.get(key)
+    if (!existing || (r.ifms_wbid ?? 0) > (existing.ifms_wbid ?? 0)) {
+      byKey.set(key, r)
+    }
+  }
+  const deduped = [...byKey.values()]
+  console.log(`  After dedupe on (work_order_id, fy): ${deduped.length} unique rows`)
 
   if (DRY_RUN) {
     console.log("Dry-run sample row:")
-    console.log(JSON.stringify(allRows[0] ?? {}, null, 2))
+    console.log(JSON.stringify(deduped[0] ?? {}, null, 2))
     return
   }
 
   // Guard against accidental wipeout: only proceed if we have real rows in
   // hand. A zero-row ingest most likely means the session broke — keep the
   // existing data rather than delete it.
-  if (allRows.length === 0) {
+  if (deduped.length === 0) {
     console.warn("Zero rows parsed — not touching bbmp_work_orders.")
     return
   }
 
-  // `bbmp_work_orders` has no unique constraint on work_order_id, so an
-  // ON CONFLICT upsert isn't possible. Delete-then-insert scoped to
-  // data_source='ifms_direct' is clean, idempotent, and leaves the legacy
-  // opencity-sourced rows alone.
+  // Delete-then-insert scoped to data_source='ifms_direct' — fully
+  // idempotent, leaves legacy opencity-sourced rows alone. The canonical
+  // table's UNIQUE (work_order_id, fy) constraint is respected because we
+  // deduped on exactly that key above.
   console.log(`  Deleting existing IFMS rows...`)
   await dbQuery("DELETE FROM bbmp_work_orders WHERE data_source = 'ifms_direct';")
 
-  for (let i = 0; i < allRows.length; i += 200) {
-    await insertRows("bbmp_work_orders", allRows.slice(i, i + 200))
+  for (let i = 0; i < deduped.length; i += 200) {
+    await insertRows("bbmp_work_orders", deduped.slice(i, i + 200))
   }
-  console.log(`[${new Date().toISOString()}] Done. Inserted ${allRows.length} IFMS work orders.`)
+  console.log(`[${new Date().toISOString()}] Done. Inserted ${deduped.length} IFMS work orders.`)
 }
 
 main().catch(e => { console.error("Fatal:", e); process.exit(1) })
