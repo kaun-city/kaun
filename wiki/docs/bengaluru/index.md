@@ -9,7 +9,7 @@ Civic data for Bengaluru — BBMP/GBA, 243 wards, and the contractors, findings,
 | [Contractors](contractors/index.md) | Contractor profiles with aliases, blacklist flags, ward footprint | Starting with KRIDL |
 | [Findings](findings/index.md) | Verified civic scandals and systemic issues with evidence | 2 documented |
 | [Data Sources](sources/bbmp-ifms.md) | BBMP IFMS, KPPP, opencity.in — the upstream portals | 3 documented |
-| [Wards](wards/_template.md) | Per-ward civic facts and issues | Template ready |
+| [Wards](wards/index.md) | All 243 BBMP wards with MLA, constituency, and kaun.city links | 243 wards listed |
 | [RTI Responses](rti-responses/_template.md) | RTI filings and responses archive | Template ready |
 
 On [kaun.city](https://kaun.city) itself, the Bengaluru experience includes: 243 ward map, 1,305 contractor profiles (entity-resolved), elected reps with criminal cases and attendance, ward-level spending 2018-23, Sakala rankings, and citizen reports.

@@ -61,6 +61,7 @@ nav:
       - KPPP: bengaluru/sources/kppp.md
       - OpenCity.in: bengaluru/sources/opencity.md
     - Wards:
+      - All 243 wards: bengaluru/wards/index.md
       - Add ward info: bengaluru/wards/_template.md
     - RTI Responses:
       - Upload RTI: bengaluru/rti-responses/_template.md
