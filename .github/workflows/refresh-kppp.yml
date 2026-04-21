@@ -32,4 +32,4 @@ jobs:
           if [ "${{ github.event.inputs.full }}" = "true" ]; then
             ARGS="--full"
           fi
-          node scripts/refresh-kppp.mjs $ARGS
+          node scripts/adapters/kppp.mjs $ARGS
