@@ -33,6 +33,12 @@ BBMP paid salaries to 6,600 non-existent sanitation workers (pourakarmikas) for 
 - Attend ward committee meeting and ask for biometric attendance records
 - Report ghost workers to Lokayukta: [lokayukta.kar.nic.in](https://lokayukta.kar.nic.in)
 
+## Related Pages
+
+- [KRIDL 4(g) Exemption](kridl-4g-exemption.md) — another BBMP public money scam
+- [BBMP IFMS](../sources/bbmp-ifms.md) — the system used to process fake bills
+- [Contractors](../contractors/index.md) — contractor profiles
+
 ## Sources
 
 - [The News Minute: Rs 934 crore pocketed using fake sanitary worker profiles](https://www.thenewsminute.com/article/rs-934-crore-pocketed-using-fake-sanitary-worker-profiles-new-scam-hits-bengaluru-civic-body)

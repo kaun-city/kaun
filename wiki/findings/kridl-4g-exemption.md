@@ -30,9 +30,12 @@ KRIDL, a government PSU blacklisted twice, received Rs 4,721 crore in BBMP contr
 - RTI fee: Rs 10 (by IPO/DD/Court fee stamp)
 - Response deadline: 30 days
 
-## Sources
+## Related Pages
 
-- See KRIDL contractor profile: [wiki/contractors/kridl.md](../contractors/kridl.md)
+- [KRIDL contractor profile](../contractors/kridl.md) — full history, aliases, all blacklisting orders
+- [Ghost Workers Scam](ghost-workers-scam.md) — another BBMP public money scam
+- [BBMP IFMS](../sources/bbmp-ifms.md) — the financial system that processed these payments
+- [KPPP](../sources/kppp.md) — the tender portal that was bypassed
 
 ---
 *Last updated: 2026-04-21. Sources: BNP RTI analysis, Deccan Herald, CAG, Lokayukta*

@@ -51,6 +51,13 @@
 - [Deccan Herald: CAG — KRIDL sitting on Rs 17,000 crore unused funds](https://www.deccanherald.com/india/karnataka/kridl-sitting-on-rs-17000-crore-of-unused-funds-cag-1194221.html)
 - [Deccan Herald: Rs 118 crore fake bill scam](https://www.deccanherald.com/india/karnataka/bengaluru/rs-118-cr-fake-bill-scam-eight-engineers-from-bbmp-kridl-suspended-1228163.html)
 
+## Related Pages
+
+- [KRIDL 4(g) Tender Exemption — Rs 4,700 Cr](../findings/kridl-4g-exemption.md) — the detailed finding with evidence table
+- [Ghost Workers Scam](../findings/ghost-workers-scam.md) — a related BBMP scam exposed around the same time
+- [KPPP Data Source](../sources/kppp.md) — why this scam doesn't show in tender data
+- [BBMP IFMS Data Source](../sources/bbmp-ifms.md) — where KRIDL payments are documented
+
 ## Notes
 
 KRIDL is a textbook case of how PSU exemptions undermine public procurement transparency. The same government that blacklists the entity can bypass its own blacklist through the PSU tender exemption clause. The Karnataka High Court recognized this and stayed 4(g) exemptions in 2021, but the state government attempted to amend the KTPP Act to restore the loophole.
