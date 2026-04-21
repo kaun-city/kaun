@@ -37,7 +37,7 @@ export async function GET(req: Request) {
       supabase.from("ward_road_crashes").select("crashes_2024, fatal_2024, crashes_2025, fatal_2025").eq("ward_no", wn).single(),
       supabase.from("ward_air_quality").select("station_name, avg_pm25, avg_pm10, data_year").eq("ward_no", wn).single(),
       supabase.from("ward_spend_category").select("buildings_facilities, drainage, roads_and_drains, roads_and_infrastructure, streetlighting, waste_management, water_and_sanitation, grand_total, period").eq("ward_no", wn).single(),
-      supabase.from("bbmp_work_orders").select("work_order_id, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy").eq("ward_no", wn).order("net_paid", { ascending: false }).limit(50),
+      supabase.from("bbmp_work_orders").select("work_order_id, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy").eq("ward_no", wn).order("net_paid", { ascending: false, nullsFirst: false }).order("sanctioned_amount", { ascending: false, nullsFirst: false }).limit(50),
     ])
 
     return Response.json({
