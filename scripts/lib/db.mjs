@@ -57,6 +57,24 @@ export async function upsertRows(table, rows, conflictCols) {
   }
 }
 
+export async function insertRows(table, rows) {
+  if (!rows.length) return
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPA_KEY,
+      "Authorization": `Bearer ${SUPA_KEY}`,
+      "Prefer": "return=minimal",
+    },
+    body: JSON.stringify(rows),
+  })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Insert into ${table} failed: ${res.status} ${err}`)
+  }
+}
+
 export async function selectRows(table, params) {
   const qs = new URLSearchParams(params).toString()
   const res = await fetch(`${SUPA_URL}/rest/v1/${table}?${qs}`, {

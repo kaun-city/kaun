@@ -11,12 +11,12 @@
 //
 // Flow:
 //   1. GET /?l=1              → seed PHPSESSID + dgLanguage session
-//   2. LoadCombo ward list    → all wards (old "oo" schema + new GBA)
+//   2. LoadCombo ward list    → all wards (legacy "o"/"oo" + new GBA)
 //   3. For each new GBA ward: LoadPaymentGridData
 //   4. Parse each row's jobcode + brdetails HTML blobs
-//   5. Upsert into bbmp_work_orders with data_source='ifms_direct'
+//   5. Delete existing data_source='ifms_direct' rows, insert fresh batch
 
-import { dbQuery, upsertRows } from "../lib/db.mjs"
+import { dbQuery, insertRows } from "../lib/db.mjs"
 
 // BBMP's IFMS server ships an incomplete cert chain — leaf cert signed by
 // GoDaddy G2 intermediate, but the intermediate itself is not served.
@@ -118,14 +118,14 @@ function deriveFy(wcname) {
 }
 
 function parseWardNo(rname) {
-  // rname: "001 Kempegowda" or "oo194 Gottigere"
-  const m = rname.match(/^(?:oo)?(\d+)\s/)
+  // rname examples: "001 Kempegowda", "o017 Shettihalli", "oo194 Gottigere"
+  const m = rname.match(/^o*(\d+)\s/)
   return m ? parseInt(m[1], 10) : null
 }
 
 function isNewGbaWard(w) {
   if (w.rid === "300") return false           // "000 Common" bucket
-  if (w.rname.startsWith("oo")) return false  // old pre-GBA wards
+  if (/^o+\d/i.test(w.rname)) return false    // legacy wards prefixed with one or more 'o's
   return true
 }
 
@@ -278,10 +278,25 @@ async function main() {
     return
   }
 
-  for (let i = 0; i < allRows.length; i += 200) {
-    await upsertRows("bbmp_work_orders", allRows.slice(i, i + 200), "work_order_id")
+  // Guard against accidental wipeout: only proceed if we have real rows in
+  // hand. A zero-row ingest most likely means the session broke — keep the
+  // existing data rather than delete it.
+  if (allRows.length === 0) {
+    console.warn("Zero rows parsed — not touching bbmp_work_orders.")
+    return
   }
-  console.log(`[${new Date().toISOString()}] Done. Upserted ${allRows.length} IFMS work orders.`)
+
+  // `bbmp_work_orders` has no unique constraint on work_order_id, so an
+  // ON CONFLICT upsert isn't possible. Delete-then-insert scoped to
+  // data_source='ifms_direct' is clean, idempotent, and leaves the legacy
+  // opencity-sourced rows alone.
+  console.log(`  Deleting existing IFMS rows...`)
+  await dbQuery("DELETE FROM bbmp_work_orders WHERE data_source = 'ifms_direct';")
+
+  for (let i = 0; i < allRows.length; i += 200) {
+    await insertRows("bbmp_work_orders", allRows.slice(i, i + 200))
+  }
+  console.log(`[${new Date().toISOString()}] Done. Inserted ${allRows.length} IFMS work orders.`)
 }
 
 main().catch(e => { console.error("Fatal:", e); process.exit(1) })
