@@ -3,7 +3,8 @@ site_description: Open, community-maintained knowledge base of Bengaluru civic d
 site_url: https://data.kaun.city
 repo_url: https://github.com/kaun-city/kaun
 repo_name: kaun-city/kaun
-edit_uri: edit/master/wiki/
+edit_uri: edit/master/wiki/docs/
+docs_dir: docs
 
 theme:
   name: material
@@ -23,11 +24,6 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-  logo: null
-  favicon: null
-
-extra_css:
-  - stylesheets/extra.css
   features:
     - navigation.instant
     - navigation.tracking
@@ -44,6 +40,9 @@ extra_css:
     repo: fontawesome/brands/github
     edit: material/pencil
     view: material/eye
+
+extra_css:
+  - stylesheets/extra.css
 
 nav:
   - Home: README.md
