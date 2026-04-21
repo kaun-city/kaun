@@ -1,0 +1,285 @@
+/* Kaun.city-inspired styling for the civic data wiki */
+
+:root {
+  --md-primary-fg-color: #FF9933;
+  --md-primary-fg-color--light: #ffb366;
+  --md-primary-fg-color--dark: #cc7a29;
+  --md-accent-fg-color: #FF9933;
+  --md-accent-fg-color--transparent: rgba(255, 153, 51, 0.1);
+}
+
+/* Dark theme — match kaun.city #0A0A0A background */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #0A0A0A;
+  --md-default-bg-color--light: #111111;
+  --md-default-bg-color--lighter: #1a1a1a;
+  --md-default-fg-color: rgba(255, 255, 255, 0.87);
+  --md-default-fg-color--light: rgba(255, 255, 255, 0.54);
+  --md-default-fg-color--lighter: rgba(255, 255, 255, 0.32);
+  --md-default-fg-color--lightest: rgba(255, 255, 255, 0.07);
+  --md-typeset-color: rgba(255, 255, 255, 0.87);
+  --md-typeset-a-color: #FF9933;
+  --md-code-bg-color: rgba(255, 255, 255, 0.04);
+  --md-code-fg-color: rgba(255, 255, 255, 0.87);
+}
+
+/* Header — minimal, kaun-style wordmark vibe */
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #0A0A0A;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+.md-header__title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.md-header__title::before {
+  content: "KAUN";
+  color: white;
+  font-weight: 800;
+  margin-right: 2px;
+}
+.md-header__title::after {
+  content: "?";
+  color: #FF9933;
+  font-weight: 800;
+  margin-right: 12px;
+}
+.md-header__topic:first-child .md-ellipsis {
+  font-weight: 400;
+  opacity: 0.6;
+  font-size: 0.9em;
+}
+
+/* Tabs (top navigation) */
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #0A0A0A;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.md-tabs__link {
+  opacity: 0.6;
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.md-tabs__link:hover,
+.md-tabs__link--active {
+  opacity: 1;
+  color: #FF9933;
+}
+
+/* Sidebar */
+[data-md-color-scheme="slate"] .md-nav {
+  font-size: 0.72rem;
+}
+
+.md-nav__title {
+  color: rgba(255, 255, 255, 0.32);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+.md-nav__link {
+  opacity: 0.7;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.md-nav__link:hover {
+  opacity: 1;
+  color: #FF9933;
+}
+
+.md-nav__link--active {
+  color: #FF9933;
+  opacity: 1;
+  font-weight: 500;
+}
+
+/* Content typography */
+.md-typeset {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4 {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.md-typeset h1 {
+  color: white;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.md-typeset h2 {
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+
+.md-typeset h3 {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Links — kaun saffron */
+.md-typeset a {
+  color: #FF9933;
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(255, 153, 51, 0.4);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.md-typeset a:hover {
+  color: #ffb366;
+  border-bottom-color: #FF9933;
+}
+
+/* Code blocks */
+.md-typeset code {
+  background-color: rgba(255, 153, 51, 0.08);
+  color: #ffb366;
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+  font-size: 0.85em;
+}
+
+.md-typeset pre code {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Tables */
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.75rem;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: rgba(255, 153, 51, 0.08);
+  color: #ffb366;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(255, 153, 51, 0.2);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tr:hover td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Admonitions (note/warning/etc boxes) */
+[data-md-color-scheme="slate"] .md-typeset .admonition {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #FF9933;
+  border-radius: 4px;
+}
+
+/* Search */
+[data-md-color-scheme="slate"] .md-search__input {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+[data-md-color-scheme="slate"] .md-search__input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Footer */
+[data-md-color-scheme="slate"] .md-footer {
+  background-color: #0A0A0A;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.md-footer-meta {
+  background-color: #0A0A0A;
+}
+
+/* Edit page button */
+.md-content__button {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.md-content__button:hover {
+  color: #FF9933;
+}
+
+/* Horizontal rule */
+.md-typeset hr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 2rem 0;
+}
+
+/* Blockquotes */
+.md-typeset blockquote {
+  color: rgba(255, 255, 255, 0.7);
+  border-left: 3px solid #FF9933;
+  padding-left: 1rem;
+}
+
+/* Scrollbar (webkit) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 153, 51, 0.3);
+}
+
+/* Badge styling for red/yellow severity in findings */
+.md-typeset .severity-red {
+  display: inline-block;
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.md-typeset .severity-yellow {
+  display: inline-block;
+  background-color: rgba(234, 179, 8, 0.15);
+  color: #fbbf24;
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}

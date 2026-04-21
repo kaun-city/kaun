@@ -1,4 +1,4 @@
-site_name: Bengaluru Civic Data Wiki
+site_name: Civic Data Wiki
 site_description: Open, community-maintained knowledge base of Bengaluru civic data
 site_url: https://data.kaun.city
 repo_url: https://github.com/kaun-city/kaun
@@ -7,6 +7,9 @@ edit_uri: edit/master/wiki/
 
 theme:
   name: material
+  font:
+    text: Inter
+    code: JetBrains Mono
   palette:
     - scheme: slate
       primary: deep orange
@@ -20,6 +23,11 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
+  logo: null
+  favicon: null
+
+extra_css:
+  - stylesheets/extra.css
   features:
     - navigation.instant
     - navigation.tracking
