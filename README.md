@@ -90,7 +90,8 @@ Each government portal has one adapter. Every adapter writes to Supabase in a no
 ```
 scripts/
 ├── adapters/                    # One file per portal
-│   └── kppp.mjs                 # KPPP tenders (BBMP, BWSSB, BDA, BESCOM)
+│   ├── kppp.mjs                 # KPPP tenders (BBMP, BWSSB, BDA, BESCOM)
+│   └── ifms.mjs                 # BBMP IFMS work orders (contractor, division, dates, payment status)
 ├── lib/
 │   └── db.mjs                   # Shared Supabase helpers
 ├── seed-boundaries.mjs          # Ward GeoJSON → PostGIS
@@ -114,6 +115,8 @@ scripts/
 | Daily 02:00 UTC | `/api/ingest-signals` | Vercel cron | RSS + Twitter-via-Google-News civic signal ingestion |
 | Daily 06:00 UTC | `refresh-pulse` | GitHub Actions | Civic news classification for City Pulse ticker |
 | Sundays 01:00 UTC | `refresh-kppp` | GitHub Actions | KPPP tenders across BBMP / BWSSB / BDA / BESCOM |
+| Sundays 02:00 UTC | `refresh-ifms` | GitHub Actions | BBMP IFMS work orders — contractor code, division, budget head, dates, payment status |
+| Sundays 03:00 UTC | `refresh-wiki-wards` | GitHub Actions | Regenerate per-ward wiki pages from the freshly refreshed data |
 | 2nd of month | `refresh-grievances` | GitHub Actions | BBMP grievance counts |
 | 3rd of month | `refresh-trade-licenses` | GitHub Actions | Trade licence stats |
 | 1st of month (manual) | `refresh-sakala` | Local Playwright | Sakala service delivery (cloud-blocked) |

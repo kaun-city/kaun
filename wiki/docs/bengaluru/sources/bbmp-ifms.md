@@ -34,18 +34,44 @@ Returns:
 
 ## How kaun.city Uses This Data
 
-Currently **indirect** — via opencity.in which scraped and published BBMP work order data as CKAN datasets:
-- `bbmp-work-orders-by-ward-2013-2022` (198 per-ward CSVs)
-- `bbmp-work-orders-and-payments-2024-25` (single CSV, 243 wards)
+**Direct ingestion** via `scripts/adapters/ifms.mjs`, scheduled weekly (Sundays 02:00 UTC). The adapter talks to the PublicView portal over plain HTTPS and writes into `bbmp_work_orders` with `data_source='ifms_direct'`. No scraping UI is involved — the portal's own XHR endpoints return JSON.
 
-kaun.city ingests these via the `seed-work-orders-full.mjs` script, extracts contractor phone numbers for entity resolution, and builds `contractor_profiles` in Supabase.
+Legacy coverage continues to come from the opencity.in mirror (`seed-work-orders-full.mjs`, FY 2013-2022 + FY 2024-25 CSVs) — those rows carry `data_source='opencity_ckan'` and are left alone.
 
-## Scraping Notes
+### Fields captured per work order
 
-- Direct `fetch()` returns 403 — requires browser-like headers or headless browser
-- Playwright/Puppeteer approach needed for automated scraping
-- Ward-level XLSX exports are the cleanest data extraction path
-- Rate limiting unknown — be polite with delays between requests
+From each LoadPaymentGridData row:
+- `work_order_id` (wcname, e.g. `001-26-000006`)
+- `ward_no` — parsed from the ward rname prefix
+- `description` (nameofwork)
+- `contractor_code` + `contractor_name` — parsed from the jobcode HTML blob
+- `sanctioned_amount` — numeric rupees
+- `fy` — derived from wcname (e.g. `001-26-…` → `2025-26`)
+- `division` — e.g. *Executive Engineer Yelhanka Zone*
+- `budget_head` — e.g. *40041001 Capital Works - Construction/Development/Improvement of Ward Works*
+- `start_date`, `end_date` — work order dates
+- `order_ref`, `sbr_ref`, `bill_ref` — the three register references with dates
+- `payment_status` — where the bill sits in the approval chain (e.g. *Addl. Commr. Finance*)
+- `ifms_wbid` — opaque work-bill id for future drill-down
+
+### API endpoints used
+
+All under `https://accounts.bbmp.gov.in/PublicView/vss00CvStatusData.php`:
+
+| Action | Purpose |
+|---|---|
+| `LoadCombo&pTableName=vssmasters.vss20toward` | Ward list (new GBA + legacy "oo" wards) |
+| `LoadFinancialYear&pTableName=vss.vss00tvfinancialyear` | FY registry (filter appears decorative — we grab all) |
+| `LoadPaymentGridData` | Grid of work bills for a ward, returned as JSON |
+| `LoadWorksbillDetails&pWorkBillID=` | *Not yet ingested* — per-bill detail, approval levels, attachments |
+
+Session is established by a single GET to `/?l=1`, which sets `PHPSESSID` and a `dgLanguage` state the subsequent calls require.
+
+## Technical notes
+
+- The server ships an incomplete TLS chain (missing GoDaddy G2 intermediate). The repo bundles the intermediate at `scripts/adapters/ca/godaddy-g2.pem` and the adapter/workflow pin it via `NODE_EXTRA_CA_CERTS`.
+- Ward scheme is in flux: IFMS carries both legacy BBMP 243-ward entries (prefixed `oo`) and the new GBA 369-ward entries (no prefix, rid starting at 2001). The adapter ingests only the new GBA series; the legacy wards are covered by the opencity.in import.
+- Not yet pulled from IFMS: `net_paid`, `deduction`, `approval_levels`, attached files. Those would require per-bill drill-downs via `LoadWorksbillDetails` — a follow-up.
 
 ## Data Quality
 

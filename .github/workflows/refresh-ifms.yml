@@ -1,0 +1,28 @@
+name: Refresh IFMS Work Orders
+
+on:
+  schedule:
+    # Sundays 02:00 UTC — sits between refresh-kppp (01:00) and
+    # refresh-wiki-wards (03:00) so ward pages on the same Sunday
+    # cycle pick up the freshly ingested IFMS rows.
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run IFMS adapter
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+          NODE_EXTRA_CA_CERTS: scripts/adapters/ca/godaddy-g2.pem
+        run: node scripts/adapters/ifms.mjs
