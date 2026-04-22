@@ -46,12 +46,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 620955 — 131-23-000001Comprehensive development of Cross roads, footpaths at Kodandaram Layout, Cart street, | 2024-25 | — | Rs 7.47 Cr | Rs 7.12 Cr |
-| 579416 — 131-23-000001Comprehensive Development Prarthana Mandira and Community halls etc Govindaraja Nagar c | 2024-25 | BENAKA DEVELOPERS AN | Rs 6.95 Cr | Rs 6.19 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 620955 — 131-23-000001Comprehensive development of Cross roads, footpaths at Kodandaram L | 2024-25 | — | — | Rs 7.47 Cr | Rs 7.12 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

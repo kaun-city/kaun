@@ -42,13 +42,15 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 600839 — 154-20-000025Construction of buildings in ward no 154, 155 and 164 pertaining to Basavanagudi Consti | 2024-25 | DAMODAR K & CO | Rs 15.24 Cr | Rs 14.48 Cr |
-| 600775 — 154-20-000024Developmental works to parks in ward no 154 and 155 pertaining to Basavanagudi Constiue | 2024-25 | GOPALAKRISHNA P | Rs 9.54 Cr | Rs 9.15 Cr |
-| 580545 — 154-23-000002Asphalting to roads in Basavanagudi sub division, Basavanagudi Constituency.(Package-04 | 2024-25 | M RAMESH | Rs 8.39 Cr | Rs 7.52 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 600839 — 154-20-000025Construction of buildings in ward no 154, 155 and 164 pertaining to | 2024-25 | DAMODAR K & CO | — | Rs 15.24 Cr | Rs 14.48 Cr | paid (legacy) |
+| 600775 — 154-20-000024Developmental works to parks in ward no 154 and 155 pertaining to B | 2024-25 | GOPALAKRISHNA P | — | Rs 9.54 Cr | Rs 9.15 Cr | paid (legacy) |
+| 580545 — 154-23-000002Asphalting to roads in Basavanagudi sub division, Basavanagudi Cons | 2024-25 | M RAMESH | — | Rs 8.39 Cr | Rs 7.52 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

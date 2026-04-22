@@ -47,12 +47,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 540630 — 149-23-000005Restoration and Re - construction of Deteriorated Road due to BWSSB water supply ,UGD w | 2024-25 | RAJENDRA H B | Rs 9.15 Cr | Rs 8.57 Cr |
-| 624303 — 149-23-000001Restoration and Re - construction of Deteriorated Road due to BWSSB water supply ,UGD w | 2024-25 | KPJ CONSTRUCTIONS PR | Rs 6.39 Cr | Rs 5.91 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 540630 — 149-23-000005Restoration and Re - construction of Deteriorated Road due to BWSSB | 2024-25 | RAJENDRA H B | — | Rs 9.15 Cr | Rs 8.57 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

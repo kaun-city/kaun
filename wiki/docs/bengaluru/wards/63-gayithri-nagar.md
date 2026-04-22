@@ -45,12 +45,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 646939 — 063-20-000011Comprehensive development of roads drains and fotpath in ward Roads in Shivaji Nagara C | 2024-25 | M S V CONSTRUCTIONS | Rs 13.53 Cr | Rs 11.51 Cr |
-| 567029 — 063-20-000011Comprehensive development of roads drains and fotpath in ward Roads in Shivaji Nagara C | 2024-25 | M S V CONSTRUCTIONS | Rs 8.44 Cr | Rs 6.91 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 646939 — 063-20-000011Comprehensive development of roads drains and fotpath in ward Roads | 2024-25 | M S V CONSTRUCTIONS | — | Rs 13.53 Cr | Rs 11.51 Cr | paid (legacy) |
+| 567029 — 063-20-000011Comprehensive development of roads drains and fotpath in ward Roads | 2024-25 | M S V CONSTRUCTIONS | — | Rs 8.44 Cr | Rs 6.91 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

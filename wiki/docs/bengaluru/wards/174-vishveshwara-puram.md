@@ -45,11 +45,16 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
+4 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **3 are live from BBMP IFMS** (with current bill-stage status); the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 574634 — 174-23-000002Package – 1 - BZ - BD - (W-174) Name of Work : Comprehensive development of roads, drai | 2024-25 | M RAMESH | Rs 8.34 Cr | Rs 7.97 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 174-25-000008 — Comprehensive Developmental works to Parks, Roads, Drains, Footpath, Asphalting | 2024-25 | LOKESH R | Executive Engineer B T M Layout South Zo | Rs 16.12 Cr | — | Addl. Commr. Finance |
+| 174-26-000008 — Comprehensive Development of Asphalt Roads, Cobble stone   Pavers, Improvements | 2025-26 | M RAMESH | Executive Engineer B T M Layout South Zo | Rs 10.08 Cr | — | 000345 / 27-Mar-2026 RTGS |
+| 574634 — 174-23-000002Package – 1 - BZ - BD - (W-174) Name of Work : Comprehensive develo | 2024-25 | M RAMESH | — | Rs 8.34 Cr | Rs 7.97 Cr | paid (legacy) |
+| 174-25-000012 — Comprehensive Development and Improvements to roads and drains in ward No 147 Ad | 2024-25 | M RAMESH | Executive Engineer B T M Layout South Zo | Rs 7.88 Cr | — | 000059 / 14-Jan-2026 RTGS |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

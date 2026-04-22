@@ -49,11 +49,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **1 are live from BBMP IFMS** (with current bill-stage status); the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 634047 — 159-23-000001Improvements of Roads and Drains in Kengeri and Surrounding area in Ward No-159 Kengeri | 2024-25 | GANAPATHISTONECRUSHE | Rs 11.20 Cr | Rs 10.71 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 634047 — 159-23-000001Improvements of Roads and Drains in Kengeri and Surrounding area in | 2024-25 | GANAPATHISTONECRUSHE | — | Rs 11.20 Cr | Rs 10.71 Cr | paid (legacy) |
+| 159-25-000005 — Integrated Infrastructure Development for Roads, Drainage, Street Name Boards an | 2024-25 | ASHPRA INFRA ENGINEERS PRIVATE LIMITED | Executive Engineer Chamarajpet West Zone | Rs 9.04 Cr | — | Addl. Commr. Finance |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

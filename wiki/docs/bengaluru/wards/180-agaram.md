@@ -45,11 +45,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 584619 — 180-23-000001Comprehensive development of roads, drains and footpath in Ward No 89,112, 114 and 115 | 2024-25 | — | Rs 10.57 Cr | Rs 9.38 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 584619 — 180-23-000001Comprehensive development of roads, drains and footpath in Ward No | 2024-25 | — | — | Rs 10.57 Cr | Rs 9.38 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

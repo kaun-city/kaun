@@ -42,12 +42,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
-
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 565362 — 004-23-000003Construction of Synthetic tennis court, street vending zone & other developmental works | 2024-25 | S M L P ASPHALTS | Rs 6.92 Cr | Rs 6.59 Cr |
-| 560825 — 004-23-000001PACKAGE No-01 Development of Yelahanka Govt Degree collage and Ayurvedic Hospital and P | 2024-25 | HALAPPA C | Rs 6.47 Cr | Rs 6.19 Cr |
+No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=4).
 
 ---
 

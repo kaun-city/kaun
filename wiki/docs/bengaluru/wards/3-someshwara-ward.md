@@ -52,17 +52,18 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-7 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+6 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 470167 — 003-21-000051Comprehensive Development of roads and drains at Kaveri layout, AMS layout, Aditya naga | 2024-25 | S M L P ASPHALTS | Rs 10.28 Cr | Rs 9.71 Cr |
-| 517313 — 003-22-000016Improvements of roads, development of Parks and Construction of Buildings in ward no 01 | 2024-25 | K LAKSHMI NARAYANA R | Rs 9.08 Cr | Rs 8.68 Cr |
-| 471454 — 003-21-000048Comprehensive Development of balance roads and drains at Aditya nagara Ananthapura Nisa | 2024-25 | NANDI CONSTRUCTION | Rs 8.81 Cr | Rs 8.29 Cr |
-| 580358 — 003-23-000004Improvements to roads, drains and other developmental works at Akshaya, Tirumala Nagar, | 2024-25 | K VENKATARAJU | Rs 8.46 Cr | Rs 8.09 Cr |
-| 420197 — 003-21-000046Comprehensive Development of Roads and Drains at Deo marvel layout Ams layout Swagath l | 2024-25 | P.DHAMODARA RAJU | Rs 8.23 Cr | Rs 7.76 Cr |
-| 560848 — 003-23-000003PACKAGE No-03 Providing grill fencing and other developmental works at Sardara vallabai | 2024-25 | GOPI REDDY | Rs 8.15 Cr | Rs 7.80 Cr |
-| 567945 — 003-23-000006PACKAGE No-05 Development of roads and drains at Kasagattapura, Vaderahalli, shivakote, | 2024-25 | GOPI REDDY | Rs 6.73 Cr | Rs 6.41 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 470167 — 003-21-000051Comprehensive Development of roads and drains at Kaveri layout, AMS | 2024-25 | S M L P ASPHALTS | — | Rs 10.28 Cr | Rs 9.71 Cr | paid (legacy) |
+| 517313 — 003-22-000016Improvements of roads, development of Parks and Construction of Bui | 2024-25 | K LAKSHMI NARAYANA R | — | Rs 9.08 Cr | Rs 8.68 Cr | paid (legacy) |
+| 471454 — 003-21-000048Comprehensive Development of balance roads and drains at Aditya nag | 2024-25 | NANDI CONSTRUCTION | — | Rs 8.81 Cr | Rs 8.29 Cr | paid (legacy) |
+| 580358 — 003-23-000004Improvements to roads, drains and other developmental works at Aksh | 2024-25 | K VENKATARAJU | — | Rs 8.46 Cr | Rs 8.09 Cr | paid (legacy) |
+| 420197 — 003-21-000046Comprehensive Development of Roads and Drains at Deo marvel layout | 2024-25 | P.DHAMODARA RAJU | — | Rs 8.23 Cr | Rs 7.76 Cr | paid (legacy) |
+| 560848 — 003-23-000003PACKAGE No-03 Providing grill fencing and other developmental works | 2024-25 | GOPI REDDY | — | Rs 8.15 Cr | Rs 7.80 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

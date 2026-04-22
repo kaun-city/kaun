@@ -47,12 +47,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 646829 — 161-23-000002Comprehensive development of roads, drains, footpath, drilling of borewells and providi | 2024-25 | TRIPURA INFRA | Rs 7.50 Cr | Rs 6.73 Cr |
-| 622991 — 161-23-000004Comprehensive development to Buildings, Parks, Play ground & bore wells in Hoskerehalli | 2024-25 | Mr SATISH S | Rs 6.95 Cr | Rs 6.37 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 646829 — 161-23-000002Comprehensive development of roads, drains, footpath, drilling of b | 2024-25 | TRIPURA INFRA | — | Rs 7.50 Cr | Rs 6.73 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

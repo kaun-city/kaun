@@ -43,11 +43,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **1 are live from BBMP IFMS** (with current bill-stage status); the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 580308 — 011-23-000002PACKAGE NO 05 CONSISTS OF 3 WORKS | 2024-25 | GOPI REDDY | Rs 9.76 Cr | Rs 9.36 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 011-24-000005 — Package No. 03 (Package Consists of 08 Works Rs. 1500.00 Lakhs). 1) Improvement | 2023-24 | MSJATHIN INFRA PVT L | Executive Engineer Byatarayanapura Divis | Rs 13.79 Cr | — | 001995 / 14-Aug-2025 RTGS |
+| 580308 — 011-23-000002PACKAGE NO 05 CONSISTS OF 3 WORKS | 2024-25 | GOPI REDDY | — | Rs 9.76 Cr | Rs 9.36 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

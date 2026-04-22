@@ -41,7 +41,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=123).
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. **1 are live from BBMP IFMS** (with current bill-stage status); the remainder come from the BBMP FY 2024-25 opencity mirror.
+
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 123-26-000003 — Comprehensive Development and Constructions of Building in ward no 94 95 120 and | 2025-26 | BENAKA DEVELOPERS AND PROJECTS PRIVATE L | Executive Engineer Gandinagar West Zone | Rs 9.60 Cr | — | 000099 / 20-Feb-2026 RTGS |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

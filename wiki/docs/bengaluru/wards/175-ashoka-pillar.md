@@ -45,15 +45,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-5 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 577551 — 175-20-000120Construction of Auditorium in ward no 175 of BBMP in Bommanahalli Constituency Go Sl No | 2024-25 | M R CONSTRUCTIONS | Rs 8.49 Cr | Rs 8.13 Cr |
-| 571471 — 175-23-000002Package – 6 - BZ - BD - (W-175) Name of Work : Comprehensive development of roads and d | 2024-25 | ANANDA KUMAR | Rs 7.53 Cr | Rs 7.18 Cr |
-| 562755 — 175-20-000096Development of Play Ground at Devarachikkanahalli | 2024-25 | M R CONSTRUCTIONS | Rs 6.74 Cr | Rs 6.43 Cr |
-| 584260 — 175-23-000003Package – 10 - BZ - BD - (W-175 & 188) Name of Work :Comprehensive development of roads | 2024-25 | M RAMESH | Rs 6.54 Cr | Rs 5.74 Cr |
-| 583932 — 175-20-000121Construction of Swimming pool in Bommanahall Zone of BBMP in Bommanahalli Constituency | 2024-25 | M R CONSTRUCTIONS | Rs 6.25 Cr | Rs 5.98 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 577551 — 175-20-000120Construction of Auditorium in ward no 175 of BBMP in Bommanahalli C | 2024-25 | M R CONSTRUCTIONS | — | Rs 8.49 Cr | Rs 8.13 Cr | paid (legacy) |
+| 571471 — 175-23-000002Package – 6 - BZ - BD - (W-175) Name of Work : Comprehensive develo | 2024-25 | ANANDA KUMAR | — | Rs 7.53 Cr | Rs 7.18 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

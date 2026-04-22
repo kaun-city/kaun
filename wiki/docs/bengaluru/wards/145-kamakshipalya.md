@@ -47,13 +47,15 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 572629 — 145-20-000017Comprehensive development and Improvements of road and drains in ward No 145 Hombegowda | 2024-25 | BMRG PROJECTS (INDIA | Rs 9.82 Cr | Rs 9.25 Cr |
-| 612206 — 145-23-000001Package –2 Comprehensive Development of Roads Drains and Building in Rajajinagar Consti | 2024-25 | — | Rs 7.89 Cr | Rs 6.93 Cr |
-| 584281 — 145-23-000003Comprehensive Development and improvements to Roads, Drains, Footpaths, Parks and build | 2024-25 | HEMA CONSTRUCTIONS | Rs 7.45 Cr | Rs 7.14 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 572629 — 145-20-000017Comprehensive development and Improvements of road and drains in wa | 2024-25 | BMRG PROJECTS (INDIA | — | Rs 9.82 Cr | Rs 9.25 Cr | paid (legacy) |
+| 612206 — 145-23-000001Package –2 Comprehensive Development of Roads Drains and Building i | 2024-25 | — | — | Rs 7.89 Cr | Rs 6.93 Cr | paid (legacy) |
+| 584281 — 145-23-000003Comprehensive Development and improvements to Roads, Drains, Footpa | 2024-25 | HEMA CONSTRUCTIONS | — | Rs 7.45 Cr | Rs 7.14 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

@@ -48,14 +48,15 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-4 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 582540 — 150-23-000006Restoration and Re construction of Deteriorated Road due to BWSSB works coming under 11 | 2024-25 | SREENIVAS CONSTR | Rs 10.25 Cr | Rs 9.50 Cr |
-| 581436 — 150-23-000005Restoration and Re construction of Deteriorated Road due to BWSSB works coming under 11 | 2024-25 | ASHPRA INFRA ENGINEERS PRIVATE LIMITED | Rs 7.43 Cr | Rs 6.93 Cr |
-| 577091 — 150-23-000008Comprehensive Development of Roads and drains and Footpaths Works in Ward no.150 Bellan | 2024-25 | K VENKATARAJU | Rs 7.24 Cr | Rs 6.53 Cr |
-| 561756 — 150-23-000004Restoration and Re construction of Deteriorated Road due to BWSSB works coming under 11 | 2024-25 | HARDIK GOWDA | Rs 7.08 Cr | Rs 6.62 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 582540 — 150-23-000006Restoration and Re construction of Deteriorated Road due to BWSSB w | 2024-25 | SREENIVAS CONSTR | — | Rs 10.25 Cr | Rs 9.50 Cr | paid (legacy) |
+| 581436 — 150-23-000005Restoration and Re construction of Deteriorated Road due to BWSSB w | 2024-25 | ASHPRA INFRA ENGINEERS PRIVATE LIMITED | — | Rs 7.43 Cr | Rs 6.93 Cr | paid (legacy) |
+| 577091 — 150-23-000008Comprehensive Development of Roads and drains and Footpaths Works i | 2024-25 | K VENKATARAJU | — | Rs 7.24 Cr | Rs 6.53 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

@@ -44,11 +44,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
-
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 620902 — 052-23-000003Improvements to roads and drains at K.R.Pura and Bhattarahalli Surrounding Layouts in W | 2024-25 | P S G CONSTRUCTIONS | Rs 6.22 Cr | Rs 5.91 Cr |
+No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=52).
 
 ---
 

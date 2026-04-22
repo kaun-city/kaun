@@ -27,11 +27,13 @@ No MLA record matched this ward's constituency (`Rajarajeswari Nagar`) in our cu
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 617354 — 045-23-000002Package - 05 Comprehensive Development of Asphalt Road, Drain & Rain water harvesting p | 2024-25 | NIKSHEP INFRA PROJEC | Rs 7.89 Cr | Rs 7.41 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 617354 — 045-23-000002Package - 05 Comprehensive Development of Asphalt Road, Drain & Rai | 2024-25 | NIKSHEP INFRA PROJEC | — | Rs 7.89 Cr | Rs 7.41 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

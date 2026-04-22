@@ -47,12 +47,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 570403 — 195-23-000001Comprehensive Development of roads, drains and other allied works at ward no 195 Konana | 2024-25 | RAJU C T | Rs 8.60 Cr | Rs 8.19 Cr |
-| 612553 — 195-23-000001Comprehensive Development of roads, drains and other allied works at ward no 195 Konana | 2024-25 | RAJU C T | Rs 6.56 Cr | Rs 6.22 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 570403 — 195-23-000001Comprehensive Development of roads, drains and other allied works a | 2024-25 | RAJU C T | — | Rs 8.60 Cr | Rs 8.19 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

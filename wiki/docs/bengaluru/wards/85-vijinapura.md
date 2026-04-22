@@ -48,13 +48,15 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 569376 — 085-23-000003Comprensive development of Roads drains and Other Civil Improvement Works in Ward No.85 | 2024-25 | LOKESH R | Rs 11.86 Cr | Rs 11.17 Cr |
-| 596041 — 085-23-000004Restoration and Reconstruction of Deteriorated roads dug by Bescom at ward no.54 Hoodi, | 2024-25 | ASHPRA INFRA ENGINEERS PRIVATE LIMITED | Rs 8.47 Cr | Rs 8.01 Cr |
-| 641100 — 085-23-000002Comprensive development of Roads drains and Other Civil Improvement Works in Ward No.85 | 2024-25 | ABBU SAMBASIVA REDDY | Rs 7.75 Cr | Rs 7.28 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 569376 — 085-23-000003Comprensive development of Roads drains and Other Civil Improvement | 2024-25 | LOKESH R | — | Rs 11.86 Cr | Rs 11.17 Cr | paid (legacy) |
+| 596041 — 085-23-000004Restoration and Reconstruction of Deteriorated roads dug by Bescom | 2024-25 | ASHPRA INFRA ENGINEERS PRIVATE LIMITED | — | Rs 8.47 Cr | Rs 8.01 Cr | paid (legacy) |
+| 641100 — 085-23-000002Comprensive development of Roads drains and Other Civil Improvement | 2024-25 | ABBU SAMBASIVA REDDY | — | Rs 7.75 Cr | Rs 7.28 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

@@ -41,11 +41,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 576127 — 065-21-000013Development works to roads and drains in ward no 65 | 2024-25 | NIKSHEP INFRA PROJEC | Rs 7.90 Cr | Rs 6.82 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 576127 — 065-21-000013Development works to roads and drains in ward no 65 | 2024-25 | NIKSHEP INFRA PROJEC | — | Rs 7.90 Cr | Rs 6.82 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

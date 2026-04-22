@@ -46,11 +46,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 567054 — 058-20-000016Comprehensive development of road and drain works inNewThippasandra ward no 58 Annexure | 2024-25 | Cauvery Ashalt and Constructions company | Rs 9.23 Cr | Rs 7.99 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 567054 — 058-20-000016Comprehensive development of road and drain works inNewThippasandra | 2024-25 | Cauvery Ashalt and Constructions company | — | Rs 9.23 Cr | Rs 7.99 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

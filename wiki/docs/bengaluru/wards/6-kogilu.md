@@ -44,11 +44,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
-
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 588959 — 006-23-000001PACKAGE NO. 01 (CONSISTS OF 5 WORKS) | 2024-25 | — | Rs 7.06 Cr | Rs 6.64 Cr |
+No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=6).
 
 ---
 
