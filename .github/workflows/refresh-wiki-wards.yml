@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   refresh:
@@ -24,14 +25,29 @@ jobs:
       - name: Regenerate ward pages
         run: node scripts/generate-wiki/ward-index.mjs
 
-      - name: Commit changes (if any)
+      - name: Open PR if content changed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "bharatnyusta"
           git config user.email "bharatnyusta@users.noreply.github.com"
           if git diff --quiet --exit-code wiki/docs/bengaluru/wards/; then
-            echo "No ward data changes; skipping commit."
+            echo "No ward data changes; skipping PR."
             exit 0
           fi
+
+          BRANCH="auto/wiki-wards-$(date -u +%Y-%m-%d)"
+          # If the branch already exists (same-day re-run), suffix with epoch.
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            BRANCH="${BRANCH}-$(date -u +%H%M%S)"
+          fi
+
+          git checkout -b "$BRANCH"
           git add wiki/docs/bengaluru/wards/
           git commit -m "wiki: auto-refresh ward pages from public APIs (scheduled by refresh-wiki-wards)"
-          git push
+          git push -u origin "$BRANCH"
+
+          STATS=$(git diff --shortstat master -- wiki/docs/bengaluru/wards/ | xargs)
+          gh pr create \
+            --title "wiki: auto-refresh ward pages ($(date -u +%Y-%m-%d))" \
+            --body "Scheduled refresh by \`refresh-wiki-wards\` workflow. Pulls from the kaun.city public APIs; pushes only if content actually changed. $STATS."
