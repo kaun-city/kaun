@@ -254,9 +254,22 @@ export interface WorkOrder {
   contractor_name: string | null
   contractor_phone: string | null
   sanctioned_amount: number
-  net_paid: number
-  deduction: number
+  net_paid: number | null
+  deduction: number | null
   fy: string
+  // Fields populated by the IFMS adapter (scripts/adapters/ifms.mjs).
+  // Null for opencity-sourced rows.
+  contractor_code?: string | null
+  division?: string | null
+  budget_head?: string | null
+  start_date?: string | null
+  end_date?: string | null
+  order_ref?: string | null
+  sbr_ref?: string | null
+  bill_ref?: string | null
+  payment_status?: string | null
+  data_source?: string | null
+  ifms_wbid?: number | null
 }
 
 export interface ContractorProfile {

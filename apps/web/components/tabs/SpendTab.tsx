@@ -28,32 +28,57 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
       return (
         <div className="p-4 rounded-xl bg-white/5 text-center space-y-1">
           <p className="text-white/25 text-sm">No work orders on record</p>
-          <p className="text-white/15 text-xs">BBMP 2024-25</p>
+          <p className="text-white/15 text-xs">BBMP IFMS / opencity</p>
         </div>
       )
     }
     return null
   }
 
+  const liveCount = workOrders.filter(w => w.data_source === "ifms_direct").length
+  const freshnessLabel = liveCount > 0 ? "live + 2024-25" : "2024-25"
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <p className="text-white/30 text-xs uppercase tracking-wider">Works ({workOrders.length})</p>
-        <FreshnessBadge label="2024-25" source="BBMP" />
+        <FreshnessBadge label={freshnessLabel} source="BBMP IFMS" />
       </div>
       <div className="space-y-2">
         {visible.map(wo => {
           const desc = stripHtml(wo.description)
           const contractor = wo.contractor
             ? wo.contractor.replace(/^\d{6}\s*/, "").replace(/\d{10}$/, "").trim()
-            : null
+            : wo.contractor_name
+          // IFMS rows have net_paid null (per-bill drill-down is a follow-up).
+          // Fall back to sanctioned_amount with a label so the number is honest
+          // about what it represents.
+          const paidLakh = wo.net_paid != null ? wo.net_paid / 100000 : null
+          const sanctLakh = wo.sanctioned_amount != null ? wo.sanctioned_amount / 100000 : null
+          const shownAmount = paidLakh ?? sanctLakh
+          const amountLabel = paidLakh != null ? "paid" : "sanctioned"
           return (
             <div key={wo.id} className="rounded-xl bg-white/5 p-3">
               <p className="text-white text-xs leading-snug line-clamp-2">{desc}</p>
               <div className="flex items-center justify-between mt-2 gap-2">
                 <p className="text-white/30 text-[10px] truncate">{contractor}</p>
-                <p className="text-[#FF9933] text-xs font-semibold shrink-0">Rs.{(wo.net_paid / 100000).toFixed(1)}L</p>
+                {shownAmount != null && (
+                  <p className="text-[#FF9933] text-xs font-semibold shrink-0">
+                    Rs.{shownAmount.toFixed(1)}L
+                    <span className="text-white/30 text-[9px] font-normal ml-1">{amountLabel}</span>
+                  </p>
+                )}
               </div>
+              {wo.payment_status && (
+                <p className="text-white/40 text-[10px] mt-1.5">
+                  <span className="text-white/25">Bill stage:</span> {wo.payment_status}
+                </p>
+              )}
+              {(wo.division || wo.fy) && (
+                <p className="text-white/25 text-[9px] mt-0.5 truncate">
+                  {[wo.division, wo.fy && `FY ${wo.fy}`].filter(Boolean).join(" · ")}
+                </p>
+              )}
             </div>
           )
         })}

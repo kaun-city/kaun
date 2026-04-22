@@ -192,14 +192,21 @@ function renderWardPage(w, mla, contractorsHere, workOrdersHere) {
   if (workOrdersHere.length === 0) {
     lines.push("No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=" + w.ward_no + ").")
   } else {
-    lines.push(`${workOrdersHere.length} work order${workOrdersHere.length === 1 ? "" : "s"} from the city-wide top 200 (by sanctioned amount) ${workOrdersHere.length === 1 ? "is" : "are"} recorded against this ward.`)
+    const liveCount = workOrdersHere.filter(wo => wo.data_source === "ifms_direct").length
+    const liveNote = liveCount > 0 ? ` **${liveCount} are live from BBMP IFMS** (with current bill-stage status);` : ""
+    lines.push(`${workOrdersHere.length} work order${workOrdersHere.length === 1 ? "" : "s"} from the city-wide top 200 (by sanctioned amount) ${workOrdersHere.length === 1 ? "is" : "are"} recorded against this ward.${liveNote} the remainder come from the BBMP FY 2024-25 opencity mirror.`)
     lines.push("")
-    lines.push("| Work order | FY | Contractor | Sanctioned | Net paid |")
-    lines.push("|---|---|---|---:|---:|")
+    lines.push("| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |")
+    lines.push("|---|---|---|---|---:|---:|---|")
     for (const wo of workOrdersHere) {
-      const desc = (wo.description ?? "").replace(/<[^>]+>/g, "").substring(0, 100).trim()
-      lines.push(`| ${wo.work_order_id} — ${desc} | ${wo.fy ?? "—"} | ${wo.contractor_name ?? "—"} | ${fmtRupeesPaise(wo.sanctioned_amount)} | ${fmtRupeesPaise(wo.net_paid)} |`)
+      const desc = (wo.description ?? "").replace(/<[^>]+>/g, "").substring(0, 80).trim()
+      const contractor = wo.contractor_name ?? "—"
+      const division = wo.division ? wo.division.substring(0, 40) : "—"
+      const paymentStatus = wo.payment_status ?? (wo.data_source === "ifms_direct" ? "—" : "paid (legacy)")
+      lines.push(`| ${wo.work_order_id} — ${desc} | ${wo.fy ?? "—"} | ${contractor} | ${division} | ${fmtRupeesPaise(wo.sanctioned_amount)} | ${fmtRupeesPaise(wo.net_paid)} | ${paymentStatus} |`)
     }
+    lines.push("")
+    lines.push("_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._")
   }
   lines.push("")
   lines.push("---")

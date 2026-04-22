@@ -44,7 +44,7 @@ export async function GET(req: Request) {
     // with identical sanctioned amounts, not the primary ranking.
     let query = supabase
       .from("bbmp_work_orders")
-      .select("work_order_id, ward_no, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy")
+      .select("work_order_id, ward_no, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy, contractor_code, division, budget_head, start_date, end_date, order_ref, sbr_ref, bill_ref, payment_status, data_source, ifms_wbid")
       .order("sanctioned_amount", { ascending: false, nullsFirst: false })
       .order("net_paid", { ascending: false, nullsFirst: false })
       .limit(wardNo ? 50 : 200)
