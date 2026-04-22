@@ -37,16 +37,16 @@ export async function GET(req: Request) {
   }
 
   if (type === "work-orders" || type === "all") {
-    // IFMS-sourced rows have net_paid null (we don't capture it without a
-    // per-bill drill-down). Without nullsFirst: false, Postgres returns
-    // those rows first on a DESC sort and buries the opencity-sourced
-    // rows with actual net_paid values. Fall back to sanctioned_amount
-    // so IFMS rows are still sorted sanely among themselves.
+    // Sort by sanctioned_amount (both data sources populate it) so the
+    // top-N fairly mixes opencity-sourced rows (which have net_paid) and
+    // IFMS-sourced rows (which don't — we don't capture net_paid without
+    // a per-bill drill-down). net_paid becomes the tiebreaker for rows
+    // with identical sanctioned amounts, not the primary ranking.
     let query = supabase
       .from("bbmp_work_orders")
       .select("work_order_id, ward_no, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy")
-      .order("net_paid", { ascending: false, nullsFirst: false })
       .order("sanctioned_amount", { ascending: false, nullsFirst: false })
+      .order("net_paid", { ascending: false, nullsFirst: false })
       .limit(wardNo ? 50 : 200)
 
     if (wardNo) query = query.eq("ward_no", parseInt(wardNo))
