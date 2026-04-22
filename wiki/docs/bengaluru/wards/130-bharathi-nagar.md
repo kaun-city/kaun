@@ -50,14 +50,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-4 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 565900 — 130-23-000002Improvements of Roads and Drains in Ullal and Upkara Layout and Surrounding area in War | 2024-25 | GANAPATHISTONECRUSHE | Rs 9.38 Cr | Rs 8.67 Cr |
-| 565916 — 130-23-000002Improvements of Roads and Drains in Ullal and Upkara Layout and Surrounding area in War | 2024-25 | GANAPATHISTONECRUSHE | Rs 7.77 Cr | Rs 7.22 Cr |
-| 572081 — 130-23-000003Improvements of Roads and Drains in Nagadevanahalli, KCHS Layout, RR Layout and Surroun | 2024-25 | APPAJI BUILDERS | Rs 7.02 Cr | Rs 6.23 Cr |
-| 579229 — 130-23-000003Improvements of Roads and Drains in Nagadevanahalli, KCHS Layout, RR Layout and Surroun | 2024-25 | APPAJI BUILDERS | Rs 6.50 Cr | Rs 5.82 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 565900 — 130-23-000002Improvements of Roads and Drains in Ullal and Upkara Layout and Sur | 2024-25 | GANAPATHISTONECRUSHE | — | Rs 9.38 Cr | Rs 8.67 Cr | paid (legacy) |
+| 565916 — 130-23-000002Improvements of Roads and Drains in Ullal and Upkara Layout and Sur | 2024-25 | GANAPATHISTONECRUSHE | — | Rs 7.77 Cr | Rs 7.22 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

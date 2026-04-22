@@ -41,13 +41,15 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 565711 — 088-20-000013Comprehensive development of road and drain works in Jeevanbhimanagara ward no 88 and K | 2024-25 | BMRG PROJECTS (INDIA | Rs 9.43 Cr | Rs 8.08 Cr |
-| 577660 — 088-23-000003Comprehensive Development of Roads, Drains, Footpaths and Buildings in C.V. Raman Nagar | 2024-25 | STAR INFRATECH | Rs 8.84 Cr | Rs 7.05 Cr |
-| 638397 — 088-23-000003Comprehensive Development of Roads, Drains, Footpaths and Buildings in C.V. Raman Nagar | 2024-25 | STAR INFRATECH | Rs 8.33 Cr | Rs 6.09 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 565711 — 088-20-000013Comprehensive development of road and drain works in Jeevanbhimanag | 2024-25 | BMRG PROJECTS (INDIA | — | Rs 9.43 Cr | Rs 8.08 Cr | paid (legacy) |
+| 577660 — 088-23-000003Comprehensive Development of Roads, Drains, Footpaths and Buildings | 2024-25 | STAR INFRATECH | — | Rs 8.84 Cr | Rs 7.05 Cr | paid (legacy) |
+| 638397 — 088-23-000003Comprehensive Development of Roads, Drains, Footpaths and Buildings | 2024-25 | STAR INFRATECH | — | Rs 8.33 Cr | Rs 6.09 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

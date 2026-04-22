@@ -42,11 +42,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
-
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 571414 — 094-20-000001Comprehensive development of roads Drains Footpaths Culverts and other development work | 2024-25 | AISHWARYA INFRASTRUC | Rs 6.52 Cr | Rs 5.76 Cr |
+No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=94).
 
 ---
 

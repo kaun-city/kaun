@@ -46,14 +46,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-4 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 584878 — 142-23-000003Comprehensive Development and improvements to Roads, Drains, Footpaths and Parks in K.G | 2024-25 | NANDI CONSTRUCTION | Rs 8.73 Cr | Rs 8.33 Cr |
-| 583951 — 142-23-000003Comprehensive Development and improvements to Roads, Drains, Footpaths and Parks in K.G | 2024-25 | NANDI CONSTRUCTION | Rs 8.16 Cr | Rs 7.79 Cr |
-| 592527 — 142-23-000002Comprehensive Development and improvements to Roads, Drains, Footpaths and Parks in Bas | 2024-25 | SRI SHAMBHU CONSTRUC | Rs 7.07 Cr | Rs 6.70 Cr |
-| 612265 — 142-23-000003Comprehensive Development and improvements to Roads, Drains, Footpaths and Parks in K.G | 2024-25 | NANDI CONSTRUCTION | Rs 6.63 Cr | Rs 6.33 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 584878 — 142-23-000003Comprehensive Development and improvements to Roads, Drains, Footpa | 2024-25 | NANDI CONSTRUCTION | — | Rs 8.73 Cr | Rs 8.33 Cr | paid (legacy) |
+| 583951 — 142-23-000003Comprehensive Development and improvements to Roads, Drains, Footpa | 2024-25 | NANDI CONSTRUCTION | — | Rs 8.16 Cr | Rs 7.79 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

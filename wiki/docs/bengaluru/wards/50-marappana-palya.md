@@ -41,11 +41,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
-
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 583781 — 050-20-000005Comprehensive development of road and drain works in Bennignahalli ward no 50 Annexure- | 2024-25 | GANAPATHISTONECRUSHE | Rs 7.16 Cr | Rs 6.17 Cr |
+No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=50).
 
 ---
 

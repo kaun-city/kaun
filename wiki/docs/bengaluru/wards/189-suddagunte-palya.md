@@ -39,12 +39,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 605976 — 189-23-000002Package – 9 - BZ - BD - (W-189) Name of Work : Comprehensive development of roads and d | 2024-25 | SRINIVASA REDDY H | Rs 10.36 Cr | Rs 9.01 Cr |
-| 422069 — 189-20-000057Asphalting to roads in MSR layout and surrounding areas. Asphalting to roads in Bhagyal | 2024-25 | ANANDA KUMAR | Rs 8.16 Cr | Rs 7.71 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 605976 — 189-23-000002Package – 9 - BZ - BD - (W-189) Name of Work : Comprehensive develo | 2024-25 | SRINIVASA REDDY H | — | Rs 10.36 Cr | Rs 9.01 Cr | paid (legacy) |
+| 422069 — 189-20-000057Asphalting to roads in MSR layout and surrounding areas. Asphalting | 2024-25 | ANANDA KUMAR | — | Rs 8.16 Cr | Rs 7.71 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

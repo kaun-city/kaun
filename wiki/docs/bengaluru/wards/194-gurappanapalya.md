@@ -47,12 +47,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 615994 — 194-23-000002Comprehensive Development of roads, drains and other allied works at ward no 194 Gottig | 2024-25 | SRINIVASA REDDY H | Rs 9.39 Cr | Rs 8.92 Cr |
-| 572083 — 194-23-000001Improvements and development of Parks, Play grounds, roads, Footpath and Other allied w | 2024-25 | SAANVI EARTH MOVERS | Rs 7.95 Cr | Rs 7.48 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 615994 — 194-23-000002Comprehensive Development of roads, drains and other allied works a | 2024-25 | SRINIVASA REDDY H | — | Rs 9.39 Cr | Rs 8.92 Cr | paid (legacy) |
+| 572083 — 194-23-000001Improvements and development of Parks, Play grounds, roads, Footpat | 2024-25 | SAANVI EARTH MOVERS | — | Rs 7.95 Cr | Rs 7.48 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

@@ -41,11 +41,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
-
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 576119 — 064-21-000004Comprehensive development of works in Malleshwaram Assembly Constituency ward no 64 Go | 2024-25 | NIKSHEP INFRA PROJEC | Rs 6.85 Cr | Rs 6.50 Cr |
+No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=64).
 
 ---
 

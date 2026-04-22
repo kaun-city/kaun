@@ -1,6 +1,6 @@
 # Wards — Bengaluru (BBMP, 243)
 
-_Auto-generated from [kaun.city](https://kaun.city) public APIs on 2026-04-21. Each ward links to its own page in this wiki, and also to the interactive kaun.city view._
+_Auto-generated from [kaun.city](https://kaun.city) public APIs on 2026-04-22. Each ward links to its own page in this wiki, and also to the interactive kaun.city view._
 
 Bengaluru has been under administrator rule since September 2020, so corporator seats are vacant. The MLA listed is the state-assembly representative whose constituency the ward falls under. A ⚠ marker means the MLA has declared pending criminal cases in their nomination affidavit (source: [MyNeta](https://myneta.info)).
 

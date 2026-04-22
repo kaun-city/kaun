@@ -36,7 +36,14 @@ No contractor from the city-wide top 100 shows work orders in this ward. The [ka
 
 ## Notable work orders in this ward
 
-No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=211).
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **2 are live from BBMP IFMS** (with current bill-stage status); the remainder come from the BBMP FY 2024-25 opencity mirror.
+
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 211-24-000008 — Improvements of Roads and Construction of RCC Drain at Manjunath Nagara Main roa | 2023-24 | RAJENDRA H B | Executive Engineer Bangalore South Divis | Rs 12.92 Cr | — | 000052 / 26-Nov-2025 RTGS |
+| 211-24-000003 — Comprehensive Development of Roads, Drains, Footpath, Culverts and other works o | 2023-24 | LOKESH R | Executive Engineer Bangalore South Divis | Rs 9.80 Cr | — | Addl. Commr. Finance |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

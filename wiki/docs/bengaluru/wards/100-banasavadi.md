@@ -42,11 +42,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 611912 — 100-23-000001PACKAGE NO 02 Comprehensive Developments of Roads and Drains in OMBR Layout and Surroun | 2024-25 | — | Rs 9.56 Cr | Rs 8.32 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 611912 — 100-23-000001PACKAGE NO 02 Comprehensive Developments of Roads and Drains in OMB | 2024-25 | — | — | Rs 9.56 Cr | Rs 8.32 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

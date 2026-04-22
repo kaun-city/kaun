@@ -46,11 +46,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 567048 — 062-20-000005Improvements of drain asphalting and concrete works at muburak mohalla Muddamma Garden | 2024-25 | M S V CONSTRUCTIONS | Rs 8.30 Cr | Rs 6.93 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 567048 — 062-20-000005Improvements of drain asphalting and concrete works at muburak moha | 2024-25 | M S V CONSTRUCTIONS | — | Rs 8.30 Cr | Rs 6.93 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

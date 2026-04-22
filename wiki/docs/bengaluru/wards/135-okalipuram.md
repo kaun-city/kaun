@@ -34,13 +34,15 @@ No contractor from the city-wide top 100 shows work orders in this ward. The [ka
 
 ## Notable work orders in this ward
 
-3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **1 are live from BBMP IFMS** (with current bill-stage status); the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 587821 — 135-23-000006Comprehensive development Works And Allied in Arundathingara Slum Swantrapalaya Sanjayg | 2024-25 | — | Rs 9.23 Cr | Rs 8.30 Cr |
-| 581349 — 135-23-000006Comprehensive development Works And Allied in Arundathingara Slum Swantrapalaya Sanjayg | 2024-25 | — | Rs 7.62 Cr | Rs 6.84 Cr |
-| 625117 — 135-23-000006Comprehensive development Works And Allied in Arundathingara Slum Swantrapalaya Sanjayg | 2024-25 | — | Rs 6.50 Cr | Rs 5.93 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 587821 — 135-23-000006Comprehensive development Works And Allied in Arundathingara Slum S | 2024-25 | — | — | Rs 9.23 Cr | Rs 8.30 Cr | paid (legacy) |
+| 581349 — 135-23-000006Comprehensive development Works And Allied in Arundathingara Slum S | 2024-25 | — | — | Rs 7.62 Cr | Rs 6.84 Cr | paid (legacy) |
+| 135-24-000004 — Comprehensive development of Buildings  in ward no 103 104 105 106 and 125 in Go | 2023-24 | J C PRAKASH INFRASTR | Executive Engineer Govindaraja Nagar Wes | Rs 7.19 Cr | — | 000130 / 16-Jan-2026 RTGS |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

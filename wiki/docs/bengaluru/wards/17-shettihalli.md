@@ -41,11 +41,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward.
-
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 575446 — 017-23-000002Providing Gallery to Musical Fountain in JP Park in Ward No 17 and Drilling of Borewell | 2024-25 | SRI NANJUNDESHWARA | Rs 7.17 Cr | Rs 6.69 Cr |
+No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=17).
 
 ---
 

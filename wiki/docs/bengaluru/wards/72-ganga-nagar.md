@@ -38,14 +38,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-4 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 583403 — 072-23-000009Improvements of Roads and Drains in Mahadeshwara Nagara, KSRTC Layout, Maruthi Nagara a | 2024-25 | GANAPATHISTONECRUSHE | Rs 7.67 Cr | Rs 7.33 Cr |
-| 452431 — 072-20-000080Improvements to Roads and Drains in Vigneshwaranagara and Surrounding area in ward no 7 | 2024-25 | GANAPATHISTONECRUSHE | Rs 7.57 Cr | Rs 6.83 Cr |
-| 566374 — 072-23-000008Improvements of Roads and Drains in Kempegowda Nagara, Syndicate Layout, Thunga Nagara, | 2024-25 | GANAPATHISTONECRUSHE | Rs 6.50 Cr | Rs 6.03 Cr |
-| 583292 — 072-23-000008Improvements of Roads and Drains in Kempegowda Nagara, Syndicate Layout, Thunga Nagara, | 2024-25 | GANAPATHISTONECRUSHE | Rs 5.98 Cr | Rs 5.72 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 583403 — 072-23-000009Improvements of Roads and Drains in Mahadeshwara Nagara, KSRTC Layo | 2024-25 | GANAPATHISTONECRUSHE | — | Rs 7.67 Cr | Rs 7.33 Cr | paid (legacy) |
+| 452431 — 072-20-000080Improvements to Roads and Drains in Vigneshwaranagara and Surroundi | 2024-25 | GANAPATHISTONECRUSHE | — | Rs 7.57 Cr | Rs 6.83 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

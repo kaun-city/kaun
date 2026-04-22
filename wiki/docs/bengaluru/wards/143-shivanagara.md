@@ -43,12 +43,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 581377 — 143-23-000002Comprehensive Development and improvements to Roads, Drains, Footpaths and Parks in Par | 2024-25 | S M L P ASPHALTS | Rs 9.80 Cr | Rs 9.38 Cr |
-| 570627 — 143-23-000002Comprehensive Development and improvements to Roads, Drains, Footpaths and Parks in Par | 2024-25 | S M L P ASPHALTS | Rs 9.73 Cr | Rs 9.38 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 581377 — 143-23-000002Comprehensive Development and improvements to Roads, Drains, Footpa | 2024-25 | S M L P ASPHALTS | — | Rs 9.80 Cr | Rs 9.38 Cr | paid (legacy) |
+| 570627 — 143-23-000002Comprehensive Development and improvements to Roads, Drains, Footpa | 2024-25 | S M L P ASPHALTS | — | Rs 9.73 Cr | Rs 9.38 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 

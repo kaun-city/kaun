@@ -48,12 +48,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
 
-| Work order | FY | Contractor | Sanctioned | Net paid |
-|---|---|---|---:|---:|
-| 579085 — 128-23-000001Comprehensive Developments of roads, drain and footpath in Nagarabhavi Ward in Ward No. | 2024-25 | P S G CONSTRUCTIONS | Rs 9.82 Cr | Rs 9.25 Cr |
-| 577714 — 128-23-000002Improvements of Parks etc Govindaraja Nagar constituency (Package-GRN -10) | 2024-25 | ACR PROJECTS | Rs 9.26 Cr | Rs 8.77 Cr |
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 579085 — 128-23-000001Comprehensive Developments of roads, drain and footpath in Nagarabh | 2024-25 | P S G CONSTRUCTIONS | — | Rs 9.82 Cr | Rs 9.25 Cr | paid (legacy) |
+| 577714 — 128-23-000002Improvements of Parks etc Govindaraja Nagar constituency (Package-G | 2024-25 | ACR PROJECTS | — | Rs 9.26 Cr | Rs 8.77 Cr | paid (legacy) |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 
