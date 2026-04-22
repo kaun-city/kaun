@@ -293,3 +293,73 @@
   letter-spacing: 0.05em;
   border: 1px solid rgba(234, 179, 8, 0.3);
 }
+
+/* --- Mobile-friendly tables ---
+   The wiki has several wide tables (wards index, city work-orders,
+   per-ward work orders) that are unusable on phones without tweaks.
+   MkDocs Material already wraps them in a horizontally scrolling
+   container; we improve that experience with tighter typography and
+   a right-edge shadow so readers can tell more content is available
+   to the right. */
+.md-typeset .md-typeset__scrollwrap,
+.md-typeset__scrollwrap {
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  /* Denser cells and smaller font so more columns fit per viewport. */
+  [data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+    font-size: 0.7rem;
+  }
+  [data-md-color-scheme="slate"] .md-typeset table:not([class]) th,
+  [data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+    padding: 0.45em 0.55em;
+  }
+  [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+    font-size: 0.62rem;
+    white-space: nowrap;
+  }
+
+  /* Right-edge shadow on scrollable table wrapper — tells the reader
+     the table continues horizontally. Only shown on narrow screens
+     where horizontal scroll is likely. */
+  .md-typeset__scrollwrap::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 24px;
+    pointer-events: none;
+    background: linear-gradient(to left, rgba(10, 10, 10, 0.85), transparent);
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  /* Keep the cells from breaking in awkward ways — line-wrap is fine
+     for description columns but numbers, FYs, and refs look better
+     on one line. */
+  [data-md-color-scheme="slate"] .md-typeset table:not([class]) td:first-child {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 500px) {
+  /* On very narrow phones, go even denser. */
+  [data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+    font-size: 0.64rem;
+  }
+  [data-md-color-scheme="slate"] .md-typeset table:not([class]) th,
+  [data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+    padding: 0.35em 0.45em;
+  }
+
+  /* Headings step down a notch so they stop dominating the viewport. */
+  .md-typeset h1 { font-size: 1.5rem; }
+  .md-typeset h2 { font-size: 1.15rem; }
+  .md-typeset h3 { font-size: 0.95rem; }
+
+  /* Per-ward page summary-metric paragraphs at top of each page have
+     long inline text; line-height nudged so they don't feel cramped. */
+  .md-typeset p { line-height: 1.55; }
+}
