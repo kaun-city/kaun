@@ -335,14 +335,17 @@ export async function lookupLocalOffices(lat: number, lng: number): Promise<impo
 }
 
 /**
- * Fetch BBMP work orders for a ward (2024-25).
+ * Fetch BBMP work orders for a ward. Returns both opencity-sourced
+ * legacy rows (with net_paid/deduction populated) and IFMS-sourced
+ * live rows (with contractor_code/division/budget_head/payment_status
+ * populated) in a single mixed list ordered by contract size.
  */
 export async function fetchWorkOrders(wardNo: number): Promise<import('./types').WorkOrder[]> {
   return await query<import('./types').WorkOrder>('bbmp_work_orders', {
     'ward_no': `eq.${wardNo}`,
-    'select': 'id,work_order_id,description,contractor,contractor_name,contractor_phone,sanctioned_amount,net_paid,deduction,fy',
-    'order': 'net_paid.desc',
-    'limit': '10',
+    'select': 'id,work_order_id,description,contractor,contractor_name,contractor_phone,sanctioned_amount,net_paid,deduction,fy,contractor_code,division,budget_head,start_date,end_date,order_ref,sbr_ref,bill_ref,payment_status,data_source,ifms_wbid',
+    'order': 'sanctioned_amount.desc.nullslast,net_paid.desc.nullslast',
+    'limit': '20',
   })
 }
 
