@@ -63,6 +63,7 @@ nav:
     - Wards:
       - All 243 wards: bengaluru/wards/index.md
       - Add ward info: bengaluru/wards/_template.md
+    - Work Orders (city-wide): bengaluru/work-orders.md
     - RTI Responses:
       - Upload RTI: bengaluru/rti-responses/_template.md
   - Pan-India Sources: sources/index.md
