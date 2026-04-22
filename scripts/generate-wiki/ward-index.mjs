@@ -307,7 +307,14 @@ function renderCityWorkOrders(workOrders, wardsByNo) {
   const sorted = [...workOrders].sort((a, b) => (b.sanctioned_amount ?? 0) - (a.sanctioned_amount ?? 0))
   sorted.forEach((w, i) => {
     const desc = (w.description ?? "").replace(/<[^>]+>/g, "").substring(0, 60).trim()
-    const wardLabel = w.ward_no ? `[${w.ward_no}](wards/${w.ward_no}-${slugify(wardsByNo.get(w.ward_no)?.ward_name ?? "")}.md)` : "—"
+    // Only link the ward number if that ward has a wiki page (i.e. is in the
+    // 243-ward BBMP list). GBA-structure wards 244+ land in IFMS data but
+    // don't have per-ward wiki pages yet — render them as plain text to
+    // avoid broken links.
+    const ward = wardsByNo.get(w.ward_no)
+    const wardLabel = w.ward_no
+      ? (ward ? `[${w.ward_no}](wards/${w.ward_no}-${slugify(ward.ward_name)}.md)` : `${w.ward_no}`)
+      : "—"
     const contractor = w.contractor_name ?? "—"
     const division = w.division ? w.division.substring(0, 32) : "—"
     const stage = w.payment_status ?? (w.data_source === "ifms_direct" ? "—" : "paid (legacy)")
