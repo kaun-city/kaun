@@ -13,6 +13,7 @@ import { join } from "node:path"
 const API_BASE = process.env.KAUN_API_BASE ?? "https://kaun.city"
 const WARDS_DIR = "wiki/docs/bengaluru/wards"
 const INDEX_PATH = `${WARDS_DIR}/index.md`
+const CITY_WORK_ORDERS_PATH = "wiki/docs/bengaluru/work-orders.md"
 const TODAY = new Date().toISOString().slice(0, 10)
 
 async function fetchJson(path) {
@@ -229,6 +230,106 @@ function renderWardPage(w, mla, contractorsHere, workOrdersHere) {
   return lines.join("\n")
 }
 
+function renderCityWorkOrders(workOrders, wardsByNo) {
+  const lines = []
+  lines.push("# BBMP Work Orders — Bengaluru (city-wide)")
+  lines.push("")
+  lines.push(`_Top ${workOrders.length} work orders across all 243 BBMP wards, ordered by sanctioned amount. Mixes **live IFMS data** (contractor code, division, budget head, current bill-stage approval status) with the **opencity.in mirror** (FY 2024-25 with net_paid / deduction values). Auto-generated from [kaun.city](https://kaun.city) public APIs._`)
+  lines.push("")
+  lines.push("---")
+  lines.push("")
+
+  // Summary section
+  const live = workOrders.filter(w => w.data_source === "ifms_direct")
+  const legacy = workOrders.filter(w => w.data_source !== "ifms_direct")
+  const totalSanctioned = workOrders.reduce((s, w) => s + (w.sanctioned_amount ?? 0), 0)
+  const fys = [...new Set(workOrders.map(w => w.fy).filter(Boolean))].sort()
+
+  lines.push("## Summary")
+  lines.push("")
+  lines.push(`- **Shown:** ${workOrders.length} work orders · ${live.length} live (IFMS) · ${legacy.length} legacy (opencity)`)
+  lines.push(`- **Total sanctioned value:** ${fmtRupeesPaise(totalSanctioned)}`)
+  lines.push(`- **Financial years represented:** ${fys.length ? fys.join(", ") : "—"}`)
+
+  // Top contractor by total value in this view
+  const byContractor = new Map()
+  for (const w of workOrders) {
+    if (!w.contractor_name) continue
+    byContractor.set(w.contractor_name, (byContractor.get(w.contractor_name) ?? 0) + (w.sanctioned_amount ?? 0))
+  }
+  const topContractor = [...byContractor.entries()].sort((a, b) => b[1] - a[1])[0]
+  if (topContractor) {
+    lines.push(`- **Top contractor in this view:** ${topContractor[0]} — ${fmtRupeesPaise(topContractor[1])}`)
+  }
+
+  // Top division (IFMS rows only have this)
+  const byDivision = new Map()
+  for (const w of live) {
+    if (!w.division) continue
+    byDivision.set(w.division, (byDivision.get(w.division) ?? 0) + 1)
+  }
+  const topDivision = [...byDivision.entries()].sort((a, b) => b[1] - a[1])[0]
+  if (topDivision) {
+    lines.push(`- **Most-active BBMP division (IFMS rows):** ${topDivision[0]} — ${topDivision[1]} work orders`)
+  }
+  lines.push("")
+
+  // Bill-stage distribution (IFMS only)
+  if (live.length) {
+    const byStage = new Map()
+    for (const w of live) {
+      const stage = w.payment_status || "—"
+      if (!byStage.has(stage)) byStage.set(stage, { count: 0, value: 0 })
+      const entry = byStage.get(stage)
+      entry.count++
+      entry.value += w.sanctioned_amount ?? 0
+    }
+    const stages = [...byStage.entries()].sort((a, b) => b[1].count - a[1].count).slice(0, 10)
+
+    lines.push("### Where bills are stuck")
+    lines.push("")
+    lines.push("Live IFMS work orders by current approval-chain position. Payment references (e.g. \"000030 / 16-Apr-2026 RTGS\") indicate bills that have already been paid; named roles (e.g. *Addl. Commr. Finance*) indicate pending approvals.")
+    lines.push("")
+    lines.push("| Bill stage | Work orders | Total sanctioned |")
+    lines.push("|---|---:|---:|")
+    for (const [stage, { count, value }] of stages) {
+      lines.push(`| ${stage} | ${count} | ${fmtRupeesPaise(value)} |`)
+    }
+    lines.push("")
+  }
+
+  lines.push("---")
+  lines.push("")
+  lines.push(`## All ${workOrders.length} work orders (by sanctioned amount)`)
+  lines.push("")
+  lines.push("| # | Work order | FY | Ward | Contractor | Division | Sanctioned | Bill stage |")
+  lines.push("|---:|---|---|---:|---|---|---:|---|")
+  const sorted = [...workOrders].sort((a, b) => (b.sanctioned_amount ?? 0) - (a.sanctioned_amount ?? 0))
+  sorted.forEach((w, i) => {
+    const desc = (w.description ?? "").replace(/<[^>]+>/g, "").substring(0, 60).trim()
+    const wardLabel = w.ward_no ? `[${w.ward_no}](wards/${w.ward_no}-${slugify(wardsByNo.get(w.ward_no)?.ward_name ?? "")}.md)` : "—"
+    const contractor = w.contractor_name ?? "—"
+    const division = w.division ? w.division.substring(0, 32) : "—"
+    const stage = w.payment_status ?? (w.data_source === "ifms_direct" ? "—" : "paid (legacy)")
+    lines.push(`| ${i + 1} | ${w.work_order_id} — ${desc} | ${w.fy ?? "—"} | ${wardLabel} | ${contractor} | ${division} | ${fmtRupeesPaise(w.sanctioned_amount)} | ${stage} |`)
+  })
+  lines.push("")
+
+  lines.push("---")
+  lines.push("")
+  lines.push("## Sources")
+  lines.push("")
+  lines.push("- **Live rows** come from the BBMP IFMS PublicView portal at [accounts.bbmp.gov.in/PublicView](https://accounts.bbmp.gov.in/PublicView/?l=1) via the [`ifms` adapter](https://github.com/kaun-city/kaun/blob/master/scripts/adapters/ifms.mjs), refreshed Sundays 02:00 UTC.")
+  lines.push("- **Legacy rows** come from the [opencity.in](https://opencity.in) mirror of BBMP's FY 2024-25 work orders, loaded once via `seed-work-orders-full.mjs`.")
+  lines.push("- For the interactive per-ward view (including tabs for amenities, water/air quality, grievances, service delivery, elected reps), see the [kaun.city map](https://kaun.city).")
+  lines.push("- For the full dataset (bulk download as CSV/XLSX/JSON), the static exporter at `data.kaun.city/datasets/bbmp-work-orders.csv` is pending.")
+  lines.push("")
+  lines.push(`_Auto-generated from the kaun.city public APIs. If a row looks wrong, the source of truth is the kaun.city Supabase database — please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the work order id._`)
+  lines.push("")
+
+  return lines.join("\n")
+}
+
 async function main() {
   console.log(`Fetching from ${API_BASE}...`)
   const [{ data: wards }, { data: reps }, { data: contractors }, spending] = await Promise.all([
@@ -296,6 +397,11 @@ async function main() {
   console.log(`  wrote ${pageCount} per-ward pages`)
   console.log(`    ${wardsWithContractors} wards have contractors from top-100 list`)
   console.log(`    ${wardsWithWorkOrders} wards have work orders from top-200 list`)
+
+  const wardsByNo = new Map(wards.map(w => [w.ward_no, w]))
+  const cityMd = renderCityWorkOrders(workOrders, wardsByNo)
+  writeFileSync(CITY_WORK_ORDERS_PATH, cityMd)
+  console.log(`  wrote ${CITY_WORK_ORDERS_PATH} (${workOrders.length} work orders)`)
 }
 
 main().catch(e => { console.error("Fatal:", e); process.exit(1) })
