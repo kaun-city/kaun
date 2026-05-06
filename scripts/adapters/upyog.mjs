@@ -30,6 +30,7 @@
  */
 
 import { dbQuery, upsertRows } from "../lib/db.mjs"
+import { extractEmbeddedState, parseHtmlTable } from "../lib/html.mjs"
 
 // ─── ULB → city_id mapping ───────────────────────────────────
 //
@@ -79,48 +80,6 @@ async function fetchJson(url, options = {}) {
   })
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
   return await res.json()
-}
-
-// ─── HTML/JSON extraction ────────────────────────────────────
-
-/** Extract embedded JSON from a <script>window.__X = {...}</script> blob. */
-function extractEmbeddedState(html, varName = "__INITIAL_STATE__") {
-  const re = new RegExp(`window\\.${varName}\\s*=\\s*(\\{[\\s\\S]*?\\});`, "m")
-  const m = re.exec(html)
-  if (!m) return null
-  try { return JSON.parse(m[1]) } catch { return null }
-}
-
-/** Parse HTML table into array of objects keyed by header text. */
-function parseHtmlTable(html, tableSelectorRegex) {
-  const tableMatch = tableSelectorRegex.exec(html)
-  if (!tableMatch) return []
-  const tableHtml = tableMatch[0]
-
-  const headers = []
-  const headerRe = /<th[^>]*>([\s\S]*?)<\/th>/gi
-  let m
-  while ((m = headerRe.exec(tableHtml)) !== null) {
-    headers.push(m[1].replace(/<[^>]+>/g, "").trim())
-  }
-
-  const rows = []
-  const rowRe = /<tr[^>]*>([\s\S]*?)<\/tr>/gi
-  let rm
-  while ((rm = rowRe.exec(tableHtml)) !== null) {
-    const cells = []
-    const cellRe = /<td[^>]*>([\s\S]*?)<\/td>/gi
-    let cm
-    while ((cm = cellRe.exec(rm[1])) !== null) {
-      cells.push(cm[1].replace(/<[^>]+>/g, "").trim())
-    }
-    if (cells.length === headers.length && cells.length > 0) {
-      const row = {}
-      for (let i = 0; i < headers.length; i++) row[headers[i]] = cells[i]
-      rows.push(row)
-    }
-  }
-  return rows
 }
 
 // ─── Domain extraction ───────────────────────────────────────

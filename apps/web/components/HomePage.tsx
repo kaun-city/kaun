@@ -7,7 +7,9 @@ import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
+import { CitySwitcher } from "@/components/CitySwitcher"
 import ReportSheet from "@/components/shared/ReportSheet"
+import { getCity } from "@/lib/cities"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -85,6 +87,10 @@ interface WardOption { ward_no: number; ward_name: string; lat: number; lng: num
 
 export default function HomePage() {
   const searchParams = useSearchParams()
+  // Active city — driven by ?city=X query param. Defaults to Bengaluru.
+  // Pin drops in another city update this implicitly via pinResult.city_id.
+  const cityParam = searchParams.get("city") ?? "bengaluru"
+  const activeCity = getCity(cityParam)
   const [pinResult, setPinResult]     = useState<PinResult | null>(null)
   const [pinLoading, setPinLoading]   = useState(false)
   const [showCard, setShowCard]       = useState(false)
@@ -299,6 +305,8 @@ export default function HomePage() {
             i
           </a>
 
+          <CitySwitcher activeCityId={activeCity.id} />
+
           {/* Ward search */}
           <div className="relative ml-auto z-[1000]" style={{ pointerEvents: "auto" }}>
             {searchOpen ? (
@@ -344,7 +352,7 @@ export default function HomePage() {
         </div>
 
         {/* City Pulse — accountability headlines before pin drop */}
-        {!showCard && !outOfBounds && <CityPulse cityId={pinResult?.city_id ?? "bengaluru"} />}
+        {!showCard && !outOfBounds && <CityPulse cityId={activeCity.id} />}
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
@@ -425,6 +433,7 @@ export default function HomePage() {
         )}
 
         <MapView
+          city={activeCity}
           onPin={handlePin}
           panRef={mapViewRef}
           resizeKey={showCard ? 1 : 0}

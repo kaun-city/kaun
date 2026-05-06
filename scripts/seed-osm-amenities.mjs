@@ -28,8 +28,22 @@ import { dbQuery, upsertRows, selectRows } from "./lib/db.mjs"
 
 const OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 
-// Bengaluru bounding box (rough) for area queries
-const BLR_BBOX = "12.7,77.35,13.25,77.85"
+// Per-city bounding boxes (south,west,north,east). Add new cities here when
+// onboarding. The bbox should generously enclose the city's outer ward boundary.
+const CITY_BBOXES = {
+  bengaluru:     "12.7,77.35,13.25,77.85",
+  visakhapatnam: "17.55,83.10,17.85,83.45",
+}
+
+const args = process.argv.slice(2)
+const CITY_ID = args.find(a => a.startsWith("--city="))?.split("=")[1] ?? "bengaluru"
+const BBOX = CITY_BBOXES[CITY_ID]
+if (!BBOX) {
+  console.error(`Unknown city: ${CITY_ID}. Add a bbox to CITY_BBOXES.`)
+  console.error(`Available: ${Object.keys(CITY_BBOXES).join(", ")}`)
+  process.exit(1)
+}
+console.log(`OSM amenities seed: city=${CITY_ID}, bbox=${BBOX}`)
 
 // Amenity categories to query — each entry becomes a column in ward_amenities
 const AMENITY_CATEGORIES = [
@@ -55,7 +69,7 @@ const AMENITY_CATEGORIES = [
  * Uses out:center for ways/relations so we get a single point per feature.
  */
 async function queryOverpass(overpassQuery) {
-  const fullQuery = `[out:json][timeout:120][bbox:${BLR_BBOX}];(${overpassQuery});out center;`
+  const fullQuery = `[out:json][timeout:120][bbox:${BBOX}];(${overpassQuery});out center;`
   const res = await fetch(OVERPASS_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -100,7 +114,7 @@ async function countPointsPerWard(points, columnName) {
       SELECT w.ward_no, COUNT(*) as cnt
       FROM wards w
       JOIN pts ON ST_Contains(w.geom, pts.geom)
-      WHERE w.city_id = 'bengaluru'
+      WHERE w.city_id = '${CITY_ID}'
       GROUP BY w.ward_no;
     `
     const rows = await dbQuery(sql)
@@ -124,14 +138,14 @@ function sleep(ms) {
 }
 
 async function main() {
-  console.log(`[${new Date().toISOString()}] OSM amenities seed started`)
+  console.log(`[${new Date().toISOString()}] OSM amenities seed started for ${CITY_ID}`)
   console.log(`Querying ${AMENITY_CATEGORIES.length} categories from Overpass API...`)
 
   // Step 1: Create ward_amenities table if it doesn't exist
   await dbQuery(`
     CREATE TABLE IF NOT EXISTS ward_amenities (
       ward_no       INTEGER NOT NULL,
-      city_id       TEXT NOT NULL DEFAULT 'bengaluru',
+      city_id       TEXT NOT NULL,
       hospitals     INTEGER DEFAULT 0,
       clinics       INTEGER DEFAULT 0,
       pharmacies    INTEGER DEFAULT 0,
@@ -160,7 +174,7 @@ async function main() {
   for (const cat of AMENITY_CATEGORIES) {
     console.log(`\nFetching ${cat.label}...`)
     try {
-      const resolvedQuery = cat.query.replace(/\{\{bbox\}\}/g, BLR_BBOX)
+      const resolvedQuery = cat.query.replace(/\{\{bbox\}\}/g, BBOX)
       const points = await queryOverpass(resolvedQuery)
       const counts = await countPointsPerWard(points, cat.key)
 
@@ -181,7 +195,7 @@ async function main() {
   console.log("\nUpserting ward amenities data...")
   const rows = Object.entries(wardData).map(([wardNo, data]) => ({
     ward_no: parseInt(wardNo, 10),
-    city_id: "bengaluru",
+    city_id: CITY_ID,
     hospitals: data.hospitals || 0,
     clinics: data.clinics || 0,
     pharmacies: data.pharmacies || 0,
@@ -219,7 +233,7 @@ async function main() {
       SUM(metro_stations) as total_metro,
       SUM(restaurants) as total_restaurants
     FROM ward_amenities
-    WHERE city_id = 'bengaluru';
+    WHERE city_id = '${CITY_ID}';
   `)
   console.log("\nFinal summary:", check[0])
   console.log(`[${new Date().toISOString()}] OSM amenities seed done.`)

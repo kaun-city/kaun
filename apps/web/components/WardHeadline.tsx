@@ -1,12 +1,15 @@
 "use client"
 
 import type { ContractorProfile, RepReportCard, WardCommitteeMeetings, WardInfraStats } from "@/lib/types"
+import { getCity } from "@/lib/cities"
 
 interface Props {
   reportCard: RepReportCard | null
   committeeMeetings: WardCommitteeMeetings | null
   infraStats: WardInfraStats | null
   wardContractors: ContractorProfile[]
+  /** city_id from PinResult — used to phrase city-specific copy correctly */
+  cityId?: string
 }
 
 interface Headline {
@@ -15,9 +18,10 @@ interface Headline {
   detail: string
 }
 
-function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContractors }: Props): Headline | null {
+function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContractors, cityId }: Props): Headline | null {
   const flagged = wardContractors.filter(c => c.blacklist_flags.length > 0)
   const headlines: (Headline & { priority: number })[] = []
+  const stateName = getCity(cityId).state
 
   // Flagged contractors in this ward — most alarming
   if (flagged.length > 0) {
@@ -56,7 +60,7 @@ function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContracto
       priority: 80,
       severity: "red",
       text: `MLA attended only ${reportCard.attendance_pct}% of assembly sessions`,
-      detail: "Below 40% attendance in Karnataka Legislature",
+      detail: `Below 40% attendance in the ${stateName} Legislature`,
     })
   }
 

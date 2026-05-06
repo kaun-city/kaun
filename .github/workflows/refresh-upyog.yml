@@ -1,0 +1,34 @@
+name: Refresh UPYOG (AP ULBs)
+
+on:
+  schedule:
+    # Daily at 04:00 UTC (09:30 IST) — CDMA Open Portal updates overnight
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+    inputs:
+      ulb:
+        description: 'Single ULB to refresh (e.g. visakhapatnam). Blank = all registered ULBs.'
+        default: ''
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run UPYOG adapter
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          if [ -n "${{ github.event.inputs.ulb }}" ]; then
+            node scripts/adapters/upyog.mjs --ulb=${{ github.event.inputs.ulb }}
+          else
+            node scripts/adapters/upyog.mjs --all
+          fi

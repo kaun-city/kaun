@@ -23,6 +23,7 @@
  */
 
 import { dbQuery, upsertRows } from "../lib/db.mjs"
+import { extractTableByClass as extractTable } from "../lib/html.mjs"
 
 const PORTAL = "https://tender.apeprocurement.gov.in"
 const AWARDED_PATH = "/tenderAwardedDetails.html"
@@ -48,45 +49,6 @@ async function fetchText(url, options = {}) {
   })
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
   return await res.text()
-}
-
-// ─── HTML parsing ────────────────────────────────────────────
-
-function extractTable(html, classRegex) {
-  const tableRe = new RegExp(`<table[^>]*${classRegex.source}[^>]*>([\\s\\S]*?)<\\/table>`, "i")
-  const tableMatch = tableRe.exec(html)
-  if (!tableMatch) return []
-
-  const tableBody = tableMatch[1]
-  const rows = []
-  const rowRe = /<tr[^>]*>([\s\S]*?)<\/tr>/gi
-  let rm
-  let headers = null
-
-  while ((rm = rowRe.exec(tableBody)) !== null) {
-    const rowHtml = rm[1]
-    if (!headers) {
-      const heads = []
-      const hRe = /<th[^>]*>([\s\S]*?)<\/th>/gi
-      let hm
-      while ((hm = hRe.exec(rowHtml)) !== null) {
-        heads.push(hm[1].replace(/<[^>]+>/g, "").trim())
-      }
-      if (heads.length > 0) { headers = heads; continue }
-    }
-    const cells = []
-    const cRe = /<td[^>]*>([\s\S]*?)<\/td>/gi
-    let cm
-    while ((cm = cRe.exec(rowHtml)) !== null) {
-      cells.push(cm[1].replace(/<[^>]+>/g, "").trim())
-    }
-    if (headers && cells.length === headers.length) {
-      const row = {}
-      for (let i = 0; i < headers.length; i++) row[headers[i]] = cells[i]
-      rows.push(row)
-    }
-  }
-  return rows
 }
 
 // ─── Award scraping ──────────────────────────────────────────

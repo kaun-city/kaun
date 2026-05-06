@@ -23,6 +23,7 @@
 
 import { writeFile } from "node:fs/promises"
 import { dbQuery } from "./lib/db.mjs"
+import { kmlToGeoJSON, resolveWardNo, resolveWardName } from "./lib/kml.mjs"
 
 // OpenCity dataset for Vizag wards (98-ward 2024 delimitation)
 // The exact resource URL changes — fetch via CKAN API to be resilient.
@@ -30,104 +31,6 @@ const CKAN_API = "https://data.opencity.in/api/3/action"
 const PACKAGE_ID = "visakhapatnam-wards-map-2024"
 
 const OUTPUT_PATH = "data/visakhapatnam-wards.geojson"
-
-// ─── KML → GeoJSON (minimal parser, no external deps) ─────────
-//
-// We parse a small subset of KML enough for ward boundaries:
-//   - <Placemark> with <name> + <Polygon>/<MultiGeometry>
-//   - <coordinates> as "lng,lat lng,lat ..." (KML is lng-lat-elev)
-// Returns FeatureCollection in GeoJSON.
-
-function decodeXmlEntities(s) {
-  return s
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
-}
-
-function parseCoords(text) {
-  // KML coords: "lng,lat[,alt] lng,lat[,alt] ..." — whitespace separated
-  const points = []
-  for (const triplet of text.trim().split(/\s+/)) {
-    const parts = triplet.split(",")
-    if (parts.length < 2) continue
-    const lng = parseFloat(parts[0])
-    const lat = parseFloat(parts[1])
-    if (!Number.isFinite(lng) || !Number.isFinite(lat)) continue
-    points.push([lng, lat])
-  }
-  return points
-}
-
-function extractFirst(block, tag) {
-  const m = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i").exec(block)
-  return m ? m[1].trim() : null
-}
-
-function extractAll(block, tag) {
-  const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "gi")
-  const out = []
-  let m
-  while ((m = re.exec(block)) !== null) out.push(m[1])
-  return out
-}
-
-function parsePlacemark(block) {
-  const rawName = extractFirst(block, "name") || ""
-  const name = decodeXmlEntities(rawName.replace(/<!\[CDATA\[(.*?)\]\]>/, "$1")).trim()
-
-  // Extended data — OpenCity sometimes embeds ward_no in <Data name="WARD_NO">
-  const ward_no = (() => {
-    const m = /<Data\s+name="WARD_NO"[^>]*>\s*<value>([^<]+)<\/value>/i.exec(block)
-    return m ? parseInt(m[1], 10) : null
-  })()
-
-  // Polygon
-  const polygons = []
-  for (const poly of extractAll(block, "Polygon")) {
-    const outer = extractFirst(poly, "outerBoundaryIs")
-    if (!outer) continue
-    const coordsBlock = extractFirst(outer, "coordinates")
-    if (!coordsBlock) continue
-    const ring = parseCoords(coordsBlock)
-    if (ring.length < 4) continue
-
-    // Inner rings (holes)
-    const inner = []
-    for (const innerBoundary of extractAll(poly, "innerBoundaryIs")) {
-      const cb = extractFirst(innerBoundary, "coordinates")
-      if (!cb) continue
-      const ringInner = parseCoords(cb)
-      if (ringInner.length >= 4) inner.push(ringInner)
-    }
-    polygons.push([ring, ...inner])
-  }
-
-  if (polygons.length === 0) return null
-
-  const geometry = polygons.length === 1
-    ? { type: "Polygon", coordinates: polygons[0] }
-    : { type: "MultiPolygon", coordinates: polygons.map(p => p) }
-
-  return {
-    type: "Feature",
-    properties: { name, ward_no },
-    geometry,
-  }
-}
-
-function kmlToGeoJSON(kmlText) {
-  const features = []
-  const re = /<Placemark[^>]*>([\s\S]*?)<\/Placemark>/gi
-  let m
-  while ((m = re.exec(kmlText)) !== null) {
-    const f = parsePlacemark(m[1])
-    if (f) features.push(f)
-  }
-  return { type: "FeatureCollection", features }
-}
 
 // ─── CKAN: find the KML resource URL ──────────────────────────
 
@@ -142,26 +45,6 @@ async function findKmlUrl() {
   const kml = resources.find(r => /kml/i.test(r.format)) ?? resources.find(r => /\.kml(\?|$)/i.test(r.url ?? ""))
   if (!kml) throw new Error(`No KML resource found in package ${PACKAGE_ID}. Resources: ${resources.map(r => r.format).join(", ")}`)
   return kml.url
-}
-
-// ─── Ward number resolution ───────────────────────────────────
-
-function resolveWardNo(feature, idx) {
-  if (Number.isFinite(feature.properties.ward_no)) return feature.properties.ward_no
-  // Try parsing from name (e.g., "Ward 42 — Asilmetta", "Ward-42")
-  const m = /(?:^|ward[\s-]*)(\d+)/i.exec(feature.properties.name || "")
-  if (m) return parseInt(m[1], 10)
-  // Fall back to 1-indexed sequence
-  return idx + 1
-}
-
-function resolveWardName(feature) {
-  const raw = feature.properties.name || ""
-  // Strip "Ward 42 — " or "Ward-42 " prefix to get just the locality name
-  return raw
-    .replace(/^ward[\s-]*\d+\s*[—:-]\s*/i, "")
-    .replace(/^ward[\s-]*\d+\s*/i, "")
-    .trim() || raw
 }
 
 // ─── Main ─────────────────────────────────────────────────────

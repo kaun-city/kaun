@@ -9,14 +9,17 @@ This is the shared data layer underneath [kaun.city](https://kaun.city) and othe
 | Section | What |
 |---|---|
 | [**Bengaluru**](bengaluru/index.md) | Contractors, findings, data sources, RTI archive, ward profiles |
+| [**Visakhapatnam**](visakhapatnam/index.md) | UPYOG/CDMA service data, AP eProc tenders, GVMC budget, GSWS coverage, outreach drafts |
 | [**Sources**](sources/index.md) | Pan-India data sources shared across cities |
 | [**About**](about/partners.md) | Partners, contributing, API documentation |
 
 ## Cities covered
 
-- **[Bengaluru](bengaluru/index.md)** — Live. 243 wards, 1,305 contractor profiles, verified findings documented, BBMP/KPPP/IFMS sources integrated.
+- **[Bengaluru](bengaluru/index.md)** — Live. 243 wards, 1,305 contractor profiles, verified findings documented, BBMP/KPPP/IFMS sources integrated. *Accountability tone.*
+- **[Visakhapatnam](visakhapatnam/index.md)** — Live. 98 GVMC wards, UPYOG (CDMA Open Portal) ward-level service data, AP eProcurement awarded tenders, GVMC FY24-25 budget, RTGS + GSWS context. *Transparency tone* — AP's open-data infrastructure is genuinely best-in-class and the editorial framing leads with what's working.
 - **Hyderabad** — In development. 150 GHMC wards, elected reps seeded.
 - **Pune, Chennai, Mumbai, Delhi** — On the roadmap. Data sourcing in progress.
+- **Vijayawada, Tirupati, Guntur, Kakinada, Nellore, Kurnool, Rajahmundry** — Adapter built (`scripts/adapters/upyog.mjs`). Each is one config file + ward GeoJSON away from being live, since all 123 AP ULBs share the UPYOG/DIGIT backend.
 
 Your city not here? [Request it on GitHub](https://github.com/kaun-city/kaun/issues/new?template=city-request.yml).
 
