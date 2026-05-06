@@ -344,7 +344,7 @@ export default function HomePage() {
         </div>
 
         {/* City Pulse — accountability headlines before pin drop */}
-        {!showCard && !outOfBounds && <CityPulse />}
+        {!showCard && !outOfBounds && <CityPulse cityId={pinResult?.city_id ?? "bengaluru"} />}
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
