@@ -1,9 +1,12 @@
 name: Refresh UPYOG (AP ULBs)
 
+# Schedule intentionally disabled until the first manual run lands rows in
+# Supabase cleanly. CDMA Open Portal's HTML/JSON shapes are inferred — we
+# need a successful real run before letting the daily cron fire. Re-enable
+# by un-commenting the schedule block below once verified.
 on:
-  schedule:
-    # Daily at 04:00 UTC (09:30 IST) — CDMA Open Portal updates overnight
-    - cron: '0 4 * * *'
+  # schedule:
+  #   - cron: '0 4 * * *'   # daily 04:00 UTC (09:30 IST)
   workflow_dispatch:
     inputs:
       ulb:

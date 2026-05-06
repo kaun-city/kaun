@@ -1,9 +1,12 @@
 name: Refresh AP eProcurement (Vizag)
 
+# Schedule intentionally disabled until the first manual run lands rows in
+# Supabase cleanly. AP eProc's awarded-tender table layout is best-effort —
+# we need a successful real run before letting the monthly cron fire.
+# Re-enable by un-commenting the schedule block below once verified.
 on:
-  schedule:
-    # 5th of every month at 03:30 UTC — awarded tenders publish on a monthly cadence
-    - cron: '30 3 5 * *'
+  # schedule:
+  #   - cron: '30 3 5 * *'   # 5th of every month at 03:30 UTC
   workflow_dispatch:
     inputs:
       since:

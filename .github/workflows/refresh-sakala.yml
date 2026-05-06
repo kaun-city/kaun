@@ -1,9 +1,11 @@
 name: Refresh Sakala Performance
 
+# Sakala (sakala.kar.nic.in) blocks all known datacenter IP ranges with
+# "Host not in allowlist" 403s — every GitHub Actions runner is blocked.
+# Verified May 2026. Keeping the workflow callable on demand so it can be
+# triggered from a laptop on residential ISP; the cron schedule is removed
+# because it can never succeed in CI and was failing every 1st of the month.
 on:
-  schedule:
-    # 1st of every month at 02:00 UTC
-    - cron: '0 2 1 * *'
   workflow_dispatch:
     inputs:
       year:

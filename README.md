@@ -146,9 +146,9 @@ scripts/
 | Sundays 03:00 UTC | `refresh-wiki-wards` | GitHub Actions | Regenerate per-ward wiki pages from the freshly refreshed data |
 | 2nd of month | `refresh-grievances` | GitHub Actions | BBMP grievance counts |
 | 3rd of month | `refresh-trade-licenses` | GitHub Actions | Trade licence stats |
-| 1st of month (manual) | `refresh-sakala` | Local Playwright | Sakala service delivery (cloud-blocked) |
-| Daily 04:00 UTC | `refresh-upyog` | GitHub Actions | UPYOG/CDMA grievances, property tax, trade licences (all registered AP ULBs) |
-| 5th of month | `refresh-ap-eproc` | GitHub Actions | AP eProcurement awarded tenders for Vizag departments |
+| Manual only | `refresh-sakala` | Local Playwright | Sakala service delivery — sakala.kar.nic.in allowlists residential IPs only, every cloud runner is blocked |
+| Manual only (pending verification) | `refresh-upyog` | GitHub Actions | UPYOG/CDMA grievances, property tax, trade licences for all registered AP ULBs. Cron commented out until the first real run lands rows cleanly |
+| Manual only (pending verification) | `refresh-ap-eproc` | GitHub Actions | AP eProcurement awarded tenders for Vizag departments. Cron commented out until the first real run lands rows cleanly |
 | On push to `master` | `test` | GitHub Actions | Unit tests + apps/web typecheck |
 | On push to `master` | `deploy-wiki` | GitHub Actions | Build MkDocs and deploy data.kaun.city |
 
