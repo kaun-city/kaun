@@ -30,7 +30,10 @@ import { kmlToGeoJSON, resolveWardNo, resolveWardName } from "./lib/kml.mjs"
 const CKAN_API = "https://data.opencity.in/api/3/action"
 const PACKAGE_ID = "visakhapatnam-wards-map-2024"
 
-const OUTPUT_PATH = "data/visakhapatnam-wards.geojson"
+// Write directly into the Next.js static-assets folder so the frontend
+// can fetch /visakhapatnam-wards.geojson from the same origin. Working
+// dir is the repo root (the script is invoked from there).
+const OUTPUT_PATH = "apps/web/public/visakhapatnam-wards.geojson"
 
 // ─── CKAN: find the KML resource URL ──────────────────────────
 

@@ -25,10 +25,13 @@ export const visakhapatnam: CityConfig = {
   country: "India",
   center: [17.6868, 83.2185],
   zoom: 11,
-  // GVMC has 98 wards (2024 delimitation). KML is on opencity.in, will be
-  // converted to GeoJSON and hosted in the kaun-city/kaun repo.
-  geojsonUrl:
-    "https://raw.githubusercontent.com/kaun-city/kaun/master/data/visakhapatnam-wards.geojson",
+  // GVMC has 98 wards (2024 delimitation). Served as a static Next.js asset
+  // at /visakhapatnam-wards.geojson — same origin, no GitHub raw coupling,
+  // works on any preview deployment. Populate by running:
+  //   node scripts/seed-boundaries-visakhapatnam.mjs
+  // which fetches GVMC's KML from OpenCity.in's CKAN, converts to GeoJSON,
+  // and overwrites apps/web/public/visakhapatnam-wards.geojson.
+  geojsonUrl: "/visakhapatnam-wards.geojson",
   subreddit: "Visakhapatnam",
   budgetYear: "2025-26",
   tone: "transparency",
