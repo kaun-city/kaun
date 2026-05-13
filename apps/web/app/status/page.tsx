@@ -11,11 +11,26 @@ interface TableCheck {
   status: "ok" | "empty" | "error"
 }
 
+interface CityCoverage {
+  city_id: string
+  name: string
+  state: string
+  expected_wards: number
+  wards: number | null
+  ward_amenities: number | null
+  upyog_grievances: number | null
+  upyog_property_tax: number | null
+  city_budget_heads: number | null
+  elected_reps: number | null
+  readiness: number
+}
+
 interface HealthData {
   status: "healthy" | "degraded" | "down"
   timestamp: string
   supabase: "connected" | "error"
   tables: TableCheck[]
+  cities: CityCoverage[]
   crons: { name: string; last_data_at: string | null; status: "ok" | "stale" | "unknown" }[]
   summary: {
     total_wards: number | null
@@ -57,6 +72,20 @@ function StatusDot({ status }: { status: string }) {
       ? "bg-yellow-500"
       : "bg-red-500"
   return <span className={`inline-block w-2 h-2 rounded-full ${color}`} />
+}
+
+function CovStat({ label, value, target, pct }: { label: string; value: number | null; target?: number; pct?: number }) {
+  const dim = value === null || value === 0
+  return (
+    <div>
+      <p className="text-white/30 uppercase tracking-wider">{label}</p>
+      <p className={`font-mono mt-0.5 ${dim ? "text-white/20" : "text-white/70"}`}>
+        {value === null ? "—" : value.toLocaleString("en-IN")}
+        {target ? <span className="text-white/15">/{target}</span> : null}
+        {typeof pct === "number" && target ? <span className="text-white/30 ml-1">({pct}%)</span> : null}
+      </p>
+    </div>
+  )
 }
 
 function ReportStatusBadge({ status }: { status: string | null }) {
@@ -169,6 +198,48 @@ export default function StatusPage() {
                 </div>
               ))}
             </div>
+
+            {/* City Coverage — what data is flowing per city */}
+            {data.cities && data.cities.length > 0 && (
+              <div className="rounded-xl bg-white/5 overflow-hidden mb-8">
+                <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+                  <p className="text-white/40 text-[10px] uppercase tracking-wider">City Coverage</p>
+                  <p className="text-white/20 text-[10px]">{data.cities.length} cities registered</p>
+                </div>
+                <div className="divide-y divide-white/5">
+                  {data.cities.map(c => {
+                    const pct = Math.round(c.readiness * 100)
+                    const wardPct = c.expected_wards > 0 ? Math.round(((c.wards ?? 0) / c.expected_wards) * 100) : 0
+                    const barColor = pct >= 75 ? "bg-green-400" : pct >= 40 ? "bg-yellow-400" : "bg-orange-400"
+                    return (
+                      <div key={c.city_id} className="px-4 py-3">
+                        <div className="flex items-center justify-between gap-3 mb-1.5">
+                          <div className="min-w-0">
+                            <p className="text-white/80 text-sm font-semibold">{c.name}</p>
+                            <p className="text-white/30 text-[10px]">{c.state} · {c.city_id}</p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="text-white/70 text-sm font-mono">{pct}%</p>
+                            <p className="text-white/20 text-[10px]">readiness</p>
+                          </div>
+                        </div>
+                        <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+                          <div className={`h-full ${barColor} rounded-full transition-all`} style={{ width: `${pct}%` }} />
+                        </div>
+                        <div className="mt-2 grid grid-cols-2 md:grid-cols-6 gap-2 text-[10px]">
+                          <CovStat label="Wards" value={c.wards} target={c.expected_wards} pct={wardPct} />
+                          <CovStat label="Amenities" value={c.ward_amenities} />
+                          <CovStat label="Grievances" value={c.upyog_grievances} />
+                          <CovStat label="Property Tax" value={c.upyog_property_tax} />
+                          <CovStat label="Budget Heads" value={c.city_budget_heads} />
+                          <CovStat label="Elected Reps" value={c.elected_reps} />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* User Engagement */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">

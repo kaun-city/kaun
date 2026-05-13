@@ -11,7 +11,7 @@ import { useEffect, useRef, useState, MutableRefObject } from "react"
 import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
-import { bengaluru } from "@/lib/cities"
+import { bengaluru, type CityConfig } from "@/lib/cities"
 
 function relativeTime(isoStr: string): string {
   const diffMs = Date.now() - new Date(isoStr).getTime()
@@ -24,10 +24,9 @@ function relativeTime(isoStr: string): string {
   return `${d}d ago`
 }
 
-// Default to Bengaluru; future: accept city prop when multi-city map is needed
+// Default to Bengaluru; the city prop overrides at mount time.
+// Multi-city: each city has its own center, zoom, geojson URL and ward label key.
 const DEFAULT_CITY = bengaluru
-const BENGALURU_CENTER: [number, number] = DEFAULT_CITY.center
-const BENGALURU_GEOJSON_URL = DEFAULT_CITY.geojsonUrl
 
 // Saffron palette
 const WARD_STYLE = {
@@ -52,10 +51,12 @@ interface Props {
   reportRefresh?: number
   /** When true, next tap captures a report location instead of a ward lookup */
   reportPickMode?: boolean
+  /** Active city — controls map center, zoom, ward GeoJSON layer, and label property */
+  city?: CityConfig
   onReportPin?: (lat: number, lng: number) => void
 }
 
-export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin }: Props) {
+export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin, city = DEFAULT_CITY }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
@@ -256,8 +257,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
 
     import("leaflet").then((L) => {
       const map = L.map(containerRef.current!, {
-        center: BENGALURU_CENTER,
-        zoom: 12,
+        center: city.center,
+        zoom: city.zoom,
         zoomControl: false,
         attributionControl: true,
       })
@@ -277,8 +278,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
         }
       ).addTo(map)
 
-      // Load ward GeoJSON overlay
-      fetch(BENGALURU_GEOJSON_URL)
+      // Load ward GeoJSON overlay (per-city)
+      fetch(city.geojsonUrl)
         .then((r) => r.json())
         .then((data) => {
           geojsonRef.current = L.geoJSON(data, {
@@ -295,10 +296,14 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
             },
           }).addTo(map)
 
-          // Ward name labels — visible only when zoomed in
+          // Ward name labels — visible only when zoomed in.
+          // Property name varies by city: Bengaluru's datameet GeoJSON uses
+          // KGISWardName; the kaun-generated Vizag GeoJSON uses ward_name.
+          // Fall back through common variants.
           labelLayerRef.current = L.layerGroup()
           for (const feature of data.features) {
-            const name = feature.properties?.KGISWardName
+            const p = feature.properties ?? {}
+            const name = p.KGISWardName ?? p.ward_name ?? p.WARD_NAME ?? p.name ?? null
             if (!name) continue
             // Calculate centroid from polygon coordinates
             const coords = feature.geometry?.coordinates

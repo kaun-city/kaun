@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js"
+import { allCities } from "@/lib/cities"
 
 export const runtime = "nodejs"
 export const maxDuration = 15
@@ -42,11 +43,28 @@ interface RecentFact {
   created_at: string
 }
 
+interface CityCoverage {
+  city_id: string
+  name: string
+  state: string
+  expected_wards: number
+  /** Per-table row count for this city (null = table absent or query failed). */
+  wards: number | null
+  ward_amenities: number | null
+  upyog_grievances: number | null
+  upyog_property_tax: number | null
+  city_budget_heads: number | null
+  elected_reps: number | null
+  /** Computed readiness (0-1) for the dashboard bar. */
+  readiness: number
+}
+
 interface HealthResult {
   status: "healthy" | "degraded" | "down"
   timestamp: string
   supabase: "connected" | "error"
   tables: TableCheck[]
+  cities: CityCoverage[]
   crons: { name: string; last_data_at: string | null; status: "ok" | "stale" | "unknown" }[]
   summary: {
     total_wards: number | null
@@ -119,6 +137,7 @@ export async function GET() {
     timestamp: new Date().toISOString(),
     supabase: "error",
     tables: [],
+    cities: [],
     crons: [],
     summary: {
       total_wards: null,
@@ -167,6 +186,52 @@ export async function GET() {
       checkTable(supabase, "tenders", "created_at"),
     ])
     result.tables = tableChecks
+
+    // Per-city coverage — what's flowing into each registered city's tables.
+    // Uses head:true count queries against city-scoped tables. Tables that
+    // don't exist (Supabase returns an error) collapse to null and are
+    // treated as 0 in the readiness calculation.
+    async function countByCity(table: string, cityId: string): Promise<number | null> {
+      try {
+        const { count, error } = await supabase
+          .from(table)
+          .select("*", { count: "exact", head: true })
+          .eq("city_id", cityId)
+        if (error) return null
+        return count ?? 0
+      } catch {
+        return null
+      }
+    }
+    const cityCoverage = await Promise.all(allCities().map(async (c): Promise<CityCoverage> => {
+      const [wards, wardAmenities, grievances, propertyTax, budgetHeads, reps] = await Promise.all([
+        countByCity("wards", c.id),
+        countByCity("ward_amenities", c.id),
+        countByCity("upyog_grievances", c.id),
+        countByCity("upyog_property_tax", c.id),
+        countByCity("city_budget_heads", c.id),
+        countByCity("elected_reps", c.id),
+      ])
+      const expected = c.wardCount ?? 0
+      const wardCoverage = expected > 0 ? Math.min(1, (wards ?? 0) / expected) : 0
+      const tablesPresent = [wardAmenities, grievances, propertyTax, budgetHeads, reps]
+        .filter(v => (v ?? 0) > 0).length
+      const readiness = (wardCoverage * 0.5) + ((tablesPresent / 5) * 0.5)
+      return {
+        city_id: c.id,
+        name: c.name,
+        state: c.state,
+        expected_wards: expected,
+        wards,
+        ward_amenities: wardAmenities,
+        upyog_grievances: grievances,
+        upyog_property_tax: propertyTax,
+        city_budget_heads: budgetHeads,
+        elected_reps: reps,
+        readiness,
+      }
+    }))
+    result.cities = cityCoverage
 
     // Summary
     const find = (t: string) => tableChecks.find(c => c.table === t)

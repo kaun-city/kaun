@@ -12,6 +12,16 @@ export const bengaluru: CityConfig = {
   subreddit: "bangalore",
   budgetYear: "2025-26",
   sakalaNote: "Bengaluru Urban ranks 31st of 32 districts statewide",
+  tone: "accountability",
+  wardCount: 243,
+  localAgency: {
+    short: "GBA",
+    full: "Greater Bengaluru Authority",
+    helpline: "1533",
+    website: "https://bbmp.gov.in",
+    grievanceUrl: "https://bbmpgov.sahaaya.in",
+    rtiAddress: "Public Information Officer, GBA Zonal Office, {zone}, Bengaluru",
+  },
   features: {
     mlaLadFunds:           true,
     repReportCards:        true,

@@ -12,6 +12,7 @@ import { AskKaunBar } from "@/components/shared/AskKaunBar"
 import { WardHeadline } from "@/components/WardHeadline"
 import { WardGrade } from "@/components/WardGrade"
 import type { AskKaunRequest } from "@/app/api/ask-kaun/route"
+import { getCity } from "@/lib/cities"
 
 interface Props {
   result: PinResult | null
@@ -43,7 +44,8 @@ function buildShareText(result: PinResult, ward: ReturnType<typeof useWardData>)
   } else if (mla?.name) {
     lines.push(`${mla.name} (${mla.party ?? ""}) represents ${result.ward_name} — Ward ${result.ward_no}, ${result.assembly_constituency}.`)
   } else {
-    lines.push(`Ward ${result.ward_no} — ${result.ward_name}, Bengaluru.`)
+    const cityName = getCity(result.city_id).name
+    lines.push(`Ward ${result.ward_no} — ${result.ward_name}, ${cityName}.`)
   }
 
   lines.push(`Find out who is accountable for your ward: kaun.city`)
@@ -138,6 +140,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               infraStats={ward.infraStats}
               potholes={ward.potholes}
               wardContractors={ward.wardContractors ?? []}
+              cityId={result.city_id}
             />
           </div>
         ) : (
@@ -186,6 +189,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
           committeeMeetings={ward.committeeMeetings}
           infraStats={ward.infraStats}
           wardContractors={ward.wardContractors ?? []}
+          cityId={result.city_id}
         />
       )}
 
