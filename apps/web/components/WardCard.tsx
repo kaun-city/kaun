@@ -59,8 +59,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const handleShare = useCallback(async () => {
     if (!result?.found) return
     const text = buildShareText(result, ward)
+    const cityParam = result.city_id && result.city_id !== "bengaluru" ? `&city=${result.city_id}` : ""
     const url = result.ward_no
-      ? `https://kaun.city?ward=${result.ward_no}`
+      ? `https://kaun.city?ward=${result.ward_no}${cityParam}`
       : "https://kaun.city"
     if (navigator.share) {
       try {

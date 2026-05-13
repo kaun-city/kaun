@@ -108,7 +108,7 @@ export function useWardData(result: PinResult | null) {
     setSakala(null)
     setLocalOffices([])
     setDepartments([])
-  }, [result?.ward_no])
+  }, [result?.ward_no, result?.city_id])
 
   // ── Profile (always) ─────────────────────────────────────
   useEffect(() => {
@@ -227,7 +227,7 @@ export function useWardData(result: PinResult | null) {
     if (!result?.ward_no) return
     fetchWardReportCount(result.ward_no).then(setReportCount)
     fetchWardSignals(result.ward_no).then(setSignals)
-  }, [result?.ward_no])
+  }, [result?.ward_no, result?.city_id])
 
   // ── Eager: potholes + contractors (needed for WardGrade in header) ──
   useEffect(() => {

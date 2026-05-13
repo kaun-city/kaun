@@ -111,15 +111,16 @@ export default function HomePage() {
   const [wardOptions, setWardOptions]   = useState<WardOption[]>([])
   const searchInputRef = useRef<HTMLInputElement>(null)
 
-  // Load ward centroids for search (once)
+  // Load ward centroids for search — uses the active city's GeoJSON
   useEffect(() => {
-    fetch("https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson")
+    if (!activeCity.geojsonUrl) return
+    fetch(activeCity.geojsonUrl)
       .then(r => r.json())
       .then(data => {
         const opts: WardOption[] = []
         for (const f of data.features) {
-          const name = f.properties?.KGISWardName
-          const no = parseInt(f.properties?.KGISWardNo, 10)
+          const name = f.properties?.KGISWardName ?? f.properties?.ward_name ?? f.properties?.WARD_NAME ?? f.properties?.name
+          const no = parseInt(f.properties?.KGISWardNo ?? f.properties?.ward_no ?? f.properties?.WARD_NO, 10)
           if (!name || !no) continue
           const coords = f.geometry?.type === "MultiPolygon" ? f.geometry.coordinates[0][0] : f.geometry?.coordinates?.[0]
           if (!coords || coords.length === 0) continue
@@ -130,7 +131,7 @@ export default function HomePage() {
         setWardOptions(opts.sort((a, b) => a.ward_no - b.ward_no))
       })
       .catch(() => {})
-  }, [])
+  }, [activeCity.geojsonUrl])
 
   const searchResults = searchQuery.length >= 2
     ? wardOptions.filter(w =>
@@ -192,7 +193,7 @@ export default function HomePage() {
       const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL!
       const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       fetch(
-        `${SUPABASE_URL}/rest/v1/wards?ward_no=eq.${wardParam}&select=ward_no,ward_name,assembly_constituency,zone&limit=1`,
+        `${SUPABASE_URL}/rest/v1/wards?ward_no=eq.${wardParam}&city_id=eq.${activeCity.id}&select=ward_no,ward_name,assembly_constituency,zone&limit=1`,
         { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
       )
         .then(r => r.json())
@@ -206,7 +207,7 @@ export default function HomePage() {
             ward_name: ward.ward_name,
             assembly_constituency: ward.assembly_constituency ?? "",
             zone: ward.zone ?? "",
-            city_id: "bengaluru",
+            city_id: activeCity.id,
             found: true,
             lat: 12.9716,
             lng: 77.5946,

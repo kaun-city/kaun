@@ -326,7 +326,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                   pointer-events:none;
                   font-family:system-ui,sans-serif;
                   letter-spacing:0.02em;
-                ">${name.replace(/ Ward$/i, "")}</span>`,
+                ">${name.replace(/ Ward$/i, "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}</span>`,
                 className: "",
                 iconAnchor: [0, 0],
               }),

@@ -30,7 +30,16 @@ BEGIN
     -- No PK at all: add composite
     ALTER TABLE wards ADD CONSTRAINT wards_pkey PRIMARY KEY (city_id, ward_no);
   ELSIF pk_cols NOT LIKE '%city_id%' THEN
-    -- PK exists but is single-column on ward_no: replace it
+    -- PK exists but is single-column on ward_no: replace it.
+    -- Preflight: backfill any null city_id before altering PK (NOT NULL).
+    UPDATE wards SET city_id = 'bengaluru' WHERE city_id IS NULL;
+    -- Preflight: deduplicate on (city_id, ward_no) keeping newest row.
+    DELETE FROM wards w1
+      USING wards w2
+      WHERE w1.city_id = w2.city_id
+        AND w1.ward_no = w2.ward_no
+        AND w1.ctid < w2.ctid;
+    -- Now safe to swap PK.
     EXECUTE format('ALTER TABLE wards DROP CONSTRAINT %I', pk_name);
     ALTER TABLE wards ADD CONSTRAINT wards_pkey PRIMARY KEY (city_id, ward_no);
   END IF;
