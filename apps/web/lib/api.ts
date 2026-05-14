@@ -521,9 +521,10 @@ export async function fetchCityPulseFacts(cityId = "bengaluru"): Promise<{ categ
 /**
  * Fetch ward spend breakdown by category (BBMP work orders 2018-2023).
  */
-export async function fetchWardReportCount(wardNo: number): Promise<number> {
+export async function fetchWardReportCount(wardNo: number, cityId = "bengaluru"): Promise<number> {
   const rows = await query<{ id: number }>('ward_reports', {
     'ward_no': `eq.${wardNo}`,
+    'city_id': `eq.${cityId}`,
     'status': 'eq.approved',
     'reported_at': `gte.${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()}`,
     'select': 'id',
@@ -542,10 +543,11 @@ export interface CivicSignal {
   signal_at: string
 }
 
-export async function fetchWardSignals(wardNo: number): Promise<CivicSignal[]> {
+export async function fetchWardSignals(wardNo: number, cityId = "bengaluru"): Promise<CivicSignal[]> {
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
   return query<CivicSignal>('civic_signals', {
     'ward_no': `eq.${wardNo}`,
+    'city_id': `eq.${cityId}`,
     'signal_at': `gte.${since}`,
     'select': 'id,source,url,author,title,issue_type,upvotes,signal_at',
     'order': 'signal_at.desc',
