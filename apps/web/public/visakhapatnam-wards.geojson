@@ -1,0 +1,1 @@
+{"type":"FeatureCollection","name":"Visakhapatnam Wards 2024 (placeholder)","features":[],"_note":"Run scripts/seed-boundaries-visakhapatnam.mjs to populate this file with the 98-ward GVMC GeoJSON from OpenCity.in. The seeder also writes the boundaries into PostGIS so pin lookup works. Until then, the Vizag map will render with no ward overlay (graceful)."}

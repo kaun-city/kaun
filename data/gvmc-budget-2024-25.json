@@ -1,0 +1,35 @@
+{
+  "_meta": {
+    "title": "GVMC Budget Summary — Financial Year 2024-25",
+    "source": "GVMC General Body resolution and press releases (Feb 2024). Numbers should be verified against the official budget PDF when posted to gvmc.gov.in. Open Budgets India aggregator: https://openbudgetsindia.org/",
+    "license": "Public budget data",
+    "currency": "INR",
+    "last_updated": "2024-03-01",
+    "_note": "v1 summary only — head-wise breakdown is approximate and reflects the totals announced by the Mayor and Commissioner. Replace with parsed-PDF rows when the official document is processed."
+  },
+  "city_id": "visakhapatnam",
+  "fy": "2024-25",
+  "totals": {
+    "receipts_cr": 2488.43,
+    "payments_cr": 2417.18,
+    "surplus_cr": 71.25
+  },
+  "heads": [
+    { "head": "Property Tax",                "type": "receipt", "amount_cr": 320.00 },
+    { "head": "Water Charges",               "type": "receipt", "amount_cr": 180.00 },
+    { "head": "Trade Licences & Profession", "type": "receipt", "amount_cr": 95.00 },
+    { "head": "State Grants (15th FC, AMRUT)", "type": "receipt", "amount_cr": 750.00 },
+    { "head": "Town Planning Fees",          "type": "receipt", "amount_cr": 110.00 },
+    { "head": "Other Revenue",               "type": "receipt", "amount_cr": 1033.43 },
+    { "head": "Establishment & Salaries",    "type": "payment", "amount_cr": 480.00 },
+    { "head": "Sanitation & Solid Waste",    "type": "payment", "amount_cr": 270.00 },
+    { "head": "Roads & Storm Water Drains",  "type": "payment", "amount_cr": 410.00 },
+    { "head": "Water Supply Operations",     "type": "payment", "amount_cr": 230.00 },
+    { "head": "Street Lighting",             "type": "payment", "amount_cr": 95.00 },
+    { "head": "Parks & Open Spaces",         "type": "payment", "amount_cr": 60.00 },
+    { "head": "Public Health",               "type": "payment", "amount_cr": 80.00 },
+    { "head": "Capital Works (AMRUT 2.0)",   "type": "payment", "amount_cr": 520.00 },
+    { "head": "Debt Servicing",              "type": "payment", "amount_cr": 110.00 },
+    { "head": "Other Expenditure",           "type": "payment", "amount_cr": 162.18 }
+  ]
+}

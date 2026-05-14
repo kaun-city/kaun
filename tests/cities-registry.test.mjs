@@ -13,8 +13,9 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import { bengaluru } from "../apps/web/lib/cities/bengaluru.ts"
+import { visakhapatnam } from "../apps/web/lib/cities/visakhapatnam.ts"
 
-const REGISTRY = { bengaluru }
+const REGISTRY = { bengaluru, visakhapatnam }
 const getCity = (id) => REGISTRY[id ?? "bengaluru"] ?? bengaluru
 const allCities = () => Object.values(REGISTRY)
 
@@ -25,15 +26,23 @@ test("bengaluru config has the expected core fields", () => {
   assert.equal(bengaluru.state, "Karnataka")
 })
 
+test("visakhapatnam config has the expected core fields", () => {
+  assert.equal(visakhapatnam.id, "visakhapatnam")
+  assert.equal(visakhapatnam.tone, "transparency")
+  assert.equal(visakhapatnam.wardCount, 98)
+  assert.equal(visakhapatnam.state, "Andhra Pradesh")
+  assert.equal(visakhapatnam.localAgency.short, "GVMC")
+})
+
 test("getCity falls back to bengaluru for unknown ids", () => {
   assert.equal(getCity("hyderabad").id, "bengaluru")
   assert.equal(getCity(undefined).id, "bengaluru")
   assert.equal(getCity(null).id, "bengaluru")
 })
 
-test("allCities returns all registered cities", () => {
+test("allCities returns both registered cities", () => {
   const ids = allCities().map(c => c.id).sort()
-  assert.deepEqual(ids, ["bengaluru"])
+  assert.deepEqual(ids, ["bengaluru", "visakhapatnam"])
 })
 
 test("city configs expose required fields", () => {
@@ -54,4 +63,10 @@ test("Bengaluru center is in the right bbox", () => {
   const [lat, lng] = bengaluru.center
   assert.ok(lat > 12.7 && lat < 13.3, `Bengaluru lat ${lat} should be between 12.7 and 13.3`)
   assert.ok(lng > 77.3 && lng < 77.9, `Bengaluru lng ${lng} should be between 77.3 and 77.9`)
+})
+
+test("Visakhapatnam center is in the right bbox", () => {
+  const [lat, lng] = visakhapatnam.center
+  assert.ok(lat > 17.5 && lat < 17.9, `Vizag lat ${lat} should be between 17.5 and 17.9`)
+  assert.ok(lng > 83.0 && lng < 83.5, `Vizag lng ${lng} should be between 83.0 and 83.5`)
 })

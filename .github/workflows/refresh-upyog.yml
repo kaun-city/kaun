@@ -1,0 +1,37 @@
+name: Refresh UPYOG (AP ULBs)
+
+# Schedule intentionally disabled until the first manual run lands rows in
+# Supabase cleanly. CDMA Open Portal's HTML/JSON shapes are inferred — we
+# need a successful real run before letting the daily cron fire. Re-enable
+# by un-commenting the schedule block below once verified.
+on:
+  # schedule:
+  #   - cron: '0 4 * * *'   # daily 04:00 UTC (09:30 IST)
+  workflow_dispatch:
+    inputs:
+      ulb:
+        description: 'Single ULB to refresh (e.g. visakhapatnam). Blank = all registered ULBs.'
+        default: ''
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run UPYOG adapter
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          if [ -n "${{ github.event.inputs.ulb }}" ]; then
+            node scripts/adapters/upyog.mjs --ulb=${{ github.event.inputs.ulb }}
+          else
+            node scripts/adapters/upyog.mjs --all
+          fi

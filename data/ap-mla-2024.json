@@ -1,0 +1,74 @@
+{
+  "_meta": {
+    "title": "Andhra Pradesh MLAs (16th Legislative Assembly, 2024-2029)",
+    "_note": "Sourced from the Election Commission of India 2024 AP Legislative Assembly results (declared 4 June 2024) and MyNeta candidate affidavits. Phone numbers and emails are pending — they should be added from the AP Legislative Assembly directory (https://aplegislature.org/) once accessible. Add new MLAs here as additional AP cities (Vijayawada, Tirupati, Guntur, Kakinada) are onboarded.",
+    "source": "Election Commission of India 2024 AP Vidhan Sabha results; MyNeta affidavits",
+    "license": "Public election data",
+    "last_updated": "2024-06-04"
+  },
+  "mlas": [
+    {
+      "city_id": "visakhapatnam",
+      "ac_no": 9,
+      "constituency": "Bheemili",
+      "name": "Ganta Srinivasa Rao",
+      "party": "TDP",
+      "elected_since": "2024-06-04",
+      "myneta_url": "https://myneta.info/AndhraPradesh2024/index.php?action=summary&subAction=candidates_analyzed&sort=candidate"
+    },
+    {
+      "city_id": "visakhapatnam",
+      "ac_no": 13,
+      "constituency": "Pendurthi",
+      "name": "Panchakarla Ramesh Babu",
+      "party": "JSP",
+      "elected_since": "2024-06-04",
+      "myneta_url": "https://myneta.info/AndhraPradesh2024/index.php?action=summary&subAction=candidates_analyzed&sort=candidate"
+    },
+    {
+      "city_id": "visakhapatnam",
+      "ac_no": 14,
+      "constituency": "Visakhapatnam East",
+      "name": "Velagapudi Ramakrishna Babu",
+      "party": "BJP",
+      "elected_since": "2024-06-04",
+      "myneta_url": "https://myneta.info/AndhraPradesh2024/index.php?action=summary&subAction=candidates_analyzed&sort=candidate"
+    },
+    {
+      "city_id": "visakhapatnam",
+      "ac_no": 15,
+      "constituency": "Visakhapatnam South",
+      "name": "Vamsi Krishna Srinivas",
+      "party": "JSP",
+      "elected_since": "2024-06-04",
+      "myneta_url": "https://myneta.info/AndhraPradesh2024/index.php?action=summary&subAction=candidates_analyzed&sort=candidate"
+    },
+    {
+      "city_id": "visakhapatnam",
+      "ac_no": 16,
+      "constituency": "Visakhapatnam North",
+      "name": "Vishnu Kumar Raju",
+      "party": "BJP",
+      "elected_since": "2024-06-04",
+      "myneta_url": "https://myneta.info/AndhraPradesh2024/index.php?action=summary&subAction=candidates_analyzed&sort=candidate"
+    },
+    {
+      "city_id": "visakhapatnam",
+      "ac_no": 17,
+      "constituency": "Visakhapatnam West",
+      "name": "P.G.V.R. Naidu (Ganababu)",
+      "party": "TDP",
+      "elected_since": "2024-06-04",
+      "myneta_url": "https://myneta.info/AndhraPradesh2024/index.php?action=summary&subAction=candidates_analyzed&sort=candidate"
+    },
+    {
+      "city_id": "visakhapatnam",
+      "ac_no": 18,
+      "constituency": "Gajuwaka",
+      "name": "Palla Srinivasa Rao",
+      "party": "TDP",
+      "elected_since": "2024-06-04",
+      "myneta_url": "https://myneta.info/AndhraPradesh2024/index.php?action=summary&subAction=candidates_analyzed&sort=candidate"
+    }
+  ]
+}

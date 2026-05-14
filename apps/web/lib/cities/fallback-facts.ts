@@ -29,10 +29,19 @@ const BENGALURU_FALLBACK: FallbackFact[] = [
   { severity: "red",    category: "PEDESTRIANS",    headline: "292 pedestrian deaths in 2023 — highest among 53 Indian cities.", source: "NCRB", url: null },
 ]
 
+const VISAKHAPATNAM_FALLBACK: FallbackFact[] = [
+  { severity: "green",  category: "OPEN DATA",         headline: "AP runs all 123 ULBs on UPYOG — service request data is publicly visible per ward.", source: "CDMA Open Portal", url: "https://apcdmaopenportal.emunicipal.ap.gov.in/" },
+  { severity: "green",  category: "REAL-TIME GOVERNANCE", headline: "RTGS aggregates 193 services across 45 departments — first dashboard of its kind in India.", source: "core.ap.gov.in", url: "https://www.core.ap.gov.in/cmdashboard/Index.aspx" },
+  { severity: "green",  category: "WARD SECRETARIATS", headline: "15,000+ Grama-Ward Sachivalayams deliver 500+ services at the household level.", source: "GSWS", url: "https://gramawardsachivalayam.ap.gov.in/" },
+  { severity: "green",  category: "PROCUREMENT",       headline: "AP e-Procurement publishes awarded contract data without login — Rs 6.18 lakh crore processed since 2015.", source: "tender.apeprocurement.gov.in", url: "https://tender.apeprocurement.gov.in/" },
+  { severity: "yellow", category: "AIR QUALITY",       headline: "Vizag CAAQMS stations report PM2.5 above WHO guidelines on most days. Industrial cluster + port traffic the main drivers.", source: "CPCB / APPCB", url: "https://airquality.cpcb.gov.in/AQI_India/" },
+  { severity: "yellow", category: "CYCLONE PREP",      headline: "Vizag is among India's most cyclone-prone cities. APSDMA GIS dashboard tracks storms in real time.", source: "APSDMA", url: "https://apsdmagis.ap.gov.in/" },
+  { severity: "green",  category: "REGISTRATIONS",     headline: "AP property registrations up 27% YoY — Rs 9,331 Cr revenue in FY25-26.", source: "IGRS AP", url: "https://registration.ap.gov.in/" },
+]
+
 export function getFallbackFacts(cityId: string, tone?: CityTone): FallbackFact[] {
+  if (cityId === "visakhapatnam") return VISAKHAPATNAM_FALLBACK
   if (cityId === "bengaluru") return BENGALURU_FALLBACK
-  // Transparency-tone cities will get their own fallback arrays in per-city
-  // branches. Until then, fall back to Bengaluru's accountability facts.
-  if (tone === "transparency") return BENGALURU_FALLBACK
+  if (tone === "transparency") return VISAKHAPATNAM_FALLBACK
   return BENGALURU_FALLBACK
 }

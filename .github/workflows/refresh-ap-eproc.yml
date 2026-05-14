@@ -1,0 +1,43 @@
+name: Refresh AP eProcurement (Vizag)
+
+# Schedule intentionally disabled until the first manual run lands rows in
+# Supabase cleanly. AP eProc's awarded-tender table layout is best-effort —
+# we need a successful real run before letting the monthly cron fire.
+# Re-enable by un-commenting the schedule block below once verified.
+on:
+  # schedule:
+  #   - cron: '30 3 5 * *'   # 5th of every month at 03:30 UTC
+  workflow_dispatch:
+    inputs:
+      since:
+        description: 'Pull awards from this date (YYYY-MM-DD). Blank = last 90 days.'
+        default: ''
+      department:
+        description: 'Single department code (GVMC, VMRDA, GVSCCL, APIIC, APEPDCL). Blank = all Vizag departments.'
+        default: ''
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run AP eProc adapter
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          ARGS="--district=visakhapatnam"
+          if [ -n "${{ github.event.inputs.since }}" ]; then
+            ARGS="$ARGS --since=${{ github.event.inputs.since }}"
+          fi
+          if [ -n "${{ github.event.inputs.department }}" ]; then
+            ARGS="$ARGS --department=${{ github.event.inputs.department }}"
+          fi
+          node scripts/adapters/ap-eproc.mjs $ARGS

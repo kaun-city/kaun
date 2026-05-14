@@ -32,6 +32,7 @@ const OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 // onboarding. The bbox should generously enclose the city's outer ward boundary.
 const CITY_BBOXES = {
   bengaluru:     "12.7,77.35,13.25,77.85",
+  visakhapatnam: "17.55,83.10,17.85,83.45",
 }
 
 const args = process.argv.slice(2)
