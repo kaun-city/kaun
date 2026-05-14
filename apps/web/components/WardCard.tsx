@@ -12,6 +12,7 @@ import { AskKaunBar } from "@/components/shared/AskKaunBar"
 import { WardHeadline } from "@/components/WardHeadline"
 import { WardGrade } from "@/components/WardGrade"
 import type { AskKaunRequest } from "@/app/api/ask-kaun/route"
+import { getCity } from "@/lib/cities"
 
 interface Props {
   result: PinResult | null
@@ -43,7 +44,8 @@ function buildShareText(result: PinResult, ward: ReturnType<typeof useWardData>)
   } else if (mla?.name) {
     lines.push(`${mla.name} (${mla.party ?? ""}) represents ${result.ward_name} — Ward ${result.ward_no}, ${result.assembly_constituency}.`)
   } else {
-    lines.push(`Ward ${result.ward_no} — ${result.ward_name}, Bengaluru.`)
+    const cityName = getCity(result.city_id).name
+    lines.push(`Ward ${result.ward_no} — ${result.ward_name}, ${cityName}.`)
   }
 
   lines.push(`Find out who is accountable for your ward: kaun.city`)
@@ -57,8 +59,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const handleShare = useCallback(async () => {
     if (!result?.found) return
     const text = buildShareText(result, ward)
+    const cityParam = result.city_id && result.city_id !== "bengaluru" ? `&city=${result.city_id}` : ""
     const url = result.ward_no
-      ? `https://kaun.city?ward=${result.ward_no}`
+      ? `https://kaun.city?ward=${result.ward_no}${cityParam}`
       : "https://kaun.city"
     if (navigator.share) {
       try {
@@ -138,6 +141,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               infraStats={ward.infraStats}
               potholes={ward.potholes}
               wardContractors={ward.wardContractors ?? []}
+              cityId={result.city_id}
             />
           </div>
         ) : (
@@ -186,6 +190,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
           committeeMeetings={ward.committeeMeetings}
           infraStats={ward.infraStats}
           wardContractors={ward.wardContractors ?? []}
+          cityId={result.city_id}
         />
       )}
 
@@ -282,8 +287,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
           )}
         </div>
 
-        {/* Ask Kaun bar */}
-        <AskKaunBar
+        {/* Ask Kaun bar — Bengaluru-only until the AI tools/prompt are city-scoped */}
+        {getCity(result.city_id).features.askKaun && <AskKaunBar
             wardContext={result.ward_no ? {
               ward_no: result.ward_no,
               ward_name: result.ward_name ?? "",
@@ -306,7 +311,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 : null,
               grievance_count: ward.grievances?.length ?? null,
             } : null}
-          />
+          />}
         </>
       )}
 

@@ -7,7 +7,9 @@ import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
+import { CitySwitcher } from "@/components/CitySwitcher"
 import ReportSheet from "@/components/shared/ReportSheet"
+import { getCity } from "@/lib/cities"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -85,6 +87,10 @@ interface WardOption { ward_no: number; ward_name: string; lat: number; lng: num
 
 export default function HomePage() {
   const searchParams = useSearchParams()
+  // Active city — driven by ?city=X query param. Defaults to Bengaluru.
+  // Pin drops in another city update this implicitly via pinResult.city_id.
+  const cityParam = searchParams.get("city") ?? "bengaluru"
+  const activeCity = getCity(cityParam)
   const [pinResult, setPinResult]     = useState<PinResult | null>(null)
   const [pinLoading, setPinLoading]   = useState(false)
   const [showCard, setShowCard]       = useState(false)
@@ -105,15 +111,16 @@ export default function HomePage() {
   const [wardOptions, setWardOptions]   = useState<WardOption[]>([])
   const searchInputRef = useRef<HTMLInputElement>(null)
 
-  // Load ward centroids for search (once)
+  // Load ward centroids for search — uses the active city's GeoJSON
   useEffect(() => {
-    fetch("https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson")
+    if (!activeCity.geojsonUrl) return
+    fetch(activeCity.geojsonUrl)
       .then(r => r.json())
       .then(data => {
         const opts: WardOption[] = []
         for (const f of data.features) {
-          const name = f.properties?.KGISWardName
-          const no = parseInt(f.properties?.KGISWardNo, 10)
+          const name = f.properties?.KGISWardName ?? f.properties?.ward_name ?? f.properties?.WARD_NAME ?? f.properties?.name
+          const no = parseInt(f.properties?.KGISWardNo ?? f.properties?.ward_no ?? f.properties?.WARD_NO, 10)
           if (!name || !no) continue
           const coords = f.geometry?.type === "MultiPolygon" ? f.geometry.coordinates[0][0] : f.geometry?.coordinates?.[0]
           if (!coords || coords.length === 0) continue
@@ -124,7 +131,7 @@ export default function HomePage() {
         setWardOptions(opts.sort((a, b) => a.ward_no - b.ward_no))
       })
       .catch(() => {})
-  }, [])
+  }, [activeCity.geojsonUrl])
 
   const searchResults = searchQuery.length >= 2
     ? wardOptions.filter(w =>
@@ -186,7 +193,7 @@ export default function HomePage() {
       const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL!
       const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       fetch(
-        `${SUPABASE_URL}/rest/v1/wards?ward_no=eq.${wardParam}&select=ward_no,ward_name,assembly_constituency,zone&limit=1`,
+        `${SUPABASE_URL}/rest/v1/wards?ward_no=eq.${wardParam}&city_id=eq.${activeCity.id}&select=ward_no,ward_name,assembly_constituency,zone&limit=1`,
         { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
       )
         .then(r => r.json())
@@ -200,10 +207,10 @@ export default function HomePage() {
             ward_name: ward.ward_name,
             assembly_constituency: ward.assembly_constituency ?? "",
             zone: ward.zone ?? "",
-            city_id: "bengaluru",
+            city_id: activeCity.id,
             found: true,
-            lat: 12.9716,
-            lng: 77.5946,
+            lat: activeCity.center[0],
+            lng: activeCity.center[1],
           } as PinResult)
         })
         .catch(() => {})
@@ -299,6 +306,8 @@ export default function HomePage() {
             i
           </a>
 
+          <CitySwitcher activeCityId={activeCity.id} />
+
           {/* Ward search */}
           <div className="relative ml-auto z-[1000]" style={{ pointerEvents: "auto" }}>
             {searchOpen ? (
@@ -344,7 +353,7 @@ export default function HomePage() {
         </div>
 
         {/* City Pulse — accountability headlines before pin drop */}
-        {!showCard && !outOfBounds && <CityPulse />}
+        {!showCard && !outOfBounds && <CityPulse cityId={activeCity.id} />}
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
@@ -425,6 +434,7 @@ export default function HomePage() {
         )}
 
         <MapView
+          city={activeCity}
           onPin={handlePin}
           panRef={mapViewRef}
           resizeKey={showCard ? 1 : 0}

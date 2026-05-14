@@ -108,7 +108,7 @@ export function useWardData(result: PinResult | null) {
     setSakala(null)
     setLocalOffices([])
     setDepartments([])
-  }, [result?.ward_no])
+  }, [result?.ward_no, result?.city_id])
 
   // ── Profile (always) ─────────────────────────────────────
   useEffect(() => {
@@ -171,7 +171,7 @@ export function useWardData(result: PinResult | null) {
       fetchBudgetSummary(city.budgetYear).then(setBudget)
     }
     if (city.features.workOrders && workOrders.length === 0) {
-      fetchWorkOrders(result.ward_no).then(setWorkOrders)
+      fetchWorkOrders(result.ward_no, result.city_id).then(setWorkOrders)
     }
   }, [tab, budget, workOrders.length, result?.ward_no, city.features.budget, city.features.workOrders, city.budgetYear])
 
@@ -179,21 +179,21 @@ export function useWardData(result: PinResult | null) {
   useEffect(() => {
     if (tab !== "spend" || !result?.found || !result.ward_name) return
     if (city.features.tradeLicenses && tradeLicenses.length === 0) {
-      fetchTradeLicenses(result.ward_name).then(setTradeLicenses)
+      fetchTradeLicenses(result.ward_name, result.city_id).then(setTradeLicenses)
     }
   }, [tab, result, tradeLicenses.length, city.features.tradeLicenses])
 
   useEffect(() => {
     if (tab !== "spend" || !result?.assembly_constituency) return
     if (city.features.propertyTax && !propertyTax) {
-      fetchPropertyTax(result.assembly_constituency).then(setPropertyTax)
+      fetchPropertyTax(result.assembly_constituency, result.city_id).then(setPropertyTax)
     }
   }, [tab, propertyTax, result?.assembly_constituency, city.features.propertyTax])
 
   // ── CITIZEN: demographics + buzz ─────────────────────────
   useEffect(() => {
     if (tab !== "citizen" || !result?.assembly_constituency) return
-    if (!wardStats) fetchWardStats(result.assembly_constituency).then(setWardStats)
+    if (!wardStats) fetchWardStats(result.assembly_constituency, result.city_id).then(setWardStats)
   }, [tab, wardStats, result?.assembly_constituency])
 
   useEffect(() => {
@@ -214,26 +214,26 @@ export function useWardData(result: PinResult | null) {
 
   useEffect(() => {
     if (tab !== "reach" || !result?.ward_name || grievances.length > 0) return
-    if (city.features.grievances) fetchWardGrievances(result.ward_name).then(setGrievances)
+    if (city.features.grievances) fetchWardGrievances(result.ward_name, result.city_id).then(setGrievances)
   }, [tab, grievances, result?.ward_name, city.features.grievances])
 
   // ── WHO + CITIZEN: infra stats (needed for story card on WHO tab) ──
   useEffect(() => {
     if (!result?.ward_no || infraStats) return
-    fetchWardInfraStats(result.ward_no).then(setInfraStats)
+    fetchWardInfraStats(result.ward_no, result.city_id).then(setInfraStats)
   }, [result?.ward_no, infraStats])
 
   useEffect(() => {
     if (!result?.ward_no) return
-    fetchWardReportCount(result.ward_no).then(setReportCount)
-    fetchWardSignals(result.ward_no).then(setSignals)
-  }, [result?.ward_no])
+    fetchWardReportCount(result.ward_no, result.city_id).then(setReportCount)
+    fetchWardSignals(result.ward_no, result.city_id).then(setSignals)
+  }, [result?.ward_no, result?.city_id])
 
   // ── Eager: potholes + contractors (needed for WardGrade in header) ──
   useEffect(() => {
     if (!result?.ward_no) return
-    if (city.features.wardPotholes && !potholes) fetchWardPotholes(result.ward_no).then(setPotholes)
-    if (city.features.workOrders && wardContractors.length === 0) fetchWardContractors(result.ward_no).then(setWardContractors)
+    if (city.features.wardPotholes && !potholes) fetchWardPotholes(result.ward_no, result.city_id).then(setPotholes)
+    if (city.features.workOrders && wardContractors.length === 0) fetchWardContractors(result.ward_no, result.city_id).then(setWardContractors)
   }, [result?.ward_no, potholes, wardContractors.length, city.features.wardPotholes, city.features.workOrders])
 
   // ── CITIZEN: bus stats + road crashes + air quality ──────
@@ -242,14 +242,14 @@ export function useWardData(result: PinResult | null) {
     if (!wardBusStats) fetchWardBusStats(result.ward_no).then(setWardBusStats)
     if (!roadCrashes)  fetchWardRoadCrashes(result.ward_no).then(setRoadCrashes)
     if (!airQuality)   fetchWardAirQuality(result.ward_no).then(setAirQuality)
-    if (city.features.wardAmenities && !amenities) fetchWardAmenities(result.ward_no).then(setAmenities)
-    if (city.features.wardWaterQuality && waterQuality.length === 0) fetchWardWaterQuality(result.ward_no).then(setWaterQuality)
+    if (city.features.wardAmenities && !amenities) fetchWardAmenities(result.ward_no, result.city_id).then(setAmenities)
+    if (city.features.wardWaterQuality && waterQuality.length === 0) fetchWardWaterQuality(result.ward_no, result.city_id).then(setWaterQuality)
   }, [tab, result?.ward_no, wardBusStats, roadCrashes, airQuality, amenities, waterQuality.length, city.features.wardAmenities, city.features.wardWaterQuality])
 
   // ── SPEND: ward-number-level data (ward spend) ────────────
   useEffect(() => {
     if (tab !== "spend" || !result?.ward_no) return
-    if (city.features.wardSpend && !wardSpend) fetchWardSpend(result.ward_no).then(setWardSpend)
+    if (city.features.wardSpend && !wardSpend) fetchWardSpend(result.ward_no, result.city_id).then(setWardSpend)
   }, [tab, wardSpend, result?.ward_no, city.features.wardSpend])
 
   // ── Derived values ────────────────────────────────────────

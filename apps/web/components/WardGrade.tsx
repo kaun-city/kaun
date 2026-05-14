@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import type { ContractorProfile, RepReportCard, WardCommitteeMeetings, WardInfraStats, WardPotholes } from "@/lib/types"
+import { getCity } from "@/lib/cities"
 
 interface Props {
   reportCard: RepReportCard | null
@@ -9,6 +10,8 @@ interface Props {
   infraStats: WardInfraStats | null
   potholes: WardPotholes | null
   wardContractors: ContractorProfile[]
+  /** city_id from PinResult — used for tone-aware copy ("accountability" vs "transparency") */
+  cityId?: string
 }
 
 interface Dimension {
@@ -168,6 +171,8 @@ export function WardGrade(props: Props) {
 
   const { score, dimensions, dataPoints } = result
   const { bar, text } = scoreColor(score)
+  const tone = getCity(props.cityId).tone
+  const scoreWord = tone === "transparency" ? "transparency" : "accountability"
 
   return (
     <div className="mt-1">
@@ -182,7 +187,7 @@ export function WardGrade(props: Props) {
           </div>
           <span className={`text-[11px] font-semibold ${text}`}>{score}<span className="text-white/30 font-normal">/100</span></span>
           <span className="text-white/20 text-[10px] group-hover:text-white/40 transition-colors">
-            accountability {open ? "▲" : "▼"}
+            {scoreWord} {open ? "▲" : "▼"}
           </span>
         </button>
         <InfoTip />
