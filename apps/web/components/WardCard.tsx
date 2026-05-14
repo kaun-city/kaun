@@ -287,8 +287,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
           )}
         </div>
 
-        {/* Ask Kaun bar */}
-        <AskKaunBar
+        {/* Ask Kaun bar — Bengaluru-only until the AI tools/prompt are city-scoped */}
+        {getCity(result.city_id).features.askKaun && <AskKaunBar
             wardContext={result.ward_no ? {
               ward_no: result.ward_no,
               ward_name: result.ward_name ?? "",
@@ -311,7 +311,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 : null,
               grievance_count: ward.grievances?.length ?? null,
             } : null}
-          />
+          />}
         </>
       )}
 

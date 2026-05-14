@@ -209,8 +209,8 @@ export default function HomePage() {
             zone: ward.zone ?? "",
             city_id: activeCity.id,
             found: true,
-            lat: 12.9716,
-            lng: 77.5946,
+            lat: activeCity.center[0],
+            lng: activeCity.center[1],
           } as PinResult)
         })
         .catch(() => {})

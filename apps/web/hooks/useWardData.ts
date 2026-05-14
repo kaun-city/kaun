@@ -171,7 +171,7 @@ export function useWardData(result: PinResult | null) {
       fetchBudgetSummary(city.budgetYear).then(setBudget)
     }
     if (city.features.workOrders && workOrders.length === 0) {
-      fetchWorkOrders(result.ward_no).then(setWorkOrders)
+      fetchWorkOrders(result.ward_no, result.city_id).then(setWorkOrders)
     }
   }, [tab, budget, workOrders.length, result?.ward_no, city.features.budget, city.features.workOrders, city.budgetYear])
 
@@ -232,8 +232,8 @@ export function useWardData(result: PinResult | null) {
   // ── Eager: potholes + contractors (needed for WardGrade in header) ──
   useEffect(() => {
     if (!result?.ward_no) return
-    if (city.features.wardPotholes && !potholes) fetchWardPotholes(result.ward_no).then(setPotholes)
-    if (city.features.workOrders && wardContractors.length === 0) fetchWardContractors(result.ward_no).then(setWardContractors)
+    if (city.features.wardPotholes && !potholes) fetchWardPotholes(result.ward_no, result.city_id).then(setPotholes)
+    if (city.features.workOrders && wardContractors.length === 0) fetchWardContractors(result.ward_no, result.city_id).then(setWardContractors)
   }, [result?.ward_no, potholes, wardContractors.length, city.features.wardPotholes, city.features.workOrders])
 
   // ── CITIZEN: bus stats + road crashes + air quality ──────
@@ -242,14 +242,14 @@ export function useWardData(result: PinResult | null) {
     if (!wardBusStats) fetchWardBusStats(result.ward_no).then(setWardBusStats)
     if (!roadCrashes)  fetchWardRoadCrashes(result.ward_no).then(setRoadCrashes)
     if (!airQuality)   fetchWardAirQuality(result.ward_no).then(setAirQuality)
-    if (city.features.wardAmenities && !amenities) fetchWardAmenities(result.ward_no).then(setAmenities)
-    if (city.features.wardWaterQuality && waterQuality.length === 0) fetchWardWaterQuality(result.ward_no).then(setWaterQuality)
+    if (city.features.wardAmenities && !amenities) fetchWardAmenities(result.ward_no, result.city_id).then(setAmenities)
+    if (city.features.wardWaterQuality && waterQuality.length === 0) fetchWardWaterQuality(result.ward_no, result.city_id).then(setWaterQuality)
   }, [tab, result?.ward_no, wardBusStats, roadCrashes, airQuality, amenities, waterQuality.length, city.features.wardAmenities, city.features.wardWaterQuality])
 
   // ── SPEND: ward-number-level data (ward spend) ────────────
   useEffect(() => {
     if (tab !== "spend" || !result?.ward_no) return
-    if (city.features.wardSpend && !wardSpend) fetchWardSpend(result.ward_no).then(setWardSpend)
+    if (city.features.wardSpend && !wardSpend) fetchWardSpend(result.ward_no, result.city_id).then(setWardSpend)
   }, [tab, wardSpend, result?.ward_no, city.features.wardSpend])
 
   // ── Derived values ────────────────────────────────────────

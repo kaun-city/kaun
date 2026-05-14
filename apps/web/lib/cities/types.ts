@@ -13,6 +13,7 @@ export interface CityFeatures {
   buzz: boolean
   wardAmenities: boolean
   wardWaterQuality: boolean
+  askKaun: boolean
 }
 
 /**

@@ -33,7 +33,13 @@ BEGIN
     -- PK exists but is single-column on ward_no: replace it.
     -- Preflight: backfill any null city_id before altering PK (NOT NULL).
     UPDATE wards SET city_id = 'bengaluru' WHERE city_id IS NULL;
+    RAISE NOTICE 'Backfilled % rows with null city_id',
+      (SELECT count(*) FROM wards WHERE city_id = 'bengaluru');
     -- Preflight: deduplicate on (city_id, ward_no) keeping newest row.
+    -- Uses ctid to arbitrarily pick one survivor when rows are identical.
+    RAISE NOTICE 'Duplicate (city_id, ward_no) rows before dedupe: %',
+      (SELECT count(*) FROM wards w1 JOIN wards w2
+         ON w1.city_id = w2.city_id AND w1.ward_no = w2.ward_no AND w1.ctid < w2.ctid);
     DELETE FROM wards w1
       USING wards w2
       WHERE w1.city_id = w2.city_id

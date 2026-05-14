@@ -37,5 +37,6 @@ export const bengaluru: CityConfig = {
     buzz:                  true,
     wardAmenities:         true,
     wardWaterQuality:      true,
+    askKaun:               true,
   },
 }
