@@ -183,9 +183,10 @@ export async function voteFact(
 /**
  * Fetch ward/constituency statistics (population, infrastructure, etc.)
  */
-export async function fetchWardStats(assemblyConstituency: string): Promise<WardStats | null> {
+export async function fetchWardStats(assemblyConstituency: string, cityId = "bengaluru"): Promise<WardStats | null> {
   const data = await rpc<WardStats>("ward_stats_by_ac", {
     p_assembly_constituency: assemblyConstituency,
+    ...(cityId !== "bengaluru" ? { p_city_id: cityId } : {}),
   })
   return data
 }
@@ -230,9 +231,10 @@ export async function fetchRecentActivity(limit = 20) {
 /**
  * Fetch property tax collections for an assembly constituency.
  */
-export async function fetchPropertyTax(assemblyConstituency: string): Promise<PropertyTaxData | null> {
+export async function fetchPropertyTax(assemblyConstituency: string, cityId = "bengaluru"): Promise<PropertyTaxData | null> {
   return await rpc<PropertyTaxData>("property_tax_by_ac", {
     p_assembly_constituency: assemblyConstituency,
+    ...(cityId !== "bengaluru" ? { p_city_id: cityId } : {}),
   })
 }
 
@@ -282,9 +284,10 @@ export async function fetchBuzz(wardName: string, subreddit = "bangalore"): Prom
 /**
  * Fetch ward-level grievance aggregates (BBMP complaints, by ward name).
  */
-export async function fetchWardGrievances(wardName: string): Promise<WardGrievances[]> {
+export async function fetchWardGrievances(wardName: string, cityId = "bengaluru"): Promise<WardGrievances[]> {
   return await query<WardGrievances>("ward_grievances", {
     "ward_name": `eq.${wardName}`,
+    "city_id": `eq.${cityId}`,
     "category": "eq.ALL",
     "select": "year,total_complaints,closed,in_progress,registered,reopened",
     "order": "year.desc",
@@ -309,9 +312,10 @@ export async function fetchSakalaPerformance(acName: string): Promise<SakalaPerf
 /**
  * Fetch trade license stats for a ward (aggregated by year).
  */
-export async function fetchTradeLicenses(wardName: string): Promise<import('./types').WardTradeLicenses[]> {
+export async function fetchTradeLicenses(wardName: string, cityId = "bengaluru"): Promise<import('./types').WardTradeLicenses[]> {
   return await query<import('./types').WardTradeLicenses>('ward_trade_licenses', {
     'ward_name': `eq.${wardName}`,
+    'city_id': `eq.${cityId}`,
     'select': 'year,total_licenses,new_licenses,renewals,total_revenue,top_trade_type',
     'order': 'year.desc',
     'limit': '3',
@@ -451,9 +455,10 @@ export async function fetchMlaLadFunds(assemblyConstituency: string): Promise<im
 /**
  * Fetch infrastructure stats for a ward (traffic signals + BMTC stops from spatial join).
  */
-export async function fetchWardInfraStats(wardNo: number): Promise<import('./types').WardInfraStats | null> {
+export async function fetchWardInfraStats(wardNo: number, cityId = "bengaluru"): Promise<import('./types').WardInfraStats | null> {
   const rows = await query<import('./types').WardInfraStats>('ward_infra_stats', {
     'ward_no': `eq.${wardNo}`,
+    'city_id': `eq.${cityId}`,
     'select': 'ward_no,ward_name,signal_count,bus_stop_count,daily_trips',
     'limit': '1',
   })

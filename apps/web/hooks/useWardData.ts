@@ -179,21 +179,21 @@ export function useWardData(result: PinResult | null) {
   useEffect(() => {
     if (tab !== "spend" || !result?.found || !result.ward_name) return
     if (city.features.tradeLicenses && tradeLicenses.length === 0) {
-      fetchTradeLicenses(result.ward_name).then(setTradeLicenses)
+      fetchTradeLicenses(result.ward_name, result.city_id).then(setTradeLicenses)
     }
   }, [tab, result, tradeLicenses.length, city.features.tradeLicenses])
 
   useEffect(() => {
     if (tab !== "spend" || !result?.assembly_constituency) return
     if (city.features.propertyTax && !propertyTax) {
-      fetchPropertyTax(result.assembly_constituency).then(setPropertyTax)
+      fetchPropertyTax(result.assembly_constituency, result.city_id).then(setPropertyTax)
     }
   }, [tab, propertyTax, result?.assembly_constituency, city.features.propertyTax])
 
   // ── CITIZEN: demographics + buzz ─────────────────────────
   useEffect(() => {
     if (tab !== "citizen" || !result?.assembly_constituency) return
-    if (!wardStats) fetchWardStats(result.assembly_constituency).then(setWardStats)
+    if (!wardStats) fetchWardStats(result.assembly_constituency, result.city_id).then(setWardStats)
   }, [tab, wardStats, result?.assembly_constituency])
 
   useEffect(() => {
@@ -214,13 +214,13 @@ export function useWardData(result: PinResult | null) {
 
   useEffect(() => {
     if (tab !== "reach" || !result?.ward_name || grievances.length > 0) return
-    if (city.features.grievances) fetchWardGrievances(result.ward_name).then(setGrievances)
+    if (city.features.grievances) fetchWardGrievances(result.ward_name, result.city_id).then(setGrievances)
   }, [tab, grievances, result?.ward_name, city.features.grievances])
 
   // ── WHO + CITIZEN: infra stats (needed for story card on WHO tab) ──
   useEffect(() => {
     if (!result?.ward_no || infraStats) return
-    fetchWardInfraStats(result.ward_no).then(setInfraStats)
+    fetchWardInfraStats(result.ward_no, result.city_id).then(setInfraStats)
   }, [result?.ward_no, infraStats])
 
   useEffect(() => {

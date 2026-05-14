@@ -3,16 +3,17 @@ export interface CityFeatures {
   repReportCards: boolean
   wardCommitteeMeetings: boolean
   /**
-   * Work orders, contractors, potholes, trade licences, property tax,
-   * ward spend, ward stats, grievances, and Ask Kaun all query tables
-   * or APIs that are currently Bengaluru-scoped. Before enabling any of
-   * these for a new city, the corresponding fetch in lib/api.ts MUST
-   * accept and filter by cityId. Fetches already city-scoped:
-   *   fetchWorkOrders, fetchWardContractors, fetchWardPotholes,
-   *   fetchWardAmenities, fetchWardWaterQuality, fetchWardSpend
-   * Fetches still Bengaluru-only (need scoping before enabling):
-   *   fetchTradeLicenses, fetchPropertyTax, fetchWardGrievances,
-   *   fetchWardStats, fetchWardInfraStats, Ask Kaun tools+prompt
+   * All ward-facing fetches in lib/api.ts accept cityId and filter by it.
+   * The underlying Supabase tables need a city_id column for the filter to
+   * return rows — existing Bengaluru tables already have it; new city
+   * seeders must populate the column.
+   *
+   * RPCs (ward_stats_by_ac, property_tax_by_ac) pass p_city_id only for
+   * non-Bengaluru calls. The RPC functions need a matching parameter added
+   * in SQL when a second city's data lands in those tables.
+   *
+   * Ask Kaun (askKaun flag) is separately gated because its tools and
+   * system prompt are Bengaluru-specific and need per-city adaptation.
    */
   workOrders: boolean
   tradeLicenses: boolean
