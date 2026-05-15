@@ -1,0 +1,38 @@
+name: Backfill Ward Crosswalk
+
+# One-off / occasional, manual only. Re-run after a crosswalk version bump.
+# Defaults to dry-run so a careless click previews instead of writing.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run (preview, read-only) or apply (writes bbmp_ward_no + ward_class)"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Backfill ward crosswalk (${{ github.event.inputs.mode }})
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
+            node scripts/wardmap/backfill-ward-crosswalk.mjs --apply
+          else
+            node scripts/wardmap/backfill-ward-crosswalk.mjs
+          fi
