@@ -75,6 +75,7 @@ const DATA_SOURCES = [
   { name: "Elected Representatives", records: "28 ACs", period: "2023 election", source: "MyNeta / EC affidavits", url: "https://myneta.info" },
   { name: "Rep Report Cards", records: "28 MLAs", period: "2018-23 term", source: "CIVIC Bengaluru via opencity.in", url: "https://opencity.in" },
   { name: "Ward Boundaries", records: "243 wards", period: "2022 delimitation", source: "datameet", url: "https://github.com/datameet" },
+  { name: "Ward Crosswalk (225↔243)", records: "225 wards", period: "v2023f-2026.05", source: "Kaun-derived (opencity KML + datameet)", url: "https://data.kaun.city/bengaluru/ward-crosswalk/" },
   { name: "Traffic Signals", records: "Per ward", period: "2026", source: "OpenStreetMap Overpass API", url: "https://openstreetmap.org" },
   { name: "Bus Stops + Routes", records: "Per ward", period: "2026", source: "BMTC via opencity.in", url: "https://data.opencity.in" },
   { name: "Ward Spending", records: "198 wards", period: "2018-2023", source: "BBMP work orders categorised", url: "https://data.opencity.in/dataset/bbmp-work-orders-categorised-2018-2023" },
@@ -151,6 +152,24 @@ export default function DataCatalog() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Bulk Datasets */}
+        <div className="mb-12">
+          <h2 className="text-white/40 text-xs uppercase tracking-wider mb-4">Bulk Datasets</h2>
+          <div className="rounded-xl bg-white/5 p-5">
+            <p className="text-white/80 text-sm font-medium">Kaun Ward Crosswalk — BBMP-Final-2023 (225) ↔ KGIS/DataMeet (243)</p>
+            <p className="text-white/50 text-sm leading-relaxed mt-1">
+              The first public correspondence between BBMP&apos;s 225-ward delimitation (used for work
+              orders, payments, tenders) and the 243-ward set the map renders. Derived deterministically
+              by spatial polygon overlap. Versioned, sourced, open to correction.
+            </p>
+            <div className="flex flex-wrap gap-2 mt-3">
+              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/bbmp2023_225_to_datameet_243.csv" target="_blank" rel="noopener noreferrer" className="text-[10px] px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-mono transition-colors">CSV</a>
+              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/bbmp2023_225_to_datameet_243.json" target="_blank" rel="noopener noreferrer" className="text-[10px] px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-mono transition-colors">JSON</a>
+              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/" target="_blank" rel="noopener noreferrer" className="text-[10px] px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-mono transition-colors">Methodology</a>
+            </div>
+          </div>
         </div>
 
         {/* Data Sources */}
