@@ -16,7 +16,27 @@
 //   4. Parse each row's jobcode + brdetails HTML blobs
 //   5. Delete existing data_source='ifms_direct' rows, insert fresh batch
 
+import { readFileSync } from "fs"
+import { fileURLToPath } from "url"
+import { dirname, resolve } from "path"
 import { dbQuery, insertRows } from "../lib/db.mjs"
+
+// Kaun ward crosswalk: IFMS tags rows with the BBMP-Final-225 ward number;
+// the map/`wards`/wiki render DataMeet-243. We classify every ingested row up
+// front so it lands on the right ward (and city-wide buckets stay city-wide)
+// without waiting for a backfill. Single source of truth: the committed
+// data/ward-crosswalk/ artifact. See its METHODOLOGY.md.
+const _xw = JSON.parse(readFileSync(
+  resolve(dirname(fileURLToPath(import.meta.url)),
+    "../../data/ward-crosswalk/bbmp2023_225_to_datameet_243.json"), "utf8"))
+const XWALK_225_TO_243 = new Map(
+  _xw.rows.filter(r => r.datameet243_no != null).map(r => [r.bbmp225_no, r.datameet243_no]))
+const CITYWIDE_225 = new Set([301, 303, 304, 307, 308, 309, 310, 313, 314, 317, 318])
+function classifyWard(wardNo) {
+  if (XWALK_225_TO_243.has(wardNo)) return { bbmp_ward_no: XWALK_225_TO_243.get(wardNo), ward_class: "ward" }
+  if (CITYWIDE_225.has(wardNo)) return { bbmp_ward_no: null, ward_class: "citywide" }
+  return { bbmp_ward_no: null, ward_class: "unmapped" }
+}
 
 // BBMP's IFMS server ships an incomplete cert chain — leaf cert signed by
 // GoDaddy G2 intermediate, but the intermediate itself is not served.
@@ -200,6 +220,7 @@ function rowToDb(row, wardNo, wardName) {
     data_source: "ifms_direct",
     ifms_wbid: row.wbid ? parseInt(row.wbid, 10) : null,
     source_ward_name: wardName,
+    ...classifyWard(wardNo),
   }
 }
 
@@ -218,6 +239,8 @@ async function ensureSchema() {
     ["data_source", "text"],
     ["ifms_wbid", "bigint"],
     ["source_ward_name", "text"],
+    ["bbmp_ward_no", "integer"],
+    ["ward_class", "text"],
   ]
   for (const [name, type] of cols) {
     try {
