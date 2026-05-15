@@ -1,7 +1,7 @@
 {
  "crosswalk": "bbmp2023-final-225 → datameet-243",
  "version": "2023f-2026.05",
- "generated_at": "2026-05-15T12:50:30.900Z",
+ "generated_at": "2026-05-15T14:02:14.516Z",
  "method": "deterministic spatial interior-point overlap (no name matching)",
  "sources": {
   "bbmp_225": "opencity.in — BBMP Final Wards Map 2023 (KML), id/name/AC/population",
