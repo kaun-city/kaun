@@ -277,6 +277,12 @@ export interface WorkOrder {
   source_ward_name?: string | null
   bbmp_ward_no?: number | null
   ward_class?: string | null
+  // From v_work_orders_243 (overlap-inclusive). datameet243_no = the ward
+  // this row is being shown under; overlap_share = how much of its BBMP-225
+  // ward lies in that 243 ward; is_primary = max-overlap (the WO's "home").
+  datameet243_no?: number | null
+  overlap_share?: number | null
+  is_primary?: boolean | null
 }
 
 export interface ContractorProfile {
