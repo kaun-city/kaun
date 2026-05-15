@@ -38,12 +38,38 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
   const liveCount = workOrders.filter(w => w.data_source === "ifms_direct").length
   const freshnessLabel = liveCount > 0 ? "live + 2024-25" : "2024-25"
 
+  // Which BBMP-225 ward(s) these works are originally recorded under. BBMP/
+  // IFMS number wards on the 2023 Final (225) delimitation; the map renders
+  // the 243-ward set, so works are reconciled across by spatial overlap.
+  // Surfacing the source ward(s) makes any name mismatch legible, not a bug.
+  const sourceWards = [...new Set(
+    workOrders.map(w => (w.source_ward_name || "").trim()).filter(Boolean)
+  )].sort()
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <p className="text-white/30 text-xs uppercase tracking-wider">Works ({workOrders.length})</p>
         <FreshnessBadge label={freshnessLabel} source="BBMP IFMS" />
       </div>
+      {sourceWards.length > 0 && (
+        <div className="rounded-xl bg-white/[0.03] border border-white/5 px-3 py-2">
+          <p className="text-white/40 text-[10px] leading-relaxed">
+            BBMP records these under its 2023 (225-ward) delimitation as{" "}
+            <span className="text-white/55">{sourceWards.join(", ")}</span>.
+            Reconciled to this map&apos;s ward by spatial overlap —{" "}
+            <a
+              href="https://data.kaun.city/bengaluru/ward-crosswalk/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#FF9933]/70 hover:text-[#FF9933] underline"
+            >
+              how this works
+            </a>
+            .
+          </p>
+        </div>
+      )}
       <div className="space-y-2">
         {visible.map(wo => {
           const desc = stripHtml(wo.description)
@@ -77,6 +103,11 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
               {(wo.division || wo.fy) && (
                 <p className="text-white/25 text-[9px] mt-0.5 truncate">
                   {[wo.division, wo.fy && `FY ${wo.fy}`].filter(Boolean).join(" · ")}
+                </p>
+              )}
+              {wo.source_ward_name && (
+                <p className="text-white/20 text-[9px] mt-0.5 truncate">
+                  BBMP ward: {wo.source_ward_name}
                 </p>
               )}
             </div>
