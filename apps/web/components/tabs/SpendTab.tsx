@@ -110,6 +110,11 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
                   BBMP ward: {wo.source_ward_name}
                 </p>
               )}
+              {wo.is_primary === false && (
+                <p className="text-[#FF9933]/40 text-[9px] mt-0.5 truncate">
+                  shared — ~{Math.round((wo.overlap_share ?? 0) * 100)}% of this ward&apos;s area
+                </p>
+              )}
             </div>
           )
         })}

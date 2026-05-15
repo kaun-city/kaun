@@ -42,20 +42,26 @@ export async function GET(req: Request) {
     // IFMS-sourced rows (which don't — we don't capture net_paid without
     // a per-bill drill-down). net_paid becomes the tiebreaker for rows
     // with identical sanctioned amounts, not the primary ranking.
-    let query = supabase
-      .from("bbmp_work_orders")
-      .select("work_order_id, ward_no, bbmp_ward_no, ward_class, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy, contractor_code, division, budget_head, start_date, end_date, order_ref, sbr_ref, bill_ref, payment_status, data_source, ifms_wbid")
-      .order("sanctioned_amount", { ascending: false, nullsFirst: false })
-      .order("net_paid", { ascending: false, nullsFirst: false })
-      .limit(wardNo ? 50 : 200)
-
-    // Ward filter joins on bbmp_ward_no (the DataMeet-243 number the UI uses,
-    // backfilled from the Kaun ward crosswalk). Defensive fallback to the raw
-    // BBMP-Final-225 ward_no for rows not yet backfilled, so this is safe to
-    // deploy before/after the backfill runs. See data/ward-crosswalk/.
+    // Per-ward: use v_work_orders_243 (overlap-inclusive — a work order shows
+    // in every DataMeet-243 ward its BBMP-225 ward materially overlaps;
+    // overlap_share + is_primary expose the mapping). City-wide top-N: read
+    // bbmp_work_orders directly so a multi-ward work order isn't duplicated.
+    let query
     if (wardNo) {
-      const wn = parseInt(wardNo)
-      query = query.or(`bbmp_ward_no.eq.${wn},and(bbmp_ward_no.is.null,ward_no.eq.${wn})`)
+      query = supabase
+        .from("v_work_orders_243")
+        .select("work_order_id, ward_no, source_ward_name, datameet243_no, overlap_share, is_primary, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy, contractor_code, division, budget_head, start_date, end_date, order_ref, sbr_ref, bill_ref, payment_status, data_source, ifms_wbid")
+        .eq("datameet243_no", parseInt(wardNo))
+        .order("sanctioned_amount", { ascending: false, nullsFirst: false })
+        .order("net_paid", { ascending: false, nullsFirst: false })
+        .limit(50)
+    } else {
+      query = supabase
+        .from("bbmp_work_orders")
+        .select("work_order_id, ward_no, bbmp_ward_no, ward_class, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy, contractor_code, division, budget_head, start_date, end_date, order_ref, sbr_ref, bill_ref, payment_status, data_source, ifms_wbid")
+        .order("sanctioned_amount", { ascending: false, nullsFirst: false })
+        .order("net_paid", { ascending: false, nullsFirst: false })
+        .limit(200)
     }
     const { data } = await query
     result.work_orders = data ?? []
