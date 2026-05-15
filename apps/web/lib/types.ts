@@ -270,6 +270,13 @@ export interface WorkOrder {
   payment_status?: string | null
   data_source?: string | null
   ifms_wbid?: number | null
+  // Ward crosswalk (Kaun-derived). ward_no = raw BBMP-Final-225 number;
+  // bbmp_ward_no = DataMeet-243 (what the map renders); source_ward_name =
+  // original BBMP ward label e.g. "005 Kogilu"; ward_class =
+  // 'ward' | 'citywide' | 'unmapped'. See data/ward-crosswalk/.
+  source_ward_name?: string | null
+  bbmp_ward_no?: number | null
+  ward_class?: string | null
 }
 
 export interface ContractorProfile {

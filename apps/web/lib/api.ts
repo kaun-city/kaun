@@ -345,10 +345,16 @@ export async function lookupLocalOffices(lat: number, lng: number): Promise<impo
  * populated) in a single mixed list ordered by contract size.
  */
 export async function fetchWorkOrders(wardNo: number, cityId = "bengaluru"): Promise<import('./types').WorkOrder[]> {
+  // BBMP/IFMS tag work orders with the 2023 Final 225-ward number; the map
+  // renders the DataMeet-243 ward set. Join on bbmp_ward_no (backfilled from
+  // the Kaun ward crosswalk) with a defensive fallback to raw ward_no for
+  // any not-yet-classified row. source_ward_name + ward_no are selected so
+  // the UI can show each work order's original BBMP-225 ward (legibility).
+  // See data/ward-crosswalk/METHODOLOGY.md.
   return await query<import('./types').WorkOrder>('bbmp_work_orders', {
-    'ward_no': `eq.${wardNo}`,
+    'or': `(bbmp_ward_no.eq.${wardNo},and(bbmp_ward_no.is.null,ward_no.eq.${wardNo}))`,
     'city_id': `eq.${cityId}`,
-    'select': 'id,work_order_id,description,contractor,contractor_name,contractor_phone,sanctioned_amount,net_paid,deduction,fy,contractor_code,division,budget_head,start_date,end_date,order_ref,sbr_ref,bill_ref,payment_status,data_source,ifms_wbid',
+    'select': 'id,work_order_id,ward_no,bbmp_ward_no,ward_class,source_ward_name,description,contractor,contractor_name,contractor_phone,sanctioned_amount,net_paid,deduction,fy,contractor_code,division,budget_head,start_date,end_date,order_ref,sbr_ref,bill_ref,payment_status,data_source,ifms_wbid',
     'order': 'sanctioned_amount.desc.nullslast,net_paid.desc.nullslast',
     'limit': '20',
   })
