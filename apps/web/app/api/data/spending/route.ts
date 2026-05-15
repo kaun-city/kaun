@@ -44,14 +44,34 @@ export async function GET(req: Request) {
     // with identical sanctioned amounts, not the primary ranking.
     let query = supabase
       .from("bbmp_work_orders")
-      .select("work_order_id, ward_no, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy, contractor_code, division, budget_head, start_date, end_date, order_ref, sbr_ref, bill_ref, payment_status, data_source, ifms_wbid")
+      .select("work_order_id, ward_no, bbmp_ward_no, ward_class, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy, contractor_code, division, budget_head, start_date, end_date, order_ref, sbr_ref, bill_ref, payment_status, data_source, ifms_wbid")
       .order("sanctioned_amount", { ascending: false, nullsFirst: false })
       .order("net_paid", { ascending: false, nullsFirst: false })
       .limit(wardNo ? 50 : 200)
 
-    if (wardNo) query = query.eq("ward_no", parseInt(wardNo))
+    // Ward filter joins on bbmp_ward_no (the DataMeet-243 number the UI uses,
+    // backfilled from the Kaun ward crosswalk). Defensive fallback to the raw
+    // BBMP-Final-225 ward_no for rows not yet backfilled, so this is safe to
+    // deploy before/after the backfill runs. See data/ward-crosswalk/.
+    if (wardNo) {
+      const wn = parseInt(wardNo)
+      query = query.or(`bbmp_ward_no.eq.${wn},and(bbmp_ward_no.is.null,ward_no.eq.${wn})`)
+    }
     const { data } = await query
     result.work_orders = data ?? []
+  }
+
+  if (type === "citywide-works") {
+    // City-wide CE/Mayor works (ward_class='citywide') — not attributable to
+    // a single ward by nature (Major Roads, Lakes, SWM, Horticulture, etc.).
+    // Surfaced separately so they neither pollute a ward nor disappear.
+    const { data } = await supabase
+      .from("bbmp_work_orders")
+      .select("work_order_id, ward_no, source_ward_name, description, contractor_name, sanctioned_amount, net_paid, deduction, fy, division, budget_head, payment_status, data_source")
+      .eq("ward_class", "citywide")
+      .order("sanctioned_amount", { ascending: false, nullsFirst: false })
+      .limit(500)
+    result.citywide_works = data ?? []
   }
 
   if ((type === "ward-spending" || type === "all") && wardNo) {

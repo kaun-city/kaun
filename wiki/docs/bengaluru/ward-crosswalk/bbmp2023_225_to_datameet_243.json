@@ -1,0 +1,6859 @@
+{
+ "crosswalk": "bbmp2023-final-225 → datameet-243",
+ "version": "2023f-2026.05",
+ "generated_at": "2026-05-15T12:50:30.900Z",
+ "method": "deterministic spatial interior-point overlap (no name matching)",
+ "sources": {
+  "bbmp_225": "opencity.in — BBMP Final Wards Map 2023 (KML), id/name/AC/population",
+  "datameet_243": "DataMeet Municipal_Spatial_Data Bangalore/BBMP.geojson (KGISWardNo)"
+ },
+ "tiers": {
+  "clean": 123,
+  "split_primary": 83,
+  "true_split": 19
+ },
+ "caveats": [
+  "BBMP-Final-225 and DataMeet-243 are DIFFERENT delimitations. A 225 ward often spans 2+ 243 wards — this is expected, not an error.",
+  "FULL area-share vector: every overlapped 243 ward is listed in `shares` (machine-readable) and `split` (compact string) — no truncation. `outside_share` is the fraction in no 243 ward; shares + outside_share sum to ~1.",
+  "tier=clean: ≥70% of the 225 ward sits in one 243 ward. tier=split-primary: 50–70% (clear primary). tier=true-split: <50% (no dominant 243 ward — consumer must choose a policy; use `shares` for proportional).",
+  "Corrections: open an issue at github.com/kaun-city/kaun (label: ward-crosswalk)."
+ ],
+ "rows": [
+  {
+   "bbmp225_no": 1,
+   "bbmp225_name_en": "Kempegowda Ward",
+   "bbmp225_name_ka": "ಕೆಂಪೇಗೌಡ ವಾರ್ಡ್",
+   "assembly_constituency": "YELAHANKA",
+   "population": 42913,
+   "datameet243_no": 1,
+   "datameet243_name": "Kempegowda Ward",
+   "lgd_ward_code": 1303139,
+   "overlap_confidence": 0.747,
+   "tier": "clean",
+   "runner_up_243_no": 2,
+   "runner_up_share": 0.2532,
+   "outside_share": 0,
+   "split": "1:0.7468 2:0.2532",
+   "shares": [
+    {
+     "datameet243_no": 1,
+     "share": 0.7468
+    },
+    {
+     "datameet243_no": 2,
+     "share": 0.2532
+    }
+   ],
+   "samples": 154,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 2,
+   "bbmp225_name_en": "Chowdeswari Ward",
+   "bbmp225_name_ka": "ಚೌಡೇಶ್ವರಿ ವಾರ್ಡ್",
+   "assembly_constituency": "YELAHANKA",
+   "population": 42775,
+   "datameet243_no": 2,
+   "datameet243_name": "Chowdeswari Ward",
+   "lgd_ward_code": 1303140,
+   "overlap_confidence": 0.43,
+   "tier": "true-split",
+   "runner_up_243_no": 3,
+   "runner_up_share": 0.419,
+   "outside_share": 0,
+   "split": "2:0.4302 3:0.419 5:0.1173 4:0.0335",
+   "shares": [
+    {
+     "datameet243_no": 2,
+     "share": 0.4302
+    },
+    {
+     "datameet243_no": 3,
+     "share": 0.419
+    },
+    {
+     "datameet243_no": 5,
+     "share": 0.1173
+    },
+    {
+     "datameet243_no": 4,
+     "share": 0.0335
+    }
+   ],
+   "samples": 179,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 3,
+   "bbmp225_name_en": "Atturu",
+   "bbmp225_name_ka": "ಅತ್ತೂರು",
+   "assembly_constituency": "YELAHANKA",
+   "population": 42569,
+   "datameet243_no": 4,
+   "datameet243_name": "Atturu Layout",
+   "lgd_ward_code": 1303142,
+   "overlap_confidence": 0.607,
+   "tier": "split-primary",
+   "runner_up_243_no": 2,
+   "runner_up_share": 0.2321,
+   "outside_share": 0,
+   "split": "4:0.6071 2:0.2321 3:0.1607",
+   "shares": [
+    {
+     "datameet243_no": 4,
+     "share": 0.6071
+    },
+    {
+     "datameet243_no": 2,
+     "share": 0.2321
+    },
+    {
+     "datameet243_no": 3,
+     "share": 0.1607
+    }
+   ],
+   "samples": 112,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 4,
+   "bbmp225_name_en": "Yelahanka Satellite Town",
+   "bbmp225_name_ka": "ಯಲಹಂಕ ಸ್ಯಾಟಲೈಟ್ ಟೌನ್",
+   "assembly_constituency": "YELAHANKA",
+   "population": 43243,
+   "datameet243_no": 5,
+   "datameet243_name": "Yelahanka Satellite Town",
+   "lgd_ward_code": 1303143,
+   "overlap_confidence": 0.779,
+   "tier": "clean",
+   "runner_up_243_no": 3,
+   "runner_up_share": 0.221,
+   "outside_share": 0,
+   "split": "5:0.779 3:0.221",
+   "shares": [
+    {
+     "datameet243_no": 5,
+     "share": 0.779
+    },
+    {
+     "datameet243_no": 3,
+     "share": 0.221
+    }
+   ],
+   "samples": 181,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 5,
+   "bbmp225_name_en": "Kogilu",
+   "bbmp225_name_ka": "ಕೋಗಿಲು",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 40396,
+   "datameet243_no": 6,
+   "datameet243_name": "Kogilu",
+   "lgd_ward_code": 1303144,
+   "overlap_confidence": 0.938,
+   "tier": "clean",
+   "runner_up_243_no": 7,
+   "runner_up_share": 0.0309,
+   "outside_share": 0.0309,
+   "split": "6:0.9381 7:0.0309",
+   "shares": [
+    {
+     "datameet243_no": 6,
+     "share": 0.9381
+    },
+    {
+     "datameet243_no": 7,
+     "share": 0.0309
+    }
+   ],
+   "samples": 194,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 6,
+   "bbmp225_name_en": "Jakkuru",
+   "bbmp225_name_ka": "ಜಕ್ಕೂರು",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 38616,
+   "datameet243_no": 8,
+   "datameet243_name": "Jakkuru",
+   "lgd_ward_code": 1303146,
+   "overlap_confidence": 0.682,
+   "tier": "split-primary",
+   "runner_up_243_no": 7,
+   "runner_up_share": 0.1689,
+   "outside_share": 0,
+   "split": "8:0.6824 7:0.1689 11:0.1486",
+   "shares": [
+    {
+     "datameet243_no": 8,
+     "share": 0.6824
+    },
+    {
+     "datameet243_no": 7,
+     "share": 0.1689
+    },
+    {
+     "datameet243_no": 11,
+     "share": 0.1486
+    }
+   ],
+   "samples": 148,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 7,
+   "bbmp225_name_en": "Thanisandra",
+   "bbmp225_name_ka": "ಥಣಿಸಂದ್ರ",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 37308,
+   "datameet243_no": 8,
+   "datameet243_name": "Jakkuru",
+   "lgd_ward_code": 1303146,
+   "overlap_confidence": 0.681,
+   "tier": "split-primary",
+   "runner_up_243_no": 7,
+   "runner_up_share": 0.3189,
+   "outside_share": 0,
+   "split": "8:0.6811 7:0.3189",
+   "shares": [
+    {
+     "datameet243_no": 8,
+     "share": 0.6811
+    },
+    {
+     "datameet243_no": 7,
+     "share": 0.3189
+    }
+   ],
+   "samples": 185,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 8,
+   "bbmp225_name_en": "Amrutahalli",
+   "bbmp225_name_ka": "ಅಮೃತಹಳ್ಳಿ",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 36446,
+   "datameet243_no": 9,
+   "datameet243_name": "Amrutahalli",
+   "lgd_ward_code": 1303147,
+   "overlap_confidence": 0.901,
+   "tier": "clean",
+   "runner_up_243_no": 8,
+   "runner_up_share": 0.0988,
+   "outside_share": 0,
+   "split": "9:0.9012 8:0.0988",
+   "shares": [
+    {
+     "datameet243_no": 9,
+     "share": 0.9012
+    },
+    {
+     "datameet243_no": 8,
+     "share": 0.0988
+    }
+   ],
+   "samples": 172,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 9,
+   "bbmp225_name_en": "Hebbal Kempapura",
+   "bbmp225_name_ka": "ಹೆಬ್ಬಾಳ ಕೆಂಪಾಪುರ",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 38273,
+   "datameet243_no": 10,
+   "datameet243_name": "Kempapura",
+   "lgd_ward_code": 1303148,
+   "overlap_confidence": 0.892,
+   "tier": "clean",
+   "runner_up_243_no": 9,
+   "runner_up_share": 0.1076,
+   "outside_share": 0,
+   "split": "10:0.8924 9:0.1076",
+   "shares": [
+    {
+     "datameet243_no": 10,
+     "share": 0.8924
+    },
+    {
+     "datameet243_no": 9,
+     "share": 0.1076
+    }
+   ],
+   "samples": 158,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 10,
+   "bbmp225_name_en": "Byatarayanapura",
+   "bbmp225_name_ka": "ಬ್ಯಟರಾಯನಪುರ",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 37010,
+   "datameet243_no": 11,
+   "datameet243_name": "Byatarayanapura",
+   "lgd_ward_code": 1303149,
+   "overlap_confidence": 0.921,
+   "tier": "clean",
+   "runner_up_243_no": 13,
+   "runner_up_share": 0.0476,
+   "outside_share": 0,
+   "split": "11:0.9206 13:0.0476 12:0.0265 10:0.0053",
+   "shares": [
+    {
+     "datameet243_no": 11,
+     "share": 0.9206
+    },
+    {
+     "datameet243_no": 13,
+     "share": 0.0476
+    },
+    {
+     "datameet243_no": 12,
+     "share": 0.0265
+    },
+    {
+     "datameet243_no": 10,
+     "share": 0.0053
+    }
+   ],
+   "samples": 189,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 11,
+   "bbmp225_name_en": "Kodigehalli",
+   "bbmp225_name_ka": "ಕೊಡಿಗೇಹಳ್ಳಿ",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 40183,
+   "datameet243_no": 12,
+   "datameet243_name": "Kodigehalli",
+   "lgd_ward_code": 1303150,
+   "overlap_confidence": 0.925,
+   "tier": "clean",
+   "runner_up_243_no": 10,
+   "runner_up_share": 0.0751,
+   "outside_share": 0,
+   "split": "12:0.9249 10:0.0751",
+   "shares": [
+    {
+     "datameet243_no": 12,
+     "share": 0.9249
+    },
+    {
+     "datameet243_no": 10,
+     "share": 0.0751
+    }
+   ],
+   "samples": 173,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 12,
+   "bbmp225_name_en": "Dodda Bommasandra",
+   "bbmp225_name_ka": "ದೊಡ್ಡ ಬೊಮ್ಮಸಂದ್ರ",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 38279,
+   "datameet243_no": 13,
+   "datameet243_name": "Dodda Bommasandra",
+   "lgd_ward_code": 1303151,
+   "overlap_confidence": 0.96,
+   "tier": "clean",
+   "runner_up_243_no": 15,
+   "runner_up_share": 0.0398,
+   "outside_share": 0,
+   "split": "13:0.9602 15:0.0398",
+   "shares": [
+    {
+     "datameet243_no": 13,
+     "share": 0.9602
+    },
+    {
+     "datameet243_no": 15,
+     "share": 0.0398
+    }
+   ],
+   "samples": 176,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 13,
+   "bbmp225_name_en": "Vidyaranyapura",
+   "bbmp225_name_ka": "ವಿದ್ಯಾರಣ್ಯಪುರ",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 35174,
+   "datameet243_no": 14,
+   "datameet243_name": "Vidyaranyapura",
+   "lgd_ward_code": 1303152,
+   "overlap_confidence": 0.953,
+   "tier": "clean",
+   "runner_up_243_no": 15,
+   "runner_up_share": 0.0471,
+   "outside_share": 0,
+   "split": "14:0.9529 15:0.0471",
+   "shares": [
+    {
+     "datameet243_no": 14,
+     "share": 0.9529
+    },
+    {
+     "datameet243_no": 15,
+     "share": 0.0471
+    }
+   ],
+   "samples": 191,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 14,
+   "bbmp225_name_en": "Kuvempu Nagar",
+   "bbmp225_name_ka": "ಕುವೆಂಪು ನಗರ",
+   "assembly_constituency": "BYATARAYANAPURA",
+   "population": 32614,
+   "datameet243_no": 15,
+   "datameet243_name": "Kuvempunagar",
+   "lgd_ward_code": 1303153,
+   "overlap_confidence": 0.995,
+   "tier": "clean",
+   "runner_up_243_no": 14,
+   "runner_up_share": 0.0052,
+   "outside_share": 0,
+   "split": "15:0.9948 14:0.0052",
+   "shares": [
+    {
+     "datameet243_no": 15,
+     "share": 0.9948
+    },
+    {
+     "datameet243_no": 14,
+     "share": 0.0052
+    }
+   ],
+   "samples": 191,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 15,
+   "bbmp225_name_en": "Kammagondanahalli",
+   "bbmp225_name_ka": "ಕಮ್ಮಗೊಂಡನಹಳ್ಳಿ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 42954,
+   "datameet243_no": 16,
+   "datameet243_name": "Kammagondanahalli",
+   "lgd_ward_code": 1303154,
+   "overlap_confidence": 0.772,
+   "tier": "clean",
+   "runner_up_243_no": 17,
+   "runner_up_share": 0.2281,
+   "outside_share": 0,
+   "split": "16:0.7719 17:0.2281",
+   "shares": [
+    {
+     "datameet243_no": 16,
+     "share": 0.7719
+    },
+    {
+     "datameet243_no": 17,
+     "share": 0.2281
+    }
+   ],
+   "samples": 114,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 16,
+   "bbmp225_name_en": "Mallasandra",
+   "bbmp225_name_ka": "ಮಲ್ಲಸಂದ್ರ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 42930,
+   "datameet243_no": 17,
+   "datameet243_name": "Shettihalli",
+   "lgd_ward_code": 1303155,
+   "overlap_confidence": 0.632,
+   "tier": "split-primary",
+   "runner_up_243_no": 20,
+   "runner_up_share": 0.3392,
+   "outside_share": 0,
+   "split": "17:0.6316 20:0.3392 19:0.0292",
+   "shares": [
+    {
+     "datameet243_no": 17,
+     "share": 0.6316
+    },
+    {
+     "datameet243_no": 20,
+     "share": 0.3392
+    },
+    {
+     "datameet243_no": 19,
+     "share": 0.0292
+    }
+   ],
+   "samples": 171,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 17,
+   "bbmp225_name_en": "Chikkasandra",
+   "bbmp225_name_ka": "ಚಿಕ್ಕಸಂದ್ರ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 37486,
+   "datameet243_no": 17,
+   "datameet243_name": "Shettihalli",
+   "lgd_ward_code": 1303155,
+   "overlap_confidence": 0.747,
+   "tier": "clean",
+   "runner_up_243_no": 18,
+   "runner_up_share": 0.2421,
+   "outside_share": 0,
+   "split": "17:0.7474 18:0.2421 19:0.0105",
+   "shares": [
+    {
+     "datameet243_no": 17,
+     "share": 0.7474
+    },
+    {
+     "datameet243_no": 18,
+     "share": 0.2421
+    },
+    {
+     "datameet243_no": 19,
+     "share": 0.0105
+    }
+   ],
+   "samples": 190,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 18,
+   "bbmp225_name_en": "Bagalakunte",
+   "bbmp225_name_ka": "ಬಾಗಲಕುಂಟೆ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 42171,
+   "datameet243_no": 18,
+   "datameet243_name": "Bagalakunte",
+   "lgd_ward_code": 1303156,
+   "overlap_confidence": 0.576,
+   "tier": "split-primary",
+   "runner_up_243_no": 19,
+   "runner_up_share": 0.4237,
+   "outside_share": 0,
+   "split": "18:0.5763 19:0.4237",
+   "shares": [
+    {
+     "datameet243_no": 18,
+     "share": 0.5763
+    },
+    {
+     "datameet243_no": 19,
+     "share": 0.4237
+    }
+   ],
+   "samples": 177,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 19,
+   "bbmp225_name_en": "T Dasarahalli",
+   "bbmp225_name_ka": "ಟಿ ದಾಸರಹಳ್ಳಿ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 39062,
+   "datameet243_no": 21,
+   "datameet243_name": "T Dasarahalli",
+   "lgd_ward_code": 1303159,
+   "overlap_confidence": 0.696,
+   "tier": "split-primary",
+   "runner_up_243_no": 19,
+   "runner_up_share": 0.2741,
+   "outside_share": 0,
+   "split": "21:0.6963 19:0.2741 20:0.0296",
+   "shares": [
+    {
+     "datameet243_no": 21,
+     "share": 0.6963
+    },
+    {
+     "datameet243_no": 19,
+     "share": 0.2741
+    },
+    {
+     "datameet243_no": 20,
+     "share": 0.0296
+    }
+   ],
+   "samples": 135,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 20,
+   "bbmp225_name_en": "Nalagadarenahalli",
+   "bbmp225_name_ka": "ನೆಲಗೆದರನಹಳ್ಳಿ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 42194,
+   "datameet243_no": 22,
+   "datameet243_name": "Chokkasandra",
+   "lgd_ward_code": 1303160,
+   "overlap_confidence": 0.646,
+   "tier": "split-primary",
+   "runner_up_243_no": 23,
+   "runner_up_share": 0.1602,
+   "outside_share": 0,
+   "split": "22:0.6456 23:0.1602 19:0.1165 21:0.0777",
+   "shares": [
+    {
+     "datameet243_no": 22,
+     "share": 0.6456
+    },
+    {
+     "datameet243_no": 23,
+     "share": 0.1602
+    },
+    {
+     "datameet243_no": 19,
+     "share": 0.1165
+    },
+    {
+     "datameet243_no": 21,
+     "share": 0.0777
+    }
+   ],
+   "samples": 206,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 21,
+   "bbmp225_name_en": "Chokkasandra",
+   "bbmp225_name_ka": "ಚೊಕ್ಕಸಂದ್ರ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 41904,
+   "datameet243_no": 24,
+   "datameet243_name": "Rajagopal Nagar",
+   "lgd_ward_code": 1302696,
+   "overlap_confidence": 0.828,
+   "tier": "clean",
+   "runner_up_243_no": 22,
+   "runner_up_share": 0.1484,
+   "outside_share": 0,
+   "split": "24:0.8281 22:0.1484 25:0.0234",
+   "shares": [
+    {
+     "datameet243_no": 24,
+     "share": 0.8281
+    },
+    {
+     "datameet243_no": 22,
+     "share": 0.1484
+    },
+    {
+     "datameet243_no": 25,
+     "share": 0.0234
+    }
+   ],
+   "samples": 128,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 22,
+   "bbmp225_name_en": "Peenya Industrial Area",
+   "bbmp225_name_ka": "ಪೀಣ್ಯ ಕೈಗಾರಿಕಾ ಪ್ರದೇಶ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 41867,
+   "datameet243_no": 23,
+   "datameet243_name": "Nelagadderanahalli",
+   "lgd_ward_code": 1302695,
+   "overlap_confidence": 0.902,
+   "tier": "clean",
+   "runner_up_243_no": 26,
+   "runner_up_share": 0.0546,
+   "outside_share": 0,
+   "split": "23:0.9016 26:0.0546 24:0.0273 27:0.0164",
+   "shares": [
+    {
+     "datameet243_no": 23,
+     "share": 0.9016
+    },
+    {
+     "datameet243_no": 26,
+     "share": 0.0546
+    },
+    {
+     "datameet243_no": 24,
+     "share": 0.0273
+    },
+    {
+     "datameet243_no": 27,
+     "share": 0.0164
+    }
+   ],
+   "samples": 183,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 23,
+   "bbmp225_name_en": "Rajagopal Nagar",
+   "bbmp225_name_ka": "ರಾಜಗೋಪಾಲ್ ನಗರ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 42081,
+   "datameet243_no": 25,
+   "datameet243_name": "Rajeshwari Nagar",
+   "lgd_ward_code": 1302697,
+   "overlap_confidence": 0.852,
+   "tier": "clean",
+   "runner_up_243_no": 24,
+   "runner_up_share": 0.1484,
+   "outside_share": 0,
+   "split": "25:0.8516 24:0.1484",
+   "shares": [
+    {
+     "datameet243_no": 25,
+     "share": 0.8516
+    },
+    {
+     "datameet243_no": 24,
+     "share": 0.1484
+    }
+   ],
+   "samples": 182,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 24,
+   "bbmp225_name_en": "Hegganahalli",
+   "bbmp225_name_ka": "ಹೆಗ್ಗನಹಳ್ಳಿ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 39277,
+   "datameet243_no": 26,
+   "datameet243_name": "Hegganahalli",
+   "lgd_ward_code": 1302698,
+   "overlap_confidence": 0.751,
+   "tier": "clean",
+   "runner_up_243_no": 25,
+   "runner_up_share": 0.198,
+   "outside_share": 0,
+   "split": "26:0.7513 25:0.198 23:0.0355 27:0.0152",
+   "shares": [
+    {
+     "datameet243_no": 26,
+     "share": 0.7513
+    },
+    {
+     "datameet243_no": 25,
+     "share": 0.198
+    },
+    {
+     "datameet243_no": 23,
+     "share": 0.0355
+    },
+    {
+     "datameet243_no": 27,
+     "share": 0.0152
+    }
+   ],
+   "samples": 197,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 25,
+   "bbmp225_name_en": "Sunkadakatte",
+   "bbmp225_name_ka": "ಸುಂಕದಕಟ್ಟೆ",
+   "assembly_constituency": "DASARAHALLI",
+   "population": 37573,
+   "datameet243_no": 27,
+   "datameet243_name": "Sunkadakatte",
+   "lgd_ward_code": 1302699,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "27:1",
+   "shares": [
+    {
+     "datameet243_no": 27,
+     "share": 1
+    }
+   ],
+   "samples": 146,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 26,
+   "bbmp225_name_en": "Dodda Bidarakallu",
+   "bbmp225_name_ka": "ದೊಡ್ಡ ಬಿದರಕಲ್ಲು",
+   "assembly_constituency": "YESHVANTHAPURA",
+   "population": 36430,
+   "datameet243_no": 28,
+   "datameet243_name": "Dodda Bidarakallu",
+   "lgd_ward_code": 1302700,
+   "overlap_confidence": 0.963,
+   "tier": "clean",
+   "runner_up_243_no": 29,
+   "runner_up_share": 0.0368,
+   "outside_share": 0,
+   "split": "28:0.9632 29:0.0368",
+   "shares": [
+    {
+     "datameet243_no": 28,
+     "share": 0.9632
+    },
+    {
+     "datameet243_no": 29,
+     "share": 0.0368
+    }
+   ],
+   "samples": 163,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 27,
+   "bbmp225_name_en": "Lingadheeranahalli",
+   "bbmp225_name_ka": "ಲಿಂಗಧೀರನಹಳ್ಳಿ",
+   "assembly_constituency": "YESHVANTHAPURA",
+   "population": 41562,
+   "datameet243_no": 29,
+   "datameet243_name": "Vidyamanyanagar",
+   "lgd_ward_code": 1302701,
+   "overlap_confidence": 0.823,
+   "tier": "clean",
+   "runner_up_243_no": 28,
+   "runner_up_share": 0.0922,
+   "outside_share": 0,
+   "split": "29:0.8227 28:0.0922 31:0.0851",
+   "shares": [
+    {
+     "datameet243_no": 29,
+     "share": 0.8227
+    },
+    {
+     "datameet243_no": 28,
+     "share": 0.0922
+    },
+    {
+     "datameet243_no": 31,
+     "share": 0.0851
+    }
+   ],
+   "samples": 141,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 28,
+   "bbmp225_name_en": "Herohalli",
+   "bbmp225_name_ka": "ಹೇರೋಹಳ್ಳಿ",
+   "assembly_constituency": "YESHVANTHAPURA",
+   "population": 37996,
+   "datameet243_no": 30,
+   "datameet243_name": "Herohalli",
+   "lgd_ward_code": 1302702,
+   "overlap_confidence": 0.642,
+   "tier": "split-primary",
+   "runner_up_243_no": 31,
+   "runner_up_share": 0.3121,
+   "outside_share": 0,
+   "split": "30:0.6416 31:0.3121 29:0.0462",
+   "shares": [
+    {
+     "datameet243_no": 30,
+     "share": 0.6416
+    },
+    {
+     "datameet243_no": 31,
+     "share": 0.3121
+    },
+    {
+     "datameet243_no": 29,
+     "share": 0.0462
+    }
+   ],
+   "samples": 173,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 29,
+   "bbmp225_name_en": "Ullalu",
+   "bbmp225_name_ka": "ಉಲ್ಲಾಳು",
+   "assembly_constituency": "YESHVANTHAPURA",
+   "population": 33366,
+   "datameet243_no": 31,
+   "datameet243_name": "Doddagollarahatti",
+   "lgd_ward_code": 1302703,
+   "overlap_confidence": 0.802,
+   "tier": "clean",
+   "runner_up_243_no": 32,
+   "runner_up_share": 0.1832,
+   "outside_share": 0,
+   "split": "31:0.8015 32:0.1832 30:0.0153",
+   "shares": [
+    {
+     "datameet243_no": 31,
+     "share": 0.8015
+    },
+    {
+     "datameet243_no": 32,
+     "share": 0.1832
+    },
+    {
+     "datameet243_no": 30,
+     "share": 0.0153
+    }
+   ],
+   "samples": 131,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 30,
+   "bbmp225_name_en": "Nagadevanahalli",
+   "bbmp225_name_ka": "ನಾಗದೇವನಹಳ್ಳಿ",
+   "assembly_constituency": "YESHVANTHAPURA",
+   "population": 33053,
+   "datameet243_no": 32,
+   "datameet243_name": "Ullal",
+   "lgd_ward_code": 1302704,
+   "overlap_confidence": 0.875,
+   "tier": "clean",
+   "runner_up_243_no": 31,
+   "runner_up_share": 0.0813,
+   "outside_share": 0,
+   "split": "32:0.875 31:0.0813 33:0.0437",
+   "shares": [
+    {
+     "datameet243_no": 32,
+     "share": 0.875
+    },
+    {
+     "datameet243_no": 31,
+     "share": 0.0813
+    },
+    {
+     "datameet243_no": 33,
+     "share": 0.0437
+    }
+   ],
+   "samples": 160,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 31,
+   "bbmp225_name_en": "Bande Mutt",
+   "bbmp225_name_ka": "ಬಂಡೆ ಮಠ",
+   "assembly_constituency": "YESHVANTHAPURA",
+   "population": 32762,
+   "datameet243_no": 34,
+   "datameet243_name": "Bande Mutt",
+   "lgd_ward_code": 1302706,
+   "overlap_confidence": 0.584,
+   "tier": "split-primary",
+   "runner_up_243_no": 35,
+   "runner_up_share": 0.2774,
+   "outside_share": 0,
+   "split": "34:0.5839 35:0.2774 33:0.1387",
+   "shares": [
+    {
+     "datameet243_no": 34,
+     "share": 0.5839
+    },
+    {
+     "datameet243_no": 35,
+     "share": 0.2774
+    },
+    {
+     "datameet243_no": 33,
+     "share": 0.1387
+    }
+   ],
+   "samples": 137,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 32,
+   "bbmp225_name_en": "Kengeri",
+   "bbmp225_name_ka": "ಕೆಂಗೇರಿ",
+   "assembly_constituency": "YESHVANTHAPURA",
+   "population": 34251,
+   "datameet243_no": 34,
+   "datameet243_name": "Bande Mutt",
+   "lgd_ward_code": 1302706,
+   "overlap_confidence": 0.53,
+   "tier": "split-primary",
+   "runner_up_243_no": 33,
+   "runner_up_share": 0.2917,
+   "outside_share": 0.0357,
+   "split": "34:0.5298 33:0.2917 32:0.1429",
+   "shares": [
+    {
+     "datameet243_no": 34,
+     "share": 0.5298
+    },
+    {
+     "datameet243_no": 33,
+     "share": 0.2917
+    },
+    {
+     "datameet243_no": 32,
+     "share": 0.1429
+    }
+   ],
+   "samples": 168,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 33,
+   "bbmp225_name_en": "Hemmigepura",
+   "bbmp225_name_ka": "ಹೆಮ್ಮಿಗೆಪುರ",
+   "assembly_constituency": "YESHVANTHAPURA",
+   "population": 36490,
+   "datameet243_no": 35,
+   "datameet243_name": "Hemmigepura",
+   "lgd_ward_code": 1302707,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "35:1",
+   "shares": [
+    {
+     "datameet243_no": 35,
+     "share": 1
+    }
+   ],
+   "samples": 135,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 34,
+   "bbmp225_name_en": "JP Park",
+   "bbmp225_name_ka": "ಜೆಪಿ ಪಾರ್ಕ್",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 42026,
+   "datameet243_no": 38,
+   "datameet243_name": "J P Park",
+   "lgd_ward_code": 1302710,
+   "overlap_confidence": 0.487,
+   "tier": "true-split",
+   "runner_up_243_no": 36,
+   "runner_up_share": 0.2564,
+   "outside_share": 0,
+   "split": "38:0.4872 36:0.2564 37:0.2115 39:0.0449",
+   "shares": [
+    {
+     "datameet243_no": 38,
+     "share": 0.4872
+    },
+    {
+     "datameet243_no": 36,
+     "share": 0.2564
+    },
+    {
+     "datameet243_no": 37,
+     "share": 0.2115
+    },
+    {
+     "datameet243_no": 39,
+     "share": 0.0449
+    }
+   ],
+   "samples": 156,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 35,
+   "bbmp225_name_en": "Yeshwanthpura",
+   "bbmp225_name_ka": "ಯಶವಂತಪುರ",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 39295,
+   "datameet243_no": 38,
+   "datameet243_name": "J P Park",
+   "lgd_ward_code": 1302710,
+   "overlap_confidence": 0.539,
+   "tier": "split-primary",
+   "runner_up_243_no": 39,
+   "runner_up_share": 0.4043,
+   "outside_share": 0,
+   "split": "38:0.539 39:0.4043 37:0.0567",
+   "shares": [
+    {
+     "datameet243_no": 38,
+     "share": 0.539
+    },
+    {
+     "datameet243_no": 39,
+     "share": 0.4043
+    },
+    {
+     "datameet243_no": 37,
+     "share": 0.0567
+    }
+   ],
+   "samples": 141,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 36,
+   "bbmp225_name_en": "Jalahalli",
+   "bbmp225_name_ka": "ಜಾಲಹಳ್ಳಿ",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 37959,
+   "datameet243_no": 40,
+   "datameet243_name": "Veeramadakari",
+   "lgd_ward_code": 1302712,
+   "overlap_confidence": 0.69,
+   "tier": "split-primary",
+   "runner_up_243_no": 39,
+   "runner_up_share": 0.3095,
+   "outside_share": 0,
+   "split": "40:0.6905 39:0.3095",
+   "shares": [
+    {
+     "datameet243_no": 40,
+     "share": 0.6905
+    },
+    {
+     "datameet243_no": 39,
+     "share": 0.3095
+    }
+   ],
+   "samples": 168,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 37,
+   "bbmp225_name_en": "Peenya",
+   "bbmp225_name_ka": "ಪೀಣ್ಯ",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 35826,
+   "datameet243_no": 41,
+   "datameet243_name": "Peenya",
+   "lgd_ward_code": 1302713,
+   "overlap_confidence": 0.452,
+   "tier": "true-split",
+   "runner_up_243_no": 40,
+   "runner_up_share": 0.3826,
+   "outside_share": 0,
+   "split": "41:0.4522 40:0.3826 36:0.113 37:0.0522",
+   "shares": [
+    {
+     "datameet243_no": 41,
+     "share": 0.4522
+    },
+    {
+     "datameet243_no": 40,
+     "share": 0.3826
+    },
+    {
+     "datameet243_no": 36,
+     "share": 0.113
+    },
+    {
+     "datameet243_no": 37,
+     "share": 0.0522
+    }
+   ],
+   "samples": 115,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 38,
+   "bbmp225_name_en": "Laxmidevi Nagar",
+   "bbmp225_name_ka": "ಲಕ್ಷ್ಮೀದೇವಿ ನಗರ",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 41919,
+   "datameet243_no": 36,
+   "datameet243_name": "Chatrapati Shivaji",
+   "lgd_ward_code": 1302708,
+   "overlap_confidence": 0.539,
+   "tier": "split-primary",
+   "runner_up_243_no": 41,
+   "runner_up_share": 0.3043,
+   "outside_share": 0,
+   "split": "36:0.5391 41:0.3043 42:0.1565",
+   "shares": [
+    {
+     "datameet243_no": 36,
+     "share": 0.5391
+    },
+    {
+     "datameet243_no": 41,
+     "share": 0.3043
+    },
+    {
+     "datameet243_no": 42,
+     "share": 0.1565
+    }
+   ],
+   "samples": 115,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 39,
+   "bbmp225_name_en": "Laggere",
+   "bbmp225_name_ka": "ಲಗ್ಗೆರೆ",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 38489,
+   "datameet243_no": 42,
+   "datameet243_name": "Lakshmi Devi Nagar",
+   "lgd_ward_code": 1302714,
+   "overlap_confidence": 0.591,
+   "tier": "split-primary",
+   "runner_up_243_no": 43,
+   "runner_up_share": 0.3509,
+   "outside_share": 0,
+   "split": "42:0.5906 43:0.3509 41:0.0585",
+   "shares": [
+    {
+     "datameet243_no": 42,
+     "share": 0.5906
+    },
+    {
+     "datameet243_no": 43,
+     "share": 0.3509
+    },
+    {
+     "datameet243_no": 41,
+     "share": 0.0585
+    }
+   ],
+   "samples": 171,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 40,
+   "bbmp225_name_en": "Chowdeshwari Nagar",
+   "bbmp225_name_ka": "ಚೌಡೇಶ್ವರಿ ನಗರ",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 34976,
+   "datameet243_no": 43,
+   "datameet243_name": "Ranadheera Kanteerava",
+   "lgd_ward_code": 1302715,
+   "overlap_confidence": 0.625,
+   "tier": "split-primary",
+   "runner_up_243_no": 44,
+   "runner_up_share": 0.375,
+   "outside_share": 0,
+   "split": "43:0.625 44:0.375",
+   "shares": [
+    {
+     "datameet243_no": 43,
+     "share": 0.625
+    },
+    {
+     "datameet243_no": 44,
+     "share": 0.375
+    }
+   ],
+   "samples": 176,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 41,
+   "bbmp225_name_en": "Kottegepalya",
+   "bbmp225_name_ka": "ಕೊಟ್ಟಿಗೆಪಾಳ್ಯ",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 32666,
+   "datameet243_no": 45,
+   "datameet243_name": "Vijayanagara Krishnadevaraya",
+   "lgd_ward_code": 1302717,
+   "overlap_confidence": 0.827,
+   "tier": "clean",
+   "runner_up_243_no": 44,
+   "runner_up_share": 0.1733,
+   "outside_share": 0,
+   "split": "45:0.8267 44:0.1733",
+   "shares": [
+    {
+     "datameet243_no": 45,
+     "share": 0.8267
+    },
+    {
+     "datameet243_no": 44,
+     "share": 0.1733
+    }
+   ],
+   "samples": 150,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 42,
+   "bbmp225_name_en": "Srigandhadakaval",
+   "bbmp225_name_ka": "ಶ್ರೀಗಂಧದಕಾವಲ್",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 41260,
+   "datameet243_no": 46,
+   "datameet243_name": "Sir M. Vishweshwaraiah",
+   "lgd_ward_code": 1302718,
+   "overlap_confidence": 0.805,
+   "tier": "clean",
+   "runner_up_243_no": 44,
+   "runner_up_share": 0.1183,
+   "outside_share": 0,
+   "split": "46:0.8047 44:0.1183 45:0.0769",
+   "shares": [
+    {
+     "datameet243_no": 46,
+     "share": 0.8047
+    },
+    {
+     "datameet243_no": 44,
+     "share": 0.1183
+    },
+    {
+     "datameet243_no": 45,
+     "share": 0.0769
+    }
+   ],
+   "samples": 169,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 43,
+   "bbmp225_name_en": "Malathalli",
+   "bbmp225_name_ka": "ಮಲ್ಲತಳ್ಳಿ",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 37700,
+   "datameet243_no": 47,
+   "datameet243_name": "Nalvadi Krishnaraja Wadior Park",
+   "lgd_ward_code": 1302719,
+   "overlap_confidence": 0.764,
+   "tier": "clean",
+   "runner_up_243_no": 46,
+   "runner_up_share": 0.2365,
+   "outside_share": 0,
+   "split": "47:0.7635 46:0.2365",
+   "shares": [
+    {
+     "datameet243_no": 47,
+     "share": 0.7635
+    },
+    {
+     "datameet243_no": 46,
+     "share": 0.2365
+    }
+   ],
+   "samples": 148,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 44,
+   "bbmp225_name_en": "Jnana Bharathi ward",
+   "bbmp225_name_ka": "ಜ್ಞಾನ ಭಾರತಿ ವಾರ್ಡ್",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 35459,
+   "datameet243_no": 48,
+   "datameet243_name": "Jnana Bharathi",
+   "lgd_ward_code": 1302720,
+   "overlap_confidence": 0.948,
+   "tier": "clean",
+   "runner_up_243_no": 49,
+   "runner_up_share": 0.0373,
+   "outside_share": 0,
+   "split": "48:0.9478 49:0.0373 47:0.0149",
+   "shares": [
+    {
+     "datameet243_no": 48,
+     "share": 0.9478
+    },
+    {
+     "datameet243_no": 49,
+     "share": 0.0373
+    },
+    {
+     "datameet243_no": 47,
+     "share": 0.0149
+    }
+   ],
+   "samples": 134,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 45,
+   "bbmp225_name_en": "Rajarajeshwari Nagar",
+   "bbmp225_name_ka": "ರಾಜರಾಜೇಶ್ವರಿ ನಗರ",
+   "assembly_constituency": "RAJARAJESHWARI NAGAR",
+   "population": 40360,
+   "datameet243_no": 49,
+   "datameet243_name": "Rajarajeshwari Nagar",
+   "lgd_ward_code": 1302721,
+   "overlap_confidence": 0.906,
+   "tier": "clean",
+   "runner_up_243_no": 48,
+   "runner_up_share": 0.0942,
+   "outside_share": 0,
+   "split": "49:0.9058 48:0.0942",
+   "shares": [
+    {
+     "datameet243_no": 49,
+     "share": 0.9058
+    },
+    {
+     "datameet243_no": 48,
+     "share": 0.0942
+    }
+   ],
+   "samples": 138,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 46,
+   "bbmp225_name_en": "Rajiv Nagar",
+   "bbmp225_name_ka": "ರಾಜೀವ್ ನಗರ",
+   "assembly_constituency": "MAHALAXMI LAYOUT",
+   "population": 33852,
+   "datameet243_no": 50,
+   "datameet243_name": "Marappana Palya",
+   "lgd_ward_code": 1302722,
+   "overlap_confidence": 0.903,
+   "tier": "clean",
+   "runner_up_243_no": 53,
+   "runner_up_share": 0.097,
+   "outside_share": 0,
+   "split": "50:0.903 53:0.097",
+   "shares": [
+    {
+     "datameet243_no": 50,
+     "share": 0.903
+    },
+    {
+     "datameet243_no": 53,
+     "share": 0.097
+    }
+   ],
+   "samples": 165,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 47,
+   "bbmp225_name_en": "Dr. Puneet Rajkumar",
+   "bbmp225_name_ka": "ಡಾ. ಪುನೀತ್ ರಾಜ್ ಕುಮಾರ್",
+   "assembly_constituency": "MAHALAXMI LAYOUT",
+   "population": 35944,
+   "datameet243_no": 53,
+   "datameet243_name": "Nandini Layout",
+   "lgd_ward_code": 1302725,
+   "overlap_confidence": 0.835,
+   "tier": "clean",
+   "runner_up_243_no": 54,
+   "runner_up_share": 0.165,
+   "outside_share": 0,
+   "split": "53:0.835 54:0.165",
+   "shares": [
+    {
+     "datameet243_no": 53,
+     "share": 0.835
+    },
+    {
+     "datameet243_no": 54,
+     "share": 0.165
+    }
+   ],
+   "samples": 200,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 48,
+   "bbmp225_name_en": "Mahalakshmipuram",
+   "bbmp225_name_ka": "ಮಹಾಲಕ್ಷೀಪುರಂ",
+   "assembly_constituency": "MAHALAXMI LAYOUT",
+   "population": 42461,
+   "datameet243_no": 52,
+   "datameet243_name": "Mahalakshimpuram",
+   "lgd_ward_code": 1302724,
+   "overlap_confidence": 0.634,
+   "tier": "split-primary",
+   "runner_up_243_no": 54,
+   "runner_up_share": 0.2178,
+   "outside_share": 0,
+   "split": "52:0.6337 54:0.2178 55:0.0891 50:0.0594",
+   "shares": [
+    {
+     "datameet243_no": 52,
+     "share": 0.6337
+    },
+    {
+     "datameet243_no": 54,
+     "share": 0.2178
+    },
+    {
+     "datameet243_no": 55,
+     "share": 0.0891
+    },
+    {
+     "datameet243_no": 50,
+     "share": 0.0594
+    }
+   ],
+   "samples": 101,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 49,
+   "bbmp225_name_en": "Nagapura",
+   "bbmp225_name_ka": "ನಾಗಾಪುರ",
+   "assembly_constituency": "MAHALAXMI LAYOUT",
+   "population": 43143,
+   "datameet243_no": 51,
+   "datameet243_name": "Nagapura",
+   "lgd_ward_code": 1302723,
+   "overlap_confidence": 0.667,
+   "tier": "split-primary",
+   "runner_up_243_no": 50,
+   "runner_up_share": 0.1939,
+   "outside_share": 0,
+   "split": "51:0.6667 50:0.1939 52:0.103 55:0.0364",
+   "shares": [
+    {
+     "datameet243_no": 51,
+     "share": 0.6667
+    },
+    {
+     "datameet243_no": 50,
+     "share": 0.1939
+    },
+    {
+     "datameet243_no": 52,
+     "share": 0.103
+    },
+    {
+     "datameet243_no": 55,
+     "share": 0.0364
+    }
+   ],
+   "samples": 165,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 50,
+   "bbmp225_name_en": "Nalvadi Krishna Raja Wadiyar",
+   "bbmp225_name_ka": "ನಾಲ್ವಡಿ ಕೃಷ್ಣರಾಜ ಒಡೆಯರ್",
+   "assembly_constituency": "MAHALAXMI LAYOUT",
+   "population": 42759,
+   "datameet243_no": 55,
+   "datameet243_name": "Puneet Rajkumar",
+   "lgd_ward_code": 1302727,
+   "overlap_confidence": 0.478,
+   "tier": "true-split",
+   "runner_up_243_no": 54,
+   "runner_up_share": 0.2826,
+   "outside_share": 0,
+   "split": "55:0.4783 54:0.2826 52:0.2391",
+   "shares": [
+    {
+     "datameet243_no": 55,
+     "share": 0.4783
+    },
+    {
+     "datameet243_no": 54,
+     "share": 0.2826
+    },
+    {
+     "datameet243_no": 52,
+     "share": 0.2391
+    }
+   ],
+   "samples": 138,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 51,
+   "bbmp225_name_en": "Shankar Matt",
+   "bbmp225_name_ka": "ಶಂಕರ್ ಮಠ",
+   "assembly_constituency": "MAHALAXMI LAYOUT",
+   "population": 34993,
+   "datameet243_no": 56,
+   "datameet243_name": "Shankar Matt",
+   "lgd_ward_code": 1302728,
+   "overlap_confidence": 0.837,
+   "tier": "clean",
+   "runner_up_243_no": 55,
+   "runner_up_share": 0.0814,
+   "outside_share": 0,
+   "split": "56:0.8372 55:0.0814 57:0.0814",
+   "shares": [
+    {
+     "datameet243_no": 56,
+     "share": 0.8372
+    },
+    {
+     "datameet243_no": 55,
+     "share": 0.0814
+    },
+    {
+     "datameet243_no": 57,
+     "share": 0.0814
+    }
+   ],
+   "samples": 172,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 52,
+   "bbmp225_name_en": "Shakthi Ganapathi Nagar",
+   "bbmp225_name_ka": "ಶಕ್ತಿ ಗಣಪತಿ ನಗರ",
+   "assembly_constituency": "MAHALAXMI LAYOUT",
+   "population": 37861,
+   "datameet243_no": 57,
+   "datameet243_name": "Shakthi Ganapathi Nagar",
+   "lgd_ward_code": 1302729,
+   "overlap_confidence": 0.754,
+   "tier": "clean",
+   "runner_up_243_no": 56,
+   "runner_up_share": 0.2457,
+   "outside_share": 0,
+   "split": "57:0.7543 56:0.2457",
+   "shares": [
+    {
+     "datameet243_no": 57,
+     "share": 0.7543
+    },
+    {
+     "datameet243_no": 56,
+     "share": 0.2457
+    }
+   ],
+   "samples": 175,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 53,
+   "bbmp225_name_en": "Vrisabhavathi Nagar",
+   "bbmp225_name_ka": "ವೃಷಭಾವತಿ ನಗರ",
+   "assembly_constituency": "MAHALAXMI LAYOUT",
+   "population": 43059,
+   "datameet243_no": 58,
+   "datameet243_name": "Vrisabhavathi Nagar",
+   "lgd_ward_code": 1302730,
+   "overlap_confidence": 0.93,
+   "tier": "clean",
+   "runner_up_243_no": 57,
+   "runner_up_share": 0.0704,
+   "outside_share": 0,
+   "split": "58:0.9296 57:0.0704",
+   "shares": [
+    {
+     "datameet243_no": 58,
+     "share": 0.9296
+    },
+    {
+     "datameet243_no": 57,
+     "share": 0.0704
+    }
+   ],
+   "samples": 213,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 54,
+   "bbmp225_name_en": "Mattikere",
+   "bbmp225_name_ka": "ಮತ್ತಿಕೆರೆ",
+   "assembly_constituency": "MALLESWARAM",
+   "population": 33878,
+   "datameet243_no": 59,
+   "datameet243_name": "Mattikere",
+   "lgd_ward_code": 1302731,
+   "overlap_confidence": 0.758,
+   "tier": "clean",
+   "runner_up_243_no": 60,
+   "runner_up_share": 0.2422,
+   "outside_share": 0,
+   "split": "59:0.7578 60:0.2422",
+   "shares": [
+    {
+     "datameet243_no": 59,
+     "share": 0.7578
+    },
+    {
+     "datameet243_no": 60,
+     "share": 0.2422
+    }
+   ],
+   "samples": 161,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 55,
+   "bbmp225_name_en": "Malleswaram",
+   "bbmp225_name_ka": "ಮಲ್ಲೇಶ್ವರಂ",
+   "assembly_constituency": "MALLESWARAM",
+   "population": 38120,
+   "datameet243_no": 61,
+   "datameet243_name": "Malleswaram",
+   "lgd_ward_code": 1302733,
+   "overlap_confidence": 0.703,
+   "tier": "clean",
+   "runner_up_243_no": 59,
+   "runner_up_share": 0.2968,
+   "outside_share": 0,
+   "split": "61:0.7032 59:0.2968",
+   "shares": [
+    {
+     "datameet243_no": 61,
+     "share": 0.7032
+    },
+    {
+     "datameet243_no": 59,
+     "share": 0.2968
+    }
+   ],
+   "samples": 155,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 56,
+   "bbmp225_name_en": "Aramane Nagara",
+   "bbmp225_name_ka": "ಅರಮನೆ ನಗರ",
+   "assembly_constituency": "MALLESWARAM",
+   "population": 34185,
+   "datameet243_no": 60,
+   "datameet243_name": "Aramane Nagara",
+   "lgd_ward_code": 1302732,
+   "overlap_confidence": 0.966,
+   "tier": "clean",
+   "runner_up_243_no": 64,
+   "runner_up_share": 0.0342,
+   "outside_share": 0,
+   "split": "60:0.9658 64:0.0342",
+   "shares": [
+    {
+     "datameet243_no": 60,
+     "share": 0.9658
+    },
+    {
+     "datameet243_no": 64,
+     "share": 0.0342
+    }
+   ],
+   "samples": 146,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 57,
+   "bbmp225_name_en": "Rajamahal Guttahalli",
+   "bbmp225_name_ka": "ರಾಜಮಹಲ್ ಗುಟ್ಟಹಳ್ಳಿ",
+   "assembly_constituency": "MALLESWARAM",
+   "population": 34092,
+   "datameet243_no": 65,
+   "datameet243_name": "Rajamahal Guttahalli",
+   "lgd_ward_code": 1302737,
+   "overlap_confidence": 0.909,
+   "tier": "clean",
+   "runner_up_243_no": 64,
+   "runner_up_share": 0.0914,
+   "outside_share": 0,
+   "split": "65:0.9086 64:0.0914",
+   "shares": [
+    {
+     "datameet243_no": 65,
+     "share": 0.9086
+    },
+    {
+     "datameet243_no": 64,
+     "share": 0.0914
+    }
+   ],
+   "samples": 197,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 58,
+   "bbmp225_name_en": "Kadu Malleshwar Ward",
+   "bbmp225_name_ka": "ಕಾಡು ಮಲ್ಲೇಶ್ವರ ವಾರ್ಡ್",
+   "assembly_constituency": "MALLESWARAM",
+   "population": 33214,
+   "datameet243_no": 61,
+   "datameet243_name": "Malleswaram",
+   "lgd_ward_code": 1302733,
+   "overlap_confidence": 0.487,
+   "tier": "true-split",
+   "runner_up_243_no": 64,
+   "runner_up_share": 0.3397,
+   "outside_share": 0,
+   "split": "61:0.4872 64:0.3397 62:0.1603 65:0.0128",
+   "shares": [
+    {
+     "datameet243_no": 61,
+     "share": 0.4872
+    },
+    {
+     "datameet243_no": 64,
+     "share": 0.3397
+    },
+    {
+     "datameet243_no": 62,
+     "share": 0.1603
+    },
+    {
+     "datameet243_no": 65,
+     "share": 0.0128
+    }
+   ],
+   "samples": 156,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 59,
+   "bbmp225_name_en": "Subramanya Nagar",
+   "bbmp225_name_ka": "ಸುಬ್ರಹ್ಮಣ್ಯ ನಗರ",
+   "assembly_constituency": "MALLESWARAM",
+   "population": 36860,
+   "datameet243_no": 62,
+   "datameet243_name": "Subramanya Nagar",
+   "lgd_ward_code": 1302734,
+   "overlap_confidence": 0.756,
+   "tier": "clean",
+   "runner_up_243_no": 64,
+   "runner_up_share": 0.244,
+   "outside_share": 0,
+   "split": "62:0.756 64:0.244",
+   "shares": [
+    {
+     "datameet243_no": 62,
+     "share": 0.756
+    },
+    {
+     "datameet243_no": 64,
+     "share": 0.244
+    }
+   ],
+   "samples": 168,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 60,
+   "bbmp225_name_en": "Gayithri Nagar",
+   "bbmp225_name_ka": "ಗಾಯಿತ್ರಿ ನಗರ",
+   "assembly_constituency": "MALLESWARAM",
+   "population": 33236,
+   "datameet243_no": 63,
+   "datameet243_name": "Gayithri Nagar",
+   "lgd_ward_code": 1302735,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "63:1",
+   "shares": [
+    {
+     "datameet243_no": 63,
+     "share": 1
+    }
+   ],
+   "samples": 134,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 61,
+   "bbmp225_name_en": "Radhakrishna Temple Ward",
+   "bbmp225_name_ka": "ರಾಧಾಕೃಷ್ಣ ದೇವಸ್ಥಾನ ವಾರ್ಡ್",
+   "assembly_constituency": "HEBBAL",
+   "population": 36921,
+   "datameet243_no": 66,
+   "datameet243_name": "Radhakrishna Temple Ward",
+   "lgd_ward_code": 1302738,
+   "overlap_confidence": 0.928,
+   "tier": "clean",
+   "runner_up_243_no": 67,
+   "runner_up_share": 0.0724,
+   "outside_share": 0,
+   "split": "66:0.9276 67:0.0724",
+   "shares": [
+    {
+     "datameet243_no": 66,
+     "share": 0.9276
+    },
+    {
+     "datameet243_no": 67,
+     "share": 0.0724
+    }
+   ],
+   "samples": 152,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 62,
+   "bbmp225_name_en": "Sanjaya Nagar",
+   "bbmp225_name_ka": "ಸಂಜಯ ನಗರ",
+   "assembly_constituency": "HEBBAL",
+   "population": 34465,
+   "datameet243_no": 67,
+   "datameet243_name": "Sanjaya Nagar",
+   "lgd_ward_code": 1302739,
+   "overlap_confidence": 0.995,
+   "tier": "clean",
+   "runner_up_243_no": 66,
+   "runner_up_share": 0.0055,
+   "outside_share": 0,
+   "split": "67:0.9945 66:0.0055",
+   "shares": [
+    {
+     "datameet243_no": 67,
+     "share": 0.9945
+    },
+    {
+     "datameet243_no": 66,
+     "share": 0.0055
+    }
+   ],
+   "samples": 182,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 63,
+   "bbmp225_name_en": "Hebbala",
+   "bbmp225_name_ka": "ಹೆಬ್ಬಾಳ",
+   "assembly_constituency": "HEBBAL",
+   "population": 37550,
+   "datameet243_no": 70,
+   "datameet243_name": "Hebbala",
+   "lgd_ward_code": 1302742,
+   "overlap_confidence": 0.882,
+   "tier": "clean",
+   "runner_up_243_no": 68,
+   "runner_up_share": 0.0833,
+   "outside_share": 0,
+   "split": "70:0.8824 68:0.0833 72:0.0245 71:0.0098",
+   "shares": [
+    {
+     "datameet243_no": 70,
+     "share": 0.8824
+    },
+    {
+     "datameet243_no": 68,
+     "share": 0.0833
+    },
+    {
+     "datameet243_no": 72,
+     "share": 0.0245
+    },
+    {
+     "datameet243_no": 71,
+     "share": 0.0098
+    }
+   ],
+   "samples": 204,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 64,
+   "bbmp225_name_en": "Vishwanath Nagenahalli",
+   "bbmp225_name_ka": "ವಿಶ್ವನಾಥ ನಾಗೇನಹಳ್ಳಿ",
+   "assembly_constituency": "HEBBAL",
+   "population": 32259,
+   "datameet243_no": 68,
+   "datameet243_name": "Vishwanath Nagenahalli",
+   "lgd_ward_code": 1302740,
+   "overlap_confidence": 0.748,
+   "tier": "clean",
+   "runner_up_243_no": 69,
+   "runner_up_share": 0.1602,
+   "outside_share": 0,
+   "split": "68:0.7476 69:0.1602 70:0.0922",
+   "shares": [
+    {
+     "datameet243_no": 68,
+     "share": 0.7476
+    },
+    {
+     "datameet243_no": 69,
+     "share": 0.1602
+    },
+    {
+     "datameet243_no": 70,
+     "share": 0.0922
+    }
+   ],
+   "samples": 206,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 65,
+   "bbmp225_name_en": "Manorayanapalya",
+   "bbmp225_name_ka": "ಮನೋರಾಯನಪಾಳ್ಯ",
+   "assembly_constituency": "HEBBAL",
+   "population": 32275,
+   "datameet243_no": 69,
+   "datameet243_name": "Manorayanapalya",
+   "lgd_ward_code": 1302741,
+   "overlap_confidence": 0.868,
+   "tier": "clean",
+   "runner_up_243_no": 68,
+   "runner_up_share": 0.1211,
+   "outside_share": 0,
+   "split": "69:0.8684 68:0.1211 70:0.0105",
+   "shares": [
+    {
+     "datameet243_no": 69,
+     "share": 0.8684
+    },
+    {
+     "datameet243_no": 68,
+     "share": 0.1211
+    },
+    {
+     "datameet243_no": 70,
+     "share": 0.0105
+    }
+   ],
+   "samples": 190,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 66,
+   "bbmp225_name_en": "Chamundi Nagara",
+   "bbmp225_name_ka": "ಚಾಮುಂಡಿ ನಗರ",
+   "assembly_constituency": "HEBBAL",
+   "population": 40675,
+   "datameet243_no": 71,
+   "datameet243_name": "Chamundi Nagara",
+   "lgd_ward_code": 1302743,
+   "overlap_confidence": 0.964,
+   "tier": "clean",
+   "runner_up_243_no": 69,
+   "runner_up_share": 0.0361,
+   "outside_share": 0,
+   "split": "71:0.9639 69:0.0361",
+   "shares": [
+    {
+     "datameet243_no": 71,
+     "share": 0.9639
+    },
+    {
+     "datameet243_no": 69,
+     "share": 0.0361
+    }
+   ],
+   "samples": 83,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 67,
+   "bbmp225_name_en": "Ganga Nagar",
+   "bbmp225_name_ka": "ಗಂಗಾ ನಗರ",
+   "assembly_constituency": "HEBBAL",
+   "population": 35373,
+   "datameet243_no": 72,
+   "datameet243_name": "Ganga Nagar",
+   "lgd_ward_code": 1302744,
+   "overlap_confidence": 0.889,
+   "tier": "clean",
+   "runner_up_243_no": 73,
+   "runner_up_share": 0.0889,
+   "outside_share": 0,
+   "split": "72:0.8889 73:0.0889 70:0.0222",
+   "shares": [
+    {
+     "datameet243_no": 72,
+     "share": 0.8889
+    },
+    {
+     "datameet243_no": 73,
+     "share": 0.0889
+    },
+    {
+     "datameet243_no": 70,
+     "share": 0.0222
+    }
+   ],
+   "samples": 180,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 68,
+   "bbmp225_name_en": "Jayachamarajendra  Nagar",
+   "bbmp225_name_ka": "ಜಯಚಾಮರಾಜೇಂದ್ರ ನಗರ",
+   "assembly_constituency": "HEBBAL",
+   "population": 33247,
+   "datameet243_no": 73,
+   "datameet243_name": "Jayachamarajendra  Nagar",
+   "lgd_ward_code": 1302745,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "73:1",
+   "shares": [
+    {
+     "datameet243_no": 73,
+     "share": 1
+    }
+   ],
+   "samples": 113,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 69,
+   "bbmp225_name_en": "Kaval Bairasandra",
+   "bbmp225_name_ka": "ಕಾವಲ್ ಬೈರಸಂದ್ರ",
+   "assembly_constituency": "PULAKESHI NAGAR (SC)",
+   "population": 40682,
+   "datameet243_no": 74,
+   "datameet243_name": "Kaval Bairasandra",
+   "lgd_ward_code": 1302746,
+   "overlap_confidence": 0.684,
+   "tier": "split-primary",
+   "runner_up_243_no": 75,
+   "runner_up_share": 0.3162,
+   "outside_share": 0,
+   "split": "74:0.6838 75:0.3162",
+   "shares": [
+    {
+     "datameet243_no": 74,
+     "share": 0.6838
+    },
+    {
+     "datameet243_no": 75,
+     "share": 0.3162
+    }
+   ],
+   "samples": 136,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 70,
+   "bbmp225_name_en": "Kushal Nagar",
+   "bbmp225_name_ka": "ಕುಶಾಲ್ ನಗರ",
+   "assembly_constituency": "PULAKESHI NAGAR (SC)",
+   "population": 35194,
+   "datameet243_no": 75,
+   "datameet243_name": "Kushal Nagar",
+   "lgd_ward_code": 1302747,
+   "overlap_confidence": 0.599,
+   "tier": "split-primary",
+   "runner_up_243_no": 76,
+   "runner_up_share": 0.3571,
+   "outside_share": 0,
+   "split": "75:0.5989 76:0.3571 78:0.044",
+   "shares": [
+    {
+     "datameet243_no": 75,
+     "share": 0.5989
+    },
+    {
+     "datameet243_no": 76,
+     "share": 0.3571
+    },
+    {
+     "datameet243_no": 78,
+     "share": 0.044
+    }
+   ],
+   "samples": 182,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 71,
+   "bbmp225_name_en": "Muneshwara Nagar",
+   "bbmp225_name_ka": "ಮುನೇಶ್ವರ ನಗರ",
+   "assembly_constituency": "PULAKESHI NAGAR (SC)",
+   "population": 37624,
+   "datameet243_no": 76,
+   "datameet243_name": "Muneshwara Nagar",
+   "lgd_ward_code": 1302748,
+   "overlap_confidence": 0.619,
+   "tier": "split-primary",
+   "runner_up_243_no": 75,
+   "runner_up_share": 0.1443,
+   "outside_share": 0,
+   "split": "76:0.6186 75:0.1443 78:0.1289 77:0.1082",
+   "shares": [
+    {
+     "datameet243_no": 76,
+     "share": 0.6186
+    },
+    {
+     "datameet243_no": 75,
+     "share": 0.1443
+    },
+    {
+     "datameet243_no": 78,
+     "share": 0.1289
+    },
+    {
+     "datameet243_no": 77,
+     "share": 0.1082
+    }
+   ],
+   "samples": 194,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 72,
+   "bbmp225_name_en": "Devara Jeevanahalli",
+   "bbmp225_name_ka": "ದೇವರ ಜೀವನಹಳ್ಳಿ",
+   "assembly_constituency": "PULAKESHI NAGAR (SC)",
+   "population": 38522,
+   "datameet243_no": 77,
+   "datameet243_name": "Devara Jeevanahalli",
+   "lgd_ward_code": 1302749,
+   "overlap_confidence": 0.714,
+   "tier": "clean",
+   "runner_up_243_no": 74,
+   "runner_up_share": 0.2865,
+   "outside_share": 0,
+   "split": "77:0.7135 74:0.2865",
+   "shares": [
+    {
+     "datameet243_no": 77,
+     "share": 0.7135
+    },
+    {
+     "datameet243_no": 74,
+     "share": 0.2865
+    }
+   ],
+   "samples": 185,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 73,
+   "bbmp225_name_en": "S K Garden",
+   "bbmp225_name_ka": "ಎಸ್ ಕೆ ಗಾರ್ಡನ್",
+   "assembly_constituency": "PULAKESHI NAGAR (SC)",
+   "population": 36225,
+   "datameet243_no": 78,
+   "datameet243_name": "S K Garden",
+   "lgd_ward_code": 1302750,
+   "overlap_confidence": 0.492,
+   "tier": "true-split",
+   "runner_up_243_no": 74,
+   "runner_up_share": 0.4609,
+   "outside_share": 0,
+   "split": "78:0.4922 74:0.4609 80:0.0469",
+   "shares": [
+    {
+     "datameet243_no": 78,
+     "share": 0.4922
+    },
+    {
+     "datameet243_no": 74,
+     "share": 0.4609
+    },
+    {
+     "datameet243_no": 80,
+     "share": 0.0469
+    }
+   ],
+   "samples": 128,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 74,
+   "bbmp225_name_en": "Sagayarapuram",
+   "bbmp225_name_ka": "ಸಗಾಯರಪುರಂ",
+   "assembly_constituency": "PULAKESHI NAGAR (SC)",
+   "population": 36876,
+   "datameet243_no": 79,
+   "datameet243_name": "Sagayarapuram",
+   "lgd_ward_code": 1302751,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "79:1",
+   "shares": [
+    {
+     "datameet243_no": 79,
+     "share": 1
+    }
+   ],
+   "samples": 189,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 75,
+   "bbmp225_name_en": "Pulikeshinagar",
+   "bbmp225_name_ka": "ಪುಲಿಕೇಶಿನಗರ",
+   "assembly_constituency": "PULAKESHI NAGAR (SC)",
+   "population": 36315,
+   "datameet243_no": 80,
+   "datameet243_name": "Pulikeshinagar",
+   "lgd_ward_code": 1302752,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "80:1",
+   "shares": [
+    {
+     "datameet243_no": 80,
+     "share": 1
+    }
+   ],
+   "samples": 145,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 76,
+   "bbmp225_name_en": "Hennur",
+   "bbmp225_name_ka": "ಹೆಣ್ಣೂರು",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 36081,
+   "datameet243_no": 94,
+   "datameet243_name": "Hennur",
+   "lgd_ward_code": 1302766,
+   "overlap_confidence": 0.805,
+   "tier": "clean",
+   "runner_up_243_no": 96,
+   "runner_up_share": 0.0947,
+   "outside_share": 0,
+   "split": "94:0.8053 96:0.0947 98:0.0632 95:0.0368",
+   "shares": [
+    {
+     "datameet243_no": 94,
+     "share": 0.8053
+    },
+    {
+     "datameet243_no": 96,
+     "share": 0.0947
+    },
+    {
+     "datameet243_no": 98,
+     "share": 0.0632
+    },
+    {
+     "datameet243_no": 95,
+     "share": 0.0368
+    }
+   ],
+   "samples": 190,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 77,
+   "bbmp225_name_en": "Nagavara",
+   "bbmp225_name_ka": "ನಾಗವಾರ",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 42383,
+   "datameet243_no": 95,
+   "datameet243_name": "Nagavara",
+   "lgd_ward_code": 1302767,
+   "overlap_confidence": 0.51,
+   "tier": "split-primary",
+   "runner_up_243_no": 94,
+   "runner_up_share": 0.4904,
+   "outside_share": 0,
+   "split": "95:0.5096 94:0.4904",
+   "shares": [
+    {
+     "datameet243_no": 95,
+     "share": 0.5096
+    },
+    {
+     "datameet243_no": 94,
+     "share": 0.4904
+    }
+   ],
+   "samples": 208,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 78,
+   "bbmp225_name_en": "HBR Layout",
+   "bbmp225_name_ka": "HBR ಲೇಔಟ್",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 42386,
+   "datameet243_no": 96,
+   "datameet243_name": "Kadugondanahalli",
+   "lgd_ward_code": 1302768,
+   "overlap_confidence": 0.671,
+   "tier": "split-primary",
+   "runner_up_243_no": 98,
+   "runner_up_share": 0.2588,
+   "outside_share": 0,
+   "split": "96:0.6706 98:0.2588 95:0.0412 97:0.0294",
+   "shares": [
+    {
+     "datameet243_no": 96,
+     "share": 0.6706
+    },
+    {
+     "datameet243_no": 98,
+     "share": 0.2588
+    },
+    {
+     "datameet243_no": 95,
+     "share": 0.0412
+    },
+    {
+     "datameet243_no": 97,
+     "share": 0.0294
+    }
+   ],
+   "samples": 170,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 79,
+   "bbmp225_name_en": "Kadugondanahalli",
+   "bbmp225_name_ka": "ಕಾಡುಗೊಂಡನಹಳ್ಳಿ",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 37866,
+   "datameet243_no": 97,
+   "datameet243_name": "Venkateshpura",
+   "lgd_ward_code": 1302769,
+   "overlap_confidence": 0.955,
+   "tier": "clean",
+   "runner_up_243_no": 96,
+   "runner_up_share": 0.0455,
+   "outside_share": 0,
+   "split": "97:0.9545 96:0.0455",
+   "shares": [
+    {
+     "datameet243_no": 97,
+     "share": 0.9545
+    },
+    {
+     "datameet243_no": 96,
+     "share": 0.0455
+    }
+   ],
+   "samples": 176,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 80,
+   "bbmp225_name_en": "Kacharkanahalli",
+   "bbmp225_name_ka": "ಕಾಚರಕನಹಳ್ಳಿ",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 33881,
+   "datameet243_no": 99,
+   "datameet243_name": "HRBR Layout",
+   "lgd_ward_code": 1302771,
+   "overlap_confidence": 0.614,
+   "tier": "split-primary",
+   "runner_up_243_no": 98,
+   "runner_up_share": 0.3864,
+   "outside_share": 0,
+   "split": "99:0.6136 98:0.3864",
+   "shares": [
+    {
+     "datameet243_no": 99,
+     "share": 0.6136
+    },
+    {
+     "datameet243_no": 98,
+     "share": 0.3864
+    }
+   ],
+   "samples": 176,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 81,
+   "bbmp225_name_en": "Kammanahalli",
+   "bbmp225_name_ka": "ಕಮ್ಮನಹಳ್ಳಿ",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 36282,
+   "datameet243_no": 99,
+   "datameet243_name": "HRBR Layout",
+   "lgd_ward_code": 1302771,
+   "overlap_confidence": 0.64,
+   "tier": "split-primary",
+   "runner_up_243_no": 101,
+   "runner_up_share": 0.2222,
+   "outside_share": 0,
+   "split": "99:0.6402 101:0.2222 100:0.1376",
+   "shares": [
+    {
+     "datameet243_no": 99,
+     "share": 0.6402
+    },
+    {
+     "datameet243_no": 101,
+     "share": 0.2222
+    },
+    {
+     "datameet243_no": 100,
+     "share": 0.1376
+    }
+   ],
+   "samples": 189,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 82,
+   "bbmp225_name_en": "Banasavadi",
+   "bbmp225_name_ka": "ಬಾಣಸವಾಡಿ",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 33446,
+   "datameet243_no": 100,
+   "datameet243_name": "Banasavadi",
+   "lgd_ward_code": 1302772,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "100:1",
+   "shares": [
+    {
+     "datameet243_no": 100,
+     "share": 1
+    }
+   ],
+   "samples": 190,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 83,
+   "bbmp225_name_en": "Subbayyanapalya",
+   "bbmp225_name_ka": "ಸುಬ್ಬಯ್ಯನಪಾಳ್ಯ",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 35961,
+   "datameet243_no": 101,
+   "datameet243_name": "Kammanahalli",
+   "lgd_ward_code": 1302773,
+   "overlap_confidence": 0.624,
+   "tier": "split-primary",
+   "runner_up_243_no": 98,
+   "runner_up_share": 0.1878,
+   "outside_share": 0,
+   "split": "101:0.6244 98:0.1878 102:0.1878",
+   "shares": [
+    {
+     "datameet243_no": 101,
+     "share": 0.6244
+    },
+    {
+     "datameet243_no": 98,
+     "share": 0.1878
+    },
+    {
+     "datameet243_no": 102,
+     "share": 0.1878
+    }
+   ],
+   "samples": 197,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 84,
+   "bbmp225_name_en": "Lingarajapura",
+   "bbmp225_name_ka": "ಲಿಂಗರಾಜಪುರ",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 37322,
+   "datameet243_no": 102,
+   "datameet243_name": "Lingarajapura",
+   "lgd_ward_code": 1302774,
+   "overlap_confidence": 0.781,
+   "tier": "clean",
+   "runner_up_243_no": 98,
+   "runner_up_share": 0.2193,
+   "outside_share": 0,
+   "split": "102:0.7807 98:0.2193",
+   "shares": [
+    {
+     "datameet243_no": 102,
+     "share": 0.7807
+    },
+    {
+     "datameet243_no": 98,
+     "share": 0.2193
+    }
+   ],
+   "samples": 187,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 85,
+   "bbmp225_name_en": "Maruthi Seva Nagar",
+   "bbmp225_name_ka": "ಮಾರುತಿ ಸೇವಾ ನಗರ",
+   "assembly_constituency": "SARVARGNA NAGAR",
+   "population": 39837,
+   "datameet243_no": 103,
+   "datameet243_name": "Maruthi Seva Nagar",
+   "lgd_ward_code": 1302775,
+   "overlap_confidence": 0.815,
+   "tier": "clean",
+   "runner_up_243_no": 102,
+   "runner_up_share": 0.1848,
+   "outside_share": 0,
+   "split": "103:0.8152 102:0.1848",
+   "shares": [
+    {
+     "datameet243_no": 103,
+     "share": 0.8152
+    },
+    {
+     "datameet243_no": 102,
+     "share": 0.1848
+    }
+   ],
+   "samples": 184,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 86,
+   "bbmp225_name_en": "Challakere",
+   "bbmp225_name_ka": "ಚಳ್ಳಕೆರೆ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 37600,
+   "datameet243_no": 82,
+   "datameet243_name": "Babusab Palya",
+   "lgd_ward_code": 1302754,
+   "overlap_confidence": 0.656,
+   "tier": "split-primary",
+   "runner_up_243_no": 81,
+   "runner_up_share": 0.3444,
+   "outside_share": 0,
+   "split": "82:0.6556 81:0.3444",
+   "shares": [
+    {
+     "datameet243_no": 82,
+     "share": 0.6556
+    },
+    {
+     "datameet243_no": 81,
+     "share": 0.3444
+    }
+   ],
+   "samples": 90,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 87,
+   "bbmp225_name_en": "Horamavu",
+   "bbmp225_name_ka": "ಹೊರಮಾವು",
+   "assembly_constituency": "K.R.PURA",
+   "population": 37824,
+   "datameet243_no": 81,
+   "datameet243_name": "Horamavu",
+   "lgd_ward_code": 1302753,
+   "overlap_confidence": 0.803,
+   "tier": "clean",
+   "runner_up_243_no": 83,
+   "runner_up_share": 0.1972,
+   "outside_share": 0,
+   "split": "81:0.8028 83:0.1972",
+   "shares": [
+    {
+     "datameet243_no": 81,
+     "share": 0.8028
+    },
+    {
+     "datameet243_no": 83,
+     "share": 0.1972
+    }
+   ],
+   "samples": 142,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 88,
+   "bbmp225_name_en": "Kalkere",
+   "bbmp225_name_ka": "ಕಲ್ಕೆರೆ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 42910,
+   "datameet243_no": 83,
+   "datameet243_name": "Kalkere",
+   "lgd_ward_code": 1302755,
+   "overlap_confidence": 0.766,
+   "tier": "clean",
+   "runner_up_243_no": 87,
+   "runner_up_share": 0.1228,
+   "outside_share": 0,
+   "split": "83:0.7661 87:0.1228 86:0.0702 84:0.0409",
+   "shares": [
+    {
+     "datameet243_no": 83,
+     "share": 0.7661
+    },
+    {
+     "datameet243_no": 87,
+     "share": 0.1228
+    },
+    {
+     "datameet243_no": 86,
+     "share": 0.0702
+    },
+    {
+     "datameet243_no": 84,
+     "share": 0.0409
+    }
+   ],
+   "samples": 171,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 89,
+   "bbmp225_name_en": "Vijinapura",
+   "bbmp225_name_ka": "ವಿಜಿನಾಪುರ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 37238,
+   "datameet243_no": 84,
+   "datameet243_name": "Ramamurthy Nagara",
+   "lgd_ward_code": 1302756,
+   "overlap_confidence": 0.449,
+   "tier": "true-split",
+   "runner_up_243_no": 85,
+   "runner_up_share": 0.4118,
+   "outside_share": 0,
+   "split": "84:0.4492 85:0.4118 91:0.1337 86:0.0053",
+   "shares": [
+    {
+     "datameet243_no": 84,
+     "share": 0.4492
+    },
+    {
+     "datameet243_no": 85,
+     "share": 0.4118
+    },
+    {
+     "datameet243_no": 91,
+     "share": 0.1337
+    },
+    {
+     "datameet243_no": 86,
+     "share": 0.0053
+    }
+   ],
+   "samples": 187,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 90,
+   "bbmp225_name_en": "Ramamurthy Nagar",
+   "bbmp225_name_ka": "ರಾಮಮೂರ್ತಿ ನಗರ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 41393,
+   "datameet243_no": 86,
+   "datameet243_name": "K R Puram",
+   "lgd_ward_code": 1302758,
+   "overlap_confidence": 0.409,
+   "tier": "true-split",
+   "runner_up_243_no": 84,
+   "runner_up_share": 0.3591,
+   "outside_share": 0,
+   "split": "86:0.4088 84:0.3591 85:0.232",
+   "shares": [
+    {
+     "datameet243_no": 86,
+     "share": 0.4088
+    },
+    {
+     "datameet243_no": 84,
+     "share": 0.3591
+    },
+    {
+     "datameet243_no": 85,
+     "share": 0.232
+    }
+   ],
+   "samples": 181,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 91,
+   "bbmp225_name_en": "K R Puram",
+   "bbmp225_name_ka": "ಕೆ ಆರ್ ಪುರಂ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 41709,
+   "datameet243_no": 86,
+   "datameet243_name": "K R Puram",
+   "lgd_ward_code": 1302758,
+   "overlap_confidence": 0.675,
+   "tier": "split-primary",
+   "runner_up_243_no": 87,
+   "runner_up_share": 0.25,
+   "outside_share": 0,
+   "split": "86:0.675 87:0.25 88:0.075",
+   "shares": [
+    {
+     "datameet243_no": 86,
+     "share": 0.675
+    },
+    {
+     "datameet243_no": 87,
+     "share": 0.25
+    },
+    {
+     "datameet243_no": 88,
+     "share": 0.075
+    }
+   ],
+   "samples": 160,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 92,
+   "bbmp225_name_en": "Basavanapura",
+   "bbmp225_name_ka": "ಬಸವನಪುರ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 42178,
+   "datameet243_no": 88,
+   "datameet243_name": "Basavanapura",
+   "lgd_ward_code": 1302760,
+   "overlap_confidence": 0.773,
+   "tier": "clean",
+   "runner_up_243_no": 87,
+   "runner_up_share": 0.2208,
+   "outside_share": 0.0065,
+   "split": "88:0.7727 87:0.2208",
+   "shares": [
+    {
+     "datameet243_no": 88,
+     "share": 0.7727
+    },
+    {
+     "datameet243_no": 87,
+     "share": 0.2208
+    }
+   ],
+   "samples": 154,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 93,
+   "bbmp225_name_en": "Devasandra",
+   "bbmp225_name_ka": "ದೇವಸಂದ್ರ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 42538,
+   "datameet243_no": 89,
+   "datameet243_name": "Devasandra",
+   "lgd_ward_code": 1302761,
+   "overlap_confidence": 0.774,
+   "tier": "clean",
+   "runner_up_243_no": 90,
+   "runner_up_share": 0.2258,
+   "outside_share": 0,
+   "split": "89:0.7742 90:0.2258",
+   "shares": [
+    {
+     "datameet243_no": 89,
+     "share": 0.7742
+    },
+    {
+     "datameet243_no": 90,
+     "share": 0.2258
+    }
+   ],
+   "samples": 186,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 94,
+   "bbmp225_name_en": "A. Narayanapura",
+   "bbmp225_name_ka": "ಎ. ನಾರಾಯಣಪುರ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 43076,
+   "datameet243_no": 90,
+   "datameet243_name": "Mahadevapura",
+   "lgd_ward_code": 1302762,
+   "overlap_confidence": 0.641,
+   "tier": "split-primary",
+   "runner_up_243_no": 91,
+   "runner_up_share": 0.3586,
+   "outside_share": 0,
+   "split": "90:0.6414 91:0.3586",
+   "shares": [
+    {
+     "datameet243_no": 90,
+     "share": 0.6414
+    },
+    {
+     "datameet243_no": 91,
+     "share": 0.3586
+    }
+   ],
+   "samples": 145,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 95,
+   "bbmp225_name_en": "Vijnana Nagar",
+   "bbmp225_name_ka": "ವಿಜ್ಞಾನ ನಗರ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 39954,
+   "datameet243_no": 92,
+   "datameet243_name": "Vijnana Nagar",
+   "lgd_ward_code": 1302764,
+   "overlap_confidence": 0.703,
+   "tier": "clean",
+   "runner_up_243_no": 90,
+   "runner_up_share": 0.1935,
+   "outside_share": 0,
+   "split": "92:0.7032 90:0.1935 93:0.1032",
+   "shares": [
+    {
+     "datameet243_no": 92,
+     "share": 0.7032
+    },
+    {
+     "datameet243_no": 90,
+     "share": 0.1935
+    },
+    {
+     "datameet243_no": 93,
+     "share": 0.1032
+    }
+   ],
+   "samples": 155,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 96,
+   "bbmp225_name_en": "HAL Airport",
+   "bbmp225_name_ka": "HAL ವಿಮಾನ ನಿಲ್ದಾಣ",
+   "assembly_constituency": "K.R.PURA",
+   "population": 40595,
+   "datameet243_no": 93,
+   "datameet243_name": "HAL Airport",
+   "lgd_ward_code": 1302765,
+   "overlap_confidence": 0.977,
+   "tier": "clean",
+   "runner_up_243_no": 92,
+   "runner_up_share": 0.0231,
+   "outside_share": 0,
+   "split": "93:0.9769 92:0.0231",
+   "shares": [
+    {
+     "datameet243_no": 93,
+     "share": 0.9769
+    },
+    {
+     "datameet243_no": 92,
+     "share": 0.0231
+    }
+   ],
+   "samples": 173,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 97,
+   "bbmp225_name_en": "Kadugodi",
+   "bbmp225_name_ka": "ಕಾಡುಗೋಡಿ",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 43039,
+   "datameet243_no": 104,
+   "datameet243_name": "Kadugodi",
+   "lgd_ward_code": 1302776,
+   "overlap_confidence": 0.417,
+   "tier": "true-split",
+   "runner_up_243_no": 111,
+   "runner_up_share": 0.378,
+   "outside_share": 0.0079,
+   "split": "104:0.4173 111:0.378 105:0.1969",
+   "shares": [
+    {
+     "datameet243_no": 104,
+     "share": 0.4173
+    },
+    {
+     "datameet243_no": 111,
+     "share": 0.378
+    },
+    {
+     "datameet243_no": 105,
+     "share": 0.1969
+    }
+   ],
+   "samples": 127,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 98,
+   "bbmp225_name_en": "Hudi",
+   "bbmp225_name_ka": "ಹೂಡಿ",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 37426,
+   "datameet243_no": 105,
+   "datameet243_name": "Belathur",
+   "lgd_ward_code": 1302777,
+   "overlap_confidence": 0.431,
+   "tier": "true-split",
+   "runner_up_243_no": 106,
+   "runner_up_share": 0.3416,
+   "outside_share": 0,
+   "split": "105:0.4307 106:0.3416 110:0.2277",
+   "shares": [
+    {
+     "datameet243_no": 105,
+     "share": 0.4307
+    },
+    {
+     "datameet243_no": 106,
+     "share": 0.3416
+    },
+    {
+     "datameet243_no": 110,
+     "share": 0.2277
+    }
+   ],
+   "samples": 202,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 99,
+   "bbmp225_name_en": "Byrathi",
+   "bbmp225_name_ka": "ಬೈರತಿ",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 37902,
+   "datameet243_no": 106,
+   "datameet243_name": "Hudi",
+   "lgd_ward_code": 1302778,
+   "overlap_confidence": 0.429,
+   "tier": "true-split",
+   "runner_up_243_no": 104,
+   "runner_up_share": 0.0714,
+   "outside_share": 0.4286,
+   "split": "106:0.4286 104:0.0714 105:0.0714",
+   "shares": [
+    {
+     "datameet243_no": 106,
+     "share": 0.4286
+    },
+    {
+     "datameet243_no": 104,
+     "share": 0.0714
+    },
+    {
+     "datameet243_no": 105,
+     "share": 0.0714
+    }
+   ],
+   "samples": 28,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 100,
+   "bbmp225_name_en": "Garudachar Palya",
+   "bbmp225_name_ka": "ಗರುಡಾಚಾರ್ ಪಾಳ್ಯ",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 37813,
+   "datameet243_no": 107,
+   "datameet243_name": "Garudachar Playa",
+   "lgd_ward_code": 1302779,
+   "overlap_confidence": 0.516,
+   "tier": "split-primary",
+   "runner_up_243_no": 108,
+   "runner_up_share": 0.3851,
+   "outside_share": 0,
+   "split": "107:0.5155 108:0.3851 106:0.0994",
+   "shares": [
+    {
+     "datameet243_no": 107,
+     "share": 0.5155
+    },
+    {
+     "datameet243_no": 108,
+     "share": 0.3851
+    },
+    {
+     "datameet243_no": 106,
+     "share": 0.0994
+    }
+   ],
+   "samples": 161,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 101,
+   "bbmp225_name_en": "Dodda Nekkundi",
+   "bbmp225_name_ka": "ದೊಡ್ಡ ನೆಕ್ಕುಂಡಿ",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 35998,
+   "datameet243_no": 108,
+   "datameet243_name": "Dodda Nekkundi",
+   "lgd_ward_code": 1302780,
+   "overlap_confidence": 0.93,
+   "tier": "clean",
+   "runner_up_243_no": 109,
+   "runner_up_share": 0.0695,
+   "outside_share": 0,
+   "split": "108:0.9305 109:0.0695",
+   "shares": [
+    {
+     "datameet243_no": 108,
+     "share": 0.9305
+    },
+    {
+     "datameet243_no": 109,
+     "share": 0.0695
+    }
+   ],
+   "samples": 187,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 102,
+   "bbmp225_name_en": "AECS Layout",
+   "bbmp225_name_ka": "ಎಇಸಿಎಸ್ ಲೇಔಟ್",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 35972,
+   "datameet243_no": 110,
+   "datameet243_name": "Whitefield",
+   "lgd_ward_code": 1302782,
+   "overlap_confidence": 0.5,
+   "tier": "split-primary",
+   "runner_up_243_no": 109,
+   "runner_up_share": 0.3516,
+   "outside_share": 0,
+   "split": "110:0.5 109:0.3516 113:0.1484",
+   "shares": [
+    {
+     "datameet243_no": 110,
+     "share": 0.5
+    },
+    {
+     "datameet243_no": 109,
+     "share": 0.3516
+    },
+    {
+     "datameet243_no": 113,
+     "share": 0.1484
+    }
+   ],
+   "samples": 182,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 103,
+   "bbmp225_name_en": "White Field",
+   "bbmp225_name_ka": "ವೈಟ್ ಫೀಲ್ಡ್",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 40876,
+   "datameet243_no": 110,
+   "datameet243_name": "Whitefield",
+   "lgd_ward_code": 1302782,
+   "overlap_confidence": 0.613,
+   "tier": "split-primary",
+   "runner_up_243_no": 111,
+   "runner_up_share": 0.2945,
+   "outside_share": 0,
+   "split": "110:0.6135 111:0.2945 104:0.092",
+   "shares": [
+    {
+     "datameet243_no": 110,
+     "share": 0.6135
+    },
+    {
+     "datameet243_no": 111,
+     "share": 0.2945
+    },
+    {
+     "datameet243_no": 104,
+     "share": 0.092
+    }
+   ],
+   "samples": 163,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 104,
+   "bbmp225_name_en": "Varthuru",
+   "bbmp225_name_ka": "ವರ್ತೂರು",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 39085,
+   "datameet243_no": 112,
+   "datameet243_name": "Varthuru",
+   "lgd_ward_code": 1302784,
+   "overlap_confidence": 0.786,
+   "tier": "clean",
+   "runner_up_243_no": 113,
+   "runner_up_share": 0.0992,
+   "outside_share": 0,
+   "split": "112:0.7863 113:0.0992 116:0.0992 111:0.0153",
+   "shares": [
+    {
+     "datameet243_no": 112,
+     "share": 0.7863
+    },
+    {
+     "datameet243_no": 113,
+     "share": 0.0992
+    },
+    {
+     "datameet243_no": 116,
+     "share": 0.0992
+    },
+    {
+     "datameet243_no": 111,
+     "share": 0.0153
+    }
+   ],
+   "samples": 131,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 105,
+   "bbmp225_name_en": "Munekollal",
+   "bbmp225_name_ka": "ಮುನ್ನೆ ಕೊಳಲು",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 40571,
+   "datameet243_no": 113,
+   "datameet243_name": "Munnekollala",
+   "lgd_ward_code": 1302785,
+   "overlap_confidence": 0.671,
+   "tier": "split-primary",
+   "runner_up_243_no": 114,
+   "runner_up_share": 0.3151,
+   "outside_share": 0,
+   "split": "113:0.6712 114:0.3151 116:0.0137",
+   "shares": [
+    {
+     "datameet243_no": 113,
+     "share": 0.6712
+    },
+    {
+     "datameet243_no": 114,
+     "share": 0.3151
+    },
+    {
+     "datameet243_no": 116,
+     "share": 0.0137
+    }
+   ],
+   "samples": 146,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 106,
+   "bbmp225_name_en": "Marathahalli",
+   "bbmp225_name_ka": "ಮಾರತ್ತಹಳ್ಳಿ",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 40767,
+   "datameet243_no": 115,
+   "datameet243_name": "Bellanduru",
+   "lgd_ward_code": 1302787,
+   "overlap_confidence": 0.872,
+   "tier": "clean",
+   "runner_up_243_no": 114,
+   "runner_up_share": 0.1277,
+   "outside_share": 0,
+   "split": "115:0.8723 114:0.1277",
+   "shares": [
+    {
+     "datameet243_no": 115,
+     "share": 0.8723
+    },
+    {
+     "datameet243_no": 114,
+     "share": 0.1277
+    }
+   ],
+   "samples": 141,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 107,
+   "bbmp225_name_en": "Bellanduru",
+   "bbmp225_name_ka": "ಬೆಳ್ಳಂದೂರು",
+   "assembly_constituency": "MAHADEVAPURA (SC)",
+   "population": 42527,
+   "datameet243_no": 116,
+   "datameet243_name": "Doddakanahalli",
+   "lgd_ward_code": 1302788,
+   "overlap_confidence": 0.905,
+   "tier": "clean",
+   "runner_up_243_no": 115,
+   "runner_up_share": 0.0952,
+   "outside_share": 0,
+   "split": "116:0.9048 115:0.0952",
+   "shares": [
+    {
+     "datameet243_no": 116,
+     "share": 0.9048
+    },
+    {
+     "datameet243_no": 115,
+     "share": 0.0952
+    }
+   ],
+   "samples": 147,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 108,
+   "bbmp225_name_en": "Cox Town",
+   "bbmp225_name_ka": "ಕಾಕ್ಸ್ ಟೌನ್",
+   "assembly_constituency": "C.V. RAMAN NAGAR (SC)",
+   "population": 41979,
+   "datameet243_no": 119,
+   "datameet243_name": "New Bayappanahalli",
+   "lgd_ward_code": 1302791,
+   "overlap_confidence": 0.83,
+   "tier": "clean",
+   "runner_up_243_no": 118,
+   "runner_up_share": 0.1569,
+   "outside_share": 0,
+   "split": "119:0.8301 118:0.1569 117:0.0131",
+   "shares": [
+    {
+     "datameet243_no": 119,
+     "share": 0.8301
+    },
+    {
+     "datameet243_no": 118,
+     "share": 0.1569
+    },
+    {
+     "datameet243_no": 117,
+     "share": 0.0131
+    }
+   ],
+   "samples": 153,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 109,
+   "bbmp225_name_en": "Benniganahalli",
+   "bbmp225_name_ka": "ಬೆನ್ನಿಗಾನಹಳ್ಳಿ",
+   "assembly_constituency": "C.V. RAMAN NAGAR (SC)",
+   "population": 32869,
+   "datameet243_no": 118,
+   "datameet243_name": "Lal Bahadur Nagar",
+   "lgd_ward_code": 1302790,
+   "overlap_confidence": 0.85,
+   "tier": "clean",
+   "runner_up_243_no": 117,
+   "runner_up_share": 0.1503,
+   "outside_share": 0,
+   "split": "118:0.8497 117:0.1503",
+   "shares": [
+    {
+     "datameet243_no": 118,
+     "share": 0.8497
+    },
+    {
+     "datameet243_no": 117,
+     "share": 0.1503
+    }
+   ],
+   "samples": 173,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 110,
+   "bbmp225_name_en": "C V Raman Nagar",
+   "bbmp225_name_ka": "ಸಿ ವಿ ರಾಮನ್ ನಗರ",
+   "assembly_constituency": "C.V. RAMAN NAGAR (SC)",
+   "population": 38318,
+   "datameet243_no": 117,
+   "datameet243_name": "C V Raman Nagar",
+   "lgd_ward_code": 1302789,
+   "overlap_confidence": 0.834,
+   "tier": "clean",
+   "runner_up_243_no": 119,
+   "runner_up_share": 0.1124,
+   "outside_share": 0,
+   "split": "117:0.8343 119:0.1124 122:0.0533",
+   "shares": [
+    {
+     "datameet243_no": 117,
+     "share": 0.8343
+    },
+    {
+     "datameet243_no": 119,
+     "share": 0.1124
+    },
+    {
+     "datameet243_no": 122,
+     "share": 0.0533
+    }
+   ],
+   "samples": 169,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 111,
+   "bbmp225_name_en": "Kaggadasanapura",
+   "bbmp225_name_ka": "ಕಗ್ಗದಾಸನಪುರ",
+   "assembly_constituency": "C.V. RAMAN NAGAR (SC)",
+   "population": 33145,
+   "datameet243_no": 123,
+   "datameet243_name": "Jalakanteshwara Nagara",
+   "lgd_ward_code": 1302795,
+   "overlap_confidence": 0.897,
+   "tier": "clean",
+   "runner_up_243_no": 122,
+   "runner_up_share": 0.1027,
+   "outside_share": 0,
+   "split": "123:0.8973 122:0.1027",
+   "shares": [
+    {
+     "datameet243_no": 123,
+     "share": 0.8973
+    },
+    {
+     "datameet243_no": 122,
+     "share": 0.1027
+    }
+   ],
+   "samples": 224,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 112,
+   "bbmp225_name_en": "New Tippasandara",
+   "bbmp225_name_ka": "ಹೊಸ ತಿಪ್ಪಸಂದ್ರ",
+   "assembly_constituency": "C.V. RAMAN NAGAR (SC)",
+   "population": 42872,
+   "datameet243_no": 122,
+   "datameet243_name": "New Thippasandra",
+   "lgd_ward_code": 1302794,
+   "overlap_confidence": 0.712,
+   "tier": "clean",
+   "runner_up_243_no": 121,
+   "runner_up_share": 0.2881,
+   "outside_share": 0,
+   "split": "122:0.7119 121:0.2881",
+   "shares": [
+    {
+     "datameet243_no": 122,
+     "share": 0.7119
+    },
+    {
+     "datameet243_no": 121,
+     "share": 0.2881
+    }
+   ],
+   "samples": 177,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 113,
+   "bbmp225_name_en": "Hoysala Nagar",
+   "bbmp225_name_ka": "ಹೊಯ್ಸಳ ನಗರ",
+   "assembly_constituency": "C.V. RAMAN NAGAR (SC)",
+   "population": 35228,
+   "datameet243_no": 120,
+   "datameet243_name": "Hoysala Nagar",
+   "lgd_ward_code": 1302792,
+   "overlap_confidence": 0.747,
+   "tier": "clean",
+   "runner_up_243_no": 121,
+   "runner_up_share": 0.2532,
+   "outside_share": 0,
+   "split": "120:0.7468 121:0.2532",
+   "shares": [
+    {
+     "datameet243_no": 120,
+     "share": 0.7468
+    },
+    {
+     "datameet243_no": 121,
+     "share": 0.2532
+    }
+   ],
+   "samples": 154,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 114,
+   "bbmp225_name_en": "Jeevanbhima Nagar",
+   "bbmp225_name_ka": "ಜೀವನಭೀಮ ನಗರ",
+   "assembly_constituency": "C.V. RAMAN NAGAR (SC)",
+   "population": 33649,
+   "datameet243_no": 124,
+   "datameet243_name": "Jeevanbhima Nagar",
+   "lgd_ward_code": 1302796,
+   "overlap_confidence": 0.653,
+   "tier": "split-primary",
+   "runner_up_243_no": 121,
+   "runner_up_share": 0.3468,
+   "outside_share": 0,
+   "split": "124:0.6532 121:0.3468",
+   "shares": [
+    {
+     "datameet243_no": 124,
+     "share": 0.6532
+    },
+    {
+     "datameet243_no": 121,
+     "share": 0.3468
+    }
+   ],
+   "samples": 222,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 115,
+   "bbmp225_name_en": "Konena Agrahara",
+   "bbmp225_name_ka": "ಕೋನೇನ  ಅಗ್ರಹಾರ",
+   "assembly_constituency": "C.V. RAMAN NAGAR (SC)",
+   "population": 42710,
+   "datameet243_no": 124,
+   "datameet243_name": "Jeevanbhima Nagar",
+   "lgd_ward_code": 1302796,
+   "overlap_confidence": 0.599,
+   "tier": "split-primary",
+   "runner_up_243_no": 125,
+   "runner_up_share": 0.4014,
+   "outside_share": 0,
+   "split": "124:0.5986 125:0.4014",
+   "shares": [
+    {
+     "datameet243_no": 124,
+     "share": 0.5986
+    },
+    {
+     "datameet243_no": 125,
+     "share": 0.4014
+    }
+   ],
+   "samples": 142,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 116,
+   "bbmp225_name_en": "Ramaswamypalya",
+   "bbmp225_name_ka": "ರಾಮಸ್ವಾಮಿಪಾಳ್ಯ",
+   "assembly_constituency": "SHIVAJI NAGAR",
+   "population": 34394,
+   "datameet243_no": 126,
+   "datameet243_name": "Ramaswamy Palya",
+   "lgd_ward_code": 1302798,
+   "overlap_confidence": 0.659,
+   "tier": "split-primary",
+   "runner_up_243_no": 127,
+   "runner_up_share": 0.3405,
+   "outside_share": 0,
+   "split": "126:0.6595 127:0.3405",
+   "shares": [
+    {
+     "datameet243_no": 126,
+     "share": 0.6595
+    },
+    {
+     "datameet243_no": 127,
+     "share": 0.3405
+    }
+   ],
+   "samples": 185,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 117,
+   "bbmp225_name_en": "Vasanthnagar",
+   "bbmp225_name_ka": "ವಸಂತನಗರ",
+   "assembly_constituency": "SHIVAJI NAGAR",
+   "population": 37267,
+   "datameet243_no": 128,
+   "datameet243_name": "Vasanth Nagar",
+   "lgd_ward_code": 1302800,
+   "overlap_confidence": 0.719,
+   "tier": "clean",
+   "runner_up_243_no": 127,
+   "runner_up_share": 0.1818,
+   "outside_share": 0,
+   "split": "128:0.719 127:0.1818 126:0.0992",
+   "shares": [
+    {
+     "datameet243_no": 128,
+     "share": 0.719
+    },
+    {
+     "datameet243_no": 127,
+     "share": 0.1818
+    },
+    {
+     "datameet243_no": 126,
+     "share": 0.0992
+    }
+   ],
+   "samples": 121,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 118,
+   "bbmp225_name_en": "Sampangiram Nagar",
+   "bbmp225_name_ka": "ಸಂಪಂಗಿರಾಮ್ ನಗರ",
+   "assembly_constituency": "SHIVAJI NAGAR",
+   "population": 36827,
+   "datameet243_no": 129,
+   "datameet243_name": "Sampangiram Nagar",
+   "lgd_ward_code": 1302801,
+   "overlap_confidence": 0.688,
+   "tier": "split-primary",
+   "runner_up_243_no": 128,
+   "runner_up_share": 0.3056,
+   "outside_share": 0,
+   "split": "129:0.6875 128:0.3056 127:0.0069",
+   "shares": [
+    {
+     "datameet243_no": 129,
+     "share": 0.6875
+    },
+    {
+     "datameet243_no": 128,
+     "share": 0.3056
+    },
+    {
+     "datameet243_no": 127,
+     "share": 0.0069
+    }
+   ],
+   "samples": 144,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 119,
+   "bbmp225_name_en": "Shivaji Nagar",
+   "bbmp225_name_ka": "ಶಿವಾಜಿ ನಗರ",
+   "assembly_constituency": "SHIVAJI NAGAR",
+   "population": 34087,
+   "datameet243_no": 129,
+   "datameet243_name": "Sampangiram Nagar",
+   "lgd_ward_code": 1302801,
+   "overlap_confidence": 0.658,
+   "tier": "split-primary",
+   "runner_up_243_no": 127,
+   "runner_up_share": 0.2081,
+   "outside_share": 0,
+   "split": "129:0.6577 127:0.2081 130:0.094 131:0.0403",
+   "shares": [
+    {
+     "datameet243_no": 129,
+     "share": 0.6577
+    },
+    {
+     "datameet243_no": 127,
+     "share": 0.2081
+    },
+    {
+     "datameet243_no": 130,
+     "share": 0.094
+    },
+    {
+     "datameet243_no": 131,
+     "share": 0.0403
+    }
+   ],
+   "samples": 149,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 120,
+   "bbmp225_name_en": "Bharathi Nagar",
+   "bbmp225_name_ka": "ಭಾರತಿ ನಗರ",
+   "assembly_constituency": "SHIVAJI NAGAR",
+   "population": 33808,
+   "datameet243_no": 130,
+   "datameet243_name": "Bharathi Nagar",
+   "lgd_ward_code": 1302802,
+   "overlap_confidence": 0.891,
+   "tier": "clean",
+   "runner_up_243_no": 129,
+   "runner_up_share": 0.1088,
+   "outside_share": 0,
+   "split": "130:0.8912 129:0.1088",
+   "shares": [
+    {
+     "datameet243_no": 130,
+     "share": 0.8912
+    },
+    {
+     "datameet243_no": 129,
+     "share": 0.1088
+    }
+   ],
+   "samples": 193,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 121,
+   "bbmp225_name_en": "Ulsoor",
+   "bbmp225_name_ka": "ಹಲಸೂರು",
+   "assembly_constituency": "SHIVAJI NAGAR",
+   "population": 35343,
+   "datameet243_no": 131,
+   "datameet243_name": "Ulsoor",
+   "lgd_ward_code": 1302803,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "131:1",
+   "shares": [
+    {
+     "datameet243_no": 131,
+     "share": 1
+    }
+   ],
+   "samples": 173,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 122,
+   "bbmp225_name_en": "Dattatreya Temple",
+   "bbmp225_name_ka": "ದತ್ತಾತ್ರೇಯ ದೇವಸ್ಥಾನ",
+   "assembly_constituency": "GANDHI NAGAR",
+   "population": 37419,
+   "datameet243_no": 132,
+   "datameet243_name": "Dattatreya Temple",
+   "lgd_ward_code": 1302804,
+   "overlap_confidence": 0.892,
+   "tier": "clean",
+   "runner_up_243_no": 134,
+   "runner_up_share": 0.1077,
+   "outside_share": 0,
+   "split": "132:0.8923 134:0.1077",
+   "shares": [
+    {
+     "datameet243_no": 132,
+     "share": 0.8923
+    },
+    {
+     "datameet243_no": 134,
+     "share": 0.1077
+    }
+   ],
+   "samples": 130,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 123,
+   "bbmp225_name_en": "Gandhinagar",
+   "bbmp225_name_ka": "ಗಾಂಧಿನಗರ",
+   "assembly_constituency": "GANDHI NAGAR",
+   "population": 32319,
+   "datameet243_no": 133,
+   "datameet243_name": "Gandhinagar",
+   "lgd_ward_code": 1302805,
+   "overlap_confidence": 0.986,
+   "tier": "clean",
+   "runner_up_243_no": 137,
+   "runner_up_share": 0.0135,
+   "outside_share": 0,
+   "split": "133:0.9865 137:0.0135",
+   "shares": [
+    {
+     "datameet243_no": 133,
+     "share": 0.9865
+    },
+    {
+     "datameet243_no": 137,
+     "share": 0.0135
+    }
+   ],
+   "samples": 148,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 124,
+   "bbmp225_name_en": "Subhash Nagar",
+   "bbmp225_name_ka": "ಸುಭಾಷ್ ನಗರ",
+   "assembly_constituency": "GANDHI NAGAR",
+   "population": 33719,
+   "datameet243_no": 134,
+   "datameet243_name": "Subhash Nagar",
+   "lgd_ward_code": 1302806,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "134:1",
+   "shares": [
+    {
+     "datameet243_no": 134,
+     "share": 1
+    }
+   ],
+   "samples": 166,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 125,
+   "bbmp225_name_en": "Okalipuram",
+   "bbmp225_name_ka": "ಓಕಲಿಪುರಂ",
+   "assembly_constituency": "GANDHI NAGAR",
+   "population": 34164,
+   "datameet243_no": 135,
+   "datameet243_name": "Okalipuram",
+   "lgd_ward_code": 1302807,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "135:1",
+   "shares": [
+    {
+     "datameet243_no": 135,
+     "share": 1
+    }
+   ],
+   "samples": 197,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 126,
+   "bbmp225_name_en": "Binnipete",
+   "bbmp225_name_ka": "ಬಿನ್ನಿಪೇಟೆ",
+   "assembly_constituency": "GANDHI NAGAR",
+   "population": 40033,
+   "datameet243_no": 136,
+   "datameet243_name": "Binnipete",
+   "lgd_ward_code": 1302808,
+   "overlap_confidence": 0.924,
+   "tier": "clean",
+   "runner_up_243_no": 135,
+   "runner_up_share": 0.0759,
+   "outside_share": 0,
+   "split": "136:0.9241 135:0.0759",
+   "shares": [
+    {
+     "datameet243_no": 136,
+     "share": 0.9241
+    },
+    {
+     "datameet243_no": 135,
+     "share": 0.0759
+    }
+   ],
+   "samples": 145,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 127,
+   "bbmp225_name_en": "Cottonpete",
+   "bbmp225_name_ka": "ಕಾಟನ್‌ಪೇಟೆ",
+   "assembly_constituency": "GANDHI NAGAR",
+   "population": 37500,
+   "datameet243_no": 137,
+   "datameet243_name": "Cottonpete",
+   "lgd_ward_code": 1302809,
+   "overlap_confidence": 0.979,
+   "tier": "clean",
+   "runner_up_243_no": 136,
+   "runner_up_share": 0.0208,
+   "outside_share": 0,
+   "split": "137:0.9792 136:0.0208",
+   "shares": [
+    {
+     "datameet243_no": 137,
+     "share": 0.9792
+    },
+    {
+     "datameet243_no": 136,
+     "share": 0.0208
+    }
+   ],
+   "samples": 144,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 128,
+   "bbmp225_name_en": "Chickpete",
+   "bbmp225_name_ka": "ಚಿಕ್ಕಪೇಟೆ",
+   "assembly_constituency": "GANDHI NAGAR",
+   "population": 33292,
+   "datameet243_no": 138,
+   "datameet243_name": "Chickpete",
+   "lgd_ward_code": 1302810,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "138:1",
+   "shares": [
+    {
+     "datameet243_no": 138,
+     "share": 1
+    }
+   ],
+   "samples": 197,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 129,
+   "bbmp225_name_en": "Dayananda Nagar",
+   "bbmp225_name_ka": "ದಯಾನಂದ ನಗರ",
+   "assembly_constituency": "RAJAJI NAGAR",
+   "population": 42587,
+   "datameet243_no": 139,
+   "datameet243_name": "Dayananda Nagar",
+   "lgd_ward_code": 1302811,
+   "overlap_confidence": 0.769,
+   "tier": "clean",
+   "runner_up_243_no": 140,
+   "runner_up_share": 0.2313,
+   "outside_share": 0,
+   "split": "139:0.7688 140:0.2313",
+   "shares": [
+    {
+     "datameet243_no": 139,
+     "share": 0.7688
+    },
+    {
+     "datameet243_no": 140,
+     "share": 0.2313
+    }
+   ],
+   "samples": 160,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 130,
+   "bbmp225_name_en": "Sriramamandir",
+   "bbmp225_name_ka": "ಶ್ರೀರಾಮಮಂದಿರ",
+   "assembly_constituency": "RAJAJI NAGAR",
+   "population": 40645,
+   "datameet243_no": 142,
+   "datameet243_name": "Sriramamandir",
+   "lgd_ward_code": 1302814,
+   "overlap_confidence": 0.751,
+   "tier": "clean",
+   "runner_up_243_no": 140,
+   "runner_up_share": 0.2293,
+   "outside_share": 0,
+   "split": "142:0.7512 140:0.2293 139:0.0195",
+   "shares": [
+    {
+     "datameet243_no": 142,
+     "share": 0.7512
+    },
+    {
+     "datameet243_no": 140,
+     "share": 0.2293
+    },
+    {
+     "datameet243_no": 139,
+     "share": 0.0195
+    }
+   ],
+   "samples": 205,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 131,
+   "bbmp225_name_en": "Shivanagara",
+   "bbmp225_name_ka": "ಶಿವನಗರ",
+   "assembly_constituency": "RAJAJI NAGAR",
+   "population": 36054,
+   "datameet243_no": 143,
+   "datameet243_name": "Shivanagara",
+   "lgd_ward_code": 1302815,
+   "overlap_confidence": 0.651,
+   "tier": "split-primary",
+   "runner_up_243_no": 142,
+   "runner_up_share": 0.3492,
+   "outside_share": 0,
+   "split": "143:0.6508 142:0.3492",
+   "shares": [
+    {
+     "datameet243_no": 143,
+     "share": 0.6508
+    },
+    {
+     "datameet243_no": 142,
+     "share": 0.3492
+    }
+   ],
+   "samples": 189,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 132,
+   "bbmp225_name_en": "Rajaji Nagar",
+   "bbmp225_name_ka": "ರಾಜಾಜಿನಗರ",
+   "assembly_constituency": "RAJAJI NAGAR",
+   "population": 42987,
+   "datameet243_no": 141,
+   "datameet243_name": "Rajaji Nagar",
+   "lgd_ward_code": 1302813,
+   "overlap_confidence": 0.725,
+   "tier": "clean",
+   "runner_up_243_no": 140,
+   "runner_up_share": 0.2092,
+   "outside_share": 0,
+   "split": "141:0.7255 140:0.2092 144:0.0654",
+   "shares": [
+    {
+     "datameet243_no": 141,
+     "share": 0.7255
+    },
+    {
+     "datameet243_no": 140,
+     "share": 0.2092
+    },
+    {
+     "datameet243_no": 144,
+     "share": 0.0654
+    }
+   ],
+   "samples": 153,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 133,
+   "bbmp225_name_en": "Basaveshwara Nagar",
+   "bbmp225_name_ka": "ಬಸವೇಶ್ವರ ನಗರ",
+   "assembly_constituency": "RAJAJI NAGAR",
+   "population": 33122,
+   "datameet243_no": 144,
+   "datameet243_name": "Basaveshwara Nagar",
+   "lgd_ward_code": 1302816,
+   "overlap_confidence": 0.819,
+   "tier": "clean",
+   "runner_up_243_no": 143,
+   "runner_up_share": 0.1181,
+   "outside_share": 0,
+   "split": "144:0.8194 143:0.1181 141:0.0625",
+   "shares": [
+    {
+     "datameet243_no": 144,
+     "share": 0.8194
+    },
+    {
+     "datameet243_no": 143,
+     "share": 0.1181
+    },
+    {
+     "datameet243_no": 141,
+     "share": 0.0625
+    }
+   ],
+   "samples": 144,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 134,
+   "bbmp225_name_en": "Kamakshipalya",
+   "bbmp225_name_ka": "ಕಾಮಾಕ್ಷಿಪಾಳ್ಯ",
+   "assembly_constituency": "RAJAJI NAGAR",
+   "population": 37034,
+   "datameet243_no": 145,
+   "datameet243_name": "Kamakshipalya",
+   "lgd_ward_code": 1302817,
+   "overlap_confidence": 0.851,
+   "tier": "clean",
+   "runner_up_243_no": 144,
+   "runner_up_share": 0.1489,
+   "outside_share": 0,
+   "split": "145:0.8511 144:0.1489",
+   "shares": [
+    {
+     "datameet243_no": 145,
+     "share": 0.8511
+    },
+    {
+     "datameet243_no": 144,
+     "share": 0.1489
+    }
+   ],
+   "samples": 188,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 135,
+   "bbmp225_name_en": "Dr. Raj Kumar Agrahara Dasarahalli",
+   "bbmp225_name_ka": "ಡಾ. ರಾಜ್ ಕುಮಾರ್ ಅಗ್ರಹಾರ ದಾಸರಹಳ್ಳಿ",
+   "assembly_constituency": "GOVINDRAJA NAGAR",
+   "population": 38772,
+   "datameet243_no": 146,
+   "datameet243_name": "Dr. Raj Kumar Ward",
+   "lgd_ward_code": 1302818,
+   "overlap_confidence": 0.811,
+   "tier": "clean",
+   "runner_up_243_no": 147,
+   "runner_up_share": 0.1892,
+   "outside_share": 0,
+   "split": "146:0.8108 147:0.1892",
+   "shares": [
+    {
+     "datameet243_no": 146,
+     "share": 0.8108
+    },
+    {
+     "datameet243_no": 147,
+     "share": 0.1892
+    }
+   ],
+   "samples": 148,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 136,
+   "bbmp225_name_en": "Govindaraja Nagar",
+   "bbmp225_name_ka": "ಗೋವಿಂದರಾಜ ನಗರ",
+   "assembly_constituency": "GOVINDRAJA NAGAR",
+   "population": 35632,
+   "datameet243_no": 147,
+   "datameet243_name": "Agrahara Dasarahalli",
+   "lgd_ward_code": 1302819,
+   "overlap_confidence": 0.43,
+   "tier": "true-split",
+   "runner_up_243_no": 148,
+   "runner_up_share": 0.3047,
+   "outside_share": 0,
+   "split": "147:0.4297 148:0.3047 146:0.2656",
+   "shares": [
+    {
+     "datameet243_no": 147,
+     "share": 0.4297
+    },
+    {
+     "datameet243_no": 148,
+     "share": 0.3047
+    },
+    {
+     "datameet243_no": 146,
+     "share": 0.2656
+    }
+   ],
+   "samples": 128,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 137,
+   "bbmp225_name_en": "Marenahalli",
+   "bbmp225_name_ka": "ಮಾರೇನಹಳ್ಳಿ",
+   "assembly_constituency": "GOVINDRAJA NAGAR",
+   "population": 32005,
+   "datameet243_no": 150,
+   "datameet243_name": "Marenahalli",
+   "lgd_ward_code": 1302822,
+   "overlap_confidence": 0.638,
+   "tier": "split-primary",
+   "runner_up_243_no": 148,
+   "runner_up_share": 0.2989,
+   "outside_share": 0,
+   "split": "150:0.6379 148:0.2989 151:0.046 149:0.0172",
+   "shares": [
+    {
+     "datameet243_no": 150,
+     "share": 0.6379
+    },
+    {
+     "datameet243_no": 148,
+     "share": 0.2989
+    },
+    {
+     "datameet243_no": 151,
+     "share": 0.046
+    },
+    {
+     "datameet243_no": 149,
+     "share": 0.0172
+    }
+   ],
+   "samples": 174,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 138,
+   "bbmp225_name_en": "Kaveripura",
+   "bbmp225_name_ka": "ಕಾವೇರಿಪುರ",
+   "assembly_constituency": "GOVINDRAJA NAGAR",
+   "population": 35628,
+   "datameet243_no": 149,
+   "datameet243_name": "Kaveripura",
+   "lgd_ward_code": 1302821,
+   "overlap_confidence": 0.848,
+   "tier": "clean",
+   "runner_up_243_no": 148,
+   "runner_up_share": 0.1523,
+   "outside_share": 0,
+   "split": "149:0.8477 148:0.1523",
+   "shares": [
+    {
+     "datameet243_no": 149,
+     "share": 0.8477
+    },
+    {
+     "datameet243_no": 148,
+     "share": 0.1523
+    }
+   ],
+   "samples": 197,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 139,
+   "bbmp225_name_en": "Mudalapalya",
+   "bbmp225_name_ka": "ಮೂಡಲಪಾಳ್ಯ",
+   "assembly_constituency": "GOVINDRAJA NAGAR",
+   "population": 32137,
+   "datameet243_no": 152,
+   "datameet243_name": "Mudalapalya",
+   "lgd_ward_code": 1302824,
+   "overlap_confidence": 0.806,
+   "tier": "clean",
+   "runner_up_243_no": 150,
+   "runner_up_share": 0.1942,
+   "outside_share": 0,
+   "split": "152:0.8058 150:0.1942",
+   "shares": [
+    {
+     "datameet243_no": 152,
+     "share": 0.8058
+    },
+    {
+     "datameet243_no": 150,
+     "share": 0.1942
+    }
+   ],
+   "samples": 206,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 140,
+   "bbmp225_name_en": "Maruthi Mandir ward",
+   "bbmp225_name_ka": "ಮಾರುತಿ ಮಂದಿರ ವಾರ್ಡ್",
+   "assembly_constituency": "GOVINDRAJA NAGAR",
+   "population": 32510,
+   "datameet243_no": 151,
+   "datameet243_name": "Maruthi Mandir ward",
+   "lgd_ward_code": 1302823,
+   "overlap_confidence": 0.738,
+   "tier": "clean",
+   "runner_up_243_no": 152,
+   "runner_up_share": 0.1348,
+   "outside_share": 0,
+   "split": "151:0.7376 152:0.1348 150:0.1277",
+   "shares": [
+    {
+     "datameet243_no": 151,
+     "share": 0.7376
+    },
+    {
+     "datameet243_no": 152,
+     "share": 0.1348
+    },
+    {
+     "datameet243_no": 150,
+     "share": 0.1277
+    }
+   ],
+   "samples": 141,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 141,
+   "bbmp225_name_en": "Nagarabhavi",
+   "bbmp225_name_ka": "ನಾಗರಭಾವಿ",
+   "assembly_constituency": "GOVINDRAJA NAGAR",
+   "population": 33584,
+   "datameet243_no": 153,
+   "datameet243_name": "Nagarabhavi",
+   "lgd_ward_code": 1302825,
+   "overlap_confidence": 0.587,
+   "tier": "split-primary",
+   "runner_up_243_no": 154,
+   "runner_up_share": 0.3333,
+   "outside_share": 0,
+   "split": "153:0.587 154:0.3333 151:0.0797",
+   "shares": [
+    {
+     "datameet243_no": 153,
+     "share": 0.587
+    },
+    {
+     "datameet243_no": 154,
+     "share": 0.3333
+    },
+    {
+     "datameet243_no": 151,
+     "share": 0.0797
+    }
+   ],
+   "samples": 138,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 142,
+   "bbmp225_name_en": "Chandralayout",
+   "bbmp225_name_ka": "ಚಂದ್ರಾಲೇಔಟ್",
+   "assembly_constituency": "GOVINDRAJA NAGAR",
+   "population": 32840,
+   "datameet243_no": 154,
+   "datameet243_name": "Chandra Layout",
+   "lgd_ward_code": 1302826,
+   "overlap_confidence": 0.695,
+   "tier": "split-primary",
+   "runner_up_243_no": 153,
+   "runner_up_share": 0.1777,
+   "outside_share": 0,
+   "split": "154:0.6954 153:0.1777 155:0.1269",
+   "shares": [
+    {
+     "datameet243_no": 154,
+     "share": 0.6954
+    },
+    {
+     "datameet243_no": 153,
+     "share": 0.1777
+    },
+    {
+     "datameet243_no": 155,
+     "share": 0.1269
+    }
+   ],
+   "samples": 197,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 143,
+   "bbmp225_name_en": "Nayandahalli",
+   "bbmp225_name_ka": "ನಾಯಂಡಹಳ್ಳಿ",
+   "assembly_constituency": "GOVINDRAJA NAGAR",
+   "population": 32617,
+   "datameet243_no": 155,
+   "datameet243_name": "Nayandahalli",
+   "lgd_ward_code": 1302827,
+   "overlap_confidence": 0.781,
+   "tier": "clean",
+   "runner_up_243_no": 154,
+   "runner_up_share": 0.2192,
+   "outside_share": 0,
+   "split": "155:0.7808 154:0.2192",
+   "shares": [
+    {
+     "datameet243_no": 155,
+     "share": 0.7808
+    },
+    {
+     "datameet243_no": 154,
+     "share": 0.2192
+    }
+   ],
+   "samples": 146,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 144,
+   "bbmp225_name_en": "Kempapura Agrahara",
+   "bbmp225_name_ka": "ಕೆಂಪಾಪುರ ಅಗ್ರಹಾರ",
+   "assembly_constituency": "VIJAYA NAGAR",
+   "population": 36710,
+   "datameet243_no": 156,
+   "datameet243_name": "Kempapura Agrahara",
+   "lgd_ward_code": 1302828,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "156:1",
+   "shares": [
+    {
+     "datameet243_no": 156,
+     "share": 1
+    }
+   ],
+   "samples": 201,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 145,
+   "bbmp225_name_en": "Vijayanagar",
+   "bbmp225_name_ka": "ವಿಜಯನಗರ",
+   "assembly_constituency": "VIJAYA NAGAR",
+   "population": 35209,
+   "datameet243_no": 157,
+   "datameet243_name": "Vijayanagar",
+   "lgd_ward_code": 1302829,
+   "overlap_confidence": 0.845,
+   "tier": "clean",
+   "runner_up_243_no": 158,
+   "runner_up_share": 0.1549,
+   "outside_share": 0,
+   "split": "157:0.8451 158:0.1549",
+   "shares": [
+    {
+     "datameet243_no": 157,
+     "share": 0.8451
+    },
+    {
+     "datameet243_no": 158,
+     "share": 0.1549
+    }
+   ],
+   "samples": 142,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 146,
+   "bbmp225_name_en": "Hosahalli",
+   "bbmp225_name_ka": "ಹೊಸಹಳ್ಳಿ",
+   "assembly_constituency": "VIJAYA NAGAR",
+   "population": 39400,
+   "datameet243_no": 158,
+   "datameet243_name": "Hosahalli",
+   "lgd_ward_code": 1302830,
+   "overlap_confidence": 0.711,
+   "tier": "clean",
+   "runner_up_243_no": 159,
+   "runner_up_share": 0.2752,
+   "outside_share": 0,
+   "split": "158:0.7114 159:0.2752 157:0.0134",
+   "shares": [
+    {
+     "datameet243_no": 158,
+     "share": 0.7114
+    },
+    {
+     "datameet243_no": 159,
+     "share": 0.2752
+    },
+    {
+     "datameet243_no": 157,
+     "share": 0.0134
+    }
+   ],
+   "samples": 149,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 147,
+   "bbmp225_name_en": "Hampi Nagar",
+   "bbmp225_name_ka": "ಹಂಪಿ ನಗರ",
+   "assembly_constituency": "VIJAYA NAGAR",
+   "population": 34725,
+   "datameet243_no": 159,
+   "datameet243_name": "Hampi Nagar",
+   "lgd_ward_code": 1302831,
+   "overlap_confidence": 0.517,
+   "tier": "split-primary",
+   "runner_up_243_no": 161,
+   "runner_up_share": 0.3953,
+   "outside_share": 0,
+   "split": "159:0.5174 161:0.3953 160:0.0523 158:0.0349",
+   "shares": [
+    {
+     "datameet243_no": 159,
+     "share": 0.5174
+    },
+    {
+     "datameet243_no": 161,
+     "share": 0.3953
+    },
+    {
+     "datameet243_no": 160,
+     "share": 0.0523
+    },
+    {
+     "datameet243_no": 158,
+     "share": 0.0349
+    }
+   ],
+   "samples": 172,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 148,
+   "bbmp225_name_en": "New Guddadahalli",
+   "bbmp225_name_ka": "ಹೊಸ ಗುಡ್ಡದಹಳ್ಳಿ",
+   "assembly_constituency": "VIJAYA NAGAR",
+   "population": 33516,
+   "datameet243_no": 164,
+   "datameet243_name": "Avalahalli",
+   "lgd_ward_code": 1302836,
+   "overlap_confidence": 0.557,
+   "tier": "split-primary",
+   "runner_up_243_no": 160,
+   "runner_up_share": 0.3234,
+   "outside_share": 0,
+   "split": "164:0.5572 160:0.3234 162:0.0896 159:0.0299",
+   "shares": [
+    {
+     "datameet243_no": 164,
+     "share": 0.5572
+    },
+    {
+     "datameet243_no": 160,
+     "share": 0.3234
+    },
+    {
+     "datameet243_no": 162,
+     "share": 0.0896
+    },
+    {
+     "datameet243_no": 159,
+     "share": 0.0299
+    }
+   ],
+   "samples": 201,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 149,
+   "bbmp225_name_en": "Gali Anjaneya Temple Ward",
+   "bbmp225_name_ka": "ಗಾಳಿ ಆಂಜನೇಯ ದೇವಸ್ಥಾನ ವಾರ್ಡ್",
+   "assembly_constituency": "VIJAYA NAGAR",
+   "population": 34112,
+   "datameet243_no": 159,
+   "datameet243_name": "Hampi Nagar",
+   "lgd_ward_code": 1302831,
+   "overlap_confidence": 0.608,
+   "tier": "split-primary",
+   "runner_up_243_no": 160,
+   "runner_up_share": 0.2443,
+   "outside_share": 0,
+   "split": "159:0.608 160:0.2443 162:0.1477",
+   "shares": [
+    {
+     "datameet243_no": 159,
+     "share": 0.608
+    },
+    {
+     "datameet243_no": 160,
+     "share": 0.2443
+    },
+    {
+     "datameet243_no": 162,
+     "share": 0.1477
+    }
+   ],
+   "samples": 176,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 150,
+   "bbmp225_name_en": "Attiguppe",
+   "bbmp225_name_ka": "ಅತ್ತಿಗುಪ್ಪೆ",
+   "assembly_constituency": "VIJAYA NAGAR",
+   "population": 37120,
+   "datameet243_no": 161,
+   "datameet243_name": "Attiguppe",
+   "lgd_ward_code": 1302833,
+   "overlap_confidence": 0.78,
+   "tier": "clean",
+   "runner_up_243_no": 162,
+   "runner_up_share": 0.19,
+   "outside_share": 0,
+   "split": "161:0.78 162:0.19 163:0.03",
+   "shares": [
+    {
+     "datameet243_no": 161,
+     "share": 0.78
+    },
+    {
+     "datameet243_no": 162,
+     "share": 0.19
+    },
+    {
+     "datameet243_no": 163,
+     "share": 0.03
+    }
+   ],
+   "samples": 100,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 151,
+   "bbmp225_name_en": "Deepanjali Nagar",
+   "bbmp225_name_ka": "ದೀಪಾಂಜಲಿ ನಗರ",
+   "assembly_constituency": "VIJAYA NAGAR",
+   "population": 34862,
+   "datameet243_no": 163,
+   "datameet243_name": "Veerabhadranagar",
+   "lgd_ward_code": 1302835,
+   "overlap_confidence": 0.649,
+   "tier": "split-primary",
+   "runner_up_243_no": 162,
+   "runner_up_share": 0.3509,
+   "outside_share": 0,
+   "split": "163:0.6491 162:0.3509",
+   "shares": [
+    {
+     "datameet243_no": 163,
+     "share": 0.6491
+    },
+    {
+     "datameet243_no": 162,
+     "share": 0.3509
+    }
+   ],
+   "samples": 171,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 152,
+   "bbmp225_name_en": "Avalahalli",
+   "bbmp225_name_ka": "ಆವಲಹಳ್ಳಿ",
+   "assembly_constituency": "VIJAYA NAGAR",
+   "population": 38721,
+   "datameet243_no": 164,
+   "datameet243_name": "Avalahalli",
+   "lgd_ward_code": 1302836,
+   "overlap_confidence": 0.665,
+   "tier": "split-primary",
+   "runner_up_243_no": 163,
+   "runner_up_share": 0.2304,
+   "outside_share": 0,
+   "split": "164:0.6652 163:0.2304 162:0.1043",
+   "shares": [
+    {
+     "datameet243_no": 164,
+     "share": 0.6652
+    },
+    {
+     "datameet243_no": 163,
+     "share": 0.2304
+    },
+    {
+     "datameet243_no": 162,
+     "share": 0.1043
+    }
+   ],
+   "samples": 230,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 153,
+   "bbmp225_name_en": "Padarayanapura",
+   "bbmp225_name_ka": "ಪಾದರಾಯನಪುರ",
+   "assembly_constituency": "CHAMARAJPET",
+   "population": 33665,
+   "datameet243_no": 169,
+   "datameet243_name": "Devaraj Urs Nagar",
+   "lgd_ward_code": 1302841,
+   "overlap_confidence": 0.667,
+   "tier": "split-primary",
+   "runner_up_243_no": 168,
+   "runner_up_share": 0.3333,
+   "outside_share": 0,
+   "split": "169:0.6667 168:0.3333",
+   "shares": [
+    {
+     "datameet243_no": 169,
+     "share": 0.6667
+    },
+    {
+     "datameet243_no": 168,
+     "share": 0.3333
+    }
+   ],
+   "samples": 165,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 154,
+   "bbmp225_name_en": "Rayapuram",
+   "bbmp225_name_ka": "ರಾಯಪುರಂ",
+   "assembly_constituency": "CHAMARAJPET",
+   "population": 34303,
+   "datameet243_no": 167,
+   "datameet243_name": "Jagajivanaram Nagar",
+   "lgd_ward_code": 1302839,
+   "overlap_confidence": 0.76,
+   "tier": "clean",
+   "runner_up_243_no": 168,
+   "runner_up_share": 0.2403,
+   "outside_share": 0,
+   "split": "167:0.7597 168:0.2403",
+   "shares": [
+    {
+     "datameet243_no": 167,
+     "share": 0.7597
+    },
+    {
+     "datameet243_no": 168,
+     "share": 0.2403
+    }
+   ],
+   "samples": 154,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 155,
+   "bbmp225_name_en": "Devaraj Urs Nagar",
+   "bbmp225_name_ka": "ದೇವರಾಜ್ ಅರಸ್ ನಗರ",
+   "assembly_constituency": "CHAMARAJPET",
+   "population": 36799,
+   "datameet243_no": 168,
+   "datameet243_name": "Padarayanapura",
+   "lgd_ward_code": 1302840,
+   "overlap_confidence": 0.562,
+   "tier": "split-primary",
+   "runner_up_243_no": 169,
+   "runner_up_share": 0.4378,
+   "outside_share": 0,
+   "split": "168:0.5622 169:0.4378",
+   "shares": [
+    {
+     "datameet243_no": 168,
+     "share": 0.5622
+    },
+    {
+     "datameet243_no": 169,
+     "share": 0.4378
+    }
+   ],
+   "samples": 185,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 156,
+   "bbmp225_name_en": "Chalavadipalya",
+   "bbmp225_name_ka": "ಚಲವಾದಿಪಾಳ್ಯ",
+   "assembly_constituency": "CHAMARAJPET",
+   "population": 32311,
+   "datameet243_no": 167,
+   "datameet243_name": "Jagajivanaram Nagar",
+   "lgd_ward_code": 1302839,
+   "overlap_confidence": 0.728,
+   "tier": "clean",
+   "runner_up_243_no": 166,
+   "runner_up_share": 0.2716,
+   "outside_share": 0,
+   "split": "167:0.7284 166:0.2716",
+   "shares": [
+    {
+     "datameet243_no": 167,
+     "share": 0.7284
+    },
+    {
+     "datameet243_no": 166,
+     "share": 0.2716
+    }
+   ],
+   "samples": 162,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 157,
+   "bbmp225_name_en": "K R Market",
+   "bbmp225_name_ka": "ಕೆ ಆರ್ ಮಾರುಕಟ್ಟೆ",
+   "assembly_constituency": "CHAMARAJPET",
+   "population": 32311,
+   "datameet243_no": 165,
+   "datameet243_name": "Chamrajapet",
+   "lgd_ward_code": 1302837,
+   "overlap_confidence": 0.665,
+   "tier": "split-primary",
+   "runner_up_243_no": 166,
+   "runner_up_share": 0.3354,
+   "outside_share": 0,
+   "split": "165:0.6646 166:0.3354",
+   "shares": [
+    {
+     "datameet243_no": 165,
+     "share": 0.6646
+    },
+    {
+     "datameet243_no": 166,
+     "share": 0.3354
+    }
+   ],
+   "samples": 161,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 158,
+   "bbmp225_name_en": "Chamrajapet",
+   "bbmp225_name_ka": "ಚಾಮರಾಜಪೇಟೆ",
+   "assembly_constituency": "CHAMARAJPET",
+   "population": 33626,
+   "datameet243_no": 165,
+   "datameet243_name": "Chamrajapet",
+   "lgd_ward_code": 1302837,
+   "overlap_confidence": 0.869,
+   "tier": "clean",
+   "runner_up_243_no": 170,
+   "runner_up_share": 0.1307,
+   "outside_share": 0,
+   "split": "165:0.8693 170:0.1307",
+   "shares": [
+    {
+     "datameet243_no": 165,
+     "share": 0.8693
+    },
+    {
+     "datameet243_no": 170,
+     "share": 0.1307
+    }
+   ],
+   "samples": 176,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 159,
+   "bbmp225_name_en": "Azad Nagar",
+   "bbmp225_name_ka": "ಆಜಾದ್ ನಗರ",
+   "assembly_constituency": "CHAMARAJPET",
+   "population": 34445,
+   "datameet243_no": 170,
+   "datameet243_name": "Azad Nagar",
+   "lgd_ward_code": 1302842,
+   "overlap_confidence": 0.917,
+   "tier": "clean",
+   "runner_up_243_no": 165,
+   "runner_up_share": 0.0829,
+   "outside_share": 0,
+   "split": "170:0.9171 165:0.0829",
+   "shares": [
+    {
+     "datameet243_no": 170,
+     "share": 0.9171
+    },
+    {
+     "datameet243_no": 165,
+     "share": 0.0829
+    }
+   ],
+   "samples": 181,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 160,
+   "bbmp225_name_en": "Dharmaraya Swamy Temple",
+   "bbmp225_name_ka": "ಧರ್ಮರಾಯ ಸ್ವಾಮಿ ದೇವಸ್ಥಾನ",
+   "assembly_constituency": "CHICKPET",
+   "population": 39056,
+   "datameet243_no": 172,
+   "datameet243_name": "Dharmaraya Swamy Temple Ward",
+   "lgd_ward_code": 1302844,
+   "overlap_confidence": 0.524,
+   "tier": "split-primary",
+   "runner_up_243_no": 171,
+   "runner_up_share": 0.4078,
+   "outside_share": 0,
+   "split": "172:0.5243 171:0.4078 177:0.068",
+   "shares": [
+    {
+     "datameet243_no": 172,
+     "share": 0.5243
+    },
+    {
+     "datameet243_no": 171,
+     "share": 0.4078
+    },
+    {
+     "datameet243_no": 177,
+     "share": 0.068
+    }
+   ],
+   "samples": 103,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 161,
+   "bbmp225_name_en": "Silver Jublee Park",
+   "bbmp225_name_ka": "ಸಿಲ್ವರ್ ಜೂಬ್ಲಿ ಪಾರ್ಕ್",
+   "assembly_constituency": "CHICKPET",
+   "population": 33453,
+   "datameet243_no": 172,
+   "datameet243_name": "Dharmaraya Swamy Temple Ward",
+   "lgd_ward_code": 1302844,
+   "overlap_confidence": 0.454,
+   "tier": "true-split",
+   "runner_up_243_no": 171,
+   "runner_up_share": 0.3913,
+   "outside_share": 0,
+   "split": "172:0.4541 171:0.3913 174:0.1546",
+   "shares": [
+    {
+     "datameet243_no": 172,
+     "share": 0.4541
+    },
+    {
+     "datameet243_no": 171,
+     "share": 0.3913
+    },
+    {
+     "datameet243_no": 174,
+     "share": 0.1546
+    }
+   ],
+   "samples": 207,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 162,
+   "bbmp225_name_en": "Sunkenahalli",
+   "bbmp225_name_ka": "ಸುಂಕೇನಹಳ್ಳಿ",
+   "assembly_constituency": "CHICKPET",
+   "population": 42697,
+   "datameet243_no": 173,
+   "datameet243_name": "Sunkenahalli",
+   "lgd_ward_code": 1302845,
+   "overlap_confidence": 0.644,
+   "tier": "split-primary",
+   "runner_up_243_no": 174,
+   "runner_up_share": 0.2876,
+   "outside_share": 0,
+   "split": "173:0.6438 174:0.2876 175:0.0687",
+   "shares": [
+    {
+     "datameet243_no": 173,
+     "share": 0.6438
+    },
+    {
+     "datameet243_no": 174,
+     "share": 0.2876
+    },
+    {
+     "datameet243_no": 175,
+     "share": 0.0687
+    }
+   ],
+   "samples": 233,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 163,
+   "bbmp225_name_en": "Vishveshwara Puram",
+   "bbmp225_name_ka": "ವಿಶ್ವೇಶ್ವರ ಪುರಂ",
+   "assembly_constituency": "CHICKPET",
+   "population": 39543,
+   "datameet243_no": 174,
+   "datameet243_name": "Vishveshwara Puram",
+   "lgd_ward_code": 1302846,
+   "overlap_confidence": 0.525,
+   "tier": "split-primary",
+   "runner_up_243_no": 175,
+   "runner_up_share": 0.4706,
+   "outside_share": 0,
+   "split": "174:0.5252 175:0.4706 176:0.0042",
+   "shares": [
+    {
+     "datameet243_no": 174,
+     "share": 0.5252
+    },
+    {
+     "datameet243_no": 175,
+     "share": 0.4706
+    },
+    {
+     "datameet243_no": 176,
+     "share": 0.0042
+    }
+   ],
+   "samples": 238,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 164,
+   "bbmp225_name_en": "Hombegowda Nagar",
+   "bbmp225_name_ka": "ಹೊಂಬೇಗೌಡ ನಗರ",
+   "assembly_constituency": "CHICKPET",
+   "population": 42905,
+   "datameet243_no": 177,
+   "datameet243_name": "Hombegowda Nagara",
+   "lgd_ward_code": 1302849,
+   "overlap_confidence": 0.836,
+   "tier": "clean",
+   "runner_up_243_no": 175,
+   "runner_up_share": 0.1118,
+   "outside_share": 0,
+   "split": "177:0.8355 175:0.1118 176:0.0526",
+   "shares": [
+    {
+     "datameet243_no": 177,
+     "share": 0.8355
+    },
+    {
+     "datameet243_no": 175,
+     "share": 0.1118
+    },
+    {
+     "datameet243_no": 176,
+     "share": 0.0526
+    }
+   ],
+   "samples": 152,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 165,
+   "bbmp225_name_en": "B Venkata Reddy Nagar",
+   "bbmp225_name_ka": "ಬಿ ವೆಂಕಟ ರೆಡ್ಡಿ ನಗರ",
+   "assembly_constituency": "CHICKPET",
+   "population": 36673,
+   "datameet243_no": 176,
+   "datameet243_name": "Someshwara Nagar",
+   "lgd_ward_code": 1302848,
+   "overlap_confidence": 0.959,
+   "tier": "clean",
+   "runner_up_243_no": 175,
+   "runner_up_share": 0.0412,
+   "outside_share": 0,
+   "split": "176:0.9588 175:0.0412",
+   "shares": [
+    {
+     "datameet243_no": 176,
+     "share": 0.9588
+    },
+    {
+     "datameet243_no": 175,
+     "share": 0.0412
+    }
+   ],
+   "samples": 170,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 166,
+   "bbmp225_name_en": "Shanthi Nagar",
+   "bbmp225_name_ka": "ಶಾಂತಿ ನಗರ",
+   "assembly_constituency": "SHANTI NAGAR",
+   "population": 33300,
+   "datameet243_no": 182,
+   "datameet243_name": "Shanthi Nagar",
+   "lgd_ward_code": 1302854,
+   "overlap_confidence": 0.856,
+   "tier": "clean",
+   "runner_up_243_no": 183,
+   "runner_up_share": 0.1435,
+   "outside_share": 0,
+   "split": "182:0.8565 183:0.1435",
+   "shares": [
+    {
+     "datameet243_no": 182,
+     "share": 0.8565
+    },
+    {
+     "datameet243_no": 183,
+     "share": 0.1435
+    }
+   ],
+   "samples": 209,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 167,
+   "bbmp225_name_en": "Ashok Nagar",
+   "bbmp225_name_ka": "ಅಶೋಕ ನಗರ",
+   "assembly_constituency": "SHANTI NAGAR",
+   "population": 32658,
+   "datameet243_no": 181,
+   "datameet243_name": "Shantala Nagar",
+   "lgd_ward_code": 1302853,
+   "overlap_confidence": 0.688,
+   "tier": "split-primary",
+   "runner_up_243_no": 183,
+   "runner_up_share": 0.2941,
+   "outside_share": 0,
+   "split": "181:0.6882 183:0.2941 184:0.0176",
+   "shares": [
+    {
+     "datameet243_no": 181,
+     "share": 0.6882
+    },
+    {
+     "datameet243_no": 183,
+     "share": 0.2941
+    },
+    {
+     "datameet243_no": 184,
+     "share": 0.0176
+    }
+   ],
+   "samples": 170,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 168,
+   "bbmp225_name_en": "Nilasandra",
+   "bbmp225_name_ka": "ನೀಲಸಂದ್ರ",
+   "assembly_constituency": "SHANTI NAGAR",
+   "population": 39112,
+   "datameet243_no": 183,
+   "datameet243_name": "Neelasandra",
+   "lgd_ward_code": 1302855,
+   "overlap_confidence": 0.694,
+   "tier": "split-primary",
+   "runner_up_243_no": 182,
+   "runner_up_share": 0.1944,
+   "outside_share": 0,
+   "split": "183:0.6944 182:0.1944 180:0.1111",
+   "shares": [
+    {
+     "datameet243_no": 183,
+     "share": 0.6944
+    },
+    {
+     "datameet243_no": 182,
+     "share": 0.1944
+    },
+    {
+     "datameet243_no": 180,
+     "share": 0.1111
+    }
+   ],
+   "samples": 144,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 169,
+   "bbmp225_name_en": "Vannarpet",
+   "bbmp225_name_ka": "ವನ್ನಾರ್‌ಪೇಟ್",
+   "assembly_constituency": "SHANTI NAGAR",
+   "population": 32865,
+   "datameet243_no": 181,
+   "datameet243_name": "Shantala Nagar",
+   "lgd_ward_code": 1302853,
+   "overlap_confidence": 0.662,
+   "tier": "split-primary",
+   "runner_up_243_no": 184,
+   "runner_up_share": 0.3379,
+   "outside_share": 0,
+   "split": "181:0.6621 184:0.3379",
+   "shares": [
+    {
+     "datameet243_no": 181,
+     "share": 0.6621
+    },
+    {
+     "datameet243_no": 184,
+     "share": 0.3379
+    }
+   ],
+   "samples": 145,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 170,
+   "bbmp225_name_en": "Jogupalya",
+   "bbmp225_name_ka": "ಜೋಗುಪಾಳ್ಯ",
+   "assembly_constituency": "SHANTI NAGAR",
+   "population": 41298,
+   "datameet243_no": 179,
+   "datameet243_name": "Jogupalya",
+   "lgd_ward_code": 1302851,
+   "overlap_confidence": 0.447,
+   "tier": "true-split",
+   "runner_up_243_no": 178,
+   "runner_up_share": 0.3015,
+   "outside_share": 0,
+   "split": "179:0.4472 178:0.3015 180:0.2513",
+   "shares": [
+    {
+     "datameet243_no": 179,
+     "share": 0.4472
+    },
+    {
+     "datameet243_no": 178,
+     "share": 0.3015
+    },
+    {
+     "datameet243_no": 180,
+     "share": 0.2513
+    }
+   ],
+   "samples": 199,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 171,
+   "bbmp225_name_en": "Domlur",
+   "bbmp225_name_ka": "ದೊಮ್ಮಲೂರು",
+   "assembly_constituency": "SHANTI NAGAR",
+   "population": 39954,
+   "datameet243_no": 178,
+   "datameet243_name": "Domlur",
+   "lgd_ward_code": 1302850,
+   "overlap_confidence": 0.833,
+   "tier": "clean",
+   "runner_up_243_no": 179,
+   "runner_up_share": 0.1667,
+   "outside_share": 0,
+   "split": "178:0.8333 179:0.1667",
+   "shares": [
+    {
+     "datameet243_no": 178,
+     "share": 0.8333
+    },
+    {
+     "datameet243_no": 179,
+     "share": 0.1667
+    }
+   ],
+   "samples": 204,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 172,
+   "bbmp225_name_en": "Agaram",
+   "bbmp225_name_ka": "ಅಗರಂ",
+   "assembly_constituency": "SHANTI NAGAR",
+   "population": 32844,
+   "datameet243_no": 180,
+   "datameet243_name": "Agaram",
+   "lgd_ward_code": 1302852,
+   "overlap_confidence": 0.989,
+   "tier": "clean",
+   "runner_up_243_no": 184,
+   "runner_up_share": 0.011,
+   "outside_share": 0,
+   "split": "180:0.989 184:0.011",
+   "shares": [
+    {
+     "datameet243_no": 180,
+     "share": 0.989
+    },
+    {
+     "datameet243_no": 184,
+     "share": 0.011
+    }
+   ],
+   "samples": 91,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 173,
+   "bbmp225_name_en": "Ejipura",
+   "bbmp225_name_ka": "ಈಜಿಪುರ",
+   "assembly_constituency": "B.T.M. LAYOUT",
+   "population": 40397,
+   "datameet243_no": 185,
+   "datameet243_name": "Ejipura",
+   "lgd_ward_code": 1302857,
+   "overlap_confidence": 0.838,
+   "tier": "clean",
+   "runner_up_243_no": 186,
+   "runner_up_share": 0.15,
+   "outside_share": 0,
+   "split": "185:0.8375 186:0.15 188:0.0125",
+   "shares": [
+    {
+     "datameet243_no": 185,
+     "share": 0.8375
+    },
+    {
+     "datameet243_no": 186,
+     "share": 0.15
+    },
+    {
+     "datameet243_no": 188,
+     "share": 0.0125
+    }
+   ],
+   "samples": 80,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 174,
+   "bbmp225_name_en": "Koramangala",
+   "bbmp225_name_ka": "ಕೋರಮಂಗಲ",
+   "assembly_constituency": "B.T.M. LAYOUT",
+   "population": 36254,
+   "datameet243_no": 186,
+   "datameet243_name": "Koramangala",
+   "lgd_ward_code": 1302858,
+   "overlap_confidence": 0.85,
+   "tier": "clean",
+   "runner_up_243_no": 187,
+   "runner_up_share": 0.0752,
+   "outside_share": 0,
+   "split": "186:0.8496 187:0.0752 185:0.0526 188:0.0226",
+   "shares": [
+    {
+     "datameet243_no": 186,
+     "share": 0.8496
+    },
+    {
+     "datameet243_no": 187,
+     "share": 0.0752
+    },
+    {
+     "datameet243_no": 185,
+     "share": 0.0526
+    },
+    {
+     "datameet243_no": 188,
+     "share": 0.0226
+    }
+   ],
+   "samples": 133,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 175,
+   "bbmp225_name_en": "Jakkasandra",
+   "bbmp225_name_ka": "ಜಕ್ಕಸಂದ್ರ",
+   "assembly_constituency": "B.T.M. LAYOUT",
+   "population": 41738,
+   "datameet243_no": 191,
+   "datameet243_name": "Jakkasandra",
+   "lgd_ward_code": 1302863,
+   "overlap_confidence": 0.744,
+   "tier": "clean",
+   "runner_up_243_no": 186,
+   "runner_up_share": 0.15,
+   "outside_share": 0,
+   "split": "191:0.7438 186:0.15 187:0.1062",
+   "shares": [
+    {
+     "datameet243_no": 191,
+     "share": 0.7438
+    },
+    {
+     "datameet243_no": 186,
+     "share": 0.15
+    },
+    {
+     "datameet243_no": 187,
+     "share": 0.1062
+    }
+   ],
+   "samples": 160,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 176,
+   "bbmp225_name_en": "Adugodi",
+   "bbmp225_name_ka": "ಆಡುಗೋಡಿ",
+   "assembly_constituency": "B.T.M. LAYOUT",
+   "population": 34751,
+   "datameet243_no": 187,
+   "datameet243_name": "Adugodi",
+   "lgd_ward_code": 1302859,
+   "overlap_confidence": 0.627,
+   "tier": "split-primary",
+   "runner_up_243_no": 188,
+   "runner_up_share": 0.3043,
+   "outside_share": 0,
+   "split": "187:0.6273 188:0.3043 186:0.0683",
+   "shares": [
+    {
+     "datameet243_no": 187,
+     "share": 0.6273
+    },
+    {
+     "datameet243_no": 188,
+     "share": 0.3043
+    },
+    {
+     "datameet243_no": 186,
+     "share": 0.0683
+    }
+   ],
+   "samples": 161,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 177,
+   "bbmp225_name_en": "Lakkasandra",
+   "bbmp225_name_ka": "ಲಕ್ಕಸಂದ್ರ",
+   "assembly_constituency": "B.T.M. LAYOUT",
+   "population": 30667,
+   "datameet243_no": 188,
+   "datameet243_name": "Lakkasandra",
+   "lgd_ward_code": 1302860,
+   "overlap_confidence": 0.741,
+   "tier": "clean",
+   "runner_up_243_no": 189,
+   "runner_up_share": 0.2589,
+   "outside_share": 0,
+   "split": "188:0.7411 189:0.2589",
+   "shares": [
+    {
+     "datameet243_no": 188,
+     "share": 0.7411
+    },
+    {
+     "datameet243_no": 189,
+     "share": 0.2589
+    }
+   ],
+   "samples": 112,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 178,
+   "bbmp225_name_en": "Suddagunte Palya",
+   "bbmp225_name_ka": "ಸುದ್ದಗುಂಟೆ ಪಾಳ್ಯ",
+   "assembly_constituency": "B.T.M. LAYOUT",
+   "population": 37333,
+   "datameet243_no": 189,
+   "datameet243_name": "Suddagunte Palya",
+   "lgd_ward_code": 1302861,
+   "overlap_confidence": 0.648,
+   "tier": "split-primary",
+   "runner_up_243_no": 190,
+   "runner_up_share": 0.3524,
+   "outside_share": 0,
+   "split": "189:0.6476 190:0.3524",
+   "shares": [
+    {
+     "datameet243_no": 189,
+     "share": 0.6476
+    },
+    {
+     "datameet243_no": 190,
+     "share": 0.3524
+    }
+   ],
+   "samples": 210,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 179,
+   "bbmp225_name_en": "Madivala",
+   "bbmp225_name_ka": "ಮಡಿವಾಳ",
+   "assembly_constituency": "B.T.M. LAYOUT",
+   "population": 32659,
+   "datameet243_no": 190,
+   "datameet243_name": "Madivala",
+   "lgd_ward_code": 1302862,
+   "overlap_confidence": 0.669,
+   "tier": "split-primary",
+   "runner_up_243_no": 192,
+   "runner_up_share": 0.2252,
+   "outside_share": 0,
+   "split": "190:0.6689 192:0.2252 189:0.106",
+   "shares": [
+    {
+     "datameet243_no": 190,
+     "share": 0.6689
+    },
+    {
+     "datameet243_no": 192,
+     "share": 0.2252
+    },
+    {
+     "datameet243_no": 189,
+     "share": 0.106
+    }
+   ],
+   "samples": 151,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 180,
+   "bbmp225_name_en": "Someswara Temple Ward",
+   "bbmp225_name_ka": "ಸೋಮೇಶ್ವರ ದೇವಸ್ಥಾನ ವಾರ್ಡ್",
+   "assembly_constituency": "B.T.M. LAYOUT",
+   "population": 32375,
+   "datameet243_no": 192,
+   "datameet243_name": "BTM Layout",
+   "lgd_ward_code": 1302864,
+   "overlap_confidence": 0.606,
+   "tier": "split-primary",
+   "runner_up_243_no": 193,
+   "runner_up_share": 0.3818,
+   "outside_share": 0,
+   "split": "192:0.6061 193:0.3818 189:0.0121",
+   "shares": [
+    {
+     "datameet243_no": 192,
+     "share": 0.6061
+    },
+    {
+     "datameet243_no": 193,
+     "share": 0.3818
+    },
+    {
+     "datameet243_no": 189,
+     "share": 0.0121
+    }
+   ],
+   "samples": 165,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 181,
+   "bbmp225_name_en": "BTM Layout",
+   "bbmp225_name_ka": "ಬಿಟಿಎಂ ಲೇಔಟ್",
+   "assembly_constituency": "B.T.M. LAYOUT",
+   "population": 32504,
+   "datameet243_no": 193,
+   "datameet243_name": "N S Palya",
+   "lgd_ward_code": 1302865,
+   "overlap_confidence": 0.714,
+   "tier": "clean",
+   "runner_up_243_no": 192,
+   "runner_up_share": 0.2857,
+   "outside_share": 0,
+   "split": "193:0.7143 192:0.2857",
+   "shares": [
+    {
+     "datameet243_no": 193,
+     "share": 0.7143
+    },
+    {
+     "datameet243_no": 192,
+     "share": 0.2857
+    }
+   ],
+   "samples": 175,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 182,
+   "bbmp225_name_en": "Byrasandra",
+   "bbmp225_name_ka": "ಬೈರಸಂದ್ರ",
+   "assembly_constituency": "JAYANAGAR",
+   "population": 39796,
+   "datameet243_no": 196,
+   "datameet243_name": "Byrasandra",
+   "lgd_ward_code": 1302868,
+   "overlap_confidence": 0.545,
+   "tier": "split-primary",
+   "runner_up_243_no": 195,
+   "runner_up_share": 0.4554,
+   "outside_share": 0,
+   "split": "196:0.5446 195:0.4554",
+   "shares": [
+    {
+     "datameet243_no": 196,
+     "share": 0.5446
+    },
+    {
+     "datameet243_no": 195,
+     "share": 0.4554
+    }
+   ],
+   "samples": 101,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 183,
+   "bbmp225_name_en": "Gurappanapalya",
+   "bbmp225_name_ka": "ಗುರಪ್ಪನಪಾಳ್ಯ",
+   "assembly_constituency": "JAYANAGAR",
+   "population": 40817,
+   "datameet243_no": 196,
+   "datameet243_name": "Byrasandra",
+   "lgd_ward_code": 1302868,
+   "overlap_confidence": 0.552,
+   "tier": "split-primary",
+   "runner_up_243_no": 195,
+   "runner_up_share": 0.2292,
+   "outside_share": 0,
+   "split": "196:0.5521 195:0.2292 194:0.2188",
+   "shares": [
+    {
+     "datameet243_no": 196,
+     "share": 0.5521
+    },
+    {
+     "datameet243_no": 195,
+     "share": 0.2292
+    },
+    {
+     "datameet243_no": 194,
+     "share": 0.2188
+    }
+   ],
+   "samples": 192,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 184,
+   "bbmp225_name_en": "Jayanagar East",
+   "bbmp225_name_ka": "ಜಯನಗರ ಪೂರ್ವ",
+   "assembly_constituency": "JAYANAGAR",
+   "population": 33353,
+   "datameet243_no": 194,
+   "datameet243_name": "Gurappanapalya",
+   "lgd_ward_code": 1302866,
+   "overlap_confidence": 0.608,
+   "tier": "split-primary",
+   "runner_up_243_no": 198,
+   "runner_up_share": 0.3253,
+   "outside_share": 0,
+   "split": "194:0.6084 198:0.3253 197:0.0663",
+   "shares": [
+    {
+     "datameet243_no": 194,
+     "share": 0.6084
+    },
+    {
+     "datameet243_no": 198,
+     "share": 0.3253
+    },
+    {
+     "datameet243_no": 197,
+     "share": 0.0663
+    }
+   ],
+   "samples": 166,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 185,
+   "bbmp225_name_en": "J P Nagar",
+   "bbmp225_name_ka": "ಜೆ ಪಿ ನಗರ",
+   "assembly_constituency": "JAYANAGAR",
+   "population": 33556,
+   "datameet243_no": 198,
+   "datameet243_name": "J P Nagar",
+   "lgd_ward_code": 1302870,
+   "overlap_confidence": 0.718,
+   "tier": "clean",
+   "runner_up_243_no": 197,
+   "runner_up_share": 0.1745,
+   "outside_share": 0,
+   "split": "198:0.7181 197:0.1745 199:0.1074",
+   "shares": [
+    {
+     "datameet243_no": 198,
+     "share": 0.7181
+    },
+    {
+     "datameet243_no": 197,
+     "share": 0.1745
+    },
+    {
+     "datameet243_no": 199,
+     "share": 0.1074
+    }
+   ],
+   "samples": 149,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 186,
+   "bbmp225_name_en": "Shakambari Nagar",
+   "bbmp225_name_ka": "ಶಾಕಾಂಬರಿ ನಗರ",
+   "assembly_constituency": "JAYANAGAR",
+   "population": 40716,
+   "datameet243_no": 197,
+   "datameet243_name": "Shakambari Nagar",
+   "lgd_ward_code": 1302869,
+   "overlap_confidence": 0.623,
+   "tier": "split-primary",
+   "runner_up_243_no": 196,
+   "runner_up_share": 0.377,
+   "outside_share": 0,
+   "split": "197:0.623 196:0.377",
+   "shares": [
+    {
+     "datameet243_no": 197,
+     "share": 0.623
+    },
+    {
+     "datameet243_no": 196,
+     "share": 0.377
+    }
+   ],
+   "samples": 183,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 187,
+   "bbmp225_name_en": "Sarakki",
+   "bbmp225_name_ka": "ಸಾರಕ್ಕಿ",
+   "assembly_constituency": "JAYANAGAR",
+   "population": 41590,
+   "datameet243_no": 199,
+   "datameet243_name": "Sarakki",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.751,
+   "tier": "clean",
+   "runner_up_243_no": 198,
+   "runner_up_share": 0.2486,
+   "outside_share": 0,
+   "split": "199:0.7514 198:0.2486",
+   "shares": [
+    {
+     "datameet243_no": 199,
+     "share": 0.7514
+    },
+    {
+     "datameet243_no": 198,
+     "share": 0.2486
+    }
+   ],
+   "samples": 181,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 188,
+   "bbmp225_name_en": "Yediyur",
+   "bbmp225_name_ka": "ಯಡಿಯೂರು",
+   "assembly_constituency": "PADMANABA NAGAR",
+   "population": 35798,
+   "datameet243_no": 200,
+   "datameet243_name": "Yediyur",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.514,
+   "tier": "split-primary",
+   "runner_up_243_no": 201,
+   "runner_up_share": 0.4514,
+   "outside_share": 0,
+   "split": "200:0.5143 201:0.4514 202:0.0343",
+   "shares": [
+    {
+     "datameet243_no": 200,
+     "share": 0.5143
+    },
+    {
+     "datameet243_no": 201,
+     "share": 0.4514
+    },
+    {
+     "datameet243_no": 202,
+     "share": 0.0343
+    }
+   ],
+   "samples": 175,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 189,
+   "bbmp225_name_en": "Ganesh Mandir ward",
+   "bbmp225_name_ka": "ಗಣೇಶ್ ಮಂದಿರ ವಾರ್ಡ್",
+   "assembly_constituency": "PADMANABA NAGAR",
+   "population": 41923,
+   "datameet243_no": 202,
+   "datameet243_name": "Ganesh Mandir ward",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.549,
+   "tier": "split-primary",
+   "runner_up_243_no": 206,
+   "runner_up_share": 0.2377,
+   "outside_share": 0,
+   "split": "202:0.5492 206:0.2377 207:0.123 200:0.0902",
+   "shares": [
+    {
+     "datameet243_no": 202,
+     "share": 0.5492
+    },
+    {
+     "datameet243_no": 206,
+     "share": 0.2377
+    },
+    {
+     "datameet243_no": 207,
+     "share": 0.123
+    },
+    {
+     "datameet243_no": 200,
+     "share": 0.0902
+    }
+   ],
+   "samples": 122,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 190,
+   "bbmp225_name_en": "Devagiri Temple Ward",
+   "bbmp225_name_ka": "ದೇವಗಿರಿ ದೇವಸ್ಥಾನ ವಾರ್ಡ್",
+   "assembly_constituency": "PADMANABA NAGAR",
+   "population": 34546,
+   "datameet243_no": 202,
+   "datameet243_name": "Ganesh Mandir ward",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.584,
+   "tier": "split-primary",
+   "runner_up_243_no": 201,
+   "runner_up_share": 0.3607,
+   "outside_share": 0,
+   "split": "202:0.5845 201:0.3607 203:0.0548",
+   "shares": [
+    {
+     "datameet243_no": 202,
+     "share": 0.5845
+    },
+    {
+     "datameet243_no": 201,
+     "share": 0.3607
+    },
+    {
+     "datameet243_no": 203,
+     "share": 0.0548
+    }
+   ],
+   "samples": 219,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 191,
+   "bbmp225_name_en": "Banashankari Temple ward",
+   "bbmp225_name_ka": "ಬನಶಂಕರಿ ದೇವಸ್ಥಾನ ವಾರ್ಡ್",
+   "assembly_constituency": "PADMANABA NAGAR",
+   "population": 33264,
+   "datameet243_no": 203,
+   "datameet243_name": "Banashankari Temple ward",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.719,
+   "tier": "clean",
+   "runner_up_243_no": 204,
+   "runner_up_share": 0.2806,
+   "outside_share": 0,
+   "split": "203:0.7194 204:0.2806",
+   "shares": [
+    {
+     "datameet243_no": 203,
+     "share": 0.7194
+    },
+    {
+     "datameet243_no": 204,
+     "share": 0.2806
+    }
+   ],
+   "samples": 196,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 192,
+   "bbmp225_name_en": "Kumaraswamy Layout",
+   "bbmp225_name_ka": "ಕುಮಾರಸ್ವಾಮಿ ಲೇಔಟ್",
+   "assembly_constituency": "PADMANABA NAGAR",
+   "population": 39477,
+   "datameet243_no": 204,
+   "datameet243_name": "Kumaraswamy Layout",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.468,
+   "tier": "true-split",
+   "runner_up_243_no": 205,
+   "runner_up_share": 0.4595,
+   "outside_share": 0,
+   "split": "204:0.4685 205:0.4595 206:0.0721",
+   "shares": [
+    {
+     "datameet243_no": 204,
+     "share": 0.4685
+    },
+    {
+     "datameet243_no": 205,
+     "share": 0.4595
+    },
+    {
+     "datameet243_no": 206,
+     "share": 0.0721
+    }
+   ],
+   "samples": 111,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 193,
+   "bbmp225_name_en": "Padmanabha Nagar",
+   "bbmp225_name_ka": "ಪದ್ಮನಾಭ ನಗರ",
+   "assembly_constituency": "PADMANABA NAGAR",
+   "population": 39418,
+   "datameet243_no": 206,
+   "datameet243_name": "Padmanabha Nagar",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.52,
+   "tier": "split-primary",
+   "runner_up_243_no": 205,
+   "runner_up_share": 0.3785,
+   "outside_share": 0,
+   "split": "206:0.5198 205:0.3785 204:0.0508 207:0.0508",
+   "shares": [
+    {
+     "datameet243_no": 206,
+     "share": 0.5198
+    },
+    {
+     "datameet243_no": 205,
+     "share": 0.3785
+    },
+    {
+     "datameet243_no": 204,
+     "share": 0.0508
+    },
+    {
+     "datameet243_no": 207,
+     "share": 0.0508
+    }
+   ],
+   "samples": 177,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 194,
+   "bbmp225_name_en": "Chikkalsandra",
+   "bbmp225_name_ka": "ಚಿಕ್ಕಲಸಂದ್ರ",
+   "assembly_constituency": "PADMANABA NAGAR",
+   "population": 40297,
+   "datameet243_no": 207,
+   "datameet243_name": "Kamakya Nagar",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.537,
+   "tier": "split-primary",
+   "runner_up_243_no": 208,
+   "runner_up_share": 0.4626,
+   "outside_share": 0,
+   "split": "207:0.5374 208:0.4626",
+   "shares": [
+    {
+     "datameet243_no": 207,
+     "share": 0.5374
+    },
+    {
+     "datameet243_no": 208,
+     "share": 0.4626
+    }
+   ],
+   "samples": 147,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 195,
+   "bbmp225_name_en": "Hosakerehalli",
+   "bbmp225_name_ka": "ಹೊಸಕೆರೆಹಳ್ಳಿ",
+   "assembly_constituency": "PADMANABA NAGAR",
+   "population": 41630,
+   "datameet243_no": 209,
+   "datameet243_name": "Hosakerehalli",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.725,
+   "tier": "clean",
+   "runner_up_243_no": 208,
+   "runner_up_share": 0.2745,
+   "outside_share": 0,
+   "split": "209:0.7255 208:0.2745",
+   "shares": [
+    {
+     "datameet243_no": 209,
+     "share": 0.7255
+    },
+    {
+     "datameet243_no": 208,
+     "share": 0.2745
+    }
+   ],
+   "samples": 153,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 196,
+   "bbmp225_name_en": "Gavi Gangadhareshwara",
+   "bbmp225_name_ka": "ಗವಿ ಗಂಗಾಧರೇಶ್ವರ",
+   "assembly_constituency": "BASAVANAGUDI",
+   "population": 36487,
+   "datameet243_no": 211,
+   "datameet243_name": "Hanumanth Nagar",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.665,
+   "tier": "split-primary",
+   "runner_up_243_no": 212,
+   "runner_up_share": 0.2642,
+   "outside_share": 0,
+   "split": "211:0.6651 212:0.2642 213:0.0708",
+   "shares": [
+    {
+     "datameet243_no": 211,
+     "share": 0.6651
+    },
+    {
+     "datameet243_no": 212,
+     "share": 0.2642
+    },
+    {
+     "datameet243_no": 213,
+     "share": 0.0708
+    }
+   ],
+   "samples": 212,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 197,
+   "bbmp225_name_en": "Srinagar",
+   "bbmp225_name_ka": "ಶ್ರೀನಗರ",
+   "assembly_constituency": "BASAVANAGUDI",
+   "population": 36078,
+   "datameet243_no": 213,
+   "datameet243_name": "Srinagar",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.628,
+   "tier": "split-primary",
+   "runner_up_243_no": 214,
+   "runner_up_share": 0.3718,
+   "outside_share": 0,
+   "split": "213:0.6282 214:0.3718",
+   "shares": [
+    {
+     "datameet243_no": 213,
+     "share": 0.6282
+    },
+    {
+     "datameet243_no": 214,
+     "share": 0.3718
+    }
+   ],
+   "samples": 156,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 198,
+   "bbmp225_name_en": "Dodda Ganapati",
+   "bbmp225_name_ka": "ದೊಡ್ಡ ಗಣಪತಿ",
+   "assembly_constituency": "BASAVANAGUDI",
+   "population": 42285,
+   "datameet243_no": 210,
+   "datameet243_name": "Basavanagudi",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.411,
+   "tier": "true-split",
+   "runner_up_243_no": 211,
+   "runner_up_share": 0.3237,
+   "outside_share": 0,
+   "split": "210:0.4106 211:0.3237 212:0.2126 213:0.0531",
+   "shares": [
+    {
+     "datameet243_no": 210,
+     "share": 0.4106
+    },
+    {
+     "datameet243_no": 211,
+     "share": 0.3237
+    },
+    {
+     "datameet243_no": 212,
+     "share": 0.2126
+    },
+    {
+     "datameet243_no": 213,
+     "share": 0.0531
+    }
+   ],
+   "samples": 207,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 199,
+   "bbmp225_name_en": "Vidyapeeta ward",
+   "bbmp225_name_ka": "ವಿದ್ಯಾಪೀಠ ವಾರ್ಡ್",
+   "assembly_constituency": "BASAVANAGUDI",
+   "population": 42631,
+   "datameet243_no": 210,
+   "datameet243_name": "Basavanagudi",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.491,
+   "tier": "true-split",
+   "runner_up_243_no": 216,
+   "runner_up_share": 0.3295,
+   "outside_share": 0,
+   "split": "210:0.4913 216:0.3295 211:0.0867 212:0.0809 215:0.0116",
+   "shares": [
+    {
+     "datameet243_no": 210,
+     "share": 0.4913
+    },
+    {
+     "datameet243_no": 216,
+     "share": 0.3295
+    },
+    {
+     "datameet243_no": 211,
+     "share": 0.0867
+    },
+    {
+     "datameet243_no": 212,
+     "share": 0.0809
+    },
+    {
+     "datameet243_no": 215,
+     "share": 0.0116
+    }
+   ],
+   "samples": 173,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 200,
+   "bbmp225_name_en": "Swamy Vivekananda",
+   "bbmp225_name_ka": "ಸ್ವಾಮಿ ವಿವೇಕಾನಂದ",
+   "assembly_constituency": "BASAVANAGUDI",
+   "population": 42797,
+   "datameet243_no": 214,
+   "datameet243_name": "Girinagar",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.622,
+   "tier": "split-primary",
+   "runner_up_243_no": 213,
+   "runner_up_share": 0.2556,
+   "outside_share": 0,
+   "split": "214:0.6222 213:0.2556 215:0.0722 212:0.05",
+   "shares": [
+    {
+     "datameet243_no": 214,
+     "share": 0.6222
+    },
+    {
+     "datameet243_no": 213,
+     "share": 0.2556
+    },
+    {
+     "datameet243_no": 215,
+     "share": 0.0722
+    },
+    {
+     "datameet243_no": 212,
+     "share": 0.05
+    }
+   ],
+   "samples": 180,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 201,
+   "bbmp225_name_en": "Katriguppe",
+   "bbmp225_name_ka": "ಕತ್ರಿಗುಪ್ಪೆ",
+   "assembly_constituency": "BASAVANAGUDI",
+   "population": 42973,
+   "datameet243_no": 215,
+   "datameet243_name": "Katriguppe",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.47,
+   "tier": "true-split",
+   "runner_up_243_no": 216,
+   "runner_up_share": 0.3179,
+   "outside_share": 0,
+   "split": "215:0.4702 216:0.3179 214:0.2119",
+   "shares": [
+    {
+     "datameet243_no": 215,
+     "share": 0.4702
+    },
+    {
+     "datameet243_no": 216,
+     "share": 0.3179
+    },
+    {
+     "datameet243_no": 214,
+     "share": 0.2119
+    }
+   ],
+   "samples": 151,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 202,
+   "bbmp225_name_en": "Uttarahalli",
+   "bbmp225_name_ka": "ಉತ್ತರಹಳ್ಳಿ",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 39370,
+   "datameet243_no": 217,
+   "datameet243_name": "Uttarahalli",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.595,
+   "tier": "split-primary",
+   "runner_up_243_no": 218,
+   "runner_up_share": 0.2474,
+   "outside_share": 0.0474,
+   "split": "217:0.5947 218:0.2474 219:0.1105",
+   "shares": [
+    {
+     "datameet243_no": 217,
+     "share": 0.5947
+    },
+    {
+     "datameet243_no": 218,
+     "share": 0.2474
+    },
+    {
+     "datameet243_no": 219,
+     "share": 0.1105
+    }
+   ],
+   "samples": 190,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 203,
+   "bbmp225_name_en": "Subrahmanyapura",
+   "bbmp225_name_ka": "ಸುಬ್ರಹ್ಮಣ್ಯಪುರ",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 37014,
+   "datameet243_no": 218,
+   "datameet243_name": "Subramanyapura",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.844,
+   "tier": "clean",
+   "runner_up_243_no": 219,
+   "runner_up_share": 0.1066,
+   "outside_share": 0,
+   "split": "218:0.8443 219:0.1066 217:0.0246 221:0.0246",
+   "shares": [
+    {
+     "datameet243_no": 218,
+     "share": 0.8443
+    },
+    {
+     "datameet243_no": 219,
+     "share": 0.1066
+    },
+    {
+     "datameet243_no": 217,
+     "share": 0.0246
+    },
+    {
+     "datameet243_no": 221,
+     "share": 0.0246
+    }
+   ],
+   "samples": 122,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 204,
+   "bbmp225_name_en": "Vasanthpura",
+   "bbmp225_name_ka": "ವಸಂತಪುರ",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 35615,
+   "datameet243_no": 219,
+   "datameet243_name": "Vasanthpura",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.639,
+   "tier": "split-primary",
+   "runner_up_243_no": 221,
+   "runner_up_share": 0.1907,
+   "outside_share": 0,
+   "split": "219:0.6392 221:0.1907 218:0.1701",
+   "shares": [
+    {
+     "datameet243_no": 219,
+     "share": 0.6392
+    },
+    {
+     "datameet243_no": 221,
+     "share": 0.1907
+    },
+    {
+     "datameet243_no": 218,
+     "share": 0.1701
+    }
+   ],
+   "samples": 194,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 205,
+   "bbmp225_name_en": "Yelchenahalli",
+   "bbmp225_name_ka": "ಯಲಚೇನಹಳ್ಳಿ",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 42186,
+   "datameet243_no": 220,
+   "datameet243_name": "Yelachenahalli",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.876,
+   "tier": "clean",
+   "runner_up_243_no": 221,
+   "runner_up_share": 0.1243,
+   "outside_share": 0,
+   "split": "220:0.8757 221:0.1243",
+   "shares": [
+    {
+     "datameet243_no": 220,
+     "share": 0.8757
+    },
+    {
+     "datameet243_no": 221,
+     "share": 0.1243
+    }
+   ],
+   "samples": 169,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 206,
+   "bbmp225_name_en": "Konanakunte",
+   "bbmp225_name_ka": "ಕೋಣನಕುಂಟೆ",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 41028,
+   "datameet243_no": 221,
+   "datameet243_name": "Konanakunte",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.83,
+   "tier": "clean",
+   "runner_up_243_no": 222,
+   "runner_up_share": 0.1135,
+   "outside_share": 0,
+   "split": "221:0.8298 222:0.1135 224:0.0355 219:0.0213",
+   "shares": [
+    {
+     "datameet243_no": 221,
+     "share": 0.8298
+    },
+    {
+     "datameet243_no": 222,
+     "share": 0.1135
+    },
+    {
+     "datameet243_no": 224,
+     "share": 0.0355
+    },
+    {
+     "datameet243_no": 219,
+     "share": 0.0213
+    }
+   ],
+   "samples": 141,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 207,
+   "bbmp225_name_en": "RBI layout",
+   "bbmp225_name_ka": "RBI ಲೇಔಟ್",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 42074,
+   "datameet243_no": 223,
+   "datameet243_name": "Chunchaghatta",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.581,
+   "tier": "split-primary",
+   "runner_up_243_no": 222,
+   "runner_up_share": 0.4194,
+   "outside_share": 0,
+   "split": "223:0.5806 222:0.4194",
+   "shares": [
+    {
+     "datameet243_no": 223,
+     "share": 0.5806
+    },
+    {
+     "datameet243_no": 222,
+     "share": 0.4194
+    }
+   ],
+   "samples": 155,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 208,
+   "bbmp225_name_en": "Anjanapura",
+   "bbmp225_name_ka": "ಅಂಜನಾಪುರ",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 40478,
+   "datameet243_no": 224,
+   "datameet243_name": "Anjanapura",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.864,
+   "tier": "clean",
+   "runner_up_243_no": 221,
+   "runner_up_share": 0.0761,
+   "outside_share": 0,
+   "split": "224:0.8641 221:0.0761 223:0.0543 225:0.0054",
+   "shares": [
+    {
+     "datameet243_no": 224,
+     "share": 0.8641
+    },
+    {
+     "datameet243_no": 221,
+     "share": 0.0761
+    },
+    {
+     "datameet243_no": 223,
+     "share": 0.0543
+    },
+    {
+     "datameet243_no": 225,
+     "share": 0.0054
+    }
+   ],
+   "samples": 184,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 209,
+   "bbmp225_name_en": "Gottigere",
+   "bbmp225_name_ka": "ಗೊಟ್ಟಿಗೆರೆ",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 41688,
+   "datameet243_no": 225,
+   "datameet243_name": "Gottigere",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.652,
+   "tier": "split-primary",
+   "runner_up_243_no": 224,
+   "runner_up_share": 0.2593,
+   "outside_share": 0,
+   "split": "225:0.6519 224:0.2593 223:0.0667 226:0.0222",
+   "shares": [
+    {
+     "datameet243_no": 225,
+     "share": 0.6519
+    },
+    {
+     "datameet243_no": 224,
+     "share": 0.2593
+    },
+    {
+     "datameet243_no": 223,
+     "share": 0.0667
+    },
+    {
+     "datameet243_no": 226,
+     "share": 0.0222
+    }
+   ],
+   "samples": 135,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 210,
+   "bbmp225_name_en": "Kalena Agrahara",
+   "bbmp225_name_ka": "ಕಾಳೇನ ಅಗ್ರಹಾರ",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 38932,
+   "datameet243_no": 226,
+   "datameet243_name": "Kalena Agrahara",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.96,
+   "tier": "clean",
+   "runner_up_243_no": 225,
+   "runner_up_share": 0.0404,
+   "outside_share": 0,
+   "split": "226:0.9596 225:0.0404",
+   "shares": [
+    {
+     "datameet243_no": 226,
+     "share": 0.9596
+    },
+    {
+     "datameet243_no": 225,
+     "share": 0.0404
+    }
+   ],
+   "samples": 99,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 211,
+   "bbmp225_name_en": "Begur",
+   "bbmp225_name_ka": "ಬೇಗೂರು",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 35004,
+   "datameet243_no": 227,
+   "datameet243_name": "Begur",
+   "lgd_ward_code": null,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "227:1",
+   "shares": [
+    {
+     "datameet243_no": 227,
+     "share": 1
+    }
+   ],
+   "samples": 111,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 212,
+   "bbmp225_name_en": "Naganathapura",
+   "bbmp225_name_ka": "ನಾಗನಾಥಪುರ",
+   "assembly_constituency": "BANGALORE SOUTH",
+   "population": 34452,
+   "datameet243_no": 228,
+   "datameet243_name": "Naganathapura",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.923,
+   "tier": "clean",
+   "runner_up_243_no": 227,
+   "runner_up_share": 0.0773,
+   "outside_share": 0,
+   "split": "228:0.9227 227:0.0773",
+   "shares": [
+    {
+     "datameet243_no": 228,
+     "share": 0.9227
+    },
+    {
+     "datameet243_no": 227,
+     "share": 0.0773
+    }
+   ],
+   "samples": 194,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 213,
+   "bbmp225_name_en": "Jaraganahalli",
+   "bbmp225_name_ka": "ಜರಗನಹಳ್ಳಿ",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 37963,
+   "datameet243_no": 242,
+   "datameet243_name": "Jaraganahalli",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.589,
+   "tier": "split-primary",
+   "runner_up_243_no": 241,
+   "runner_up_share": 0.4106,
+   "outside_share": 0,
+   "split": "242:0.5894 241:0.4106",
+   "shares": [
+    {
+     "datameet243_no": 242,
+     "share": 0.5894
+    },
+    {
+     "datameet243_no": 241,
+     "share": 0.4106
+    }
+   ],
+   "samples": 151,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 214,
+   "bbmp225_name_en": "Puttenahalli",
+   "bbmp225_name_ka": "ಪುಟ್ಟೇನಹಳ್ಳಿ",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 42149,
+   "datameet243_no": 241,
+   "datameet243_name": "Puttenahalli - Sarakki Lake",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.461,
+   "tier": "true-split",
+   "runner_up_243_no": 240,
+   "runner_up_share": 0.4466,
+   "outside_share": 0,
+   "split": "241:0.4612 240:0.4466 238:0.0922",
+   "shares": [
+    {
+     "datameet243_no": 241,
+     "share": 0.4612
+    },
+    {
+     "datameet243_no": 240,
+     "share": 0.4466
+    },
+    {
+     "datameet243_no": 238,
+     "share": 0.0922
+    }
+   ],
+   "samples": 206,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 215,
+   "bbmp225_name_en": "Bilekhalli",
+   "bbmp225_name_ka": "ಬಿಳೇಕಹಳ್ಳಿ",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 42179,
+   "datameet243_no": 240,
+   "datameet243_name": "Vinayakanagar",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.505,
+   "tier": "split-primary",
+   "runner_up_243_no": 237,
+   "runner_up_share": 0.3458,
+   "outside_share": 0,
+   "split": "240:0.5047 237:0.3458 238:0.1495",
+   "shares": [
+    {
+     "datameet243_no": 240,
+     "share": 0.5047
+    },
+    {
+     "datameet243_no": 237,
+     "share": 0.3458
+    },
+    {
+     "datameet243_no": 238,
+     "share": 0.1495
+    }
+   ],
+   "samples": 214,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 216,
+   "bbmp225_name_en": "Hulimavu",
+   "bbmp225_name_ka": "ಹುಳಿಮಾವು",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 42690,
+   "datameet243_no": 239,
+   "datameet243_name": "Hulimavu",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.831,
+   "tier": "clean",
+   "runner_up_243_no": 238,
+   "runner_up_share": 0.1692,
+   "outside_share": 0,
+   "split": "239:0.8308 238:0.1692",
+   "shares": [
+    {
+     "datameet243_no": 239,
+     "share": 0.8308
+    },
+    {
+     "datameet243_no": 238,
+     "share": 0.1692
+    }
+   ],
+   "samples": 195,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 217,
+   "bbmp225_name_en": "Kodichikkanahalli",
+   "bbmp225_name_ka": "ಕೋಡಿಚಿಕ್ಕನಹಳ್ಳಿ",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 37559,
+   "datameet243_no": 237,
+   "datameet243_name": "Bilekhalli",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.56,
+   "tier": "split-primary",
+   "runner_up_243_no": 238,
+   "runner_up_share": 0.1988,
+   "outside_share": 0,
+   "split": "237:0.5602 238:0.1988 236:0.1867 235:0.0542",
+   "shares": [
+    {
+     "datameet243_no": 237,
+     "share": 0.5602
+    },
+    {
+     "datameet243_no": 238,
+     "share": 0.1988
+    },
+    {
+     "datameet243_no": 236,
+     "share": 0.1867
+    },
+    {
+     "datameet243_no": 235,
+     "share": 0.0542
+    }
+   ],
+   "samples": 166,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 218,
+   "bbmp225_name_en": "Bommanahalli",
+   "bbmp225_name_ka": "ಬೊಮ್ಮನಹಳ್ಳಿ",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 35206,
+   "datameet243_no": 235,
+   "datameet243_name": "Bommanahalli",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.549,
+   "tier": "split-primary",
+   "runner_up_243_no": 233,
+   "runner_up_share": 0.406,
+   "outside_share": 0,
+   "split": "235:0.5489 233:0.406 234:0.0451",
+   "shares": [
+    {
+     "datameet243_no": 235,
+     "share": 0.5489
+    },
+    {
+     "datameet243_no": 233,
+     "share": 0.406
+    },
+    {
+     "datameet243_no": 234,
+     "share": 0.0451
+    }
+   ],
+   "samples": 133,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 219,
+   "bbmp225_name_en": "Hongasandra",
+   "bbmp225_name_ka": "ಹೊಂಗಸಂದ್ರ",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 38184,
+   "datameet243_no": 234,
+   "datameet243_name": "Hongasandra",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.542,
+   "tier": "split-primary",
+   "runner_up_243_no": 233,
+   "runner_up_share": 0.3105,
+   "outside_share": 0,
+   "split": "234:0.5421 233:0.3105 235:0.0895 236:0.0579",
+   "shares": [
+    {
+     "datameet243_no": 234,
+     "share": 0.5421
+    },
+    {
+     "datameet243_no": 233,
+     "share": 0.3105
+    },
+    {
+     "datameet243_no": 235,
+     "share": 0.0895
+    },
+    {
+     "datameet243_no": 236,
+     "share": 0.0579
+    }
+   ],
+   "samples": 190,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 220,
+   "bbmp225_name_en": "Gharebhavipalya",
+   "bbmp225_name_ka": "ಗಾರೆಭಾವಿಪಾಳ್ಯ",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 40896,
+   "datameet243_no": 236,
+   "datameet243_name": "Devarachikkanahalli",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.616,
+   "tier": "split-primary",
+   "runner_up_243_no": 233,
+   "runner_up_share": 0.344,
+   "outside_share": 0,
+   "split": "236:0.616 233:0.344 234:0.04",
+   "shares": [
+    {
+     "datameet243_no": 236,
+     "share": 0.616
+    },
+    {
+     "datameet243_no": 233,
+     "share": 0.344
+    },
+    {
+     "datameet243_no": 234,
+     "share": 0.04
+    }
+   ],
+   "samples": 125,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 221,
+   "bbmp225_name_en": "HSR Layout",
+   "bbmp225_name_ka": "HSR ಲೇಔಟ್",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 38763,
+   "datameet243_no": 230,
+   "datameet243_name": "Agara",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.718,
+   "tier": "clean",
+   "runner_up_243_no": 232,
+   "runner_up_share": 0.2818,
+   "outside_share": 0,
+   "split": "230:0.7182 232:0.2818",
+   "shares": [
+    {
+     "datameet243_no": 230,
+     "share": 0.7182
+    },
+    {
+     "datameet243_no": 232,
+     "share": 0.2818
+    }
+   ],
+   "samples": 181,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 222,
+   "bbmp225_name_en": "Ibluru",
+   "bbmp225_name_ka": "ಇಬ್ಲೂರು",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 33851,
+   "datameet243_no": 229,
+   "datameet243_name": "Ibluru",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.837,
+   "tier": "clean",
+   "runner_up_243_no": 230,
+   "runner_up_share": 0.1633,
+   "outside_share": 0,
+   "split": "229:0.8367 230:0.1633",
+   "shares": [
+    {
+     "datameet243_no": 229,
+     "share": 0.8367
+    },
+    {
+     "datameet243_no": 230,
+     "share": 0.1633
+    }
+   ],
+   "samples": 98,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 223,
+   "bbmp225_name_en": "Mangammanapalya",
+   "bbmp225_name_ka": "ಮಂಗಮ್ಮನಪಾಳ್ಯ",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 40149,
+   "datameet243_no": 231,
+   "datameet243_name": "Mangammanapalya",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.647,
+   "tier": "split-primary",
+   "runner_up_243_no": 232,
+   "runner_up_share": 0.3043,
+   "outside_share": 0,
+   "split": "231:0.6467 232:0.3043 229:0.038 230:0.0109",
+   "shares": [
+    {
+     "datameet243_no": 231,
+     "share": 0.6467
+    },
+    {
+     "datameet243_no": 232,
+     "share": 0.3043
+    },
+    {
+     "datameet243_no": 229,
+     "share": 0.038
+    },
+    {
+     "datameet243_no": 230,
+     "share": 0.0109
+    }
+   ],
+   "samples": 184,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 224,
+   "bbmp225_name_en": "Hosa Road",
+   "bbmp225_name_ka": "ಹೊಸ ರಸ್ತೆ",
+   "assembly_constituency": "BOMMANAHALLI",
+   "population": 33979,
+   "datameet243_no": 232,
+   "datameet243_name": "HSR - Singasandra",
+   "lgd_ward_code": null,
+   "overlap_confidence": 0.506,
+   "tier": "split-primary",
+   "runner_up_243_no": 233,
+   "runner_up_share": 0.4405,
+   "outside_share": 0,
+   "split": "232:0.506 233:0.4405 229:0.0536",
+   "shares": [
+    {
+     "datameet243_no": 232,
+     "share": 0.506
+    },
+    {
+     "datameet243_no": 233,
+     "share": 0.4405
+    },
+    {
+     "datameet243_no": 229,
+     "share": 0.0536
+    }
+   ],
+   "samples": 168,
+   "method": "spatial-overlap"
+  },
+  {
+   "bbmp225_no": 225,
+   "bbmp225_name_en": "Kudlu",
+   "bbmp225_name_ka": "ಕೂಡ್ಲು",
+   "assembly_constituency": "ANEKAL (SC)",
+   "population": 16757,
+   "datameet243_no": 243,
+   "datameet243_name": "Kudlu",
+   "lgd_ward_code": null,
+   "overlap_confidence": 1,
+   "tier": "clean",
+   "runner_up_243_no": null,
+   "runner_up_share": 0,
+   "outside_share": 0,
+   "split": "243:1",
+   "shares": [
+    {
+     "datameet243_no": 243,
+     "share": 1
+    }
+   ],
+   "samples": 207,
+   "method": "spatial-overlap"
+  }
+ ]
+}
