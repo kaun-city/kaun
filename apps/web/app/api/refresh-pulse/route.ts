@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js"
+import { dedupKey } from "@/lib/pulse-dedup"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
@@ -81,10 +82,9 @@ function cleanHeadline(raw: string): string {
     .trim()
 }
 
-// Fuzzy dedup: normalize headline to a comparable key
-function dedupeKey(headline: string): string {
-  return headline.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim().substring(0, 60)
-}
+// dedup_key normalization is the shared single source of truth
+// (apps/web/lib/pulse-dedup.mjs) — identical to what the migration
+// backfilled and what UNIQUE (dedup_key, city_id) enforces.
 
 // ─── Handler ────────────────────────────────────────────────────
 export async function GET(req: Request) {
@@ -101,12 +101,16 @@ export async function GET(req: Request) {
   let skipped = 0
   const errors: string[] = []
 
-  // Load existing headlines for fuzzy dedup
+  // Seed the in-run dedup set from existing rows. The DB UNIQUE
+  // (dedup_key, city_id) is the real guarantee; this just avoids
+  // pointless upsert round-trips. dedup_key is preferred; fall back to
+  // recomputing for any row left null during the deploy gap.
   const { data: existing } = await supabase
     .from("city_pulse_facts")
-    .select("headline")
-    .eq("is_active", true)
-  const seenKeys = new Set((existing ?? []).map(f => dedupeKey(f.headline)))
+    .select("headline,dedup_key")
+  const seenKeys = new Set(
+    (existing ?? []).map(f => f.dedup_key ?? dedupKey(f.headline)),
+  )
 
   for (const feed of RSS_FEEDS) {
     try {
@@ -128,8 +132,8 @@ export async function GET(req: Request) {
         // Skip junk: too short or just an account name
         if (headline.length < 30) { skipped++; continue }
 
-        // Fuzzy dedup: skip if a similar headline already exists
-        const key = dedupeKey(headline)
+        // Skip if a syndicated variant of this story already exists
+        const key = dedupKey(headline)
         if (seenKeys.has(key)) { skipped++; continue }
         seenKeys.add(key)
 
@@ -140,6 +144,7 @@ export async function GET(req: Request) {
           category,
           severity,
           headline,
+          dedup_key: key,
           detail: item.description?.substring(0, 500) || null,
           source_name: feed.name,
           source_url: item.link || null,
@@ -147,7 +152,7 @@ export async function GET(req: Request) {
           is_active: true,
           is_editorial: false,
           expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        }, { onConflict: "headline,city_id", ignoreDuplicates: true })
+        }, { onConflict: "dedup_key,city_id", ignoreDuplicates: true })
 
         if (!error) totalNew++
       }
