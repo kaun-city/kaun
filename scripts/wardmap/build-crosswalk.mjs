@@ -202,6 +202,37 @@ async function main() {
       rows,
     }, null, 1)
 
+  // Overlap-inclusive pairs: one row per (225 ward → 243 ward) where the
+  // overlap share ≥ PAIR_MIN_SHARE, PLUS the primary (max-overlap) pair
+  // always, so nothing regresses vs. winner-take-all. This is what
+  // populates the ~107 otherwise-empty 243 wards: a work order surfaces in
+  // every 243 ward its 225 ward materially overlaps. is_primary marks the
+  // max-overlap target (== datameet243_no / bbmp_ward_no).
+  const PAIR_MIN_SHARE = 0.10
+  const pairs = []
+  for (const r of rows) {
+    const prim = r.datameet243_no
+    for (const s of r.shares) {
+      if (s.share >= PAIR_MIN_SHARE || s.datameet243_no === prim) {
+        pairs.push({
+          bbmp225_no: r.bbmp225_no,
+          datameet243_no: s.datameet243_no,
+          share: s.share,
+          is_primary: s.datameet243_no === prim,
+        })
+      }
+    }
+  }
+  const pairHdr = ["bbmp225_no", "datameet243_no", "share", "is_primary"]
+  const pairsCsv = csv([pairHdr, ...pairs.map(p => pairHdr.map(h => p[h]))])
+  const pairsJson = JSON.stringify({
+    crosswalk: "ward_crosswalk_pairs (overlap-inclusive)",
+    version: CROSSWALK_VERSION,
+    min_share: PAIR_MIN_SHARE,
+    note: "One row per 225→243 overlap ≥ min_share, plus the primary pair always. is_primary = max-overlap (== bbmp_ward_no).",
+    pairs,
+  }, null, 1)
+
   // Canonical artifact + the public download copies the wiki links to are
   // written by THIS builder in one run, so a correction can never leave the
   // published files stale. Do not hand-edit the wiki copies.
@@ -209,7 +240,11 @@ async function main() {
     mkdirSync(dir, { recursive: true })
     writeFileSync(resolve(dir, "bbmp2023_225_to_datameet_243.csv"), csvText)
     writeFileSync(resolve(dir, "bbmp2023_225_to_datameet_243.json"), jsonText)
+    writeFileSync(resolve(dir, "ward_crosswalk_pairs.csv"), pairsCsv)
+    writeFileSync(resolve(dir, "ward_crosswalk_pairs.json"), pairsJson)
   }
+  const distinct243 = new Set(pairs.map(p => p.datameet243_no)).size
+  console.log(`     pairs: ${pairs.length} (225→243, ≥${PAIR_MIN_SHARE} ∪ primary) covering ${distinct243} distinct 243 wards`)
 
   console.log("4/4  writing METHODOLOGY.md…")
   writeFileSync(resolve(DATA, "METHODOLOGY.md"), `# Kaun Ward Crosswalk — BBMP-Final-2023 (225) ↔ DataMeet (243)
