@@ -4,7 +4,7 @@
     "_note": "Sourced from the Election Commission of India 2024 AP Legislative Assembly results (declared 4 June 2024) and MyNeta candidate affidavits. Phone numbers and emails are pending — they should be added from the AP Legislative Assembly directory (https://aplegislature.org/) once accessible. Add new MLAs here as additional AP cities (Vijayawada, Tirupati, Guntur, Kakinada) are onboarded.",
     "source": "Election Commission of India 2024 AP Vidhan Sabha results; MyNeta affidavits",
     "license": "Public election data",
-    "last_updated": "2024-06-04"
+    "last_updated": "2026-05-17"
   },
   "mlas": [
     {
@@ -30,7 +30,7 @@
       "ac_no": 14,
       "constituency": "Visakhapatnam East",
       "name": "Velagapudi Ramakrishna Babu",
-      "party": "BJP",
+      "party": "TDP",
       "elected_since": "2024-06-04",
       "myneta_url": "https://myneta.info/AndhraPradesh2024/index.php?action=summary&subAction=candidates_analyzed&sort=candidate"
     },
