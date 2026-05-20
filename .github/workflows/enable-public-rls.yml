@@ -1,0 +1,41 @@
+name: Enable Public Schema RLS
+
+# One-off. Manual only. Defaults to dry-run (read-only). The migration is
+# idempotent — every policy creation is guarded by a pg_policies check, and
+# every ENABLE RLS is guarded by pg_class.relrowsecurity — so re-runs are
+# no-ops. Closes Supabase Security Advisor `rls_disabled_in_public` across
+# the public schema in a single transaction.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run (preview, prints classification + SQL) or apply (writes per-bucket policies)"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable public-schema RLS (${{ github.event.inputs.mode }})
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
+            node scripts/migrate-enable-rls-public-schema.mjs --apply
+          else
+            node scripts/migrate-enable-rls-public-schema.mjs
+          fi
