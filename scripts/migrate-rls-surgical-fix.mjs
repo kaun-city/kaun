@@ -140,12 +140,11 @@ async function apply() {
   console.log("=== APPLY ===")
   await dbq(SQL)
   console.log("SQL applied OK.")
+  // pg_policies.qual is already text in modern Postgres; no pg_get_expr needed
+  // (the previous version of this query errored AFTER the COMMIT — cosmetic only).
   const v = await dbq(`
-    SELECT tablename, policyname, cmd, roles,
-           pg_get_expr(qual, polrelid) AS using_expr
+    SELECT tablename, policyname, cmd, roles, qual AS using_expr, with_check
       FROM pg_policies
-      JOIN pg_policy p ON p.polname = policyname
-      JOIN pg_class c ON c.oid = p.polrelid
      WHERE schemaname='public'
        AND tablename IN ('ward_reports','ward_stories','ward_crosswalk')
      ORDER BY tablename, policyname;`)
