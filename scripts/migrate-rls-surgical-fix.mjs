@@ -9,9 +9,16 @@
  *     status='approved'. The intent is "anon reads APPROVED only", not blanket.
  *   - ward_stories: anon SELECT via "public read" — but NO client/anon reads
  *     exist (only the server-side /api/ward-story route, service role).
- *   - ward_crosswalk + ward_infra_stats: no explicit named SELECT policy.
+ *   - ward_crosswalk: no explicit named SELECT policy.
+ *   - ward_infra_stats was originally in the same bucket BUT it is a
+ *     MATERIALIZED VIEW (caught when the first apply attempt failed: ERROR
+ *     42809 "ALTER ENABLE ROW SECURITY ... not supported for materialized
+ *     views"). The whole transaction rolled back cleanly — no partial
+ *     state. RLS does not apply to matviews; access there is governed by
+ *     GRANTs alone. Dropped from this migration; documented as a separate
+ *     follow-up (consider REVOKE-from-anon or a security-invoker view).
  *
- * THIS FIX (idempotent, REVERSIBLE, surgical — 5 statements):
+ * THIS FIX (idempotent, REVERSIBLE, surgical — 4 statements, 3 changes):
  *   1. DROP "public read" on ward_reports;
  *   2. CREATE ward_reports_anon_read_approved (USING status='approved');
  *      → preserves the home-page approved-report reveal, OG image,
@@ -19,7 +26,6 @@
  *   3. DROP "public read" on ward_stories;
  *      → blocks anon SELECT entirely; server-side route (service role) intact.
  *   4. CREATE ward_crosswalk_anon_read (USING true).
- *   5. CREATE ward_infra_stats_anon_read (USING true).
  *
  * Revert (per statement, manual; restoring exact prior state):
  *   CREATE POLICY "public read" ON ward_reports
@@ -28,7 +34,6 @@
  *   CREATE POLICY "public read" ON ward_stories
  *     FOR SELECT TO public USING (true);
  *   DROP   POLICY ward_crosswalk_anon_read    ON ward_crosswalk;
- *   DROP   POLICY ward_infra_stats_anon_read  ON ward_infra_stats;
  *
  * DDL needs SUPABASE_MANAGEMENT_TOKEN (CI). Dry-run otherwise.
  *
@@ -104,21 +109,6 @@ BEGIN
   END IF;
 END $$;
 
--- (4) ward_infra_stats: same — explicit named SELECT policy.
-DO $$
-BEGIN
-  IF NOT (SELECT relrowsecurity FROM pg_class
-            WHERE oid='public.ward_infra_stats'::regclass) THEN
-    EXECUTE 'ALTER TABLE public.ward_infra_stats ENABLE ROW LEVEL SECURITY';
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies
-                  WHERE schemaname='public' AND tablename='ward_infra_stats'
-                    AND policyname='ward_infra_stats_anon_read') THEN
-    EXECUTE 'CREATE POLICY ward_infra_stats_anon_read
-               ON public.ward_infra_stats
-               FOR SELECT TO anon, authenticated USING (true)';
-  END IF;
-END $$;
 
 COMMIT;
 NOTIFY pgrst, 'reload schema';
@@ -136,11 +126,11 @@ async function dbq(q) {
 
 async function dryRun() {
   console.log("=== DRY RUN (read-only) ===")
-  console.log("4 surgical changes (5 statements total, all idempotent):")
+  console.log("3 surgical changes (4 statements total, all idempotent):")
   console.log("  1. ward_reports        : DROP \"public read\" + ADD ward_reports_anon_read_approved (USING status='approved')")
   console.log("  2. ward_stories        : DROP \"public read\" (no client reads to preserve)")
   console.log("  3. ward_crosswalk      : ADD ward_crosswalk_anon_read (USING true)")
-  console.log("  4. ward_infra_stats    : ADD ward_infra_stats_anon_read (USING true)")
+  console.log("  (ward_infra_stats is a materialized view; RLS N/A. Deferred.)")
   console.log("\n--- SQL (full, ~" + SQL.length + " chars) ---\n" + SQL)
   console.log("\nRun with --apply (CI; needs SUPABASE_MANAGEMENT_TOKEN) to write.")
 }
@@ -157,7 +147,7 @@ async function apply() {
       JOIN pg_policy p ON p.polname = policyname
       JOIN pg_class c ON c.oid = p.polrelid
      WHERE schemaname='public'
-       AND tablename IN ('ward_reports','ward_stories','ward_crosswalk','ward_infra_stats')
+       AND tablename IN ('ward_reports','ward_stories','ward_crosswalk')
      ORDER BY tablename, policyname;`)
   console.log("post-apply policies on affected tables:\n" + JSON.stringify(v, null, 2))
 }
