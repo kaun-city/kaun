@@ -48,6 +48,7 @@
  * script prints a READ-ONLY dry-run preview + the SQL it would run.
  *
  *   node scripts/migrate-enable-rls-public-schema.mjs            # dry-run
+ *   node scripts/migrate-enable-rls-public-schema.mjs --inspect  # READ-ONLY catalog dump (mgmt token)
  *   node scripts/migrate-enable-rls-public-schema.mjs --apply    # write (mgmt token)
  */
 import { readFileSync } from "fs"
@@ -55,7 +56,8 @@ import { fileURLToPath } from "url"
 import { dirname, resolve } from "path"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const APPLY = process.argv.includes("--apply")
+const APPLY   = process.argv.includes("--apply")
+const INSPECT = process.argv.includes("--inspect")
 
 // ─── env (mirrors the other migration scripts) ─────────────────────────────
 let env = {}
@@ -325,4 +327,87 @@ async function apply() {
   console.log("tables still RLS-off (expected: empty or only PostGIS-owned):", JSON.stringify(off))
 }
 
-;(APPLY ? apply() : dryRun()).catch(e => { console.error("FAILED:", e); process.exit(1) })
+// ─── inspect: READ-ONLY catalog dump ───────────────────────────────────────
+// Lists every public-schema table with its current RLS state, all existing
+// policies (name + roles + cmd + USING + WITH CHECK), and which anon/auth
+// table privileges are granted. No writes. Use this to plan a real fix
+// without inferring from anon-readability heuristics.
+async function inspect() {
+  if (!MGMT) {
+    console.error("--inspect needs SUPABASE_MANAGEMENT_TOKEN. Run via the CI workflow (mode=inspect).")
+    process.exit(1)
+  }
+  console.log("=== INSPECT (read-only catalog dump) ===")
+
+  const tables = await dbq(`
+    SELECT c.relname AS t, c.relrowsecurity AS rls
+      FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+     WHERE n.nspname = 'public' AND c.relkind IN ('r','p')
+     ORDER BY c.relname;`)
+
+  const policies = await dbq(`
+    SELECT schemaname, tablename, policyname, roles, cmd,
+           pg_get_expr(qual, polrelid)       AS using_expr,
+           pg_get_expr(with_check, polrelid) AS with_check_expr
+      FROM pg_policies
+      JOIN pg_policy p ON p.polname = policyname
+      JOIN pg_class c ON c.oid = p.polrelid
+     WHERE schemaname = 'public'
+     ORDER BY tablename, policyname;`).catch(async () => {
+       // Fallback if the JOIN syntax above trips on a Supabase PG version —
+       // pg_policies already has qual/with_check as text on modern PG.
+       return dbq(`
+         SELECT schemaname, tablename, policyname, roles, cmd,
+                qual AS using_expr, with_check AS with_check_expr
+           FROM pg_policies
+          WHERE schemaname = 'public'
+          ORDER BY tablename, policyname;`)
+     })
+
+  const privs = await dbq(`
+    SELECT table_name, grantee, privilege_type
+      FROM information_schema.table_privileges
+     WHERE table_schema = 'public'
+       AND grantee IN ('anon','authenticated','service_role')
+     ORDER BY table_name, grantee, privilege_type;`)
+
+  const polByTable = {}
+  for (const p of policies) (polByTable[p.tablename] ||= []).push(p)
+  const privByTable = {}
+  for (const g of privs) (privByTable[g.table_name] ||= []).push(g)
+
+  for (const row of tables) {
+    const t = row.t, b = bucket(t)
+    console.log(`\n── ${t}   [${b}]   RLS=${row.rls ? "ON" : "OFF"}`)
+    const ps = polByTable[t] || []
+    if (!ps.length) console.log("   policies: (none)")
+    for (const p of ps) {
+      const roles = Array.isArray(p.roles) ? p.roles.join(",") : p.roles
+      console.log(`   policy "${p.policyname}"  cmd=${p.cmd}  roles=${roles}`)
+      if (p.using_expr)      console.log(`      USING       (${p.using_expr})`)
+      if (p.with_check_expr) console.log(`      WITH CHECK  (${p.with_check_expr})`)
+    }
+    const gs = privByTable[t] || []
+    const byGrantee = gs.reduce((a, g) => ((a[g.grantee] ||= []).push(g.privilege_type), a), {})
+    for (const [g, types] of Object.entries(byGrantee)) {
+      console.log(`   grant ${g}: ${types.join(",")}`)
+    }
+  }
+
+  // High-signal summary: which SERVICE_ONLY tables still have an anon SELECT
+  // policy (the thing we may want to DROP), and which PUBLIC_READ tables are
+  // missing one (the thing we may want to ADD).
+  console.log("\n── SUMMARY ──")
+  const anonSelectPolicy = t => (polByTable[t] || []).some(p =>
+    (p.cmd === "SELECT" || p.cmd === "ALL") &&
+    (Array.isArray(p.roles) ? p.roles : (p.roles || "").split(/[,{}\s]+/)).some(r => r === "anon" || r === "public" || r === "authenticated"))
+  const so = [...SERVICE_ONLY].filter(t => anonSelectPolicy(t))
+  const prMissing = ALL_OBJECTS.filter(t => bucket(t) === "PUBLIC_READ" && !anonSelectPolicy(t))
+  console.log(`SERVICE_ONLY tables with an anon-readable SELECT policy (candidates to DROP): ${so.length}`)
+  so.forEach(t => console.log(`   • ${t}`))
+  console.log(`PUBLIC_READ tables WITHOUT an anon SELECT policy (candidates to ADD): ${prMissing.length}`)
+  prMissing.forEach(t => console.log(`   • ${t}`))
+}
+
+;(INSPECT ? inspect() : APPLY ? apply() : dryRun())
+  .catch(e => { console.error("FAILED:", e); process.exit(1) })

@@ -9,11 +9,12 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "dry-run (preview, prints classification + SQL) or apply (writes per-bucket policies)"
+        description: "inspect (READ-ONLY: dumps pg_policies + anon privileges per public table) · dry-run (preview the apply SQL) · apply (writes per-bucket policies)"
         required: true
-        default: dry-run
+        default: inspect
         type: choice
         options:
+          - inspect
           - dry-run
           - apply
 
@@ -34,8 +35,8 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
         run: |
-          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
-            node scripts/migrate-enable-rls-public-schema.mjs --apply
-          else
-            node scripts/migrate-enable-rls-public-schema.mjs
-          fi
+          case "${{ github.event.inputs.mode }}" in
+            apply)   node scripts/migrate-enable-rls-public-schema.mjs --apply   ;;
+            inspect) node scripts/migrate-enable-rls-public-schema.mjs --inspect ;;
+            *)       node scripts/migrate-enable-rls-public-schema.mjs           ;;
+          esac
