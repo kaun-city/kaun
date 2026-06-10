@@ -1,0 +1,226 @@
+bbmp225_no,bbmp225_name_en,bbmp225_name_ka,assembly_constituency,population,datameet243_no,datameet243_name,lgd_ward_code,overlap_confidence,tier,runner_up_243_no,runner_up_share,outside_share,split,samples,method
+1,Kempegowda Ward,ಕೆಂಪೇಗೌಡ ವಾರ್ಡ್,YELAHANKA,42913,1,Kempegowda Ward,1303139,0.747,clean,2,0.2532,0,1:0.7468 2:0.2532,154,spatial-overlap
+2,Chowdeswari Ward,ಚೌಡೇಶ್ವರಿ ವಾರ್ಡ್,YELAHANKA,42775,2,Chowdeswari Ward,1303140,0.43,true-split,3,0.419,0,2:0.4302 3:0.419 5:0.1173 4:0.0335,179,spatial-overlap
+3,Atturu,ಅತ್ತೂರು,YELAHANKA,42569,4,Atturu Layout,1303142,0.607,split-primary,2,0.2321,0,4:0.6071 2:0.2321 3:0.1607,112,spatial-overlap
+4,Yelahanka Satellite Town,ಯಲಹಂಕ ಸ್ಯಾಟಲೈಟ್ ಟೌನ್,YELAHANKA,43243,5,Yelahanka Satellite Town,1303143,0.779,clean,3,0.221,0,5:0.779 3:0.221,181,spatial-overlap
+5,Kogilu,ಕೋಗಿಲು,BYATARAYANAPURA,40396,6,Kogilu,1303144,0.938,clean,7,0.0309,0.0309,6:0.9381 7:0.0309,194,spatial-overlap
+6,Jakkuru,ಜಕ್ಕೂರು,BYATARAYANAPURA,38616,8,Jakkuru,1303146,0.682,split-primary,7,0.1689,0,8:0.6824 7:0.1689 11:0.1486,148,spatial-overlap
+7,Thanisandra,ಥಣಿಸಂದ್ರ,BYATARAYANAPURA,37308,8,Jakkuru,1303146,0.681,split-primary,7,0.3189,0,8:0.6811 7:0.3189,185,spatial-overlap
+8,Amrutahalli,ಅಮೃತಹಳ್ಳಿ,BYATARAYANAPURA,36446,9,Amrutahalli,1303147,0.901,clean,8,0.0988,0,9:0.9012 8:0.0988,172,spatial-overlap
+9,Hebbal Kempapura,ಹೆಬ್ಬಾಳ ಕೆಂಪಾಪುರ,BYATARAYANAPURA,38273,10,Kempapura,1303148,0.892,clean,9,0.1076,0,10:0.8924 9:0.1076,158,spatial-overlap
+10,Byatarayanapura,ಬ್ಯಟರಾಯನಪುರ,BYATARAYANAPURA,37010,11,Byatarayanapura,1303149,0.921,clean,13,0.0476,0,11:0.9206 13:0.0476 12:0.0265 10:0.0053,189,spatial-overlap
+11,Kodigehalli,ಕೊಡಿಗೇಹಳ್ಳಿ,BYATARAYANAPURA,40183,12,Kodigehalli,1303150,0.925,clean,10,0.0751,0,12:0.9249 10:0.0751,173,spatial-overlap
+12,Dodda Bommasandra,ದೊಡ್ಡ ಬೊಮ್ಮಸಂದ್ರ,BYATARAYANAPURA,38279,13,Dodda Bommasandra,1303151,0.96,clean,15,0.0398,0,13:0.9602 15:0.0398,176,spatial-overlap
+13,Vidyaranyapura,ವಿದ್ಯಾರಣ್ಯಪುರ,BYATARAYANAPURA,35174,14,Vidyaranyapura,1303152,0.953,clean,15,0.0471,0,14:0.9529 15:0.0471,191,spatial-overlap
+14,Kuvempu Nagar,ಕುವೆಂಪು ನಗರ,BYATARAYANAPURA,32614,15,Kuvempunagar,1303153,0.995,clean,14,0.0052,0,15:0.9948 14:0.0052,191,spatial-overlap
+15,Kammagondanahalli,ಕಮ್ಮಗೊಂಡನಹಳ್ಳಿ,DASARAHALLI,42954,16,Kammagondanahalli,1303154,0.772,clean,17,0.2281,0,16:0.7719 17:0.2281,114,spatial-overlap
+16,Mallasandra,ಮಲ್ಲಸಂದ್ರ,DASARAHALLI,42930,17,Shettihalli,1303155,0.632,split-primary,20,0.3392,0,17:0.6316 20:0.3392 19:0.0292,171,spatial-overlap
+17,Chikkasandra,ಚಿಕ್ಕಸಂದ್ರ,DASARAHALLI,37486,17,Shettihalli,1303155,0.747,clean,18,0.2421,0,17:0.7474 18:0.2421 19:0.0105,190,spatial-overlap
+18,Bagalakunte,ಬಾಗಲಕುಂಟೆ,DASARAHALLI,42171,18,Bagalakunte,1303156,0.576,split-primary,19,0.4237,0,18:0.5763 19:0.4237,177,spatial-overlap
+19,T Dasarahalli,ಟಿ ದಾಸರಹಳ್ಳಿ,DASARAHALLI,39062,21,T Dasarahalli,1303159,0.696,split-primary,19,0.2741,0,21:0.6963 19:0.2741 20:0.0296,135,spatial-overlap
+20,Nalagadarenahalli,ನೆಲಗೆದರನಹಳ್ಳಿ,DASARAHALLI,42194,22,Chokkasandra,1303160,0.646,split-primary,23,0.1602,0,22:0.6456 23:0.1602 19:0.1165 21:0.0777,206,spatial-overlap
+21,Chokkasandra,ಚೊಕ್ಕಸಂದ್ರ,DASARAHALLI,41904,24,Rajagopal Nagar,1302696,0.828,clean,22,0.1484,0,24:0.8281 22:0.1484 25:0.0234,128,spatial-overlap
+22,Peenya Industrial Area,ಪೀಣ್ಯ ಕೈಗಾರಿಕಾ ಪ್ರದೇಶ,DASARAHALLI,41867,23,Nelagadderanahalli,1302695,0.902,clean,26,0.0546,0,23:0.9016 26:0.0546 24:0.0273 27:0.0164,183,spatial-overlap
+23,Rajagopal Nagar,ರಾಜಗೋಪಾಲ್ ನಗರ,DASARAHALLI,42081,25,Rajeshwari Nagar,1302697,0.852,clean,24,0.1484,0,25:0.8516 24:0.1484,182,spatial-overlap
+24,Hegganahalli,ಹೆಗ್ಗನಹಳ್ಳಿ,DASARAHALLI,39277,26,Hegganahalli,1302698,0.751,clean,25,0.198,0,26:0.7513 25:0.198 23:0.0355 27:0.0152,197,spatial-overlap
+25,Sunkadakatte,ಸುಂಕದಕಟ್ಟೆ,DASARAHALLI,37573,27,Sunkadakatte,1302699,1,clean,,0,0,27:1,146,spatial-overlap
+26,Dodda Bidarakallu,ದೊಡ್ಡ ಬಿದರಕಲ್ಲು,YESHVANTHAPURA,36430,28,Dodda Bidarakallu,1302700,0.963,clean,29,0.0368,0,28:0.9632 29:0.0368,163,spatial-overlap
+27,Lingadheeranahalli,ಲಿಂಗಧೀರನಹಳ್ಳಿ,YESHVANTHAPURA,41562,29,Vidyamanyanagar,1302701,0.823,clean,28,0.0922,0,29:0.8227 28:0.0922 31:0.0851,141,spatial-overlap
+28,Herohalli,ಹೇರೋಹಳ್ಳಿ,YESHVANTHAPURA,37996,30,Herohalli,1302702,0.642,split-primary,31,0.3121,0,30:0.6416 31:0.3121 29:0.0462,173,spatial-overlap
+29,Ullalu,ಉಲ್ಲಾಳು,YESHVANTHAPURA,33366,31,Doddagollarahatti,1302703,0.802,clean,32,0.1832,0,31:0.8015 32:0.1832 30:0.0153,131,spatial-overlap
+30,Nagadevanahalli,ನಾಗದೇವನಹಳ್ಳಿ,YESHVANTHAPURA,33053,32,Ullal,1302704,0.875,clean,31,0.0813,0,32:0.875 31:0.0813 33:0.0437,160,spatial-overlap
+31,Bande Mutt,ಬಂಡೆ ಮಠ,YESHVANTHAPURA,32762,34,Bande Mutt,1302706,0.584,split-primary,35,0.2774,0,34:0.5839 35:0.2774 33:0.1387,137,spatial-overlap
+32,Kengeri,ಕೆಂಗೇರಿ,YESHVANTHAPURA,34251,34,Bande Mutt,1302706,0.53,split-primary,33,0.2917,0.0357,34:0.5298 33:0.2917 32:0.1429,168,spatial-overlap
+33,Hemmigepura,ಹೆಮ್ಮಿಗೆಪುರ,YESHVANTHAPURA,36490,35,Hemmigepura,1302707,1,clean,,0,0,35:1,135,spatial-overlap
+34,JP Park,ಜೆಪಿ ಪಾರ್ಕ್,RAJARAJESHWARI NAGAR,42026,38,J P Park,1302710,0.487,true-split,36,0.2564,0,38:0.4872 36:0.2564 37:0.2115 39:0.0449,156,spatial-overlap
+35,Yeshwanthpura,ಯಶವಂತಪುರ,RAJARAJESHWARI NAGAR,39295,38,J P Park,1302710,0.539,split-primary,39,0.4043,0,38:0.539 39:0.4043 37:0.0567,141,spatial-overlap
+36,Jalahalli,ಜಾಲಹಳ್ಳಿ,RAJARAJESHWARI NAGAR,37959,40,Veeramadakari,1302712,0.69,split-primary,39,0.3095,0,40:0.6905 39:0.3095,168,spatial-overlap
+37,Peenya,ಪೀಣ್ಯ,RAJARAJESHWARI NAGAR,35826,41,Peenya,1302713,0.452,true-split,40,0.3826,0,41:0.4522 40:0.3826 36:0.113 37:0.0522,115,spatial-overlap
+38,Laxmidevi Nagar,ಲಕ್ಷ್ಮೀದೇವಿ ನಗರ,RAJARAJESHWARI NAGAR,41919,36,Chatrapati Shivaji,1302708,0.539,split-primary,41,0.3043,0,36:0.5391 41:0.3043 42:0.1565,115,spatial-overlap
+39,Laggere,ಲಗ್ಗೆರೆ,RAJARAJESHWARI NAGAR,38489,42,Lakshmi Devi Nagar,1302714,0.591,split-primary,43,0.3509,0,42:0.5906 43:0.3509 41:0.0585,171,spatial-overlap
+40,Chowdeshwari Nagar,ಚೌಡೇಶ್ವರಿ ನಗರ,RAJARAJESHWARI NAGAR,34976,43,Ranadheera Kanteerava,1302715,0.625,split-primary,44,0.375,0,43:0.625 44:0.375,176,spatial-overlap
+41,Kottegepalya,ಕೊಟ್ಟಿಗೆಪಾಳ್ಯ,RAJARAJESHWARI NAGAR,32666,45,Vijayanagara Krishnadevaraya,1302717,0.827,clean,44,0.1733,0,45:0.8267 44:0.1733,150,spatial-overlap
+42,Srigandhadakaval,ಶ್ರೀಗಂಧದಕಾವಲ್,RAJARAJESHWARI NAGAR,41260,46,Sir M. Vishweshwaraiah,1302718,0.805,clean,44,0.1183,0,46:0.8047 44:0.1183 45:0.0769,169,spatial-overlap
+43,Malathalli,ಮಲ್ಲತಳ್ಳಿ,RAJARAJESHWARI NAGAR,37700,47,Nalvadi Krishnaraja Wadior Park,1302719,0.764,clean,46,0.2365,0,47:0.7635 46:0.2365,148,spatial-overlap
+44,Jnana Bharathi ward,ಜ್ಞಾನ ಭಾರತಿ ವಾರ್ಡ್,RAJARAJESHWARI NAGAR,35459,48,Jnana Bharathi,1302720,0.948,clean,49,0.0373,0,48:0.9478 49:0.0373 47:0.0149,134,spatial-overlap
+45,Rajarajeshwari Nagar,ರಾಜರಾಜೇಶ್ವರಿ ನಗರ,RAJARAJESHWARI NAGAR,40360,49,Rajarajeshwari Nagar,1302721,0.906,clean,48,0.0942,0,49:0.9058 48:0.0942,138,spatial-overlap
+46,Rajiv Nagar,ರಾಜೀವ್ ನಗರ,MAHALAXMI LAYOUT,33852,50,Marappana Palya,1302722,0.903,clean,53,0.097,0,50:0.903 53:0.097,165,spatial-overlap
+47,Dr. Puneet Rajkumar,ಡಾ. ಪುನೀತ್ ರಾಜ್ ಕುಮಾರ್,MAHALAXMI LAYOUT,35944,53,Nandini Layout,1302725,0.835,clean,54,0.165,0,53:0.835 54:0.165,200,spatial-overlap
+48,Mahalakshmipuram,ಮಹಾಲಕ್ಷೀಪುರಂ,MAHALAXMI LAYOUT,42461,52,Mahalakshimpuram,1302724,0.634,split-primary,54,0.2178,0,52:0.6337 54:0.2178 55:0.0891 50:0.0594,101,spatial-overlap
+49,Nagapura,ನಾಗಾಪುರ,MAHALAXMI LAYOUT,43143,51,Nagapura,1302723,0.667,split-primary,50,0.1939,0,51:0.6667 50:0.1939 52:0.103 55:0.0364,165,spatial-overlap
+50,Nalvadi Krishna Raja Wadiyar,ನಾಲ್ವಡಿ ಕೃಷ್ಣರಾಜ ಒಡೆಯರ್,MAHALAXMI LAYOUT,42759,55,Puneet Rajkumar,1302727,0.478,true-split,54,0.2826,0,55:0.4783 54:0.2826 52:0.2391,138,spatial-overlap
+51,Shankar Matt,ಶಂಕರ್ ಮಠ,MAHALAXMI LAYOUT,34993,56,Shankar Matt,1302728,0.837,clean,55,0.0814,0,56:0.8372 55:0.0814 57:0.0814,172,spatial-overlap
+52,Shakthi Ganapathi Nagar,ಶಕ್ತಿ ಗಣಪತಿ ನಗರ,MAHALAXMI LAYOUT,37861,57,Shakthi Ganapathi Nagar,1302729,0.754,clean,56,0.2457,0,57:0.7543 56:0.2457,175,spatial-overlap
+53,Vrisabhavathi Nagar,ವೃಷಭಾವತಿ ನಗರ,MAHALAXMI LAYOUT,43059,58,Vrisabhavathi Nagar,1302730,0.93,clean,57,0.0704,0,58:0.9296 57:0.0704,213,spatial-overlap
+54,Mattikere,ಮತ್ತಿಕೆರೆ,MALLESWARAM,33878,59,Mattikere,1302731,0.758,clean,60,0.2422,0,59:0.7578 60:0.2422,161,spatial-overlap
+55,Malleswaram,ಮಲ್ಲೇಶ್ವರಂ,MALLESWARAM,38120,61,Malleswaram,1302733,0.703,clean,59,0.2968,0,61:0.7032 59:0.2968,155,spatial-overlap
+56,Aramane Nagara,ಅರಮನೆ ನಗರ,MALLESWARAM,34185,60,Aramane Nagara,1302732,0.966,clean,64,0.0342,0,60:0.9658 64:0.0342,146,spatial-overlap
+57,Rajamahal Guttahalli,ರಾಜಮಹಲ್ ಗುಟ್ಟಹಳ್ಳಿ,MALLESWARAM,34092,65,Rajamahal Guttahalli,1302737,0.909,clean,64,0.0914,0,65:0.9086 64:0.0914,197,spatial-overlap
+58,Kadu Malleshwar Ward,ಕಾಡು ಮಲ್ಲೇಶ್ವರ ವಾರ್ಡ್,MALLESWARAM,33214,61,Malleswaram,1302733,0.487,true-split,64,0.3397,0,61:0.4872 64:0.3397 62:0.1603 65:0.0128,156,spatial-overlap
+59,Subramanya Nagar,ಸುಬ್ರಹ್ಮಣ್ಯ ನಗರ,MALLESWARAM,36860,62,Subramanya Nagar,1302734,0.756,clean,64,0.244,0,62:0.756 64:0.244,168,spatial-overlap
+60,Gayithri Nagar,ಗಾಯಿತ್ರಿ ನಗರ,MALLESWARAM,33236,63,Gayithri Nagar,1302735,1,clean,,0,0,63:1,134,spatial-overlap
+61,Radhakrishna Temple Ward,ರಾಧಾಕೃಷ್ಣ ದೇವಸ್ಥಾನ ವಾರ್ಡ್,HEBBAL,36921,66,Radhakrishna Temple Ward,1302738,0.928,clean,67,0.0724,0,66:0.9276 67:0.0724,152,spatial-overlap
+62,Sanjaya Nagar,ಸಂಜಯ ನಗರ,HEBBAL,34465,67,Sanjaya Nagar,1302739,0.995,clean,66,0.0055,0,67:0.9945 66:0.0055,182,spatial-overlap
+63,Hebbala,ಹೆಬ್ಬಾಳ,HEBBAL,37550,70,Hebbala,1302742,0.882,clean,68,0.0833,0,70:0.8824 68:0.0833 72:0.0245 71:0.0098,204,spatial-overlap
+64,Vishwanath Nagenahalli,ವಿಶ್ವನಾಥ ನಾಗೇನಹಳ್ಳಿ,HEBBAL,32259,68,Vishwanath Nagenahalli,1302740,0.748,clean,69,0.1602,0,68:0.7476 69:0.1602 70:0.0922,206,spatial-overlap
+65,Manorayanapalya,ಮನೋರಾಯನಪಾಳ್ಯ,HEBBAL,32275,69,Manorayanapalya,1302741,0.868,clean,68,0.1211,0,69:0.8684 68:0.1211 70:0.0105,190,spatial-overlap
+66,Chamundi Nagara,ಚಾಮುಂಡಿ ನಗರ,HEBBAL,40675,71,Chamundi Nagara,1302743,0.964,clean,69,0.0361,0,71:0.9639 69:0.0361,83,spatial-overlap
+67,Ganga Nagar,ಗಂಗಾ ನಗರ,HEBBAL,35373,72,Ganga Nagar,1302744,0.889,clean,73,0.0889,0,72:0.8889 73:0.0889 70:0.0222,180,spatial-overlap
+68,Jayachamarajendra  Nagar,ಜಯಚಾಮರಾಜೇಂದ್ರ ನಗರ,HEBBAL,33247,73,Jayachamarajendra  Nagar,1302745,1,clean,,0,0,73:1,113,spatial-overlap
+69,Kaval Bairasandra,ಕಾವಲ್ ಬೈರಸಂದ್ರ,PULAKESHI NAGAR (SC),40682,74,Kaval Bairasandra,1302746,0.684,split-primary,75,0.3162,0,74:0.6838 75:0.3162,136,spatial-overlap
+70,Kushal Nagar,ಕುಶಾಲ್ ನಗರ,PULAKESHI NAGAR (SC),35194,75,Kushal Nagar,1302747,0.599,split-primary,76,0.3571,0,75:0.5989 76:0.3571 78:0.044,182,spatial-overlap
+71,Muneshwara Nagar,ಮುನೇಶ್ವರ ನಗರ,PULAKESHI NAGAR (SC),37624,76,Muneshwara Nagar,1302748,0.619,split-primary,75,0.1443,0,76:0.6186 75:0.1443 78:0.1289 77:0.1082,194,spatial-overlap
+72,Devara Jeevanahalli,ದೇವರ ಜೀವನಹಳ್ಳಿ,PULAKESHI NAGAR (SC),38522,77,Devara Jeevanahalli,1302749,0.714,clean,74,0.2865,0,77:0.7135 74:0.2865,185,spatial-overlap
+73,S K Garden,ಎಸ್ ಕೆ ಗಾರ್ಡನ್,PULAKESHI NAGAR (SC),36225,78,S K Garden,1302750,0.492,true-split,74,0.4609,0,78:0.4922 74:0.4609 80:0.0469,128,spatial-overlap
+74,Sagayarapuram,ಸಗಾಯರಪುರಂ,PULAKESHI NAGAR (SC),36876,79,Sagayarapuram,1302751,1,clean,,0,0,79:1,189,spatial-overlap
+75,Pulikeshinagar,ಪುಲಿಕೇಶಿನಗರ,PULAKESHI NAGAR (SC),36315,80,Pulikeshinagar,1302752,1,clean,,0,0,80:1,145,spatial-overlap
+76,Hennur,ಹೆಣ್ಣೂರು,SARVARGNA NAGAR,36081,94,Hennur,1302766,0.805,clean,96,0.0947,0,94:0.8053 96:0.0947 98:0.0632 95:0.0368,190,spatial-overlap
+77,Nagavara,ನಾಗವಾರ,SARVARGNA NAGAR,42383,95,Nagavara,1302767,0.51,split-primary,94,0.4904,0,95:0.5096 94:0.4904,208,spatial-overlap
+78,HBR Layout,HBR ಲೇಔಟ್,SARVARGNA NAGAR,42386,96,Kadugondanahalli,1302768,0.671,split-primary,98,0.2588,0,96:0.6706 98:0.2588 95:0.0412 97:0.0294,170,spatial-overlap
+79,Kadugondanahalli,ಕಾಡುಗೊಂಡನಹಳ್ಳಿ,SARVARGNA NAGAR,37866,97,Venkateshpura,1302769,0.955,clean,96,0.0455,0,97:0.9545 96:0.0455,176,spatial-overlap
+80,Kacharkanahalli,ಕಾಚರಕನಹಳ್ಳಿ,SARVARGNA NAGAR,33881,99,HRBR Layout,1302771,0.614,split-primary,98,0.3864,0,99:0.6136 98:0.3864,176,spatial-overlap
+81,Kammanahalli,ಕಮ್ಮನಹಳ್ಳಿ,SARVARGNA NAGAR,36282,99,HRBR Layout,1302771,0.64,split-primary,101,0.2222,0,99:0.6402 101:0.2222 100:0.1376,189,spatial-overlap
+82,Banasavadi,ಬಾಣಸವಾಡಿ,SARVARGNA NAGAR,33446,100,Banasavadi,1302772,1,clean,,0,0,100:1,190,spatial-overlap
+83,Subbayyanapalya,ಸುಬ್ಬಯ್ಯನಪಾಳ್ಯ,SARVARGNA NAGAR,35961,101,Kammanahalli,1302773,0.624,split-primary,98,0.1878,0,101:0.6244 98:0.1878 102:0.1878,197,spatial-overlap
+84,Lingarajapura,ಲಿಂಗರಾಜಪುರ,SARVARGNA NAGAR,37322,102,Lingarajapura,1302774,0.781,clean,98,0.2193,0,102:0.7807 98:0.2193,187,spatial-overlap
+85,Maruthi Seva Nagar,ಮಾರುತಿ ಸೇವಾ ನಗರ,SARVARGNA NAGAR,39837,103,Maruthi Seva Nagar,1302775,0.815,clean,102,0.1848,0,103:0.8152 102:0.1848,184,spatial-overlap
+86,Challakere,ಚಳ್ಳಕೆರೆ,K.R.PURA,37600,82,Babusab Palya,1302754,0.656,split-primary,81,0.3444,0,82:0.6556 81:0.3444,90,spatial-overlap
+87,Horamavu,ಹೊರಮಾವು,K.R.PURA,37824,81,Horamavu,1302753,0.803,clean,83,0.1972,0,81:0.8028 83:0.1972,142,spatial-overlap
+88,Kalkere,ಕಲ್ಕೆರೆ,K.R.PURA,42910,83,Kalkere,1302755,0.766,clean,87,0.1228,0,83:0.7661 87:0.1228 86:0.0702 84:0.0409,171,spatial-overlap
+89,Vijinapura,ವಿಜಿನಾಪುರ,K.R.PURA,37238,84,Ramamurthy Nagara,1302756,0.449,true-split,85,0.4118,0,84:0.4492 85:0.4118 91:0.1337 86:0.0053,187,spatial-overlap
+90,Ramamurthy Nagar,ರಾಮಮೂರ್ತಿ ನಗರ,K.R.PURA,41393,86,K R Puram,1302758,0.409,true-split,84,0.3591,0,86:0.4088 84:0.3591 85:0.232,181,spatial-overlap
+91,K R Puram,ಕೆ ಆರ್ ಪುರಂ,K.R.PURA,41709,86,K R Puram,1302758,0.675,split-primary,87,0.25,0,86:0.675 87:0.25 88:0.075,160,spatial-overlap
+92,Basavanapura,ಬಸವನಪುರ,K.R.PURA,42178,88,Basavanapura,1302760,0.773,clean,87,0.2208,0.0065,88:0.7727 87:0.2208,154,spatial-overlap
+93,Devasandra,ದೇವಸಂದ್ರ,K.R.PURA,42538,89,Devasandra,1302761,0.774,clean,90,0.2258,0,89:0.7742 90:0.2258,186,spatial-overlap
+94,A. Narayanapura,ಎ. ನಾರಾಯಣಪುರ,K.R.PURA,43076,90,Mahadevapura,1302762,0.641,split-primary,91,0.3586,0,90:0.6414 91:0.3586,145,spatial-overlap
+95,Vijnana Nagar,ವಿಜ್ಞಾನ ನಗರ,K.R.PURA,39954,92,Vijnana Nagar,1302764,0.703,clean,90,0.1935,0,92:0.7032 90:0.1935 93:0.1032,155,spatial-overlap
+96,HAL Airport,HAL ವಿಮಾನ ನಿಲ್ದಾಣ,K.R.PURA,40595,93,HAL Airport,1302765,0.977,clean,92,0.0231,0,93:0.9769 92:0.0231,173,spatial-overlap
+97,Kadugodi,ಕಾಡುಗೋಡಿ,MAHADEVAPURA (SC),43039,104,Kadugodi,1302776,0.417,true-split,111,0.378,0.0079,104:0.4173 111:0.378 105:0.1969,127,spatial-overlap
+98,Hudi,ಹೂಡಿ,MAHADEVAPURA (SC),37426,105,Belathur,1302777,0.431,true-split,106,0.3416,0,105:0.4307 106:0.3416 110:0.2277,202,spatial-overlap
+99,Byrathi,ಬೈರತಿ,MAHADEVAPURA (SC),37902,106,Hudi,1302778,0.429,true-split,104,0.0714,0.4286,106:0.4286 104:0.0714 105:0.0714,28,spatial-overlap
+100,Garudachar Palya,ಗರುಡಾಚಾರ್ ಪಾಳ್ಯ,MAHADEVAPURA (SC),37813,107,Garudachar Playa,1302779,0.516,split-primary,108,0.3851,0,107:0.5155 108:0.3851 106:0.0994,161,spatial-overlap
+101,Dodda Nekkundi,ದೊಡ್ಡ ನೆಕ್ಕುಂಡಿ,MAHADEVAPURA (SC),35998,108,Dodda Nekkundi,1302780,0.93,clean,109,0.0695,0,108:0.9305 109:0.0695,187,spatial-overlap
+102,AECS Layout,ಎಇಸಿಎಸ್ ಲೇಔಟ್,MAHADEVAPURA (SC),35972,110,Whitefield,1302782,0.5,split-primary,109,0.3516,0,110:0.5 109:0.3516 113:0.1484,182,spatial-overlap
+103,White Field,ವೈಟ್ ಫೀಲ್ಡ್,MAHADEVAPURA (SC),40876,110,Whitefield,1302782,0.613,split-primary,111,0.2945,0,110:0.6135 111:0.2945 104:0.092,163,spatial-overlap
+104,Varthuru,ವರ್ತೂರು,MAHADEVAPURA (SC),39085,112,Varthuru,1302784,0.786,clean,113,0.0992,0,112:0.7863 113:0.0992 116:0.0992 111:0.0153,131,spatial-overlap
+105,Munekollal,ಮುನ್ನೆ ಕೊಳಲು,MAHADEVAPURA (SC),40571,113,Munnekollala,1302785,0.671,split-primary,114,0.3151,0,113:0.6712 114:0.3151 116:0.0137,146,spatial-overlap
+106,Marathahalli,ಮಾರತ್ತಹಳ್ಳಿ,MAHADEVAPURA (SC),40767,115,Bellanduru,1302787,0.872,clean,114,0.1277,0,115:0.8723 114:0.1277,141,spatial-overlap
+107,Bellanduru,ಬೆಳ್ಳಂದೂರು,MAHADEVAPURA (SC),42527,116,Doddakanahalli,1302788,0.905,clean,115,0.0952,0,116:0.9048 115:0.0952,147,spatial-overlap
+108,Cox Town,ಕಾಕ್ಸ್ ಟೌನ್,C.V. RAMAN NAGAR (SC),41979,119,New Bayappanahalli,1302791,0.83,clean,118,0.1569,0,119:0.8301 118:0.1569 117:0.0131,153,spatial-overlap
+109,Benniganahalli,ಬೆನ್ನಿಗಾನಹಳ್ಳಿ,C.V. RAMAN NAGAR (SC),32869,118,Lal Bahadur Nagar,1302790,0.85,clean,117,0.1503,0,118:0.8497 117:0.1503,173,spatial-overlap
+110,C V Raman Nagar,ಸಿ ವಿ ರಾಮನ್ ನಗರ,C.V. RAMAN NAGAR (SC),38318,117,C V Raman Nagar,1302789,0.834,clean,119,0.1124,0,117:0.8343 119:0.1124 122:0.0533,169,spatial-overlap
+111,Kaggadasanapura,ಕಗ್ಗದಾಸನಪುರ,C.V. RAMAN NAGAR (SC),33145,123,Jalakanteshwara Nagara,1302795,0.897,clean,122,0.1027,0,123:0.8973 122:0.1027,224,spatial-overlap
+112,New Tippasandara,ಹೊಸ ತಿಪ್ಪಸಂದ್ರ,C.V. RAMAN NAGAR (SC),42872,122,New Thippasandra,1302794,0.712,clean,121,0.2881,0,122:0.7119 121:0.2881,177,spatial-overlap
+113,Hoysala Nagar,ಹೊಯ್ಸಳ ನಗರ,C.V. RAMAN NAGAR (SC),35228,120,Hoysala Nagar,1302792,0.747,clean,121,0.2532,0,120:0.7468 121:0.2532,154,spatial-overlap
+114,Jeevanbhima Nagar,ಜೀವನಭೀಮ ನಗರ,C.V. RAMAN NAGAR (SC),33649,124,Jeevanbhima Nagar,1302796,0.653,split-primary,121,0.3468,0,124:0.6532 121:0.3468,222,spatial-overlap
+115,Konena Agrahara,ಕೋನೇನ  ಅಗ್ರಹಾರ,C.V. RAMAN NAGAR (SC),42710,124,Jeevanbhima Nagar,1302796,0.599,split-primary,125,0.4014,0,124:0.5986 125:0.4014,142,spatial-overlap
+116,Ramaswamypalya,ರಾಮಸ್ವಾಮಿಪಾಳ್ಯ,SHIVAJI NAGAR,34394,126,Ramaswamy Palya,1302798,0.659,split-primary,127,0.3405,0,126:0.6595 127:0.3405,185,spatial-overlap
+117,Vasanthnagar,ವಸಂತನಗರ,SHIVAJI NAGAR,37267,128,Vasanth Nagar,1302800,0.719,clean,127,0.1818,0,128:0.719 127:0.1818 126:0.0992,121,spatial-overlap
+118,Sampangiram Nagar,ಸಂಪಂಗಿರಾಮ್ ನಗರ,SHIVAJI NAGAR,36827,129,Sampangiram Nagar,1302801,0.688,split-primary,128,0.3056,0,129:0.6875 128:0.3056 127:0.0069,144,spatial-overlap
+119,Shivaji Nagar,ಶಿವಾಜಿ ನಗರ,SHIVAJI NAGAR,34087,129,Sampangiram Nagar,1302801,0.658,split-primary,127,0.2081,0,129:0.6577 127:0.2081 130:0.094 131:0.0403,149,spatial-overlap
+120,Bharathi Nagar,ಭಾರತಿ ನಗರ,SHIVAJI NAGAR,33808,130,Bharathi Nagar,1302802,0.891,clean,129,0.1088,0,130:0.8912 129:0.1088,193,spatial-overlap
+121,Ulsoor,ಹಲಸೂರು,SHIVAJI NAGAR,35343,131,Ulsoor,1302803,1,clean,,0,0,131:1,173,spatial-overlap
+122,Dattatreya Temple,ದತ್ತಾತ್ರೇಯ ದೇವಸ್ಥಾನ,GANDHI NAGAR,37419,132,Dattatreya Temple,1302804,0.892,clean,134,0.1077,0,132:0.8923 134:0.1077,130,spatial-overlap
+123,Gandhinagar,ಗಾಂಧಿನಗರ,GANDHI NAGAR,32319,133,Gandhinagar,1302805,0.986,clean,137,0.0135,0,133:0.9865 137:0.0135,148,spatial-overlap
+124,Subhash Nagar,ಸುಭಾಷ್ ನಗರ,GANDHI NAGAR,33719,134,Subhash Nagar,1302806,1,clean,,0,0,134:1,166,spatial-overlap
+125,Okalipuram,ಓಕಲಿಪುರಂ,GANDHI NAGAR,34164,135,Okalipuram,1302807,1,clean,,0,0,135:1,197,spatial-overlap
+126,Binnipete,ಬಿನ್ನಿಪೇಟೆ,GANDHI NAGAR,40033,136,Binnipete,1302808,0.924,clean,135,0.0759,0,136:0.9241 135:0.0759,145,spatial-overlap
+127,Cottonpete,ಕಾಟನ್‌ಪೇಟೆ,GANDHI NAGAR,37500,137,Cottonpete,1302809,0.979,clean,136,0.0208,0,137:0.9792 136:0.0208,144,spatial-overlap
+128,Chickpete,ಚಿಕ್ಕಪೇಟೆ,GANDHI NAGAR,33292,138,Chickpete,1302810,1,clean,,0,0,138:1,197,spatial-overlap
+129,Dayananda Nagar,ದಯಾನಂದ ನಗರ,RAJAJI NAGAR,42587,139,Dayananda Nagar,1302811,0.769,clean,140,0.2313,0,139:0.7688 140:0.2313,160,spatial-overlap
+130,Sriramamandir,ಶ್ರೀರಾಮಮಂದಿರ,RAJAJI NAGAR,40645,142,Sriramamandir,1302814,0.751,clean,140,0.2293,0,142:0.7512 140:0.2293 139:0.0195,205,spatial-overlap
+131,Shivanagara,ಶಿವನಗರ,RAJAJI NAGAR,36054,143,Shivanagara,1302815,0.651,split-primary,142,0.3492,0,143:0.6508 142:0.3492,189,spatial-overlap
+132,Rajaji Nagar,ರಾಜಾಜಿನಗರ,RAJAJI NAGAR,42987,141,Rajaji Nagar,1302813,0.725,clean,140,0.2092,0,141:0.7255 140:0.2092 144:0.0654,153,spatial-overlap
+133,Basaveshwara Nagar,ಬಸವೇಶ್ವರ ನಗರ,RAJAJI NAGAR,33122,144,Basaveshwara Nagar,1302816,0.819,clean,143,0.1181,0,144:0.8194 143:0.1181 141:0.0625,144,spatial-overlap
+134,Kamakshipalya,ಕಾಮಾಕ್ಷಿಪಾಳ್ಯ,RAJAJI NAGAR,37034,145,Kamakshipalya,1302817,0.851,clean,144,0.1489,0,145:0.8511 144:0.1489,188,spatial-overlap
+135,Dr. Raj Kumar Agrahara Dasarahalli,ಡಾ. ರಾಜ್ ಕುಮಾರ್ ಅಗ್ರಹಾರ ದಾಸರಹಳ್ಳಿ,GOVINDRAJA NAGAR,38772,146,Dr. Raj Kumar Ward,1302818,0.811,clean,147,0.1892,0,146:0.8108 147:0.1892,148,spatial-overlap
+136,Govindaraja Nagar,ಗೋವಿಂದರಾಜ ನಗರ,GOVINDRAJA NAGAR,35632,147,Agrahara Dasarahalli,1302819,0.43,true-split,148,0.3047,0,147:0.4297 148:0.3047 146:0.2656,128,spatial-overlap
+137,Marenahalli,ಮಾರೇನಹಳ್ಳಿ,GOVINDRAJA NAGAR,32005,150,Marenahalli,1302822,0.638,split-primary,148,0.2989,0,150:0.6379 148:0.2989 151:0.046 149:0.0172,174,spatial-overlap
+138,Kaveripura,ಕಾವೇರಿಪುರ,GOVINDRAJA NAGAR,35628,149,Kaveripura,1302821,0.848,clean,148,0.1523,0,149:0.8477 148:0.1523,197,spatial-overlap
+139,Mudalapalya,ಮೂಡಲಪಾಳ್ಯ,GOVINDRAJA NAGAR,32137,152,Mudalapalya,1302824,0.806,clean,150,0.1942,0,152:0.8058 150:0.1942,206,spatial-overlap
+140,Maruthi Mandir ward,ಮಾರುತಿ ಮಂದಿರ ವಾರ್ಡ್,GOVINDRAJA NAGAR,32510,151,Maruthi Mandir ward,1302823,0.738,clean,152,0.1348,0,151:0.7376 152:0.1348 150:0.1277,141,spatial-overlap
+141,Nagarabhavi,ನಾಗರಭಾವಿ,GOVINDRAJA NAGAR,33584,153,Nagarabhavi,1302825,0.587,split-primary,154,0.3333,0,153:0.587 154:0.3333 151:0.0797,138,spatial-overlap
+142,Chandralayout,ಚಂದ್ರಾಲೇಔಟ್,GOVINDRAJA NAGAR,32840,154,Chandra Layout,1302826,0.695,split-primary,153,0.1777,0,154:0.6954 153:0.1777 155:0.1269,197,spatial-overlap
+143,Nayandahalli,ನಾಯಂಡಹಳ್ಳಿ,GOVINDRAJA NAGAR,32617,155,Nayandahalli,1302827,0.781,clean,154,0.2192,0,155:0.7808 154:0.2192,146,spatial-overlap
+144,Kempapura Agrahara,ಕೆಂಪಾಪುರ ಅಗ್ರಹಾರ,VIJAYA NAGAR,36710,156,Kempapura Agrahara,1302828,1,clean,,0,0,156:1,201,spatial-overlap
+145,Vijayanagar,ವಿಜಯನಗರ,VIJAYA NAGAR,35209,157,Vijayanagar,1302829,0.845,clean,158,0.1549,0,157:0.8451 158:0.1549,142,spatial-overlap
+146,Hosahalli,ಹೊಸಹಳ್ಳಿ,VIJAYA NAGAR,39400,158,Hosahalli,1302830,0.711,clean,159,0.2752,0,158:0.7114 159:0.2752 157:0.0134,149,spatial-overlap
+147,Hampi Nagar,ಹಂಪಿ ನಗರ,VIJAYA NAGAR,34725,159,Hampi Nagar,1302831,0.517,split-primary,161,0.3953,0,159:0.5174 161:0.3953 160:0.0523 158:0.0349,172,spatial-overlap
+148,New Guddadahalli,ಹೊಸ ಗುಡ್ಡದಹಳ್ಳಿ,VIJAYA NAGAR,33516,164,Avalahalli,1302836,0.557,split-primary,160,0.3234,0,164:0.5572 160:0.3234 162:0.0896 159:0.0299,201,spatial-overlap
+149,Gali Anjaneya Temple Ward,ಗಾಳಿ ಆಂಜನೇಯ ದೇವಸ್ಥಾನ ವಾರ್ಡ್,VIJAYA NAGAR,34112,159,Hampi Nagar,1302831,0.608,split-primary,160,0.2443,0,159:0.608 160:0.2443 162:0.1477,176,spatial-overlap
+150,Attiguppe,ಅತ್ತಿಗುಪ್ಪೆ,VIJAYA NAGAR,37120,161,Attiguppe,1302833,0.78,clean,162,0.19,0,161:0.78 162:0.19 163:0.03,100,spatial-overlap
+151,Deepanjali Nagar,ದೀಪಾಂಜಲಿ ನಗರ,VIJAYA NAGAR,34862,163,Veerabhadranagar,1302835,0.649,split-primary,162,0.3509,0,163:0.6491 162:0.3509,171,spatial-overlap
+152,Avalahalli,ಆವಲಹಳ್ಳಿ,VIJAYA NAGAR,38721,164,Avalahalli,1302836,0.665,split-primary,163,0.2304,0,164:0.6652 163:0.2304 162:0.1043,230,spatial-overlap
+153,Padarayanapura,ಪಾದರಾಯನಪುರ,CHAMARAJPET,33665,169,Devaraj Urs Nagar,1302841,0.667,split-primary,168,0.3333,0,169:0.6667 168:0.3333,165,spatial-overlap
+154,Rayapuram,ರಾಯಪುರಂ,CHAMARAJPET,34303,167,Jagajivanaram Nagar,1302839,0.76,clean,168,0.2403,0,167:0.7597 168:0.2403,154,spatial-overlap
+155,Devaraj Urs Nagar,ದೇವರಾಜ್ ಅರಸ್ ನಗರ,CHAMARAJPET,36799,168,Padarayanapura,1302840,0.562,split-primary,169,0.4378,0,168:0.5622 169:0.4378,185,spatial-overlap
+156,Chalavadipalya,ಚಲವಾದಿಪಾಳ್ಯ,CHAMARAJPET,32311,167,Jagajivanaram Nagar,1302839,0.728,clean,166,0.2716,0,167:0.7284 166:0.2716,162,spatial-overlap
+157,K R Market,ಕೆ ಆರ್ ಮಾರುಕಟ್ಟೆ,CHAMARAJPET,32311,165,Chamrajapet,1302837,0.665,split-primary,166,0.3354,0,165:0.6646 166:0.3354,161,spatial-overlap
+158,Chamrajapet,ಚಾಮರಾಜಪೇಟೆ,CHAMARAJPET,33626,165,Chamrajapet,1302837,0.869,clean,170,0.1307,0,165:0.8693 170:0.1307,176,spatial-overlap
+159,Azad Nagar,ಆಜಾದ್ ನಗರ,CHAMARAJPET,34445,170,Azad Nagar,1302842,0.917,clean,165,0.0829,0,170:0.9171 165:0.0829,181,spatial-overlap
+160,Dharmaraya Swamy Temple,ಧರ್ಮರಾಯ ಸ್ವಾಮಿ ದೇವಸ್ಥಾನ,CHICKPET,39056,172,Dharmaraya Swamy Temple Ward,1302844,0.524,split-primary,171,0.4078,0,172:0.5243 171:0.4078 177:0.068,103,spatial-overlap
+161,Silver Jublee Park,ಸಿಲ್ವರ್ ಜೂಬ್ಲಿ ಪಾರ್ಕ್,CHICKPET,33453,172,Dharmaraya Swamy Temple Ward,1302844,0.454,true-split,171,0.3913,0,172:0.4541 171:0.3913 174:0.1546,207,spatial-overlap
+162,Sunkenahalli,ಸುಂಕೇನಹಳ್ಳಿ,CHICKPET,42697,173,Sunkenahalli,1302845,0.644,split-primary,174,0.2876,0,173:0.6438 174:0.2876 175:0.0687,233,spatial-overlap
+163,Vishveshwara Puram,ವಿಶ್ವೇಶ್ವರ ಪುರಂ,CHICKPET,39543,174,Vishveshwara Puram,1302846,0.525,split-primary,175,0.4706,0,174:0.5252 175:0.4706 176:0.0042,238,spatial-overlap
+164,Hombegowda Nagar,ಹೊಂಬೇಗೌಡ ನಗರ,CHICKPET,42905,177,Hombegowda Nagara,1302849,0.836,clean,175,0.1118,0,177:0.8355 175:0.1118 176:0.0526,152,spatial-overlap
+165,B Venkata Reddy Nagar,ಬಿ ವೆಂಕಟ ರೆಡ್ಡಿ ನಗರ,CHICKPET,36673,176,Someshwara Nagar,1302848,0.959,clean,175,0.0412,0,176:0.9588 175:0.0412,170,spatial-overlap
+166,Shanthi Nagar,ಶಾಂತಿ ನಗರ,SHANTI NAGAR,33300,182,Shanthi Nagar,1302854,0.856,clean,183,0.1435,0,182:0.8565 183:0.1435,209,spatial-overlap
+167,Ashok Nagar,ಅಶೋಕ ನಗರ,SHANTI NAGAR,32658,181,Shantala Nagar,1302853,0.688,split-primary,183,0.2941,0,181:0.6882 183:0.2941 184:0.0176,170,spatial-overlap
+168,Nilasandra,ನೀಲಸಂದ್ರ,SHANTI NAGAR,39112,183,Neelasandra,1302855,0.694,split-primary,182,0.1944,0,183:0.6944 182:0.1944 180:0.1111,144,spatial-overlap
+169,Vannarpet,ವನ್ನಾರ್‌ಪೇಟ್,SHANTI NAGAR,32865,181,Shantala Nagar,1302853,0.662,split-primary,184,0.3379,0,181:0.6621 184:0.3379,145,spatial-overlap
+170,Jogupalya,ಜೋಗುಪಾಳ್ಯ,SHANTI NAGAR,41298,179,Jogupalya,1302851,0.447,true-split,178,0.3015,0,179:0.4472 178:0.3015 180:0.2513,199,spatial-overlap
+171,Domlur,ದೊಮ್ಮಲೂರು,SHANTI NAGAR,39954,178,Domlur,1302850,0.833,clean,179,0.1667,0,178:0.8333 179:0.1667,204,spatial-overlap
+172,Agaram,ಅಗರಂ,SHANTI NAGAR,32844,180,Agaram,1302852,0.989,clean,184,0.011,0,180:0.989 184:0.011,91,spatial-overlap
+173,Ejipura,ಈಜಿಪುರ,B.T.M. LAYOUT,40397,185,Ejipura,1302857,0.838,clean,186,0.15,0,185:0.8375 186:0.15 188:0.0125,80,spatial-overlap
+174,Koramangala,ಕೋರಮಂಗಲ,B.T.M. LAYOUT,36254,186,Koramangala,1302858,0.85,clean,187,0.0752,0,186:0.8496 187:0.0752 185:0.0526 188:0.0226,133,spatial-overlap
+175,Jakkasandra,ಜಕ್ಕಸಂದ್ರ,B.T.M. LAYOUT,41738,191,Jakkasandra,1302863,0.744,clean,186,0.15,0,191:0.7438 186:0.15 187:0.1062,160,spatial-overlap
+176,Adugodi,ಆಡುಗೋಡಿ,B.T.M. LAYOUT,34751,187,Adugodi,1302859,0.627,split-primary,188,0.3043,0,187:0.6273 188:0.3043 186:0.0683,161,spatial-overlap
+177,Lakkasandra,ಲಕ್ಕಸಂದ್ರ,B.T.M. LAYOUT,30667,188,Lakkasandra,1302860,0.741,clean,189,0.2589,0,188:0.7411 189:0.2589,112,spatial-overlap
+178,Suddagunte Palya,ಸುದ್ದಗುಂಟೆ ಪಾಳ್ಯ,B.T.M. LAYOUT,37333,189,Suddagunte Palya,1302861,0.648,split-primary,190,0.3524,0,189:0.6476 190:0.3524,210,spatial-overlap
+179,Madivala,ಮಡಿವಾಳ,B.T.M. LAYOUT,32659,190,Madivala,1302862,0.669,split-primary,192,0.2252,0,190:0.6689 192:0.2252 189:0.106,151,spatial-overlap
+180,Someswara Temple Ward,ಸೋಮೇಶ್ವರ ದೇವಸ್ಥಾನ ವಾರ್ಡ್,B.T.M. LAYOUT,32375,192,BTM Layout,1302864,0.606,split-primary,193,0.3818,0,192:0.6061 193:0.3818 189:0.0121,165,spatial-overlap
+181,BTM Layout,ಬಿಟಿಎಂ ಲೇಔಟ್,B.T.M. LAYOUT,32504,193,N S Palya,1302865,0.714,clean,192,0.2857,0,193:0.7143 192:0.2857,175,spatial-overlap
+182,Byrasandra,ಬೈರಸಂದ್ರ,JAYANAGAR,39796,196,Byrasandra,1302868,0.545,split-primary,195,0.4554,0,196:0.5446 195:0.4554,101,spatial-overlap
+183,Gurappanapalya,ಗುರಪ್ಪನಪಾಳ್ಯ,JAYANAGAR,40817,196,Byrasandra,1302868,0.552,split-primary,195,0.2292,0,196:0.5521 195:0.2292 194:0.2188,192,spatial-overlap
+184,Jayanagar East,ಜಯನಗರ ಪೂರ್ವ,JAYANAGAR,33353,194,Gurappanapalya,1302866,0.608,split-primary,198,0.3253,0,194:0.6084 198:0.3253 197:0.0663,166,spatial-overlap
+185,J P Nagar,ಜೆ ಪಿ ನಗರ,JAYANAGAR,33556,198,J P Nagar,1302870,0.718,clean,197,0.1745,0,198:0.7181 197:0.1745 199:0.1074,149,spatial-overlap
+186,Shakambari Nagar,ಶಾಕಾಂಬರಿ ನಗರ,JAYANAGAR,40716,197,Shakambari Nagar,1302869,0.623,split-primary,196,0.377,0,197:0.623 196:0.377,183,spatial-overlap
+187,Sarakki,ಸಾರಕ್ಕಿ,JAYANAGAR,41590,199,Sarakki,,0.751,clean,198,0.2486,0,199:0.7514 198:0.2486,181,spatial-overlap
+188,Yediyur,ಯಡಿಯೂರು,PADMANABA NAGAR,35798,200,Yediyur,,0.514,split-primary,201,0.4514,0,200:0.5143 201:0.4514 202:0.0343,175,spatial-overlap
+189,Ganesh Mandir ward,ಗಣೇಶ್ ಮಂದಿರ ವಾರ್ಡ್,PADMANABA NAGAR,41923,202,Ganesh Mandir ward,,0.549,split-primary,206,0.2377,0,202:0.5492 206:0.2377 207:0.123 200:0.0902,122,spatial-overlap
+190,Devagiri Temple Ward,ದೇವಗಿರಿ ದೇವಸ್ಥಾನ ವಾರ್ಡ್,PADMANABA NAGAR,34546,202,Ganesh Mandir ward,,0.584,split-primary,201,0.3607,0,202:0.5845 201:0.3607 203:0.0548,219,spatial-overlap
+191,Banashankari Temple ward,ಬನಶಂಕರಿ ದೇವಸ್ಥಾನ ವಾರ್ಡ್,PADMANABA NAGAR,33264,203,Banashankari Temple ward,,0.719,clean,204,0.2806,0,203:0.7194 204:0.2806,196,spatial-overlap
+192,Kumaraswamy Layout,ಕುಮಾರಸ್ವಾಮಿ ಲೇಔಟ್,PADMANABA NAGAR,39477,204,Kumaraswamy Layout,,0.468,true-split,205,0.4595,0,204:0.4685 205:0.4595 206:0.0721,111,spatial-overlap
+193,Padmanabha Nagar,ಪದ್ಮನಾಭ ನಗರ,PADMANABA NAGAR,39418,206,Padmanabha Nagar,,0.52,split-primary,205,0.3785,0,206:0.5198 205:0.3785 204:0.0508 207:0.0508,177,spatial-overlap
+194,Chikkalsandra,ಚಿಕ್ಕಲಸಂದ್ರ,PADMANABA NAGAR,40297,207,Kamakya Nagar,,0.537,split-primary,208,0.4626,0,207:0.5374 208:0.4626,147,spatial-overlap
+195,Hosakerehalli,ಹೊಸಕೆರೆಹಳ್ಳಿ,PADMANABA NAGAR,41630,209,Hosakerehalli,,0.725,clean,208,0.2745,0,209:0.7255 208:0.2745,153,spatial-overlap
+196,Gavi Gangadhareshwara,ಗವಿ ಗಂಗಾಧರೇಶ್ವರ,BASAVANAGUDI,36487,211,Hanumanth Nagar,,0.665,split-primary,212,0.2642,0,211:0.6651 212:0.2642 213:0.0708,212,spatial-overlap
+197,Srinagar,ಶ್ರೀನಗರ,BASAVANAGUDI,36078,213,Srinagar,,0.628,split-primary,214,0.3718,0,213:0.6282 214:0.3718,156,spatial-overlap
+198,Dodda Ganapati,ದೊಡ್ಡ ಗಣಪತಿ,BASAVANAGUDI,42285,210,Basavanagudi,,0.411,true-split,211,0.3237,0,210:0.4106 211:0.3237 212:0.2126 213:0.0531,207,spatial-overlap
+199,Vidyapeeta ward,ವಿದ್ಯಾಪೀಠ ವಾರ್ಡ್,BASAVANAGUDI,42631,210,Basavanagudi,,0.491,true-split,216,0.3295,0,210:0.4913 216:0.3295 211:0.0867 212:0.0809 215:0.0116,173,spatial-overlap
+200,Swamy Vivekananda,ಸ್ವಾಮಿ ವಿವೇಕಾನಂದ,BASAVANAGUDI,42797,214,Girinagar,,0.622,split-primary,213,0.2556,0,214:0.6222 213:0.2556 215:0.0722 212:0.05,180,spatial-overlap
+201,Katriguppe,ಕತ್ರಿಗುಪ್ಪೆ,BASAVANAGUDI,42973,215,Katriguppe,,0.47,true-split,216,0.3179,0,215:0.4702 216:0.3179 214:0.2119,151,spatial-overlap
+202,Uttarahalli,ಉತ್ತರಹಳ್ಳಿ,BANGALORE SOUTH,39370,217,Uttarahalli,,0.595,split-primary,218,0.2474,0.0474,217:0.5947 218:0.2474 219:0.1105,190,spatial-overlap
+203,Subrahmanyapura,ಸುಬ್ರಹ್ಮಣ್ಯಪುರ,BANGALORE SOUTH,37014,218,Subramanyapura,,0.844,clean,219,0.1066,0,218:0.8443 219:0.1066 217:0.0246 221:0.0246,122,spatial-overlap
+204,Vasanthpura,ವಸಂತಪುರ,BANGALORE SOUTH,35615,219,Vasanthpura,,0.639,split-primary,221,0.1907,0,219:0.6392 221:0.1907 218:0.1701,194,spatial-overlap
+205,Yelchenahalli,ಯಲಚೇನಹಳ್ಳಿ,BANGALORE SOUTH,42186,220,Yelachenahalli,,0.876,clean,221,0.1243,0,220:0.8757 221:0.1243,169,spatial-overlap
+206,Konanakunte,ಕೋಣನಕುಂಟೆ,BANGALORE SOUTH,41028,221,Konanakunte,,0.83,clean,222,0.1135,0,221:0.8298 222:0.1135 224:0.0355 219:0.0213,141,spatial-overlap
+207,RBI layout,RBI ಲೇಔಟ್,BANGALORE SOUTH,42074,223,Chunchaghatta,,0.581,split-primary,222,0.4194,0,223:0.5806 222:0.4194,155,spatial-overlap
+208,Anjanapura,ಅಂಜನಾಪುರ,BANGALORE SOUTH,40478,224,Anjanapura,,0.864,clean,221,0.0761,0,224:0.8641 221:0.0761 223:0.0543 225:0.0054,184,spatial-overlap
+209,Gottigere,ಗೊಟ್ಟಿಗೆರೆ,BANGALORE SOUTH,41688,225,Gottigere,,0.652,split-primary,224,0.2593,0,225:0.6519 224:0.2593 223:0.0667 226:0.0222,135,spatial-overlap
+210,Kalena Agrahara,ಕಾಳೇನ ಅಗ್ರಹಾರ,BANGALORE SOUTH,38932,226,Kalena Agrahara,,0.96,clean,225,0.0404,0,226:0.9596 225:0.0404,99,spatial-overlap
+211,Begur,ಬೇಗೂರು,BANGALORE SOUTH,35004,227,Begur,,1,clean,,0,0,227:1,111,spatial-overlap
+212,Naganathapura,ನಾಗನಾಥಪುರ,BANGALORE SOUTH,34452,228,Naganathapura,,0.923,clean,227,0.0773,0,228:0.9227 227:0.0773,194,spatial-overlap
+213,Jaraganahalli,ಜರಗನಹಳ್ಳಿ,BOMMANAHALLI,37963,242,Jaraganahalli,,0.589,split-primary,241,0.4106,0,242:0.5894 241:0.4106,151,spatial-overlap
+214,Puttenahalli,ಪುಟ್ಟೇನಹಳ್ಳಿ,BOMMANAHALLI,42149,241,Puttenahalli - Sarakki Lake,,0.461,true-split,240,0.4466,0,241:0.4612 240:0.4466 238:0.0922,206,spatial-overlap
+215,Bilekhalli,ಬಿಳೇಕಹಳ್ಳಿ,BOMMANAHALLI,42179,240,Vinayakanagar,,0.505,split-primary,237,0.3458,0,240:0.5047 237:0.3458 238:0.1495,214,spatial-overlap
+216,Hulimavu,ಹುಳಿಮಾವು,BOMMANAHALLI,42690,239,Hulimavu,,0.831,clean,238,0.1692,0,239:0.8308 238:0.1692,195,spatial-overlap
+217,Kodichikkanahalli,ಕೋಡಿಚಿಕ್ಕನಹಳ್ಳಿ,BOMMANAHALLI,37559,237,Bilekhalli,,0.56,split-primary,238,0.1988,0,237:0.5602 238:0.1988 236:0.1867 235:0.0542,166,spatial-overlap
+218,Bommanahalli,ಬೊಮ್ಮನಹಳ್ಳಿ,BOMMANAHALLI,35206,235,Bommanahalli,,0.549,split-primary,233,0.406,0,235:0.5489 233:0.406 234:0.0451,133,spatial-overlap
+219,Hongasandra,ಹೊಂಗಸಂದ್ರ,BOMMANAHALLI,38184,234,Hongasandra,,0.542,split-primary,233,0.3105,0,234:0.5421 233:0.3105 235:0.0895 236:0.0579,190,spatial-overlap
+220,Gharebhavipalya,ಗಾರೆಭಾವಿಪಾಳ್ಯ,BOMMANAHALLI,40896,236,Devarachikkanahalli,,0.616,split-primary,233,0.344,0,236:0.616 233:0.344 234:0.04,125,spatial-overlap
+221,HSR Layout,HSR ಲೇಔಟ್,BOMMANAHALLI,38763,230,Agara,,0.718,clean,232,0.2818,0,230:0.7182 232:0.2818,181,spatial-overlap
+222,Ibluru,ಇಬ್ಲೂರು,BOMMANAHALLI,33851,229,Ibluru,,0.837,clean,230,0.1633,0,229:0.8367 230:0.1633,98,spatial-overlap
+223,Mangammanapalya,ಮಂಗಮ್ಮನಪಾಳ್ಯ,BOMMANAHALLI,40149,231,Mangammanapalya,,0.647,split-primary,232,0.3043,0,231:0.6467 232:0.3043 229:0.038 230:0.0109,184,spatial-overlap
+224,Hosa Road,ಹೊಸ ರಸ್ತೆ,BOMMANAHALLI,33979,232,HSR - Singasandra,,0.506,split-primary,233,0.4405,0,232:0.506 233:0.4405 229:0.0536,168,spatial-overlap
+225,Kudlu,ಕೂಡ್ಲು,ANEKAL (SC),16757,243,Kudlu,,1,clean,,0,0,243:1,207,spatial-overlap

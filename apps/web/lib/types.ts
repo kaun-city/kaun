@@ -270,6 +270,19 @@ export interface WorkOrder {
   payment_status?: string | null
   data_source?: string | null
   ifms_wbid?: number | null
+  // Ward crosswalk (Kaun-derived). ward_no = raw BBMP-Final-225 number;
+  // bbmp_ward_no = DataMeet-243 (what the map renders); source_ward_name =
+  // original BBMP ward label e.g. "005 Kogilu"; ward_class =
+  // 'ward' | 'citywide' | 'unmapped'. See data/ward-crosswalk/.
+  source_ward_name?: string | null
+  bbmp_ward_no?: number | null
+  ward_class?: string | null
+  // From v_work_orders_243 (overlap-inclusive). datameet243_no = the ward
+  // this row is being shown under; overlap_share = how much of its BBMP-225
+  // ward lies in that 243 ward; is_primary = max-overlap (the WO's "home").
+  datameet243_no?: number | null
+  overlap_share?: number | null
+  is_primary?: boolean | null
 }
 
 export interface ContractorProfile {

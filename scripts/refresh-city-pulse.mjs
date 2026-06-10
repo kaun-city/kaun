@@ -15,6 +15,11 @@
  */
 
 import { dbQuery, upsertRows } from "./lib/db.mjs"
+import { dedupKey } from "../apps/web/lib/pulse-dedup.mjs"
+
+// Cross-feed in-run dedup (first/highest-quality source wins; the DB
+// UNIQUE (dedup_key, city_id) is the cross-run guarantee).
+const seenKeys = new Set()
 
 const RSS_FEEDS = [
   { name: "Deccan Herald",  url: "https://www.deccanherald.com/bengaluru/rss" },
@@ -143,8 +148,10 @@ async function main() {
       is_active   BOOLEAN DEFAULT TRUE,
       is_editorial BOOLEAN DEFAULT FALSE,
       created_at  TIMESTAMPTZ DEFAULT NOW(),
-      UNIQUE (headline, city_id)
+      dedup_key   TEXT,
+      UNIQUE (dedup_key, city_id)
     );
+    ALTER TABLE city_pulse_facts ADD COLUMN IF NOT EXISTS dedup_key TEXT;
   `)
   console.log("Table city_pulse_facts ready.")
 
@@ -164,11 +171,12 @@ async function main() {
       category: fact.category,
       severity: fact.severity,
       headline: fact.headline,
+      dedup_key: dedupKey(fact.headline),
       source_name: fact.source_name,
       is_editorial: true,
       is_active: true,
       expires_at: "2099-12-31T00:00:00Z",  // Never expire
-    }], "headline,city_id").catch(() => {})  // Skip if already exists
+    }], "dedup_key,city_id").catch(() => {})  // Skip if already exists
   }
   console.log(`Seeded ${editorialFacts.length} editorial baseline facts`)
 
@@ -198,6 +206,9 @@ async function main() {
 
         classified++
         const headline = extractHeadline(item.title)
+        const key = dedupKey(headline)
+        if (seenKeys.has(key)) continue   // syndicated variant already taken this run
+        seenKeys.add(key)
         const severity = RED_CATEGORIES.has(category) ? "red" : "yellow"
         const pubDate = item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString()
 
@@ -207,6 +218,7 @@ async function main() {
             category,
             severity,
             headline,
+            dedup_key: key,
             detail: item.description?.substring(0, 500) || null,
             source_name: feed.name,
             source_url: item.link || null,
@@ -214,10 +226,10 @@ async function main() {
             is_active: true,
             is_editorial: false,
             expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          }], "headline,city_id")
+          }], "dedup_key,city_id")
           totalNew++
         } catch {
-          // Duplicate headline, skip
+          // Duplicate (dedup_key, city_id), skip
         }
       }
       console.log(`  Classified ${classified} civic articles`)

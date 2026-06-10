@@ -70,16 +70,20 @@ export async function GET(req: Request) {
         supabase.from("ward_potholes").select("ward_no, ward_name, complaints, data_year").order("ward_no"),
         supabase.from("ward_road_crashes").select("ward_no, crashes_2024, fatal_2024, crashes_2025, fatal_2025").order("ward_no"),
         supabase.from("ward_air_quality").select("ward_no, station_name, avg_pm25, avg_pm10, data_year").order("ward_no"),
-        supabase.from("bbmp_work_orders").select("ward_no").order("ward_no"),
+        supabase.from("bbmp_work_orders").select("ward_no, bbmp_ward_no, ward_class").order("ward_no"),
       ])
       const infraStats = infraRes.data ?? []
       const potholes = potholesRes.data ?? []
       const crashes = crashesRes.data ?? []
       const airQuality = airRes.data ?? []
-      // Count work orders per ward
+      // Count work orders per ward using bbmp_ward_no (DataMeet-243, from the
+      // Kaun ward crosswalk). Skip city-wide / unmapped rows so they don't
+      // inflate a ward. Defensive fallback to raw ward_no pre-backfill.
       const woCountMap = new Map<number, number>()
       for (const wo of workOrderRes.data ?? []) {
-        woCountMap.set(wo.ward_no, (woCountMap.get(wo.ward_no) ?? 0) + 1)
+        if (wo.ward_class === "citywide" || wo.ward_class === "unmapped") continue
+        const wn = wo.bbmp_ward_no ?? wo.ward_no
+        if (wn != null) woCountMap.set(wn, (woCountMap.get(wn) ?? 0) + 1)
       }
 
       // Build lookup maps

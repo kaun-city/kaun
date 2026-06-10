@@ -241,6 +241,29 @@ export default function StatusPage() {
               </div>
             )}
 
+            {/* Ward Crosswalk — Kaun-derived public dataset */}
+            <div className="rounded-xl bg-white/5 overflow-hidden mb-8">
+              <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+                <p className="text-white/40 text-[10px] uppercase tracking-wider">Ward Crosswalk · BBMP-Final-225 ↔ DataMeet-243</p>
+                <p className="text-white/20 text-[10px] font-mono">v2023f-2026.05</p>
+              </div>
+              <div className="px-4 py-3">
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-[10px]">
+                  <CovStat label="Wards mapped" value={225} />
+                  <CovStat label="Clean 1:1" value={123} />
+                  <CovStat label="Split-primary" value={83} />
+                  <CovStat label="True-split" value={19} />
+                  <CovStat label="WOs resolved" value={9963} />
+                  <CovStat label="City-wide WOs" value={5494} />
+                </div>
+                <p className="text-white/30 text-[10px] mt-3 leading-relaxed">
+                  First public BBMP-official ↔ KGIS ward correspondence, derived deterministically by
+                  spatial overlap. Methodology &amp; corrections:{" "}
+                  <a href="https://data.kaun.city/bengaluru/ward-crosswalk/" target="_blank" rel="noopener noreferrer" className="text-[#FF9933]/70 hover:text-[#FF9933]">data.kaun.city/bengaluru/ward-crosswalk</a>
+                </p>
+              </div>
+            </div>
+
             {/* User Engagement */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
               <div className="rounded-xl bg-[#FF9933]/5 border border-[#FF9933]/10 p-4">

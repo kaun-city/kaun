@@ -100,6 +100,35 @@ export default function HowItWorksPage() {
           </div>
         </Section>
 
+        <Section title="Ward delimitations & the Kaun crosswalk">
+          <p>
+            Bengaluru has been redrawn four times in a decade: the 2015 <strong>198</strong>-ward map,
+            BBMP&apos;s 2023 <strong>Final 225</strong>-ward delimitation, the KGIS/DataMeet <strong>243</strong>-ward
+            set, and the proposed Greater Bengaluru Authority <strong>369</strong>-ward structure (elections pending).
+          </p>
+          <p>
+            This matters because BBMP and IFMS tag every work order, payment and tender with the
+            <strong> 225</strong>-ward number, while the map you see here renders the <strong>243</strong>-ward
+            set. They are different boundary sets — so civic spending has to be translated between them,
+            or it shows under the wrong ward.
+          </p>
+          <div className="rounded-lg bg-white/5 border border-white/10 p-4">
+            <p className="text-white/70 font-medium mb-1">The Kaun Ward Crosswalk</p>
+            <p>
+              No government or civic source publishes a mapping between these two schemes. So we built one —
+              deterministically, by <strong>spatial polygon overlap</strong> of BBMP&apos;s official 225-ward
+              boundaries against the 243-ward boundaries (no name guessing). It is versioned, every row cites
+              its source, and it is open to public correction. Of 225 wards: 123 map cleanly 1:1, 83 have a
+              clear primary 243 ward, and 19 genuinely straddle multiple 243 wards (we assign by largest
+              overlap and record the full split).
+            </p>
+            <p className="mt-2">
+              Full methodology, the dataset (CSV/JSON), and how to report an error:{" "}
+              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">data.kaun.city/bengaluru/ward-crosswalk</a>.
+            </p>
+          </div>
+        </Section>
+
         <Section title="The accountability score">
           <p>
             Each ward shows an accountability score from 0 to 100. This is a number, not a letter grade.

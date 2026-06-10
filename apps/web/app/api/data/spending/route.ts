@@ -42,16 +42,42 @@ export async function GET(req: Request) {
     // IFMS-sourced rows (which don't — we don't capture net_paid without
     // a per-bill drill-down). net_paid becomes the tiebreaker for rows
     // with identical sanctioned amounts, not the primary ranking.
-    let query = supabase
-      .from("bbmp_work_orders")
-      .select("work_order_id, ward_no, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy, contractor_code, division, budget_head, start_date, end_date, order_ref, sbr_ref, bill_ref, payment_status, data_source, ifms_wbid")
-      .order("sanctioned_amount", { ascending: false, nullsFirst: false })
-      .order("net_paid", { ascending: false, nullsFirst: false })
-      .limit(wardNo ? 50 : 200)
-
-    if (wardNo) query = query.eq("ward_no", parseInt(wardNo))
+    // Per-ward: use v_work_orders_243 (overlap-inclusive — a work order shows
+    // in every DataMeet-243 ward its BBMP-225 ward materially overlaps;
+    // overlap_share + is_primary expose the mapping). City-wide top-N: read
+    // bbmp_work_orders directly so a multi-ward work order isn't duplicated.
+    let query
+    if (wardNo) {
+      query = supabase
+        .from("v_work_orders_243")
+        .select("work_order_id, ward_no, source_ward_name, datameet243_no, overlap_share, is_primary, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy, contractor_code, division, budget_head, start_date, end_date, order_ref, sbr_ref, bill_ref, payment_status, data_source, ifms_wbid")
+        .eq("datameet243_no", parseInt(wardNo))
+        .order("sanctioned_amount", { ascending: false, nullsFirst: false })
+        .order("net_paid", { ascending: false, nullsFirst: false })
+        .limit(50)
+    } else {
+      query = supabase
+        .from("bbmp_work_orders")
+        .select("work_order_id, ward_no, bbmp_ward_no, ward_class, description, contractor_name, contractor_phone, sanctioned_amount, net_paid, deduction, fy, contractor_code, division, budget_head, start_date, end_date, order_ref, sbr_ref, bill_ref, payment_status, data_source, ifms_wbid")
+        .order("sanctioned_amount", { ascending: false, nullsFirst: false })
+        .order("net_paid", { ascending: false, nullsFirst: false })
+        .limit(200)
+    }
     const { data } = await query
     result.work_orders = data ?? []
+  }
+
+  if (type === "citywide-works") {
+    // City-wide CE/Mayor works (ward_class='citywide') — not attributable to
+    // a single ward by nature (Major Roads, Lakes, SWM, Horticulture, etc.).
+    // Surfaced separately so they neither pollute a ward nor disappear.
+    const { data } = await supabase
+      .from("bbmp_work_orders")
+      .select("work_order_id, ward_no, source_ward_name, description, contractor_name, sanctioned_amount, net_paid, deduction, fy, division, budget_head, payment_status, data_source")
+      .eq("ward_class", "citywide")
+      .order("sanctioned_amount", { ascending: false, nullsFirst: false })
+      .limit(500)
+    result.citywide_works = data ?? []
   }
 
   if ((type === "ward-spending" || type === "all") && wardNo) {

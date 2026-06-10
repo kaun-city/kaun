@@ -345,10 +345,15 @@ export async function lookupLocalOffices(lat: number, lng: number): Promise<impo
  * populated) in a single mixed list ordered by contract size.
  */
 export async function fetchWorkOrders(wardNo: number, cityId = "bengaluru"): Promise<import('./types').WorkOrder[]> {
-  return await query<import('./types').WorkOrder>('bbmp_work_orders', {
-    'ward_no': `eq.${wardNo}`,
+  // v_work_orders_243 = bbmp_work_orders ⋈ ward_crosswalk (overlap-inclusive):
+  // a work order surfaces in every DataMeet-243 ward its BBMP-225 ward
+  // materially overlaps, so previously-empty wards are populated correctly.
+  // overlap_share + is_primary let the UI tag shared works. See
+  // data/ward-crosswalk/METHODOLOGY.md.
+  return await query<import('./types').WorkOrder>('v_work_orders_243', {
+    'datameet243_no': `eq.${wardNo}`,
     'city_id': `eq.${cityId}`,
-    'select': 'id,work_order_id,description,contractor,contractor_name,contractor_phone,sanctioned_amount,net_paid,deduction,fy,contractor_code,division,budget_head,start_date,end_date,order_ref,sbr_ref,bill_ref,payment_status,data_source,ifms_wbid',
+    'select': 'id,work_order_id,ward_no,bbmp_ward_no,datameet243_no,overlap_share,is_primary,ward_class,source_ward_name,description,contractor,contractor_name,contractor_phone,sanctioned_amount,net_paid,deduction,fy,contractor_code,division,budget_head,start_date,end_date,order_ref,sbr_ref,bill_ref,payment_status,data_source,ifms_wbid',
     'order': 'sanctioned_amount.desc.nullslast,net_paid.desc.nullslast',
     'limit': '20',
   })
