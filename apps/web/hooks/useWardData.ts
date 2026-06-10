@@ -168,7 +168,7 @@ export function useWardData(result: PinResult | null) {
   useEffect(() => {
     if (tab !== "spend" || !result?.ward_no) return
     if (city.features.budget && !budget) {
-      fetchBudgetSummary(city.budgetYear).then(setBudget)
+      fetchBudgetSummary(city.budgetYear, result.city_id).then(setBudget)
     }
     if (city.features.workOrders && workOrders.length === 0) {
       fetchWorkOrders(result.ward_no, result.city_id).then(setWorkOrders)
@@ -179,7 +179,7 @@ export function useWardData(result: PinResult | null) {
   useEffect(() => {
     if (tab !== "spend" || !result?.found || !result.ward_name) return
     if (city.features.tradeLicenses && tradeLicenses.length === 0) {
-      fetchTradeLicenses(result.ward_name, result.city_id).then(setTradeLicenses)
+      fetchTradeLicenses(result.ward_name, result.city_id, result.ward_no).then(setTradeLicenses)
     }
   }, [tab, result, tradeLicenses.length, city.features.tradeLicenses])
 
@@ -214,7 +214,7 @@ export function useWardData(result: PinResult | null) {
 
   useEffect(() => {
     if (tab !== "reach" || !result?.ward_name || grievances.length > 0) return
-    if (city.features.grievances) fetchWardGrievances(result.ward_name, result.city_id).then(setGrievances)
+    if (city.features.grievances) fetchWardGrievances(result.ward_name, result.city_id, result.ward_no).then(setGrievances)
   }, [tab, grievances, result?.ward_name, city.features.grievances])
 
   // ── WHO + CITIZEN: infra stats (needed for story card on WHO tab) ──

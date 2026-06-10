@@ -184,9 +184,12 @@ export async function voteFact(
  * Fetch ward/constituency statistics (population, infrastructure, etc.)
  */
 export async function fetchWardStats(assemblyConstituency: string, cityId = "bengaluru"): Promise<WardStats | null> {
+  // The ward_stats_by_ac RPC aggregates Bengaluru-only datasets (KGIS,
+  // BBMP infra). Passing an unknown p_city_id arg would 404 at PostgREST,
+  // so short-circuit for other cities until a city-aware RPC exists.
+  if (cityId !== "bengaluru") return null
   const data = await rpc<WardStats>("ward_stats_by_ac", {
     p_assembly_constituency: assemblyConstituency,
-    ...(cityId !== "bengaluru" ? { p_city_id: cityId } : {}),
   })
   return data
 }
@@ -232,19 +235,60 @@ export async function fetchRecentActivity(limit = 20) {
  * Fetch property tax collections for an assembly constituency.
  */
 export async function fetchPropertyTax(assemblyConstituency: string, cityId = "bengaluru"): Promise<PropertyTaxData | null> {
+  // property_tax_by_ac aggregates BBMP property-tax data. Passing an
+  // unknown p_city_id arg would 404 at PostgREST, so short-circuit for
+  // other cities. AP cities will read upyog_property_tax (by ward) once
+  // ward→AC mapping exists for them.
+  if (cityId !== "bengaluru") return null
   return await rpc<PropertyTaxData>("property_tax_by_ac", {
     p_assembly_constituency: assemblyConstituency,
-    ...(cityId !== "bengaluru" ? { p_city_id: cityId } : {}),
   })
 }
 
 /**
- * Fetch BBMP budget summary.
+ * Fetch city budget summary.
+ *
+ * Bengaluru: budget_summary RPC over the parsed BBMP budget.
+ * Other cities: city_budgets + city_budget_heads tables (populated by
+ * per-city seeders like seed-gvmc-budget.mjs), mapped into the same
+ * BudgetSummary shape so SpendTab renders identically.
  */
-export async function fetchBudgetSummary(financialYear = "2024-25"): Promise<BudgetSummary | null> {
-  return await rpc<BudgetSummary>("budget_summary", {
-    p_financial_year: financialYear,
+export async function fetchBudgetSummary(financialYear = "2024-25", cityId = "bengaluru"): Promise<BudgetSummary | null> {
+  if (cityId === "bengaluru") {
+    return await rpc<BudgetSummary>("budget_summary", {
+      p_financial_year: financialYear,
+    })
+  }
+
+  const totals = await query<{ fy: string; payments_cr: number | null }>("city_budgets", {
+    "city_id": `eq.${cityId}`,
+    "select": "fy,payments_cr",
+    "order": "fy.desc",
+    "limit": "1",
   })
+  if (!totals.length) return null
+  const { fy, payments_cr } = totals[0]
+
+  const heads = await query<{ head: string; amount_cr: number }>("city_budget_heads", {
+    "city_id": `eq.${cityId}`,
+    "fy": `eq.${fy}`,
+    "type": "eq.payment",
+    "select": "head,amount_cr",
+    "order": "amount_cr.desc",
+  })
+
+  return {
+    financial_year: fy,
+    budget_type: "Municipal budget",
+    total_expenditure_lakh: payments_cr != null ? payments_cr * 100 : null,
+    departments: heads.map(h => ({
+      department: h.head,
+      description: h.head,
+      amount_lakh: h.amount_cr * 100,
+      amount_cr: Math.round(h.amount_cr * 100) / 100,
+      pct: payments_cr ? Math.round((h.amount_cr / payments_cr) * 1000) / 10 : 0,
+    })),
+  }
 }
 
 /**
@@ -282,17 +326,40 @@ export async function fetchBuzz(wardName: string, subreddit = "bangalore"): Prom
 }
 
 /**
- * Fetch ward-level grievance aggregates (BBMP complaints, by ward name).
+ * Fetch ward-level grievance aggregates.
+ *
+ * Bengaluru: ward_grievances (BBMP complaints, keyed by ward_name).
+ * Other cities: upyog_grievances (UPYOG/CDMA PGR adapter output, keyed by
+ * ward_no) mapped into the same shape.
  */
-export async function fetchWardGrievances(wardName: string, cityId = "bengaluru"): Promise<WardGrievances[]> {
-  return await query<WardGrievances>("ward_grievances", {
-    "ward_name": `eq.${wardName}`,
+export async function fetchWardGrievances(wardName: string, cityId = "bengaluru", wardNo?: number | null): Promise<WardGrievances[]> {
+  if (cityId === "bengaluru") {
+    return await query<WardGrievances>("ward_grievances", {
+      "ward_name": `eq.${wardName}`,
+      "city_id": `eq.${cityId}`,
+      "category": "eq.ALL",
+      "select": "year,total_complaints,closed,in_progress,registered,reopened",
+      "order": "year.desc",
+      "limit": "3",
+    })
+  }
+
+  if (wardNo == null) return []
+  const rows = await query<{ period: string; open_count: number; closed_count: number; in_progress_count: number }>("upyog_grievances", {
     "city_id": `eq.${cityId}`,
-    "category": "eq.ALL",
-    "select": "year,total_complaints,closed,in_progress,registered,reopened",
-    "order": "year.desc",
+    "ward_no": `eq.${wardNo}`,
+    "select": "period,open_count,closed_count,in_progress_count",
+    "order": "period.desc",
     "limit": "3",
   })
+  return rows.map(r => ({
+    year: parseInt(r.period, 10) || new Date().getFullYear(),
+    total_complaints: (r.open_count ?? 0) + (r.closed_count ?? 0) + (r.in_progress_count ?? 0),
+    closed: r.closed_count ?? 0,
+    in_progress: r.in_progress_count ?? 0,
+    registered: r.open_count ?? 0,
+    reopened: 0,
+  }))
 }
 
 /**
@@ -311,15 +378,38 @@ export async function fetchSakalaPerformance(acName: string): Promise<SakalaPerf
 
 /**
  * Fetch trade license stats for a ward (aggregated by year).
+ *
+ * Bengaluru: ward_trade_licenses (BBMP data, keyed by ward_name).
+ * Other cities: upyog_trade_licences (UPYOG/CDMA adapter output, keyed by
+ * ward_no) mapped into the same shape.
  */
-export async function fetchTradeLicenses(wardName: string, cityId = "bengaluru"): Promise<import('./types').WardTradeLicenses[]> {
-  return await query<import('./types').WardTradeLicenses>('ward_trade_licenses', {
-    'ward_name': `eq.${wardName}`,
+export async function fetchTradeLicenses(wardName: string, cityId = "bengaluru", wardNo?: number | null): Promise<import('./types').WardTradeLicenses[]> {
+  if (cityId === "bengaluru") {
+    return await query<import('./types').WardTradeLicenses>('ward_trade_licenses', {
+      'ward_name': `eq.${wardName}`,
+      'city_id': `eq.${cityId}`,
+      'select': 'year,total_licenses,new_licenses,renewals,total_revenue,top_trade_type',
+      'order': 'year.desc',
+      'limit': '3',
+    })
+  }
+
+  if (wardNo == null) return []
+  const rows = await query<{ fy: string; new_licences: number; renewals: number; total_revenue: number }>('upyog_trade_licences', {
     'city_id': `eq.${cityId}`,
-    'select': 'year,total_licenses,new_licenses,renewals,total_revenue,top_trade_type',
-    'order': 'year.desc',
+    'ward_no': `eq.${wardNo}`,
+    'select': 'fy,new_licences,renewals,total_revenue',
+    'order': 'fy.desc',
     'limit': '3',
   })
+  return rows.map(r => ({
+    year: parseInt(r.fy, 10) || new Date().getFullYear(),
+    total_licenses: (r.new_licences ?? 0) + (r.renewals ?? 0),
+    new_licenses: r.new_licences ?? 0,
+    renewals: r.renewals ?? 0,
+    total_revenue: r.total_revenue ?? 0,
+    top_trade_type: null,
+  }))
 }
 
 /**
