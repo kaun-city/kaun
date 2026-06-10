@@ -29,7 +29,7 @@
  * Env: SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_MANAGEMENT_TOKEN
  */
 
-import { dbQuery, upsertRows } from "../lib/db.mjs"
+import { dbQuery, upsertRows, ensurePublicReadRls } from "../lib/db.mjs"
 import { extractEmbeddedState, parseHtmlTable } from "../lib/html.mjs"
 
 // ─── ULB → city_id mapping ───────────────────────────────────
@@ -208,6 +208,7 @@ async function persistGrievances(cityId, rows) {
       PRIMARY KEY (city_id, ward_no, period)
     );
   `)
+  await ensurePublicReadRls("upyog_grievances")
   const dbRows = rows
     .filter(r => r.ward_no != null)
     .map(r => ({
@@ -241,6 +242,7 @@ async function persistPropertyTax(cityId, rows) {
       PRIMARY KEY (city_id, ward_no, fy)
     );
   `)
+  await ensurePublicReadRls("upyog_property_tax")
   const dbRows = rows
     .filter(r => r.ward_no != null)
     .map(r => ({ ...r, city_id: cityId, updated_at: new Date().toISOString() }))
@@ -265,6 +267,7 @@ async function persistTradeLicences(cityId, rows) {
       PRIMARY KEY (city_id, ward_no, fy)
     );
   `)
+  await ensurePublicReadRls("upyog_trade_licences")
   const dbRows = rows
     .filter(r => r.ward_no != null)
     .map(r => ({ ...r, city_id: cityId, updated_at: new Date().toISOString() }))

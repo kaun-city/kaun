@@ -25,6 +25,36 @@ export async function dbQuery(sql) {
   throw new Error("SUPABASE_MANAGEMENT_TOKEN not set")
 }
 
+/**
+ * Enable RLS on a table with an anon/authenticated public-read policy.
+ * Matches the per-bucket pattern established in the May 2026 RLS hardening
+ * (scripts/migrate-rls-surgical-fix.mjs): public civic data is readable by
+ * everyone; writes only flow through the service role, which bypasses RLS.
+ *
+ * Idempotent — safe to call on every seeder/adapter run right after
+ * CREATE TABLE IF NOT EXISTS. Without this, freshly created tables are
+ * unreadable by the frontend's anon key and get flagged by Supabase
+ * Security Advisor.
+ */
+export async function ensurePublicReadRls(table) {
+  await dbQuery(`
+    DO $$
+    BEGIN
+      IF NOT (SELECT relrowsecurity FROM pg_class
+                WHERE oid = 'public.${table}'::regclass) THEN
+        EXECUTE 'ALTER TABLE public.${table} ENABLE ROW LEVEL SECURITY';
+      END IF;
+      IF NOT EXISTS (SELECT 1 FROM pg_policies
+                      WHERE schemaname = 'public' AND tablename = '${table}'
+                        AND policyname = '${table}_anon_read') THEN
+        EXECUTE 'CREATE POLICY ${table}_anon_read
+                   ON public.${table}
+                   FOR SELECT TO anon, authenticated USING (true)';
+      END IF;
+    END $$;
+  `)
+}
+
 export async function rpc(fn, args) {
   const res = await fetch(`${SUPA_URL}/rest/v1/rpc/${fn}`, {
     method: "POST",

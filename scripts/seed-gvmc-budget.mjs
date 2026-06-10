@@ -17,7 +17,7 @@
 import { readFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import { dirname, join, isAbsolute } from "node:path"
-import { dbQuery, upsertRows } from "./lib/db.mjs"
+import { dbQuery, upsertRows, ensurePublicReadRls } from "./lib/db.mjs"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const args = process.argv.slice(2)
@@ -58,6 +58,9 @@ await dbQuery(`
     PRIMARY KEY (city_id, fy, head)
   );
 `)
+
+await ensurePublicReadRls("city_budgets")
+await ensurePublicReadRls("city_budget_heads")
 
 await upsertRows("city_budgets", [{
   city_id: cityId,

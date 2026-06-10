@@ -22,7 +22,7 @@
  */
 
 import { writeFile } from "node:fs/promises"
-import { dbQuery } from "./lib/db.mjs"
+import { dbQuery, ensurePublicReadRls } from "./lib/db.mjs"
 import { kmlToGeoJSON, resolveWardNo, resolveWardName } from "./lib/kml.mjs"
 
 // OpenCity dataset for Vizag wards (98-ward 2024 delimitation)
@@ -110,6 +110,7 @@ async function main() {
     CREATE INDEX IF NOT EXISTS wards_geom_idx ON wards USING GIST (geom);
     CREATE INDEX IF NOT EXISTS wards_city_idx ON wards (city_id);
   `)
+  await ensurePublicReadRls("wards")
 
   // Step 5: clear and re-seed Vizag rows
   await dbQuery(`DELETE FROM wards WHERE city_id = 'visakhapatnam';`)

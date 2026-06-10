@@ -22,7 +22,7 @@
  * Env: SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_MANAGEMENT_TOKEN
  */
 
-import { dbQuery, upsertRows } from "../lib/db.mjs"
+import { dbQuery, upsertRows, ensurePublicReadRls } from "../lib/db.mjs"
 import { extractTableByClass as extractTable } from "../lib/html.mjs"
 
 const PORTAL = "https://tender.apeprocurement.gov.in"
@@ -134,6 +134,7 @@ async function persistTenders(cityId, tenders) {
     CREATE INDEX IF NOT EXISTS ap_eproc_awardee_idx ON ap_eproc_awarded_tenders (awardee_name);
     CREATE INDEX IF NOT EXISTS ap_eproc_awarded_date_idx ON ap_eproc_awarded_tenders (awarded_date);
   `)
+  await ensurePublicReadRls("ap_eproc_awarded_tenders")
 
   const safeDate = (s) => {
     if (!s) return null
