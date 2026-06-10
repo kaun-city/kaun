@@ -122,7 +122,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
             <p className="text-white/40 text-xs mt-0.5 truncate">
               {result.gba_corporation ? (
                 <>
-                  Bengaluru {result.gba_corporation}
+                  {getCity(result.city_id).name} {result.gba_corporation}
                   {result.gba_ward_no != null && <> &middot; Ward {result.gba_ward_no}</>}
                   {result.assembly_constituency && <> &middot; {result.assembly_constituency}</>}
                 </>

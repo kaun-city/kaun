@@ -22,6 +22,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url)
   const ward = url.searchParams.get("ward")
   const flagged = url.searchParams.get("flagged")
+  const cityId = url.searchParams.get("city") || "bengaluru"
   const limit = Math.min(parseInt(url.searchParams.get("limit") ?? "100"), 500)
 
   const supabase = createClient(
@@ -32,7 +33,7 @@ export async function GET(req: Request) {
   let query = supabase
     .from("contractor_profiles")
     .select("entity_id, canonical_name, aliases, phone, total_contracts, total_value_lakh, total_paid_lakh, total_deduction_lakh, avg_deduction_pct, ward_count, wards, first_seen, last_seen, is_govt_entity, blacklist_flags")
-    .eq("city_id", "bengaluru")
+    .eq("city_id", cityId)
     .order("total_value_lakh", { ascending: false })
     .limit(limit)
 

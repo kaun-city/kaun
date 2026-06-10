@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
 import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { getCity } from "@/lib/cities"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
@@ -17,6 +18,7 @@ export interface RTIDraftRequest {
   ward_name: string
   ward_no: number
   assembly_constituency: string
+  city?: string
   // Issue-specific context
   mla_name?: string
   mla_party?: string
@@ -28,32 +30,39 @@ export interface RTIDraftRequest {
   ward_spend_roads_pct?: number | null
 }
 
-const ISSUE_CONFIG: Record<RTIIssueType, { subject: string; authority: string; address: string }> = {
-  lad_funds: {
-    subject: "Information regarding utilization of Local Area Development (LAD) funds by MLA",
-    authority: "The Public Information Officer, Department of Parliamentary Affairs & Legislation, Government of Karnataka",
-    address: "Vidhana Soudha, Dr. B.R. Ambedkar Veedhi, Bengaluru - 560001",
-  },
-  committee_meetings: {
-    subject: "Information regarding Ward Committee meetings under BBMP Act",
-    authority: "The Public Information Officer, Joint Commissioner (Wards), Bruhat Bengaluru Mahanagara Palike",
-    address: "N.R. Square, Hudson Circle, Bengaluru - 560002",
-  },
-  pothole_complaints: {
-    subject: "Information regarding pothole complaints and road repair status",
-    authority: "The Public Information Officer, Executive Engineer (Roads), Bruhat Bengaluru Mahanagara Palike",
-    address: "N.R. Square, Hudson Circle, Bengaluru - 560002",
-  },
-  ward_spend: {
-    subject: "Information regarding BBMP ward-level expenditure and project completion",
-    authority: "The Public Information Officer, Chief Accounts Officer, Bruhat Bengaluru Mahanagara Palike",
-    address: "N.R. Square, Hudson Circle, Bengaluru - 560002",
-  },
-  work_orders: {
-    subject: "Information regarding BBMP work orders issued and completion status",
-    authority: "The Public Information Officer, Executive Engineer (Projects), Bruhat Bengaluru Mahanagara Palike",
-    address: "N.R. Square, Hudson Circle, Bengaluru - 560002",
-  },
+function getIssueConfig(issueType: RTIIssueType, agencyFull: string, rtiAddress: string): { subject: string; authority: string; address: string } {
+  switch (issueType) {
+    case "lad_funds":
+      return {
+        subject: "Information regarding utilization of Local Area Development (LAD) funds by MLA",
+        authority: "The Public Information Officer, Department of Parliamentary Affairs & Legislation, Government of Karnataka",
+        address: "Vidhana Soudha, Dr. B.R. Ambedkar Veedhi, Bengaluru - 560001",
+      }
+    case "committee_meetings":
+      return {
+        subject: "Information regarding Ward Committee meetings",
+        authority: `The Public Information Officer, Joint Commissioner (Wards), ${agencyFull}`,
+        address: rtiAddress,
+      }
+    case "pothole_complaints":
+      return {
+        subject: "Information regarding pothole complaints and road repair status",
+        authority: `The Public Information Officer, Executive Engineer (Roads), ${agencyFull}`,
+        address: rtiAddress,
+      }
+    case "ward_spend":
+      return {
+        subject: "Information regarding ward-level expenditure and project completion",
+        authority: `The Public Information Officer, Chief Accounts Officer, ${agencyFull}`,
+        address: rtiAddress,
+      }
+    case "work_orders":
+      return {
+        subject: "Information regarding work orders issued and completion status",
+        authority: `The Public Information Officer, Executive Engineer (Projects), ${agencyFull}`,
+        address: rtiAddress,
+      }
+  }
 }
 
 function buildContext(d: RTIDraftRequest): string {
@@ -92,14 +101,17 @@ export async function POST(req: Request) {
 
   try {
   const data: RTIDraftRequest = await req.json()
-  const config = ISSUE_CONFIG[data.issue_type]
+  const cityConfig = getCity(data.city ?? "bengaluru")
+  const agencyFull = cityConfig.localAgency?.full ?? "Municipal Corporation"
+  const rtiAddress = cityConfig.localAgency?.rtiAddress ?? ""
+  const config = getIssueConfig(data.issue_type, agencyFull, rtiAddress)
   const context = buildContext(data)
 
   const { text } = await generateText({
     model: openai("gpt-4o-mini"),
-    system: `You are an RTI (Right to Information Act 2005) expert for Karnataka, India.
+    system: `You are an RTI (Right to Information Act 2005) expert for ${cityConfig.state}, India.
 Generate a formal RTI application that:
-- Follows the standard Karnataka RTI format exactly
+- Follows the standard ${cityConfig.state} RTI format exactly
 - Asks 3-5 specific, pointed questions that are answerable (not vague)
 - References the exact data anomaly that prompted this request
 - Uses correct legal terminology
@@ -118,7 +130,7 @@ Subject: ${config.subject}
 Context data:
 ${context}
 
-The applicant is a resident of ${data.ward_name} ward, ${data.assembly_constituency} constituency, Bengaluru.`,
+The applicant is a resident of ${data.ward_name} ward, ${data.assembly_constituency} constituency, ${cityConfig.name}.`,
     maxOutputTokens: 600,
   })
 

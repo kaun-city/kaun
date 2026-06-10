@@ -3,6 +3,7 @@ import { generateText } from "ai"
 import { createClient } from "@supabase/supabase-js"
 import { createHash } from "crypto"
 import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { getCity } from "@/lib/cities"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
@@ -11,6 +12,7 @@ export interface WardStoryRequest {
   ward_no: number
   ward_name: string
   assembly_constituency: string
+  city_id?: string
   // WHO
   mla_name?: string
   mla_party?: string
@@ -77,6 +79,7 @@ export async function POST(req: Request) {
   )
 
   const data: WardStoryRequest = await req.json()
+  const cityConfig = getCity(data.city_id)
 
   // Check cache (valid for 7 days)
   const hash = createHash("md5").update(JSON.stringify(data)).digest("hex").slice(0, 8)
@@ -98,7 +101,7 @@ export async function POST(req: Request) {
   const context = buildPrompt(data)
   const { text } = await generateText({
     model: openai("gpt-4o-mini"),
-    system: `You are a civic accountability analyst for Bengaluru, India.
+    system: `You are a civic accountability analyst for ${cityConfig.name}, India.
 Write a 2-3 sentence ward brief (under 80 words) using ONLY the numbers in the data provided.
 
 STRICT RULES:

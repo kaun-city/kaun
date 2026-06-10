@@ -464,9 +464,9 @@ export async function fetchContractorProfile(phone: string): Promise<import('./t
 /**
  * Fetch top contractors for the city by total value.
  */
-export async function fetchTopContractors(limit = 10): Promise<import('./types').ContractorProfile[]> {
+export async function fetchTopContractors(limit = 10, cityId = "bengaluru"): Promise<import('./types').ContractorProfile[]> {
   return await query<import('./types').ContractorProfile>('contractor_profiles', {
-    'city_id': 'eq.bengaluru',
+    'city_id': `eq.${cityId}`,
     'select': 'entity_id,canonical_name,aliases,phone,total_contracts,total_value_lakh,total_paid_lakh,total_deduction_lakh,avg_deduction_pct,ward_count,wards,first_seen,last_seen,is_govt_entity,blacklist_flags',
     'order': 'total_value_lakh.desc',
     'limit': String(limit),
@@ -476,10 +476,10 @@ export async function fetchTopContractors(limit = 10): Promise<import('./types')
 /**
  * Fetch contractors flagged on any blacklist.
  */
-export async function fetchFlaggedContractors(): Promise<import('./types').ContractorProfile[]> {
+export async function fetchFlaggedContractors(cityId = "bengaluru"): Promise<import('./types').ContractorProfile[]> {
   return await query<import('./types').ContractorProfile>('contractor_profiles', {
     'blacklist_flags': 'neq.{}',
-    'city_id': 'eq.bengaluru',
+    'city_id': `eq.${cityId}`,
     'select': 'entity_id,canonical_name,aliases,phone,total_contracts,total_value_lakh,total_paid_lakh,total_deduction_lakh,avg_deduction_pct,ward_count,wards,first_seen,last_seen,is_govt_entity,blacklist_flags',
     'order': 'total_value_lakh.desc',
   })

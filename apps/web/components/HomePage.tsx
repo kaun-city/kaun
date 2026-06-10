@@ -9,14 +9,14 @@ import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
 import { CitySwitcher } from "@/components/CitySwitcher"
 import ReportSheet from "@/components/shared/ReportSheet"
-import { getCity } from "@/lib/cities"
+import { getCity, type CityConfig } from "@/lib/cities"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
 const CITY_REQUEST_URL =
   "https://github.com/kaun-city/kaun/issues/new?template=city-request.yml&labels=city-request"
 
-function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
+function OutOfBoundsCard({ activeCity, onClose }: { activeCity: CityConfig; onClose: () => void }) {
   return (
     <div className="
       fixed inset-x-0 bottom-0 z-[1000]
@@ -29,9 +29,9 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
       ">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-white font-semibold text-base">Not in Bengaluru?</p>
+            <p className="text-white font-semibold text-base">{`Not in ${activeCity.name}?`}</p>
             <p className="text-white/50 text-sm mt-1">
-              Kaun only covers Bengaluru right now.
+              {`Outside ${activeCity.name} city limits. Try dropping a pin within the boundary, or switch cities.`}
             </p>
           </div>
           <button
@@ -454,7 +454,7 @@ export default function HomePage() {
       )}
 
       {outOfBounds && (
-        <OutOfBoundsCard onClose={handleClose} />
+        <OutOfBoundsCard activeCity={activeCity} onClose={handleClose} />
       )}
 
       {showReport && reportLat !== null && reportLng !== null && (

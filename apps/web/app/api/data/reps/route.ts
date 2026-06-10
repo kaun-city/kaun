@@ -22,6 +22,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url)
   const constituency = url.searchParams.get("constituency")
   const role = url.searchParams.get("role")
+  const cityId = url.searchParams.get("city") || "bengaluru"
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -32,12 +33,16 @@ export async function GET(req: Request) {
   let repQuery = supabase
     .from("elected_reps")
     .select("role, constituency, name, party, elected_since, phone, criminal_cases, age, profession, education, data_source")
+    .eq("city_id", cityId)
     .order("constituency")
 
   if (constituency) repQuery = repQuery.ilike("constituency", `%${constituency}%`)
   if (role) repQuery = repQuery.eq("role", role)
 
   // Report cards
+  // NOTE: rep_report_cards does not have a city_id column yet — filtering by
+  // constituency + role is sufficient for now since constituency names don't
+  // overlap across cities. Add .eq("city_id", cityId) once the column exists.
   let rcQuery = supabase
     .from("rep_report_cards")
     .select("role, constituency, attendance_pct, questions_asked, debates, bills_introduced, committees, lad_utilization_pct, net_worth_growth_pct, criminal_cases, term")
@@ -58,7 +63,9 @@ export async function GET(req: Request) {
   return Response.json({
     data: merged,
     count: merged.length,
-    source: "kaun.city — Election Commission affidavits via MyNeta, CIVIC Bengaluru via opencity.in",
+    source: cityId === "bengaluru"
+      ? "kaun.city — Election Commission affidavits via MyNeta, CIVIC Bengaluru via opencity.in"
+      : "kaun.city — Election Commission affidavits via MyNeta, public records",
     license: "Public data, MIT licensed platform",
   }, { headers: CORS_HEADERS })
 }

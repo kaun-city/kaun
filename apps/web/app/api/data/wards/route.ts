@@ -21,6 +21,7 @@ export function OPTIONS() {
 export async function GET(req: Request) {
   const url = new URL(req.url)
   const wardNo = url.searchParams.get("ward")
+  const cityId = url.searchParams.get("city") || "bengaluru"
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -31,7 +32,7 @@ export async function GET(req: Request) {
   if (wardNo) {
     const wn = parseInt(wardNo)
     const [ward, infra, potholes, crashes, air, spend, workOrders] = await Promise.all([
-      supabase.from("wards").select("ward_no, ward_name, assembly_constituency, zone").eq("ward_no", wn).eq("city_id", "bengaluru").single(),
+      supabase.from("wards").select("ward_no, ward_name, assembly_constituency, zone").eq("ward_no", wn).eq("city_id", cityId).single(),
       supabase.from("ward_infra_stats").select("signal_count, bus_stop_count, daily_trips").eq("ward_no", wn).single(),
       supabase.from("ward_potholes").select("complaints, data_year").eq("ward_no", wn).single(),
       supabase.from("ward_road_crashes").select("crashes_2024, fatal_2024, crashes_2025, fatal_2025").eq("ward_no", wn).single(),
@@ -60,7 +61,7 @@ export async function GET(req: Request) {
   const { data } = await supabase
     .from("wards")
     .select("ward_no, ward_name, assembly_constituency, zone")
-    .eq("city_id", "bengaluru")
+    .eq("city_id", cityId)
     .order("ward_no")
 
   return Response.json({

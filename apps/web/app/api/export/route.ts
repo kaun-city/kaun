@@ -12,6 +12,7 @@ export const maxDuration = 30
 export async function GET(req: Request) {
   const url = new URL(req.url)
   const type = url.searchParams.get("type") || "all"
+  const cityId = url.searchParams.get("city") || "bengaluru"
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,7 +44,7 @@ export async function GET(req: Request) {
       const { data: wardsPreload } = await supabase
         .from("wards")
         .select("assembly_constituency")
-        .eq("city_id", "bengaluru")
+        .eq("city_id", cityId)
       const uniqueACs = [...new Set((wardsPreload ?? []).map(w => w.assembly_constituency).filter(Boolean))]
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,7 +99,7 @@ export async function GET(req: Request) {
       const { data: wards } = await supabase
         .from("wards")
         .select("ward_no, ward_name, assembly_constituency, zone")
-        .eq("city_id", "bengaluru")
+        .eq("city_id", cityId)
         .order("ward_no")
 
       // Stats are AC-level — normalize for matching
@@ -167,7 +168,7 @@ export async function GET(req: Request) {
         }
       })
 
-      return csvResponse(combined, "kaun-bengaluru-ward-data.csv")
+      return csvResponse(combined, `kaun-${cityId}-ward-data.csv`)
     }
 
     if (type === "ward-demographics") {
