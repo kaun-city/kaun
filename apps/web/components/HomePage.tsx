@@ -1,15 +1,18 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useCallback, useState, useRef, useEffect } from "react"
+import { useCallback, useState, useRef, useEffect, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
 import { CitySwitcher } from "@/components/CitySwitcher"
+import { LayerControl } from "@/components/LayerControl"
 import ReportSheet from "@/components/shared/ReportSheet"
 import { getCity } from "@/lib/cities"
+import { getLayer } from "@/lib/map-layers"
+import type { ChoroplethData } from "@/components/MapView"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -110,6 +113,60 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery]   = useState("")
   const [wardOptions, setWardOptions]   = useState<WardOption[]>([])
   const searchInputRef = useRef<HTMLInputElement>(null)
+
+  // Choropleth layer state — shareable via ?layer= URL param
+  const [activeLayer, setActiveLayer] = useState<string | null>(
+    () => getLayer(searchParams.get("layer"))?.id ?? null
+  )
+  const [layerValues, setLayerValues] = useState<{ values: Record<number, number>; breaks: number[] } | null>(null)
+  const [layerLoading, setLayerLoading] = useState(false)
+
+  // Fetch per-ward values when a layer is picked; keep the URL shareable
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (activeLayer) params.set("layer", activeLayer)
+    else params.delete("layer")
+    const qs = params.toString()
+    window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname)
+
+    if (!activeLayer) {
+      setLayerValues(null)
+      return
+    }
+    let cancelled = false
+    setLayerLoading(true)
+    fetch(`/api/map-layers?layer=${activeLayer}&city=${activeCity.id}`)
+      .then(r => r.json())
+      .then(data => {
+        if (cancelled) return
+        setLayerValues({ values: data.values ?? {}, breaks: data.breaks ?? [] })
+        setLayerLoading(false)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setLayerValues({ values: {}, breaks: [] })
+        setLayerLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [activeLayer, activeCity.id])
+
+  const choropleth: ChoroplethData | null = useMemo(() => {
+    const meta = getLayer(activeLayer)
+    if (!meta || !layerValues) return null
+    return { values: layerValues.values, breaks: layerValues.breaks, ramp: meta.ramp }
+  }, [activeLayer, layerValues])
+
+  const layerLegend = useMemo(() => {
+    if (!layerValues) return null
+    const nums = Object.values(layerValues.values)
+    if (nums.length === 0) return { breaks: [], min: 0, max: 0, wardCount: 0 }
+    return {
+      breaks: layerValues.breaks,
+      min: Math.min(...nums),
+      max: Math.max(...nums),
+      wardCount: nums.length,
+    }
+  }, [layerValues])
 
   // Load ward centroids for search — uses the active city's GeoJSON
   useEffect(() => {
@@ -440,6 +497,7 @@ export default function HomePage() {
           resizeKey={showCard ? 1 : 0}
           reportRefresh={reportRefresh}
           reportPickMode={reportPickMode}
+          choropleth={choropleth}
           onReportPin={(lat, lng) => {
             setReportLat(lat)
             setReportLng(lng)
@@ -447,6 +505,16 @@ export default function HomePage() {
             setShowReport(true)
           }}
         />
+
+        {/* Choropleth layer switcher — hidden while picking a report spot */}
+        {!reportPickMode && (
+          <LayerControl
+            activeId={activeLayer}
+            onSelect={setActiveLayer}
+            legend={layerLegend}
+            loading={layerLoading}
+          />
+        )}
       </div>
 
       {showCard && (
