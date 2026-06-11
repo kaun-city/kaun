@@ -1,15 +1,20 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useCallback, useState, useRef, useEffect } from "react"
+import { useCallback, useState, useRef, useEffect, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
 import { CitySwitcher } from "@/components/CitySwitcher"
+import { LayerControl } from "@/components/LayerControl"
+import { CorporatorVacancy } from "@/components/CorporatorVacancy"
+import { WardFinder } from "@/components/WardFinder"
 import ReportSheet from "@/components/shared/ReportSheet"
 import { getCity } from "@/lib/cities"
+import { getLayer } from "@/lib/map-layers"
+import type { ChoroplethData } from "@/components/MapView"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -102,6 +107,7 @@ export default function HomePage() {
   const [reportLat, setReportLat]       = useState<number | null>(null)
   const [reportLng, setReportLng]       = useState<number | null>(null)
   const [reportRefresh, setReportRefresh] = useState(0)
+  const [wardFinderOpen, setWardFinderOpen] = useState(false)
   const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
   const deepLinkHandled = useRef(false)
 
@@ -110,6 +116,60 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery]   = useState("")
   const [wardOptions, setWardOptions]   = useState<WardOption[]>([])
   const searchInputRef = useRef<HTMLInputElement>(null)
+
+  // Choropleth layer state — shareable via ?layer= URL param
+  const [activeLayer, setActiveLayer] = useState<string | null>(
+    () => getLayer(searchParams.get("layer"))?.id ?? null
+  )
+  const [layerValues, setLayerValues] = useState<{ values: Record<number, number>; breaks: number[] } | null>(null)
+  const [layerLoading, setLayerLoading] = useState(false)
+
+  // Fetch per-ward values when a layer is picked; keep the URL shareable
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (activeLayer) params.set("layer", activeLayer)
+    else params.delete("layer")
+    const qs = params.toString()
+    window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname)
+
+    if (!activeLayer) {
+      setLayerValues(null)
+      return
+    }
+    let cancelled = false
+    setLayerLoading(true)
+    fetch(`/api/map-layers?layer=${activeLayer}&city=${activeCity.id}`)
+      .then(r => r.json())
+      .then(data => {
+        if (cancelled) return
+        setLayerValues({ values: data.values ?? {}, breaks: data.breaks ?? [] })
+        setLayerLoading(false)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setLayerValues({ values: {}, breaks: [] })
+        setLayerLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [activeLayer, activeCity.id])
+
+  const choropleth: ChoroplethData | null = useMemo(() => {
+    const meta = getLayer(activeLayer)
+    if (!meta || !layerValues) return null
+    return { values: layerValues.values, breaks: layerValues.breaks, ramp: meta.ramp }
+  }, [activeLayer, layerValues])
+
+  const layerLegend = useMemo(() => {
+    if (!layerValues) return null
+    const nums = Object.values(layerValues.values)
+    if (nums.length === 0) return { breaks: [], min: 0, max: 0, wardCount: 0 }
+    return {
+      breaks: layerValues.breaks,
+      min: Math.min(...nums),
+      max: Math.max(...nums),
+      wardCount: nums.length,
+    }
+  }, [layerValues])
 
   // Load ward centroids for search — uses the active city's GeoJSON
   useEffect(() => {
@@ -355,6 +415,9 @@ export default function HomePage() {
         {/* City Pulse — accountability headlines before pin drop */}
         {!showCard && !outOfBounds && <CityPulse cityId={activeCity.id} />}
 
+        {/* Corporator vacancy counter — Bengaluru's most brutal stat */}
+        {!showCard && !outOfBounds && <CorporatorVacancy cityId={activeCity.id} />}
+
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
           <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[900]">
@@ -396,21 +459,39 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Floating Report button — enters pick mode */}
+        {/* Floating action buttons */}
         {!reportPickMode && (
-          <button
-            onClick={() => setReportPickMode(true)}
-            className="
-              absolute bottom-16 right-4 z-[900]
-              flex items-center gap-2 px-4 py-2.5 rounded-full
-              bg-[#111] border border-white/15 hover:border-white/30
-              text-white/70 hover:text-white text-sm font-medium
-              shadow-lg transition-all duration-150
-            "
-          >
-            <span className="text-[#FF9933] text-base font-bold">+</span>
-            Report
-          </button>
+          <div className="absolute bottom-16 right-4 z-[900] flex flex-col gap-2 items-end">
+            {activeCity.id === "bengaluru" && (
+              <button
+                onClick={() => setWardFinderOpen(true)}
+                className="
+                  flex items-center gap-2 px-4 py-2.5 rounded-full
+                  bg-[#111] border border-white/15 hover:border-white/30
+                  text-white/70 hover:text-white text-sm font-medium
+                  shadow-lg transition-all duration-150
+                "
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 1.5v13M1.5 8h13" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
+                </svg>
+                New ward?
+              </button>
+            )}
+            <button
+              onClick={() => setReportPickMode(true)}
+              className="
+                flex items-center gap-2 px-4 py-2.5 rounded-full
+                bg-[#111] border border-white/15 hover:border-white/30
+                text-white/70 hover:text-white text-sm font-medium
+                shadow-lg transition-all duration-150
+              "
+            >
+              <span className="text-[#FF9933] text-base font-bold">+</span>
+              Report
+            </button>
+          </div>
         )}
 
         {/* Report pick mode banner */}
@@ -440,6 +521,7 @@ export default function HomePage() {
           resizeKey={showCard ? 1 : 0}
           reportRefresh={reportRefresh}
           reportPickMode={reportPickMode}
+          choropleth={choropleth}
           onReportPin={(lat, lng) => {
             setReportLat(lat)
             setReportLng(lng)
@@ -447,6 +529,16 @@ export default function HomePage() {
             setShowReport(true)
           }}
         />
+
+        {/* Choropleth layer switcher — hidden while picking a report spot */}
+        {!reportPickMode && (
+          <LayerControl
+            activeId={activeLayer}
+            onSelect={setActiveLayer}
+            legend={layerLegend}
+            loading={layerLoading}
+          />
+        )}
       </div>
 
       {showCard && (
@@ -456,6 +548,8 @@ export default function HomePage() {
       {outOfBounds && (
         <OutOfBoundsCard onClose={handleClose} />
       )}
+
+      <WardFinder open={wardFinderOpen} onClose={() => setWardFinderOpen(false)} />
 
       {showReport && reportLat !== null && reportLng !== null && (
         <ReportSheet

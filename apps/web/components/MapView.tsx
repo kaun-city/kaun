@@ -8,10 +8,19 @@
  */
 
 import { useEffect, useRef, useState, MutableRefObject } from "react"
-import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON } from "leaflet"
+import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON, PathOptions } from "leaflet"
+import type { Feature } from "geojson"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import { bengaluru, type CityConfig } from "@/lib/cities"
+import { colorFor } from "@/lib/map-layers"
+
+/** Per-ward values + quantile breaks + ramp for choropleth painting */
+export interface ChoroplethData {
+  values: Record<number, number>
+  breaks: number[]
+  ramp: readonly string[]
+}
 
 function relativeTime(isoStr: string): string {
   const diffMs = Date.now() - new Date(isoStr).getTime()
@@ -53,13 +62,25 @@ interface Props {
   reportPickMode?: boolean
   /** Active city — controls map center, zoom, ward GeoJSON layer, and label property */
   city?: CityConfig
+  /** When set, wards are painted by metric value instead of the flat style */
+  choropleth?: ChoroplethData | null
   onReportPin?: (lat: number, lng: number) => void
 }
 
-export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin, city = DEFAULT_CITY }: Props) {
+/** Ward number from a GeoJSON feature, across per-city property conventions */
+function wardNoOf(feature: Feature | undefined): number | null {
+  const p = feature?.properties as Record<string, unknown> | undefined
+  if (!p) return null
+  const raw = p.KGISWardNo ?? p.ward_no ?? p.WARD_NO
+  const n = parseInt(String(raw), 10)
+  return Number.isFinite(n) ? n : null
+}
+
+export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin, city = DEFAULT_CITY, choropleth = null }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
+  const choroplethRef = useRef<ChoroplethData | null>(choropleth)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const reportLayerRef = useRef<any>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,6 +94,36 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   useEffect(() => { onPinRef.current = onPin }, [onPin])
   useEffect(() => { reportPickRef.current = reportPickMode }, [reportPickMode])
   useEffect(() => { onReportPinRef.current = onReportPin }, [onReportPin])
+
+  /**
+   * Ward polygon style — flat saffron by default; when a choropleth layer
+   * is active, fill each ward by its metric bucket. Reads the ref so the
+   * same function stays valid for Leaflet's resetStyle across layer changes.
+   */
+  function styleFeature(feature?: Feature): PathOptions {
+    const data = choroplethRef.current
+    if (!data) return WARD_STYLE
+    const wardNo = wardNoOf(feature)
+    const value = wardNo != null ? data.values[wardNo] : undefined
+    if (value === undefined) {
+      // No data for this ward — recede so painted wards stand out
+      return { color: "#666", weight: 0.5, opacity: 0.35, fillColor: "#444", fillOpacity: 0.12 }
+    }
+    return {
+      color: "#0A0A0A",
+      weight: 0.6,
+      opacity: 0.8,
+      fillColor: colorFor(value, data.breaks, data.ramp),
+      fillOpacity: 0.55,
+    }
+  }
+
+  // Repaint wards when the active layer changes
+  useEffect(() => {
+    choroplethRef.current = choropleth
+    geojsonRef.current?.setStyle(styleFeature)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [choropleth, loading])
 
   // Expose panTo for geolocation button
   useEffect(() => {
@@ -283,11 +334,15 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
         .then((r) => r.json())
         .then((data) => {
           geojsonRef.current = L.geoJSON(data, {
-            style: () => WARD_STYLE,
+            style: styleFeature,
             onEachFeature(feature, layer) {
               layer.on({
                 mouseover(e) {
-                  e.target.setStyle(WARD_HOVER_STYLE)
+                  e.target.setStyle(
+                    choroplethRef.current
+                      ? { weight: 1.5, fillOpacity: 0.78 }
+                      : WARD_HOVER_STYLE
+                  )
                 },
                 mouseout() {
                   geojsonRef.current?.resetStyle(layer)
