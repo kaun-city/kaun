@@ -9,6 +9,8 @@ import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
 import { CitySwitcher } from "@/components/CitySwitcher"
 import { LayerControl } from "@/components/LayerControl"
+import { CorporatorVacancy } from "@/components/CorporatorVacancy"
+import { WardFinder } from "@/components/WardFinder"
 import ReportSheet from "@/components/shared/ReportSheet"
 import { getCity } from "@/lib/cities"
 import { getLayer } from "@/lib/map-layers"
@@ -105,6 +107,7 @@ export default function HomePage() {
   const [reportLat, setReportLat]       = useState<number | null>(null)
   const [reportLng, setReportLng]       = useState<number | null>(null)
   const [reportRefresh, setReportRefresh] = useState(0)
+  const [wardFinderOpen, setWardFinderOpen] = useState(false)
   const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
   const deepLinkHandled = useRef(false)
 
@@ -412,6 +415,9 @@ export default function HomePage() {
         {/* City Pulse — accountability headlines before pin drop */}
         {!showCard && !outOfBounds && <CityPulse cityId={activeCity.id} />}
 
+        {/* Corporator vacancy counter — Bengaluru's most brutal stat */}
+        {!showCard && !outOfBounds && <CorporatorVacancy cityId={activeCity.id} />}
+
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
           <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[900]">
@@ -453,21 +459,39 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Floating Report button — enters pick mode */}
+        {/* Floating action buttons */}
         {!reportPickMode && (
-          <button
-            onClick={() => setReportPickMode(true)}
-            className="
-              absolute bottom-16 right-4 z-[900]
-              flex items-center gap-2 px-4 py-2.5 rounded-full
-              bg-[#111] border border-white/15 hover:border-white/30
-              text-white/70 hover:text-white text-sm font-medium
-              shadow-lg transition-all duration-150
-            "
-          >
-            <span className="text-[#FF9933] text-base font-bold">+</span>
-            Report
-          </button>
+          <div className="absolute bottom-16 right-4 z-[900] flex flex-col gap-2 items-end">
+            {activeCity.id === "bengaluru" && (
+              <button
+                onClick={() => setWardFinderOpen(true)}
+                className="
+                  flex items-center gap-2 px-4 py-2.5 rounded-full
+                  bg-[#111] border border-white/15 hover:border-white/30
+                  text-white/70 hover:text-white text-sm font-medium
+                  shadow-lg transition-all duration-150
+                "
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 1.5v13M1.5 8h13" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
+                </svg>
+                New ward?
+              </button>
+            )}
+            <button
+              onClick={() => setReportPickMode(true)}
+              className="
+                flex items-center gap-2 px-4 py-2.5 rounded-full
+                bg-[#111] border border-white/15 hover:border-white/30
+                text-white/70 hover:text-white text-sm font-medium
+                shadow-lg transition-all duration-150
+              "
+            >
+              <span className="text-[#FF9933] text-base font-bold">+</span>
+              Report
+            </button>
+          </div>
         )}
 
         {/* Report pick mode banner */}
@@ -524,6 +548,8 @@ export default function HomePage() {
       {outOfBounds && (
         <OutOfBoundsCard onClose={handleClose} />
       )}
+
+      <WardFinder open={wardFinderOpen} onClose={() => setWardFinderOpen(false)} />
 
       {showReport && reportLat !== null && reportLng !== null && (
         <ReportSheet
