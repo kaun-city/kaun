@@ -48,13 +48,14 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-3 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **2 are live from BBMP IFMS** (with current bill-stage status); the remainder come from the BBMP FY 2024-25 opencity mirror.
+4 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **3 are live from BBMP IFMS** (with current bill-stage status); the remainder come from the BBMP FY 2024-25 opencity mirror.
 
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
 | 631871 — 181-23-000001Comprehensive development of roads, drains and footpath in Ward No | 2024-25 | — | — | Rs 14.02 Cr | Rs 13.25 Cr | paid (legacy) |
 | 181-24-000005 — Comprehensive development of roads, drains, Asphalting, Providing CC roads and o | 2023-24 | M RAMESH | Executive Engineer B T M Layout South Zo | Rs 10.22 Cr | — | 002616 / 21-Apr-2025 RTGS |
 | 181-24-000004 — Comprehensive development by providing ornamental grill, pathway, shelter to GYM | 2023-24 | SUHAS MEGHANATH NAID | Executive Engineer Project - South Zone | Rs 8.73 Cr | — | 000184 / 16-Jan-2026 RTGS |
+| 181-26-000011 — Comprehensive development of Roads, Improvements to drains, culverts, footpath a | 2025-26 | M RAMESH | Executive Engineer B T M Layout South Zo | Rs 8.34 Cr | — | Addl. Commr. Finance |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
