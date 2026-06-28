@@ -54,7 +54,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
 | 634047 — 159-23-000001Improvements of Roads and Drains in Kengeri and Surrounding area in | 2024-25 | GANAPATHISTONECRUSHE | — | Rs 11.20 Cr | Rs 10.71 Cr | paid (legacy) |
-| 159-25-000005 — Integrated Infrastructure Development for Roads, Drainage, Street Name Boards an | 2024-25 | ASHPRA INFRA ENGINEERS PRIVATE LIMITED | Executive Engineer Chamarajpet West Zone | Rs 9.04 Cr | — | Addl. Commr. Finance |
+| 159-25-000005 — Integrated Infrastructure Development for Roads, Drainage, Street Name Boards an | 2024-25 | ASHPRA INFRA ENGINEERS PRIVATE LIMITED | Executive Engineer Chamarajpet West Zone | Rs 9.04 Cr | — | 000151 / 25-Jun-2026 RTGS |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
