@@ -40,7 +40,7 @@ No contractor from the city-wide top 100 shows work orders in this ward. The [ka
 
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
-| 210-24-000008 — Improvements of Roads and Construction of RCC Drain at Basaveshwara Temple Road, | 2023-24 | Mr  SATISH  S | Executive Engineer Bangalore South Divis | Rs 9.97 Cr | — | Addl. Commr. Finance |
+| 210-24-000008 — Improvements of Roads and Construction of RCC Drain at Basaveshwara Temple Road, | 2023-24 | Mr  SATISH  S | Executive Engineer Bangalore South Divis | Rs 9.97 Cr | — | 000020 / 16-Jul-2026 RTGS |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
