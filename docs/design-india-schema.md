@@ -60,8 +60,14 @@ row. So the canonical key is `pc_code`, e.g. `29-25` for Bangalore Central,
 derived by `pcCode()` in `scripts/india/lib/pc-code.mjs` and **CHECK-enforced**
 in the table so a hand-typed code cannot drift from its components.
 
-`st_code` is the Census-2011 state code — the same code DataMeet's PC, AC and
-district layers all carry, so the crosswalk work has no translation step.
+`st_code` is the Census-2011 state code **as extended by DataMeet** — the same
+code DataMeet's PC, AC and district layers all carry, so the crosswalk work has
+no translation step. Precisely: post-2011 units use DataMeet's published
+extensions (Telangana=36, residuary Andhra Pradesh=37 — strict Census-2011 had
+only 28=undivided AP) plus our own Ladakh=38 (`LADAKH_ST_CODE` in
+`pc-code.mjs`; DataMeet predates the 2019 bifurcation). Do not "renormalise"
+these to any other scheme — `data/pc-crosswalk/` (PR #64) is keyed on the same
+values.
 
 ### Every source has its own constituency numbering — one table absorbs them all
 
