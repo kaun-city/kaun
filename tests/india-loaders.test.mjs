@@ -48,6 +48,7 @@ import {
 import {
   colIndex, unescapeXml, parseSharedStrings, readXlsx,
 } from "../scripts/india/lib/xlsx.mjs"
+import { SQL as STALENESS_SQL } from "../scripts/migrate-india-project-staleness.mjs"
 
 /* ========================================================================== */
 /* sink — SQL generation                                                      */
@@ -693,3 +694,62 @@ function zenodoSample() {
   const p = "/Users/nivyaajit/Documents/Kaun/india-recon/mp-records/samples/zenodo/Sansad_details.xlsx"
   return existsSync(p) ? p : false
 }
+
+/* ========================================================================== */
+/* migrate-india-project-staleness — the "longest unchanged" view             */
+/* ========================================================================== */
+
+test("the staleness migration is additive: it touches nothing it did not create", () => {
+  // The whole safety claim of this migration is that it creates one view and
+  // nothing else. Assert it, rather than trusting a reading of the SQL.
+  for (const forbidden of [/\bALTER\s+TABLE\b/i, /\bDROP\s+TABLE\b/i, /\bTRUNCATE\b/i,
+                           /\bDELETE\s+FROM\b/i, /\bUPDATE\s+\w+\s+SET\b/i,
+                           /\bINSERT\s+INTO\b/i, /\bCREATE\s+TABLE\b/i,
+                           /\bCREATE\s+POLICY\b/i, /spatial_ref_sys/i]) {
+    assert.ok(!forbidden.test(STALENESS_SQL), `staleness SQL must not contain ${forbidden}`)
+  }
+  // Exactly one DROP, and it is of the view this migration owns.
+  const drops = STALENESS_SQL.match(/\bDROP\s+\w+/gi) ?? []
+  assert.equal(drops.length, 1)
+  assert.match(STALENESS_SQL, /DROP VIEW IF EXISTS public\.v_in_central_project_staleness;/)
+  assert.equal((STALENESS_SQL.match(/\bCREATE VIEW\b/gi) ?? []).length, 1)
+})
+
+test("the staleness migration is transactional and reloads PostgREST", () => {
+  assert.ok(STALENESS_SQL.startsWith("--"))
+  assert.match(STALENESS_SQL, /\bBEGIN;/)
+  assert.match(STALENESS_SQL, /\bCOMMIT;/)
+  assert.match(STALENESS_SQL, /NOTIFY pgrst, 'reload schema';/)
+})
+
+test("staleness exposes the columns the tracker asked for", () => {
+  for (const col of ["project_code", "months_unchanged", "last_change_month",
+                     "is_in_latest_report", "snapshot_count"]) {
+    assert.ok(STALENESS_SQL.includes(col), `view must expose ${col}`)
+  }
+})
+
+test("only the four tracker-visible fields count as a change", () => {
+  // The ROW(...) comparison decides what "unchanged" means. sl_no is a row
+  // number in that month's PDF and shifts whenever a project is inserted above
+  // it; source_page, parser_version, raw and ingested_at move for reasons that
+  // have nothing to do with the project. Letting any of them count would make
+  // every project look active and the ranking would be worthless.
+  const rowCompare = /ROW\(s\.revised_cost_cr[\s\S]*?lag\(s\.physical_progress_pct\)\s+OVER w\) \)/
+      .exec(STALENESS_SQL)
+  assert.ok(rowCompare, "the ROW(...) IS DISTINCT FROM ROW(...) comparison should be present")
+  const expr = rowCompare[0]
+  for (const tracked of ["revised_cost_cr", "revised_doc_month",
+                         "cumulative_expenditure_cr", "physical_progress_pct"]) {
+    assert.ok(expr.includes(tracked), `${tracked} must count as a change`)
+  }
+  for (const noise of ["sl_no", "source_page", "parser_version", "raw", "ingested_at",
+                       "original_cost_cr", "approval_month"]) {
+    assert.ok(!expr.includes(noise), `${noise} must NOT count as a change`)
+  }
+})
+
+test("the staleness view is read-only to the public, like every other in_* object", () => {
+  assert.match(STALENESS_SQL, /GRANT SELECT ON public\.v_in_central_project_staleness TO anon, authenticated;/)
+  assert.ok(!/GRANT\s+(INSERT|UPDATE|DELETE|ALL)/i.test(STALENESS_SQL))
+})
