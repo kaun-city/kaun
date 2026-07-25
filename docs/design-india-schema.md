@@ -44,7 +44,7 @@ working exactly as it does today.
 
 | Entity | Key | Why |
 |---|---|---|
-| Constituency | `pc_code` = `<st_code>-<pc_no>` zero-padded | see below |
+| Constituency | `pc_code` = `<st_code>-<pc_no>` unpadded, e.g. `29-25` (matches `data/pc-crosswalk/`; Ladakh = st_code 38; sort on the integer pair, never the string) | see below |
 | MP | `mpsno` (sansad.in), scoped by `(house, term_label)` | the only strong numeric MP id in the whole recon; identical to Zenodo's `mpCode` |
 | Affidavit | `(myneta_candidate_id, election)` | MyNeta ids are per-affidavit, not per-person |
 | Central project | `project_code` | ~99% stable month over month |

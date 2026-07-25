@@ -19,7 +19,7 @@
  *   v_in_central_project_changes  month-over-month diff (cost / schedule)
  *
  * THREE CONSTRAINTS THAT ARE THE POINT OF THIS SCHEMA
- *   1. pc_code = lpad(st_code)||'-'||lpad(pc_no) is CHECK-enforced. pc_no is
+ *   1. pc_code = st_code||'-'||pc_no (unpadded) is CHECK-enforced. pc_no is
  *      NOT nationally unique (it restarts at 1 in all 36 states/UTs), so a
  *      pc_no-keyed table silently merges 36 different seats.
  *   2. in_mp_affidavits_one_winner_per_pc — a partial UNIQUE index on
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS public.in_constituencies (
   -- pc_code is derived, not typed by hand. Mirrors pcCode() in
   -- scripts/india/lib/pc-code.mjs, which every loader must use.
   CONSTRAINT in_constituencies_pc_code_derived CHECK (
-    pc_code = lpad(st_code::text, 2, '0') || '-' || lpad(pc_no::text, 2, '0')),
+    pc_code = st_code::text || '-' || pc_no::text),
   CONSTRAINT in_constituencies_pc_no_positive CHECK (pc_no > 0 AND st_code > 0),
   CONSTRAINT in_constituencies_reserved_chk CHECK (
     reserved_for IS NULL OR reserved_for IN ('SC', 'ST')),

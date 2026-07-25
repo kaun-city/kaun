@@ -15,12 +15,15 @@ import {
   pcCode, parsePcCode, normalizeConstituencyName, reservationFromName, resolvePc,
 } from "../scripts/india/lib/pc-code.mjs"
 
-test("pc_code zero-pads and round-trips", () => {
-  assert.equal(pcCode(2, 1), "02-01")      // Kangra, Himachal Pradesh
+test("pc_code is unpadded (matches data/pc-crosswalk/) and round-trips", () => {
+  assert.equal(pcCode(2, 1), "2-1")        // Kangra, Himachal Pradesh
   assert.equal(pcCode(33, 10), "33-10")    // Dharmapuri, Tamil Nadu
-  assert.equal(pcCode(9, 80), "09-80")     // Uttar Pradesh's 80th seat
-  assert.deepEqual(parsePcCode("02-01"), { st_code: 2, pc_no: 1 })
+  assert.equal(pcCode(9, 80), "9-80")      // Uttar Pradesh's 80th seat
+  assert.deepEqual(parsePcCode("2-1"), { st_code: 2, pc_no: 1 })
   assert.deepEqual(parsePcCode(pcCode(33, 10)), { st_code: 33, pc_no: 10 })
+  // Leading zeros are NOT canonical — reject rather than silently accept a
+  // second spelling of the same key.
+  assert.throws(() => parsePcCode("02-01"), /not a pc_code/)
 })
 
 test("pc_no alone would collide across states — pc_code does not", () => {

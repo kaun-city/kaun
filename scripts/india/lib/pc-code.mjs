@@ -11,9 +11,18 @@
  * `pc_no` is NOT nationally unique — it restarts at 1 in every state/UT.
  * Verified against DataMeet's 543-feature PC file: pc_no=1 occurs 36 times
  * (once per state/UT); (st_code, pc_no) is unique 543/543. Anything keyed on
- * pc_no alone silently merges 36 different seats. `pc_code` = zero-padded
+ * pc_no alone silently merges 36 different seats. `pc_code` = UNPADDED
  * "<st_code>-<pc_no>" (Census-2011 state code, the same code DataMeet's PC,
- * AC and district layers all carry), e.g. Kangra HP-1 → "02-01".
+ * AC and district layers all carry), e.g. Kangra HP-1 → "2-1".
+ *
+ * UNPADDED, to match the pc-crosswalk artifact (data/pc-crosswalk/, PR #64):
+ * the crosswalk emits "37-1"-style codes, and ac_no reaches 3 digits (AP 294)
+ * so fixed-width padding would be inconsistent across pc/ac anyway. Sorting
+ * must use the integer pair (st_code, pc_no), never the string.
+ *
+ * LADAKH: DataMeet predates the 2019 bifurcation and carries no Ladakh
+ * st_code. The crosswalk assigns st_code=38 (first free integer); this
+ * helper and every loader MUST use the same value (LADAKH_ST_CODE below).
  *
  * WHY NORMALIZATION IS DELIBERATELY CONSERVATIVE
  * ----------------------------------------------
@@ -30,7 +39,11 @@
  * (scripts/wardmap/build-crosswalk.mjs: "no name matching").
  */
 
-/** Canonical PC key: zero-padded "<st_code>-<pc_no>". Mirrors the
+/** Census-2011 has no code for Ladakh (2019 bifurcation); 38 = first free
+ *  integer, matching data/pc-crosswalk/ (PR #64). */
+export const LADAKH_ST_CODE = 38
+
+/** Canonical PC key: unpadded "<st_code>-<pc_no>". Mirrors the
  *  in_constituencies_pc_code_derived CHECK constraint exactly. */
 export function pcCode(stCode, pcNo) {
   const s = Number(stCode)
@@ -38,12 +51,13 @@ export function pcCode(stCode, pcNo) {
   if (!Number.isInteger(s) || !Number.isInteger(p) || s < 1 || p < 1) {
     throw new Error(`pcCode: bad (st_code, pc_no) = (${stCode}, ${pcNo})`)
   }
-  return `${String(s).padStart(2, "0")}-${String(p).padStart(2, "0")}`
+  return `${s}-${p}`
 }
 
-/** Inverse of pcCode(). Throws on anything that isn't a canonical code. */
+/** Inverse of pcCode(). Throws on anything that isn't a canonical code
+ *  (leading zeros are not canonical). */
 export function parsePcCode(code) {
-  const m = /^(\d{2,})-(\d{2,})$/.exec(String(code ?? ""))
+  const m = /^([1-9]\d*)-([1-9]\d*)$/.exec(String(code ?? ""))
   if (!m) throw new Error(`parsePcCode: not a pc_code: ${code}`)
   return { st_code: Number(m[1]), pc_no: Number(m[2]) }
 }
