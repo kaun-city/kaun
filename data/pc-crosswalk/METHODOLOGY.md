@@ -1,19 +1,21 @@
 # Kaun India PC Crosswalk — Lok Sabha 543 ↔ Assembly Constituencies ↔ Districts
 
-**Version `2008do-2026.07` · generated 2026-07-25 · 543 parliamentary constituencies · 4032 constituent-AC links · 412 GEN / 47 ST / 84 SC**
+**Version `2008do+2023as+2022jk-2026.07` · generated 2026-07-25 · 543 parliamentary constituencies · 4122 constituent-AC links · 412 GEN / 47 ST / 84 SC**
 
 ## Why this exists
 
 The question *"which Assembly segments make up this Lok Sabha seat?"* has a
-legal answer — Table B of the Election Commission's **Delimitation of
-Parliamentary and Assembly Constituencies Order, 2008** — and no open,
-machine-readable one. The mapping that *is* published in open geodata is wrong:
+legal answer — Table B of the Election Commission's delimitation orders, the
+**2008 Order** for most of the country, superseded by the **Assam order of 2023**
+and the **Jammu & Kashmir order of 2022** — and no open, machine-readable one.
+Two of those three are scanned gazettes with no text layer at all. The mapping
+that *is* published in open geodata is wrong:
 DataMeet's assembly-constituency shapefile carries a `PC_NO` attribute that
 assigns up to **60 ACs to a single PC**, and its own README warns the boundaries
 for six states are pre-delimitation. Reservation status (SC/ST) is wrong in
 every source we checked, including the official Lok Sabha member API.
 
-So Kaun parses the Order itself, verifies it against independent geometry, and
+So Kaun parses the orders themselves, verifies them against independent geometry, and
 publishes the result: deterministic, sourced, versioned, correctable — the same
 playbook as the [Bengaluru ward crosswalk](../ward-crosswalk/METHODOLOGY.md).
 
@@ -21,16 +23,25 @@ playbook as the [Bengaluru ward crosswalk](../ward-crosswalk/METHODOLOGY.md).
 
 | Layer | Source | Licence | Used for |
 |---|---|---|---|
-| **AC↔PC composition (primary)** | ECI, *Delimitation of Parliamentary and Assembly Constituencies Order, 2008*, Tables A & B — [archive.org/details/delimitation-2008](https://archive.org/details/delimitation-2008) | Government of India publication | The authoritative AC list per PC, PC reservation, AC↔district |
+| **AC↔PC composition (primary)** | ECI, *Delimitation of Parliamentary and Assembly Constituencies Order, 2008*, Tables A & B — [archive.org/details/delimitation-2008](https://archive.org/details/delimitation-2008) | Government of India publication | The authoritative AC list per PC, PC reservation, AC↔district, for every state except the two below |
+| **Assam — current order** | *Assam Delimitation Order, 2023*, Table B — ECI Notification No. 282/AS/2023, Gazette of India Extraordinary Part II s.3(iii), **11 Aug 2023** ([CEO Assam mirror](https://ceoassam.nic.in/Final_Order_and_Notification.pdf)) | Government of India publication | The 14 Assam PCs and their 126 ACs — **supersedes the 2008 Order** |
+| **Jammu & Kashmir — current order** | *J&K Delimitation Order, 2022*, Table B — Delimitation Commission Notification No. 282/J&K/2022 (Vol. IV), J&K Gazette Vol. 135 No. 5-2, **5 May 2022** ([DEO Anantnag mirror](https://cdn.s3waas.gov.in/s330ef30b64204a3088a26bc2e6ecf7602/uploads/2022/05/2022051069.pdf)) | Government of India publication | The 5 J&K PCs and their 90 ACs — **supersedes the 2008 Order** |
 | PC polygons | [shijithpk/2024_maps_supplement](https://github.com/shijithpk/2024_maps_supplement) `india_ls_seats_543.geojson` | Unlicense | The 543-seat identity spine (ECI state/seat codes) + geometry |
 | PC attributes | [DataMeet maps](https://github.com/datameet/maps) `parliamentary-constituencies` | CC0 (simplified attribute build) | Wikidata QID, Hindi name. `pc_category` recorded for comparison only — **not** trusted |
 | AC polygons | DataMeet `assembly-constituencies` `India_AC` | CC-BY 2.5 IN | Spatial verification only. Its `PC_NO`/`PC_NAME` columns are **never read** |
 | District polygons | DataMeet `Districts/Census_2011` (641 districts) | CC-BY 2.5 IN | Informational `district_shares` vector |
 
-Raw sources are **not committed** (100+ MB of shapefiles plus a government PDF).
-The builder reads a local copy; point it with `PC_CROSSWALK_SRC`. This follows
-the ward-crosswalk precedent: `data/` carries derived artifacts, never bulk
-upstream geodata.
+Bulk raw sources are **not committed** (100+ MB of shapefiles plus three
+government PDFs). The builder reads a local copy; point it with
+`PC_CROSSWALK_SRC`. This follows the ward-crosswalk precedent: `data/` carries
+derived artifacts, never bulk upstream geodata.
+
+**One deliberate exception.** The Assam-2023 and J&K-2022 gazettes are *scans
+with no embedded text layer* — `pdftotext`/`pdfjs` return nothing — so their
+Table B was transcribed by reading the rendered pages. Those two transcriptions
+(10 KB) are committed under [`sources/`](sources/README.md), because without
+them the builder cannot rebuild the 19 seats they govern. Everything else it
+reads is parsed deterministically from a file anyone can re-download.
 
 ## Key contract
 
@@ -81,8 +92,24 @@ the 30 state/UT schedules:
 - PCs whose extent reads "the entire area of the State/UT" (Mizoram, Sikkim,
   Nagaland, Puducherry) are expanded to that state's full Table A AC list.
 
-**2 — Normalisation to today's map.** The Order predates two changes that move
-seats between states:
+**2 — Later orders override the 2008 basis.** Two states were re-delimited after
+2008, and for them the 2008 composition is **replaced wholesale, never merged**
+— both renumbered their Assembly seats from scratch, so mixing the two vintages
+would be worse than either alone. The 2008 AC→district index for those states is
+dropped with the rows it described.
+
+| State | Order applied | PCs | ACs |
+|---|---|---|---|
+| Assam | Assam Delimitation Order, 2023 (gazetted 11 Aug 2023) | 14 | 126 |
+| Jammu & Kashmir | J&K Delimitation Order, 2022 (gazetted 5 May 2022) | 5 | 90 |
+
+Each transcription is asserted against its own order's recitals *before* it is
+allowed to override anything — seat counts, a gap-free non-duplicating AC
+sequence, and the reserved-seat tallies the order itself recites. If any check
+fails the override is refused, the 2008 basis is retained, and the run says so.
+
+**3 — Normalisation to today's map.** The 2008 Order predates two changes that
+move seats between states:
 
 - **Andhra Pradesh Reorganisation Act, 2014.** The 2008 AP schedule numbers
   Telangana first (PCs 1–17, ACs 1–119) then residuary Andhra Pradesh (PCs
@@ -92,29 +119,36 @@ seats between states:
 - **J&K Reorganisation Act, 2019.** The Order's J&K PC 4 (Ladakh) is today its
   own UT with one seat.
 
-**3 — Verification, spatial (independent).** For every (PC, AC) link the builder
+**4 — Verification, spatial (independent).** For every (PC, AC) link the builder
 takes the AC polygon's interior point and tests which PC polygon contains it.
 Agreement is reported per PC (`ac_agreement`) and nationally. This is a genuine
 cross-check: the composition comes from text, the check comes from geometry, and
 the two share no inputs.
 
-**4 — District shares (informational).** Each PC's interior is sampled on a
+**5 — District shares (informational).** Each PC's interior is sampled on a
 26×26 grid and classified by 2011 Census district polygon, producing a full
 share vector (`district_shares`, and `district_shares_vector` in the JSON) —
 the same shape as the ward crosswalk's `shares`. No truncation.
 
 ## Verification results
 
-Three independent checks run on every build. Each one prints every failure it
+Four independent checks run on every build. Each one prints every failure it
 finds, and all of them are reproduced under *Builder warnings* below — nothing
 is suppressed to make the numbers look better.
 
+**Check 0 — the post-2008 transcriptions against their own orders.** Before
+either current order is allowed to override the 2008 basis it must reproduce the
+seat counts, a gap-free non-duplicating AC sequence, and the reserved-seat
+tallies its own gazette recites (Assam 1 SC + 2 ST parliamentary and 9 SC + 19 ST
+assembly seats; J&K 0 reserved parliamentary and 7 SC + 9 ST assembly seats).
+A failure refuses the override rather than publishing it.
+
 **Check 1 — completeness against the Order's own seat allocation.** Schedule I
-("Allocation of Seats in House of People") is parsed from the same PDF:
+("Allocation of Seats in House of People") is parsed from the 2008 PDF:
 **543 seats · 84 SC · 47 ST**. Every state's
 Table B parse is asserted against it, and inside each state the constituent-AC
 sets must partition the Assembly exactly — every AC in exactly one PC, none
-missing, none doubled. Current status: **4032 AC links, 0 unassigned,
+missing, none doubled. Current status: **4122 AC links, 0 unassigned,
 0 double-assigned**.
 
 **Check 2 — reservation against Schedule I.** SC/ST status is read off the
@@ -126,27 +160,27 @@ Schedule I. Result: **GEN 412 · ST 47 · SC 84** — exact.
 | Metric | Value |
 |---|---|
 | Parliamentary constituencies | **543** |
-| Constituent-AC links | **4032** |
-| AC links testable against polygons | 3895 of 4032 (96.6%) |
-| **Spatial agreement** | **3852 / 3895 = 98.9%** |
-| Disagreements recorded | 43 (all listed in `verification_disagreements.csv`) |
+| Constituent-AC links | **4122** |
+| AC links testable against polygons | 3903 of 4122 (94.7%) |
+| **Spatial agreement** | **3876 / 3903 = 99.3%** |
+| Disagreements recorded | 27 (all listed in `verification_disagreements.csv`) |
 
 Per-PC verification tier:
 
 | Tier | Seats | Meaning |
 |---|---|---|
-| `verified` | 507 | every locatable constituent AC lands inside this PC's polygon |
-| `mostly-verified` | 22 | ≥70% do |
+| `verified` | 517 | every locatable constituent AC lands inside this PC's polygon |
+| `mostly-verified` | 17 | ≥70% do |
 | `divergent` | 3 | <70% do — **suspect the geometry, not the composition**: in every case examined the Order's text is the fixed point and the AC polygon set is the stale side |
 | `unverified` | 0 | no constituent AC could be located in the AC shapefile |
-| `districts-only` | 6 | the Order defines the PC by district, not by AC (J&K, Ladakh) |
+| `districts-only` | 1 | the Order defines the PC by district, not by AC (J&K, Ladakh) |
 | `no-assembly` | 5 | UT without a Legislative Assembly, so the seat has no ACs |
 
 ### Where the disagreements are, and why
 
 | State/UT | Disagreements |
 |---|---|
-| Assam | 22 |
+| Assam | 5 |
 | Rajasthan | 4 |
 | Punjab | 3 |
 | West Bengal | 3 |
@@ -154,6 +188,7 @@ Per-PC verification tier:
 | Delhi | 2 |
 | Tamil Nadu | 2 |
 | Uttar Pradesh | 2 |
+| Jammu & Kashmir | 1 |
 | Maharashtra | 1 |
 | Odisha | 1 |
 | Tripura | 1 |
@@ -167,6 +202,27 @@ problems, not composition problems — which is why the Order stays primary and
 geometry stays advisory. Every disagreement is published rather than suppressed
 so a reader can check the call.
 
+### The 19 seats governed by a post-2008 order
+
+| State | Order | PCs | ACs | AC links locatable | agree | rate |
+|---|---|---|---|---|---|---|
+| Assam | Assam Delimitation Order | 14 | 126 | 77 | 72 | 93.5% |
+| Jammu & Kashmir | Jammu and Kashmir Delimitation Order | 5 | 90 | 57 | 56 | 98.2% |
+
+These are the seats that previously carried a "2008 basis, pending the newer
+order" flag. Applying the real orders **raised the national agreement rate and
+cut the disagreement count by more than a third** — Assam alone fell from 22
+disagreements on the 2008 basis to 5, and J&K went from
+unverifiable (the 2008 Order describes it only by district) to
+1 across 90 ACs.
+
+Read the *locatable* column with care: the AC polygon layer is DataMeet's
+pre-delimitation set for both states, so only ACs whose name survived the
+re-delimitation can be tested at all, and even those carry their **old**
+boundary. The remaining handful of mismatches sit on that seam, compounded by
+PC polygons that upstream georeferenced from ECI press-note images rather than
+survey data. Neither layer is evidence against the gazetted composition.
+
 A worked example of what a disagreement actually is: the Order gives Rajasthan
 PC 8-Alwar the ACs 59, 60, 61, 62, 65, 66, 67, 68 — which is the current
 Rajasthan numbering, verifiably (65 *is* Alwar Rural). Four of those polygons
@@ -178,9 +234,11 @@ pre-2008 set. The composition is right; the polygons are old.
 
 Derived from the Order's own `(SC)`/`(ST)` tags, and for the 5 single-seat
 Assembly-less UTs (which get no Table B row) from Schedule I. This **differs
-from DataMeet's `pc_category` on 2 seat(s)** — exactly the
+from DataMeet's `pc_category` on 4 seat(s)** — exactly the
 2-seat ST undercount the source-recon flagged:
 
+- Assam 7-Karimganj — Order **GEN**, DataMeet `SC`
+- Assam 8-Silchar — Order **SC**, DataMeet `GEN`
 - Dadra and Nagar Haveli and Daman and Diu 2-Dadra & Nagar Haveli — Order **ST**, DataMeet `GEN`
 - Lakshadweep 1-Lakshadweep — Order **ST**, DataMeet `GEN`
 
@@ -203,18 +261,21 @@ builder detects and undoes (Jharkhand 13→14, West Bengal 33→34).
 
 ## Known limitations
 
-1. **Assam (2023) and Jammu & Kashmir (2022) re-delimitation — 20 seats.**
-   Those commission orders supersede the 2008 Order but their texts were not
-   sourced. Those rows are built on the **2008 basis** and carry a
-   `delimitation_note`; their AC lists must not be presented as current.
-   Assam's seats were also renumbered and several renamed in 2023 (the spine
-   carries both names, e.g. *Kaziranga (ex Kaliabor)*), so the join for Assam is
-   by name, not number. Sourcing the 2023/2022 order texts is the single highest-value
-   correction to this dataset.
-2. **Jammu & Kashmir is district-level only.** The 2008 Order describes J&K's
-   PCs as sets of districts (as on 1 Aug 1975) with ACs in a separate annexure,
-   so those rows have `ac_count = 0` and `districts_order` populated.
-3. **Districts are 2011 Census vintage.** `district_shares` uses the 641-district
+1. **No district mapping for Assam or Jammu & Kashmir.** Their AC↔district
+   relation comes from each order's Table A, and only Table B was transcribed
+   (for J&K the sourced gazette copy is missing most of Table A altogether).
+   Those 19 rows therefore have an empty `districts_order` and rely on the
+   spatial `district_shares` vector alone. The 2008 district mapping is **not**
+   substituted, because both states renumbered their ACs — it would be wrong.
+2. **J&K sub-AC detail is unavailable.** The sourced copy of Notification
+   No. 282/J&K/2022 (Vol. IV) is a district-office bundle: Table B is complete,
+   but Table A's ward/tehsil-level extent for most of the 90 ACs is not in it.
+   Closing that needs a complete copy of the gazette — not required for this
+   crosswalk, but it is the remaining gap on J&K.
+3. **Ladakh remains on the 2008 basis.** It has no Legislative Assembly, so
+   there are no ACs to map; the 2008 Order describes it by district and the
+   2019 reorganisation only moved it out of J&K.
+4. **Districts are 2011 Census vintage.** `district_shares` uses the 641-district
    2011 set; India now has 780+. `districts_order` uses the Order's own district
    names as on its stated reference dates. Neither is a current district list.
 4. **Delhi has no district headings** in its Table A (ACs are described by
@@ -228,7 +289,7 @@ builder detects and undoes (Jharkhand 13→14, West Bengal 33→34).
 7. **A handful of Table A rows do not parse**, listed under builder warnings
    below. They cost only a district label on the ACs concerned — the AC↔PC
    composition comes from Table B, which parses completely (0 unassigned,
-   0 doubled across all 4032 links).
+   0 doubled across all 4122 links).
 8. **Sikkim's Sangha seat** is elected state-wide by the monasteries and has no
    territorial extent, so Sikkim contributes 31 territorial ACs, not 32.
 
@@ -252,9 +313,12 @@ corrections bump `version` and are logged in this file's history.
 
 - `data/pc-crosswalk/india_pc_crosswalk.csv` — 543 rows, one per PC, full AC list
 - `data/pc-crosswalk/india_pc_crosswalk.json` — same + structured `acs`, district share vectors, provenance, caveats
-- `data/pc-crosswalk/pc_ac_pairs.csv|.json` — long format, one row per PC↔AC link (4032 rows)
-- `data/pc-crosswalk/verification_disagreements.csv` — every spatial mismatch (43)
+- `data/pc-crosswalk/pc_ac_pairs.csv|.json` — long format, one row per PC↔AC link (4122 rows)
+- `data/pc-crosswalk/verification_disagreements.csv` — every spatial mismatch (27)
 - `data/pc-crosswalk/METHODOLOGY.md` — this file
+- `data/pc-crosswalk/sources/` — the two hand-transcribed current-order Table Bs
+  (Assam 2023, J&K 2022) and their provenance. **Inputs, not outputs** — the only
+  files here the builder reads rather than writes.
 - `wiki/docs/india/pc-crosswalk/*.{csv,json}` — public download copies,
   **auto-written by the builder; never hand-edit** (kept in lockstep so a
   correction can't leave the published files stale).

@@ -234,132 +234,132 @@ pc_code,ac_code,state_ut,pc_no,pc_name,ac_no,ac_name,ac_reserved,district_order,
 12-2,12-58,Arunachal Pradesh,2,Arunachal East,58,Kanubari,ST,Tirap,true,Arunachal Pradesh 2-Arunachal East
 12-2,12-59,Arunachal Pradesh,2,Arunachal East,59,Longding-Pumao,ST,Tirap,true,Arunachal Pradesh 2-Arunachal East
 12-2,12-60,Arunachal Pradesh,2,Arunachal East,60,Pongchou-Wakka,ST,Tirap,true,Arunachal Pradesh 2-Arunachal East
-18-1,18-28,Assam,1,Kokrajhar,28,Gossaigaon,GEN,Goalpara,true,Assam 1-Kokrajhar
-18-1,18-29,Assam,1,Kokrajhar,29,Kokrajhar West,ST,Goalpara,true,Assam 1-Kokrajhar
-18-1,18-30,Assam,1,Kokrajhar,30,Kokrajhar East,ST,Goalpara,true,Assam 1-Kokrajhar
-18-1,18-31,Assam,1,Kokrajhar,31,Sidli,ST,Goalpara,true,Assam 1-Kokrajhar
-18-1,18-33,Assam,1,Kokrajhar,33,Bijni,GEN,Goalpara,true,Assam 1-Kokrajhar
-18-1,18-40,Assam,1,Kokrajhar,40,Sorbhog,GEN,Kamrup,true,Assam 1-Kokrajhar
-18-1,18-41,Assam,1,Kokrajhar,41,Bhabanipur,GEN,Kamrup,true,Assam 1-Kokrajhar
-18-1,18-58,Assam,1,Kokrajhar,58,Tamulpur,GEN,Kamrup,false,Assam 4-Darrang Udalguri
-18-1,18-62,Assam,1,Kokrajhar,62,Barama,ST,Kamrup,true,Assam 1-Kokrajhar
-18-1,18-63,Assam,1,Kokrajhar,63,Chapaguri,ST,Kamrup,true,Assam 1-Kokrajhar
-18-2,18-21,Assam,2,Dhubri,21,Mankachar,GEN,Goalpara,true,Assam 2-Dhubri
-18-2,18-22,Assam,2,Dhubri,22,Salmara South,GEN,Goalpara,true,Assam 2-Dhubri
-18-2,18-23,Assam,2,Dhubri,23,Dhubri,GEN,Goalpara,true,Assam 2-Dhubri
-18-2,18-24,Assam,2,Dhubri,24,Gauripur,GEN,Goalpara,false,Assam 1-Kokrajhar
-18-2,18-25,Assam,2,Dhubri,25,Golakganj,GEN,Goalpara,true,Assam 2-Dhubri
-18-2,18-26,Assam,2,Dhubri,26,Bilasipara West,GEN,Goalpara,true,Assam 2-Dhubri
-18-2,18-27,Assam,2,Dhubri,27,Bilasipara East,GEN,Goalpara,false,Assam 1-Kokrajhar
-18-2,18-37,Assam,2,Dhubri,37,Goalpara East,GEN,Goalpara,true,Assam 2-Dhubri
-18-2,18-38,Assam,2,Dhubri,38,Goalpara West,GEN,Goalpara,true,Assam 2-Dhubri
-18-2,18-39,Assam,2,Dhubri,39,Jaleswar,GEN,Goalpara,true,Assam 2-Dhubri
-18-3,18-32,Assam,3,Barpeta,32,Bongaigaon,GEN,Goalpara,true,Assam 3-Barpeta
-18-3,18-34,Assam,3,Barpeta,34,Abhayapuri North,GEN,Goalpara,false,Assam 2-Dhubri
-18-3,18-35,Assam,3,Barpeta,35,Abhayapuri South,SC,Goalpara,false,Assam 2-Dhubri
-18-3,18-42,Assam,3,Barpeta,42,Patacharkuchi,GEN,Kamrup,true,Assam 3-Barpeta
-18-3,18-43,Assam,3,Barpeta,43,Barpeta,GEN,Kamrup,true,Assam 3-Barpeta
-18-3,18-44,Assam,3,Barpeta,44,Jania,GEN,Kamrup,false,Assam 2-Dhubri
-18-3,18-45,Assam,3,Barpeta,45,Baghbar,GEN,Kamrup,false,Assam 2-Dhubri
-18-3,18-46,Assam,3,Barpeta,46,Sarukhetri,GEN,Kamrup,true,Assam 3-Barpeta
-18-3,18-47,Assam,3,Barpeta,47,Chenga,GEN,Kamrup,false,Assam 2-Dhubri
-18-3,18-61,Assam,3,Barpeta,61,Dharmapur,GEN,Kamrup,true,Assam 3-Barpeta
-18-4,18-56,Assam,4,Darrang Udalguri,56,Kamalpur,GEN,Kamrup,true,Assam 4-Darrang Udalguri
-18-4,18-57,Assam,4,Darrang Udalguri,57,Rangiya,GEN,Kamrup,true,Assam 4-Darrang Udalguri
-18-4,18-59,Assam,4,Darrang Udalguri,59,Nalbari,GEN,Kamrup,false,Assam 3-Barpeta
-18-4,18-64,Assam,4,Darrang Udalguri,64,Panery,GEN,Darrang,true,Assam 4-Darrang Udalguri
-18-4,18-65,Assam,4,Darrang Udalguri,65,Kalaigaon,GEN,Darrang,true,Assam 4-Darrang Udalguri
-18-4,18-66,Assam,4,Darrang Udalguri,66,Sipajhar,GEN,Darrang,true,Assam 4-Darrang Udalguri
-18-4,18-67,Assam,4,Darrang Udalguri,67,Mangaldoi,SC,Darrang,true,Assam 4-Darrang Udalguri
-18-4,18-68,Assam,4,Darrang Udalguri,68,Dalgaon,GEN,Darrang,true,Assam 4-Darrang Udalguri
-18-4,18-69,Assam,4,Darrang Udalguri,69,Udalguri,ST,Darrang,true,Assam 4-Darrang Udalguri
-18-4,18-70,Assam,4,Darrang Udalguri,70,Majbat,GEN,Darrang,true,Assam 4-Darrang Udalguri
-18-5,18-36,Assam,5,Gauhati,36,Dudhnai,ST,Goalpara,true,Assam 5-Gauhati
-18-5,18-48,Assam,5,Gauhati,48,Boko,SC,Kamrup,true,Assam 5-Gauhati
-18-5,18-49,Assam,5,Gauhati,49,Chaygaon,GEN,Kamrup,true,Assam 5-Gauhati
-18-5,18-50,Assam,5,Gauhati,50,Palasbari,GEN,Kamrup,true,Assam 5-Gauhati
-18-5,18-51,Assam,5,Gauhati,51,Jalukbari,GEN,Kamrup,false,Assam 4-Darrang Udalguri
-18-5,18-52,Assam,5,Gauhati,52,Dispur,GEN,Kamrup,true,Assam 5-Gauhati
-18-5,18-53,Assam,5,Gauhati,53,Gauhati East,GEN,Kamrup,true,Assam 5-Gauhati
-18-5,18-54,Assam,5,Gauhati,54,Gauhati West,GEN,Kamrup,true,Assam 5-Gauhati
-18-5,18-55,Assam,5,Gauhati,55,Hajo,GEN,Kamrup,false,Assam 3-Barpeta
-18-5,18-60,Assam,5,Gauhati,60,Barkhetry,GEN,Kamrup,false,Assam 3-Barpeta
-18-6,18-16,Assam,6,Diphu,16,Haflong,ST,North Cachar Hills,true,Assam 6-Diphu
-18-6,18-17,Assam,6,Diphu,17,Bokajan,ST,Mikir Hills,true,Assam 6-Diphu
-18-6,18-18,Assam,6,Diphu,18,Howraghat,ST,Mikir Hills,true,Assam 6-Diphu
-18-6,18-19,Assam,6,Diphu,19,Diphu,ST,Mikir Hills,true,Assam 6-Diphu
-18-6,18-20,Assam,6,Diphu,20,Baithalangso,ST,Mikir Hills,true,Assam 6-Diphu
-18-7,18-1,Assam,7,Karimganj,1,Ratabari,SC,Cachar,true,Assam 7-Karimganj
-18-7,18-2,Assam,7,Karimganj,2,Patharkandi,GEN,Cachar,true,Assam 7-Karimganj
-18-7,18-3,Assam,7,Karimganj,3,Karimganj North,GEN,Cachar,true,Assam 7-Karimganj
-18-7,18-4,Assam,7,Karimganj,4,Karimganj South,GEN,Cachar,true,Assam 7-Karimganj
-18-7,18-5,Assam,7,Karimganj,5,Badarpur,GEN,Cachar,true,Assam 7-Karimganj
-18-7,18-6,Assam,7,Karimganj,6,Hailakandi,GEN,Cachar,true,Assam 7-Karimganj
-18-7,18-7,Assam,7,Karimganj,7,Katlicherra,GEN,Cachar,true,Assam 7-Karimganj
-18-7,18-8,Assam,7,Karimganj,8,Algapur,GEN,Cachar,true,Assam 7-Karimganj
-18-8,18-9,Assam,8,Silchar,9,Silchar,GEN,Cachar,true,Assam 8-Silchar
-18-8,18-10,Assam,8,Silchar,10,Sonai,GEN,Cachar,true,Assam 8-Silchar
-18-8,18-11,Assam,8,Silchar,11,Dholai,SC,Cachar,true,Assam 8-Silchar
-18-8,18-12,Assam,8,Silchar,12,Udharbond,GEN,Cachar,true,Assam 8-Silchar
-18-8,18-13,Assam,8,Silchar,13,Lakhipur,GEN,Cachar,true,Assam 8-Silchar
-18-8,18-14,Assam,8,Silchar,14,Barkhola,GEN,Cachar,true,Assam 8-Silchar
-18-8,18-15,Assam,8,Silchar,15,Katigora,GEN,Cachar,true,Assam 8-Silchar
-18-9,18-79,Assam,9,Nagaon,79,Jagiroad,SC,Nowgong,true,Assam 9-Nagaon
-18-9,18-80,Assam,9,Nagaon,80,Marigaon,GEN,Nowgong,true,Assam 9-Nagaon
-18-9,18-81,Assam,9,Nagaon,81,Laharighat,GEN,Nowgong,true,Assam 9-Nagaon
-18-9,18-82,Assam,9,Nagaon,82,Raha,SC,Nowgong,true,Assam 9-Nagaon
-18-9,18-86,Assam,9,Nagaon,86,Nowgong,GEN,Nowgong,true,Assam 9-Nagaon
-18-9,18-87,Assam,9,Nagaon,87,Barhampur,GEN,Nowgong,false,Assam 10-Kaziranga
-18-9,18-90,Assam,9,Nagaon,90,Jamunamukh,GEN,Nowgong,false,Assam 10-Kaziranga
-18-9,18-91,Assam,9,Nagaon,91,Hojai,GEN,Nowgong,false,Assam 10-Kaziranga
-18-9,18-92,Assam,9,Nagaon,92,Lumding,GEN,Nowgong,false,Assam 10-Kaziranga
-18-10,18-83,Assam,10,Kaziranga,83,Dhing,GEN,Nowgong,false,Assam 11-Sonitpur
-18-10,18-84,Assam,10,Kaziranga,84,Batadroba,GEN,Nowgong,false,Assam 9-Nagaon
-18-10,18-85,Assam,10,Kaziranga,85,Rupohihat,GEN,Nowgong,false,Assam 9-Nagaon
-18-10,18-88,Assam,10,Kaziranga,88,Samaguri,GEN,Nowgong,true,Assam 10-Kaziranga
-18-10,18-89,Assam,10,Kaziranga,89,Kaliabor,GEN,Nowgong,true,Assam 10-Kaziranga
-18-10,18-93,Assam,10,Kaziranga,93,Bokakhat,GEN,Sibsagar,true,Assam 10-Kaziranga
-18-10,18-94,Assam,10,Kaziranga,94,Sarupathar,GEN,Sibsagar,true,Assam 10-Kaziranga
-18-10,18-95,Assam,10,Kaziranga,95,Golaghat,GEN,Sibsagar,true,Assam 10-Kaziranga
-18-10,18-96,Assam,10,Kaziranga,96,Khumtai,GEN,Sibsagar,true,Assam 10-Kaziranga
-18-10,18-97,Assam,10,Kaziranga,97,Dergaon,SC,Sibsagar,true,Assam 10-Kaziranga
-18-11,18-71,Assam,11,Sonitpur,71,Dhekiajuli,GEN,Darrang,true,Assam 11-Sonitpur
-18-11,18-72,Assam,11,Sonitpur,72,Barchalla,GEN,Darrang,true,Assam 11-Sonitpur
-18-11,18-73,Assam,11,Sonitpur,73,Tezpur,GEN,Darrang,true,Assam 11-Sonitpur
-18-11,18-74,Assam,11,Sonitpur,74,Rangapara,GEN,Darrang,true,Assam 11-Sonitpur
-18-11,18-75,Assam,11,Sonitpur,75,Sootea,GEN,Darrang,true,Assam 11-Sonitpur
-18-11,18-76,Assam,11,Sonitpur,76,Biswanath,GEN,Darrang,true,Assam 11-Sonitpur
-18-11,18-77,Assam,11,Sonitpur,77,Behali,GEN,Darrang,true,Assam 11-Sonitpur
-18-11,18-78,Assam,11,Sonitpur,78,Gohpur,GEN,Darrang,true,Assam 11-Sonitpur
-18-11,18-109,Assam,11,Sonitpur,109,Bihpuria,GEN,Lakhimpur,true,Assam 11-Sonitpur
-18-12,18-99,Assam,12,Lakhimpur,99,Majuli,ST,Sibsagar,false,Assam 14-Jorhat
-18-12,18-110,Assam,12,Lakhimpur,110,Naoboicha,GEN,Lakhimpur,true,Assam 12-Lakhimpur
-18-12,18-111,Assam,12,Lakhimpur,111,Lakhimpur,GEN,Lakhimpur,true,Assam 12-Lakhimpur
-18-12,18-112,Assam,12,Lakhimpur,112,Dhakuakhana,ST,Lakhimpur,true,Assam 12-Lakhimpur
-18-12,18-113,Assam,12,Lakhimpur,113,Dhemaji,ST,Lakhimpur,true,Assam 12-Lakhimpur
-18-12,18-114,Assam,12,Lakhimpur,114,Jonai,ST,Lakhimpur,true,Assam 12-Lakhimpur
-18-12,18-121,Assam,12,Lakhimpur,121,Chabua,GEN,Dibrugarh,false,Assam 13-Dibrugarh
-18-12,18-125,Assam,12,Lakhimpur,125,Doom Dooma,GEN,Dibrugarh,true,Assam 12-Lakhimpur
-18-12,18-126,Assam,12,Lakhimpur,126,Sadiya,GEN,Dibrugarh,true,Assam 12-Lakhimpur
-18-13,18-115,Assam,13,Dibrugarh,115,Moran,GEN,Dibrugarh,true,Assam 13-Dibrugarh
-18-13,18-116,Assam,13,Dibrugarh,116,Dibrugarh,GEN,Dibrugarh,true,Assam 13-Dibrugarh
-18-13,18-117,Assam,13,Dibrugarh,117,Lahowal,GEN,Dibrugarh,true,Assam 13-Dibrugarh
-18-13,18-118,Assam,13,Dibrugarh,118,Duliajan,GEN,Dibrugarh,true,Assam 13-Dibrugarh
-18-13,18-119,Assam,13,Dibrugarh,119,Tingkhong,GEN,Dibrugarh,true,Assam 13-Dibrugarh
-18-13,18-120,Assam,13,Dibrugarh,120,Nahar Katia,GEN,Dibrugarh,true,Assam 13-Dibrugarh
-18-13,18-122,Assam,13,Dibrugarh,122,Tinsukia,GEN,Dibrugarh,true,Assam 13-Dibrugarh
-18-13,18-123,Assam,13,Dibrugarh,123,Digboi,GEN,Dibrugarh,true,Assam 13-Dibrugarh
-18-13,18-124,Assam,13,Dibrugarh,124,Margherita,GEN,Dibrugarh,true,Assam 13-Dibrugarh
-18-14,18-98,Assam,14,Jorhat,98,Jorhat,GEN,Sibsagar,true,Assam 14-Jorhat
-18-14,18-100,Assam,14,Jorhat,100,Titabar,GEN,Sibsagar,false,Assam 10-Kaziranga
-18-14,18-101,Assam,14,Jorhat,101,Mariani,GEN,Sibsagar,true,Assam 14-Jorhat
-18-14,18-102,Assam,14,Jorhat,102,Teok,GEN,Sibsagar,true,Assam 14-Jorhat
-18-14,18-103,Assam,14,Jorhat,103,Amguri,GEN,Sibsagar,true,Assam 14-Jorhat
-18-14,18-104,Assam,14,Jorhat,104,Nazira,GEN,Sibsagar,true,Assam 14-Jorhat
-18-14,18-105,Assam,14,Jorhat,105,Mahmara,GEN,Sibsagar,true,Assam 14-Jorhat
-18-14,18-106,Assam,14,Jorhat,106,Sonari,GEN,Sibsagar,true,Assam 14-Jorhat
-18-14,18-107,Assam,14,Jorhat,107,Thowra,GEN,Sibsagar,true,Assam 14-Jorhat
-18-14,18-108,Assam,14,Jorhat,108,Sibsagar,GEN,Sibsagar,true,Assam 14-Jorhat
+18-1,18-1,Assam,1,Kokrajhar,1,Gossaigaon,GEN,,true,Assam 1-Kokrajhar
+18-1,18-2,Assam,1,Kokrajhar,2,Dotma,ST,,,
+18-1,18-3,Assam,1,Kokrajhar,3,Kokrajhar,ST,,,
+18-1,18-4,Assam,1,Kokrajhar,4,Baokhungri,GEN,,,
+18-1,18-5,Assam,1,Kokrajhar,5,Parbatjhora,GEN,,,
+18-1,18-19,Assam,1,Kokrajhar,19,Sidli,ST,,true,Assam 1-Kokrajhar
+18-1,18-20,Assam,1,Kokrajhar,20,Bijni,GEN,,true,Assam 1-Kokrajhar
+18-1,18-41,Assam,1,Kokrajhar,41,Manas,GEN,,,
+18-1,18-42,Assam,1,Kokrajhar,42,Baksa,ST,,,
+18-2,18-6,Assam,2,Dhubri,6,Golakganj,GEN,,true,Assam 2-Dhubri
+18-2,18-7,Assam,2,Dhubri,7,Gauripur,GEN,,false,Assam 1-Kokrajhar
+18-2,18-8,Assam,2,Dhubri,8,Dhubri,GEN,,true,Assam 2-Dhubri
+18-2,18-9,Assam,2,Dhubri,9,Birsing Jarua,GEN,,,
+18-2,18-10,Assam,2,Dhubri,10,Bilasipara,GEN,,,
+18-2,18-11,Assam,2,Dhubri,11,Mankachar,GEN,,true,Assam 2-Dhubri
+18-2,18-12,Assam,2,Dhubri,12,Jaleshwar,GEN,,,
+18-2,18-14,Assam,2,Dhubri,14,Goalpara East,GEN,,true,Assam 2-Dhubri
+18-2,18-17,Assam,2,Dhubri,17,Srijangram,GEN,,,
+18-2,18-22,Assam,2,Dhubri,22,Mandia,GEN,,,
+18-2,18-23,Assam,2,Dhubri,23,Chenga,GEN,,true,Assam 2-Dhubri
+18-3,18-16,Assam,3,Barpeta,16,Abhayapuri,GEN,,,
+18-3,18-18,Assam,3,Barpeta,18,Bongaigaon,GEN,,true,Assam 3-Barpeta
+18-3,18-21,Assam,3,Barpeta,21,Bhowanipur-Sorbhog,GEN,,,
+18-3,18-24,Assam,3,Barpeta,24,Barpeta,SC,,true,Assam 3-Barpeta
+18-3,18-25,Assam,3,Barpeta,25,Pakabetbari,GEN,,,
+18-3,18-26,Assam,3,Barpeta,26,Bajali,GEN,,,
+18-3,18-30,Assam,3,Barpeta,30,Hajo-Sualkuchi,SC,,,
+18-3,18-38,Assam,3,Barpeta,38,Barkhetri,GEN,,,
+18-3,18-39,Assam,3,Barpeta,39,Nalbari,GEN,,true,Assam 3-Barpeta
+18-3,18-40,Assam,3,Barpeta,40,Tihu,GEN,,,
+18-4,18-31,Assam,4,Darrang-Udalguri,31,Rangia,GEN,,,
+18-4,18-32,Assam,4,Darrang-Udalguri,32,Kamalpur,GEN,,true,Assam 4-Darrang Udalguri
+18-4,18-43,Assam,4,Darrang-Udalguri,43,Tamulpur,ST,,true,Assam 4-Darrang Udalguri
+18-4,18-44,Assam,4,Darrang-Udalguri,44,Goreswar,GEN,,,
+18-4,18-45,Assam,4,Darrang-Udalguri,45,Bhergaon,GEN,,,
+18-4,18-46,Assam,4,Darrang-Udalguri,46,Udalguri,ST,,true,Assam 4-Darrang Udalguri
+18-4,18-47,Assam,4,Darrang-Udalguri,47,Mazbat,GEN,,,
+18-4,18-48,Assam,4,Darrang-Udalguri,48,Tangla,GEN,,,
+18-4,18-49,Assam,4,Darrang-Udalguri,49,Sipajhar,GEN,,true,Assam 4-Darrang Udalguri
+18-4,18-50,Assam,4,Darrang-Udalguri,50,Mangaldai,GEN,,,
+18-4,18-51,Assam,4,Darrang-Udalguri,51,Dalgaon,GEN,,true,Assam 4-Darrang Udalguri
+18-5,18-13,Assam,5,Guwahati,13,Goalpara West,ST,,false,Assam 2-Dhubri
+18-5,18-15,Assam,5,Guwahati,15,Dudhnai,ST,,true,Assam 5-Gauhati
+18-5,18-27,Assam,5,Guwahati,27,Chamaria,GEN,,,
+18-5,18-28,Assam,5,Guwahati,28,Boko-Chaygaon,ST,,,
+18-5,18-29,Assam,5,Guwahati,29,Palasbari,GEN,,true,Assam 5-Gauhati
+18-5,18-33,Assam,5,Guwahati,33,Dispur,GEN,,true,Assam 5-Gauhati
+18-5,18-34,Assam,5,Guwahati,34,Dimoria,SC,,,
+18-5,18-35,Assam,5,Guwahati,35,New Guwahati,GEN,,,
+18-5,18-36,Assam,5,Guwahati,36,Guwahati Central,GEN,,,
+18-5,18-37,Assam,5,Guwahati,37,Jalukbari,GEN,,false,Assam 4-Darrang Udalguri
+18-6,18-108,Assam,6,Diphu,108,Bokajan,ST,,true,Assam 6-Diphu
+18-6,18-109,Assam,6,Diphu,109,Howarghat,ST,,,
+18-6,18-110,Assam,6,Diphu,110,Diphu,ST,,true,Assam 6-Diphu
+18-6,18-111,Assam,6,Diphu,111,Rongkhang,ST,,,
+18-6,18-112,Assam,6,Diphu,112,Amri,ST,,,
+18-6,18-113,Assam,6,Diphu,113,Haflong,ST,,true,Assam 6-Diphu
+18-7,18-121,Assam,7,Karimganj,121,Hailakandi,GEN,,true,Assam 7-Karimganj
+18-7,18-122,Assam,7,Karimganj,122,Algapur-Katlicherra,GEN,,,
+18-7,18-123,Assam,7,Karimganj,123,Karimganj North,GEN,,true,Assam 7-Karimganj
+18-7,18-124,Assam,7,Karimganj,124,Karimganj South,GEN,,true,Assam 7-Karimganj
+18-7,18-125,Assam,7,Karimganj,125,Patharkandi,GEN,,true,Assam 7-Karimganj
+18-7,18-126,Assam,7,Karimganj,126,Ram Krishna Nagar,SC,,,
+18-8,18-114,Assam,8,Silchar,114,Lakhipur,GEN,,true,Assam 8-Silchar
+18-8,18-115,Assam,8,Silchar,115,Udharbond,GEN,,true,Assam 8-Silchar
+18-8,18-116,Assam,8,Silchar,116,Katigorah,GEN,,,
+18-8,18-117,Assam,8,Silchar,117,Barkhola,GEN,,true,Assam 8-Silchar
+18-8,18-118,Assam,8,Silchar,118,Silchar,GEN,,true,Assam 8-Silchar
+18-8,18-119,Assam,8,Silchar,119,Sonai,GEN,,true,Assam 8-Silchar
+18-8,18-120,Assam,8,Silchar,120,Dholai,SC,,true,Assam 8-Silchar
+18-9,18-52,Assam,9,Nagaon,52,Jagiroad,SC,,true,Assam 9-Nagaon
+18-9,18-53,Assam,9,Nagaon,53,Laharighat,GEN,,true,Assam 9-Nagaon
+18-9,18-54,Assam,9,Nagaon,54,Morigaon,GEN,,,
+18-9,18-55,Assam,9,Nagaon,55,Dhing,GEN,,false,Assam 11-Sonitpur
+18-9,18-56,Assam,9,Nagaon,56,Rupahihat,GEN,,,
+18-9,18-58,Assam,9,Nagaon,58,Samaguri,GEN,,false,Assam 10-Kaziranga
+18-9,18-60,Assam,9,Nagaon,60,Nagaon-Batadraba,GEN,,,
+18-9,18-61,Assam,9,Nagaon,61,Raha,SC,,true,Assam 9-Nagaon
+18-10,18-57,Assam,10,Kaziranga,57,Kaliabor,GEN,,true,Assam 10-Kaziranga
+18-10,18-59,Assam,10,Kaziranga,59,Barhampur,GEN,,true,Assam 10-Kaziranga
+18-10,18-62,Assam,10,Kaziranga,62,Binnakandi,GEN,,,
+18-10,18-63,Assam,10,Kaziranga,63,Hojai,GEN,,true,Assam 10-Kaziranga
+18-10,18-64,Assam,10,Kaziranga,64,Lumding,GEN,,true,Assam 10-Kaziranga
+18-10,18-103,Assam,10,Kaziranga,103,Golaghat,GEN,,true,Assam 10-Kaziranga
+18-10,18-104,Assam,10,Kaziranga,104,Dergaon,GEN,,true,Assam 10-Kaziranga
+18-10,18-105,Assam,10,Kaziranga,105,Bokakhat,GEN,,true,Assam 10-Kaziranga
+18-10,18-106,Assam,10,Kaziranga,106,Khumtai,GEN,,true,Assam 10-Kaziranga
+18-10,18-107,Assam,10,Kaziranga,107,Sarupathar,GEN,,true,Assam 10-Kaziranga
+18-11,18-65,Assam,11,Sonitpur,65,Dhekiajuli,GEN,,true,Assam 11-Sonitpur
+18-11,18-66,Assam,11,Sonitpur,66,Barchalla,GEN,,true,Assam 11-Sonitpur
+18-11,18-67,Assam,11,Sonitpur,67,Tezpur,GEN,,true,Assam 11-Sonitpur
+18-11,18-68,Assam,11,Sonitpur,68,Rangapara,GEN,,true,Assam 11-Sonitpur
+18-11,18-69,Assam,11,Sonitpur,69,Naduar,GEN,,,
+18-11,18-70,Assam,11,Sonitpur,70,Biswanath,GEN,,true,Assam 11-Sonitpur
+18-11,18-71,Assam,11,Sonitpur,71,Behali,SC,,true,Assam 11-Sonitpur
+18-11,18-72,Assam,11,Sonitpur,72,Gohpur,GEN,,true,Assam 11-Sonitpur
+18-11,18-73,Assam,11,Sonitpur,73,Bihpuria,GEN,,true,Assam 11-Sonitpur
+18-12,18-74,Assam,12,Lakhimpur,74,Rongonadi,GEN,,,
+18-12,18-75,Assam,12,Lakhimpur,75,Nowboicha,SC,,,
+18-12,18-76,Assam,12,Lakhimpur,76,Lakhimpur,GEN,,true,Assam 12-Lakhimpur
+18-12,18-77,Assam,12,Lakhimpur,77,Dhakuakhana,ST,,true,Assam 12-Lakhimpur
+18-12,18-78,Assam,12,Lakhimpur,78,Dhemaji,ST,,true,Assam 12-Lakhimpur
+18-12,18-79,Assam,12,Lakhimpur,79,Sissibargaon,GEN,,,
+18-12,18-80,Assam,12,Lakhimpur,80,Jonai,ST,,true,Assam 12-Lakhimpur
+18-12,18-81,Assam,12,Lakhimpur,81,Sadiya,GEN,,true,Assam 12-Lakhimpur
+18-12,18-82,Assam,12,Lakhimpur,82,Doomdooma,GEN,,true,Assam 12-Lakhimpur
+18-13,18-83,Assam,13,Dibrugarh,83,Margherita,GEN,,true,Assam 13-Dibrugarh
+18-13,18-84,Assam,13,Dibrugarh,84,Digboi,GEN,,true,Assam 13-Dibrugarh
+18-13,18-85,Assam,13,Dibrugarh,85,Makum,GEN,,,
+18-13,18-86,Assam,13,Dibrugarh,86,Tinsukia,GEN,,true,Assam 13-Dibrugarh
+18-13,18-87,Assam,13,Dibrugarh,87,Chabua-Lahowal,GEN,,,
+18-13,18-88,Assam,13,Dibrugarh,88,Dibrugarh,GEN,,true,Assam 13-Dibrugarh
+18-13,18-89,Assam,13,Dibrugarh,89,Khowang,GEN,,,
+18-13,18-90,Assam,13,Dibrugarh,90,Duliajan,GEN,,true,Assam 13-Dibrugarh
+18-13,18-91,Assam,13,Dibrugarh,91,Tingkhong,GEN,,true,Assam 13-Dibrugarh
+18-13,18-92,Assam,13,Dibrugarh,92,Naharkatia,GEN,,true,Assam 13-Dibrugarh
+18-14,18-93,Assam,14,Jorhat,93,Sonari,GEN,,true,Assam 14-Jorhat
+18-14,18-94,Assam,14,Jorhat,94,Mahmora,GEN,,,
+18-14,18-95,Assam,14,Jorhat,95,Demow,GEN,,,
+18-14,18-96,Assam,14,Jorhat,96,Sibsagar,GEN,,true,Assam 14-Jorhat
+18-14,18-97,Assam,14,Jorhat,97,Nazira,GEN,,true,Assam 14-Jorhat
+18-14,18-98,Assam,14,Jorhat,98,Majuli,ST,,true,Assam 14-Jorhat
+18-14,18-99,Assam,14,Jorhat,99,Teok,GEN,,true,Assam 14-Jorhat
+18-14,18-100,Assam,14,Jorhat,100,Jorhat,GEN,,true,Assam 14-Jorhat
+18-14,18-101,Assam,14,Jorhat,101,Mariani,GEN,,true,Assam 14-Jorhat
+18-14,18-102,Assam,14,Jorhat,102,Titabor,GEN,,,
 10-1,10-1,Bihar,1,Valmiki Nagar,1,Valmiki Nagar,GEN,Paschim Champaran,true,Bihar 1-Valmiki Nagar
 10-1,10-2,Bihar,1,Valmiki Nagar,2,Ramnagar,SC,Paschim Champaran,true,Bihar 1-Valmiki Nagar
 10-1,10-3,Bihar,1,Valmiki Nagar,3,Narkatiaganj,GEN,Paschim Champaran,true,Bihar 1-Valmiki Nagar
@@ -1143,6 +1143,96 @@ pc_code,ac_code,state_ut,pc_no,pc_name,ac_no,ac_name,ac_reserved,district_order,
 2-4,2-64,Himachal Pradesh,4,Shimla,64,Shimla Rural,GEN,Shimla,true,Himachal Pradesh 4-Shimla
 2-4,2-65,Himachal Pradesh,4,Shimla,65,Jubbal-Kotkhai,GEN,Shimla,true,Himachal Pradesh 4-Shimla
 2-4,2-67,Himachal Pradesh,4,Shimla,67,Rohru,SC,Shimla,true,Himachal Pradesh 4-Shimla
+1-1,1-1,Jammu & Kashmir,1,Baramulla,1,Karnah,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-2,Jammu & Kashmir,1,Baramulla,2,Trehgam,GEN,,,
+1-1,1-3,Jammu & Kashmir,1,Baramulla,3,Kupwara,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-4,Jammu & Kashmir,1,Baramulla,4,Lolab,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-5,Jammu & Kashmir,1,Baramulla,5,Handwara,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-6,Jammu & Kashmir,1,Baramulla,6,Langate,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-7,Jammu & Kashmir,1,Baramulla,7,Sopore,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-8,Jammu & Kashmir,1,Baramulla,8,Rafiabad,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-9,Jammu & Kashmir,1,Baramulla,9,Uri,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-10,Jammu & Kashmir,1,Baramulla,10,Baramulla,GEN,,,
+1-1,1-11,Jammu & Kashmir,1,Baramulla,11,Gulmarg,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-12,Jammu & Kashmir,1,Baramulla,12,Wagoora-Kreeri,GEN,,,
+1-1,1-13,Jammu & Kashmir,1,Baramulla,13,Pattan,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-14,Jammu & Kashmir,1,Baramulla,14,Sonawari,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-15,Jammu & Kashmir,1,Baramulla,15,Bandipora,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-16,Jammu & Kashmir,1,Baramulla,16,Gurez,ST,,true,Jammu & Kashmir 1-Baramulla
+1-1,1-27,Jammu & Kashmir,1,Baramulla,27,Budgam,GEN,,,
+1-1,1-28,Jammu & Kashmir,1,Baramulla,28,Beerwah,GEN,,true,Jammu & Kashmir 1-Baramulla
+1-2,1-17,Jammu & Kashmir,2,Srinagar,17,Kangan,ST,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-18,Jammu & Kashmir,2,Srinagar,18,Ganderbal,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-19,Jammu & Kashmir,2,Srinagar,19,Hazratbal,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-20,Jammu & Kashmir,2,Srinagar,20,Khanyar,GEN,,,
+1-2,1-21,Jammu & Kashmir,2,Srinagar,21,Habbakadal,GEN,,,
+1-2,1-22,Jammu & Kashmir,2,Srinagar,22,Lal Chowk,GEN,,,
+1-2,1-23,Jammu & Kashmir,2,Srinagar,23,Channapora,GEN,,,
+1-2,1-24,Jammu & Kashmir,2,Srinagar,24,Zadibal,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-25,Jammu & Kashmir,2,Srinagar,25,Eidgah,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-26,Jammu & Kashmir,2,Srinagar,26,Central Shalteng,GEN,,,
+1-2,1-29,Jammu & Kashmir,2,Srinagar,29,Khansahib,GEN,,,
+1-2,1-30,Jammu & Kashmir,2,Srinagar,30,Chrar-i-Sharief,GEN,,,
+1-2,1-31,Jammu & Kashmir,2,Srinagar,31,Chadoora,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-32,Jammu & Kashmir,2,Srinagar,32,Pampore,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-33,Jammu & Kashmir,2,Srinagar,33,Tral,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-34,Jammu & Kashmir,2,Srinagar,34,Pulwama,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-35,Jammu & Kashmir,2,Srinagar,35,Rajpora,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-2,1-37,Jammu & Kashmir,2,Srinagar,37,Shopian,GEN,,true,Jammu & Kashmir 2-Srinagar
+1-3,1-36,Jammu & Kashmir,3,Anantnag-Rajouri,36,Zainapora,GEN,,,
+1-3,1-38,Jammu & Kashmir,3,Anantnag-Rajouri,38,D.H. Pora,GEN,,,
+1-3,1-39,Jammu & Kashmir,3,Anantnag-Rajouri,39,Kulgam,GEN,,true,Jammu & Kashmir 3-Anantnag-Rajouri
+1-3,1-40,Jammu & Kashmir,3,Anantnag-Rajouri,40,Devsar,GEN,,true,Jammu & Kashmir 3-Anantnag-Rajouri
+1-3,1-41,Jammu & Kashmir,3,Anantnag-Rajouri,41,Dooru,GEN,,,
+1-3,1-42,Jammu & Kashmir,3,Anantnag-Rajouri,42,Kokernag,ST,,true,Jammu & Kashmir 3-Anantnag-Rajouri
+1-3,1-43,Jammu & Kashmir,3,Anantnag-Rajouri,43,Anantnag West,GEN,,,
+1-3,1-44,Jammu & Kashmir,3,Anantnag-Rajouri,44,Anantnag,GEN,,true,Jammu & Kashmir 3-Anantnag-Rajouri
+1-3,1-45,Jammu & Kashmir,3,Anantnag-Rajouri,45,Srigufwara-Bijbehara,GEN,,,
+1-3,1-46,Jammu & Kashmir,3,Anantnag-Rajouri,46,Shangus-Anantnag East,GEN,,,
+1-3,1-47,Jammu & Kashmir,3,Anantnag-Rajouri,47,Pahalgam,GEN,,true,Jammu & Kashmir 3-Anantnag-Rajouri
+1-3,1-84,Jammu & Kashmir,3,Anantnag-Rajouri,84,Nowshera,GEN,,,
+1-3,1-85,Jammu & Kashmir,3,Anantnag-Rajouri,85,Rajouri,ST,,,
+1-3,1-86,Jammu & Kashmir,3,Anantnag-Rajouri,86,Budhal,ST,,,
+1-3,1-87,Jammu & Kashmir,3,Anantnag-Rajouri,87,Thanamandi,ST,,,
+1-3,1-88,Jammu & Kashmir,3,Anantnag-Rajouri,88,Surankote,ST,,true,Jammu & Kashmir 3-Anantnag-Rajouri
+1-3,1-89,Jammu & Kashmir,3,Anantnag-Rajouri,89,Poonch Haveli,GEN,,true,Jammu & Kashmir 3-Anantnag-Rajouri
+1-3,1-90,Jammu & Kashmir,3,Anantnag-Rajouri,90,Mendhar,ST,,true,Jammu & Kashmir 3-Anantnag-Rajouri
+1-4,1-48,Jammu & Kashmir,4,Udhampur,48,Inderwal,GEN,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-49,Jammu & Kashmir,4,Udhampur,49,Kishtwar,GEN,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-50,Jammu & Kashmir,4,Udhampur,50,Padder-Nagseni,GEN,,,
+1-4,1-51,Jammu & Kashmir,4,Udhampur,51,Bhadarwah,GEN,,,
+1-4,1-52,Jammu & Kashmir,4,Udhampur,52,Doda,GEN,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-53,Jammu & Kashmir,4,Udhampur,53,Doda West,GEN,,,
+1-4,1-54,Jammu & Kashmir,4,Udhampur,54,Ramban,GEN,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-55,Jammu & Kashmir,4,Udhampur,55,Banihal,GEN,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-59,Jammu & Kashmir,4,Udhampur,59,Udhampur West,GEN,,,
+1-4,1-60,Jammu & Kashmir,4,Udhampur,60,Udhampur East,GEN,,,
+1-4,1-61,Jammu & Kashmir,4,Udhampur,61,Chenani,GEN,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-62,Jammu & Kashmir,4,Udhampur,62,Ramnagar,SC,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-63,Jammu & Kashmir,4,Udhampur,63,Bani,GEN,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-64,Jammu & Kashmir,4,Udhampur,64,Billawar,GEN,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-65,Jammu & Kashmir,4,Udhampur,65,Basohli,GEN,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-66,Jammu & Kashmir,4,Udhampur,66,Jasrota,GEN,,,
+1-4,1-67,Jammu & Kashmir,4,Udhampur,67,Kathua,SC,,true,Jammu & Kashmir 4-Udhampur
+1-4,1-68,Jammu & Kashmir,4,Udhampur,68,Hiranagar,GEN,,false,Jammu & Kashmir 5-Jammu
+1-5,1-56,Jammu & Kashmir,5,Jammu,56,Gulabgarh,ST,,true,Jammu & Kashmir 5-Jammu
+1-5,1-57,Jammu & Kashmir,5,Jammu,57,Reasi,GEN,,true,Jammu & Kashmir 5-Jammu
+1-5,1-58,Jammu & Kashmir,5,Jammu,58,Shri Mata Vaishno Devi,GEN,,,
+1-5,1-69,Jammu & Kashmir,5,Jammu,69,Ramgarh,SC,,,
+1-5,1-70,Jammu & Kashmir,5,Jammu,70,Samba,GEN,,true,Jammu & Kashmir 5-Jammu
+1-5,1-71,Jammu & Kashmir,5,Jammu,71,Vijaypur,GEN,,true,Jammu & Kashmir 5-Jammu
+1-5,1-72,Jammu & Kashmir,5,Jammu,72,Bishnah,SC,,true,Jammu & Kashmir 5-Jammu
+1-5,1-73,Jammu & Kashmir,5,Jammu,73,Suchetgarh,SC,,true,Jammu & Kashmir 5-Jammu
+1-5,1-74,Jammu & Kashmir,5,Jammu,74,R.S.Pura-Jammu South,GEN,,,
+1-5,1-75,Jammu & Kashmir,5,Jammu,75,Bahu,GEN,,,
+1-5,1-76,Jammu & Kashmir,5,Jammu,76,Jammu East,GEN,,true,Jammu & Kashmir 5-Jammu
+1-5,1-77,Jammu & Kashmir,5,Jammu,77,Nagrota,GEN,,true,Jammu & Kashmir 5-Jammu
+1-5,1-78,Jammu & Kashmir,5,Jammu,78,Jammu West,GEN,,true,Jammu & Kashmir 5-Jammu
+1-5,1-79,Jammu & Kashmir,5,Jammu,79,Jammu North,GEN,,,
+1-5,1-80,Jammu & Kashmir,5,Jammu,80,Marh,SC,,true,Jammu & Kashmir 5-Jammu
+1-5,1-81,Jammu & Kashmir,5,Jammu,81,Akhnoor,SC,,true,Jammu & Kashmir 5-Jammu
+1-5,1-82,Jammu & Kashmir,5,Jammu,82,Chhamb,GEN,,true,Jammu & Kashmir 5-Jammu
+1-5,1-83,Jammu & Kashmir,5,Jammu,83,Kalakote-Sunderbani,GEN,,,
 20-1,20-1,Jharkhand,1,Rajmahal,1,Rajmahal,GEN,Sahebganj,true,Jharkhand 1-Rajmahal
 20-1,20-2,Jharkhand,1,Rajmahal,2,Boiro,ST,Sahebganj,,
 20-1,20-3,Jharkhand,1,Rajmahal,3,Barhait,ST,Sahebganj,true,Jharkhand 1-Rajmahal

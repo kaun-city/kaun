@@ -1,0 +1,91 @@
+pc_no,pc_name,ac_no,ac_name,ac_reserved,confidence,source
+1,Baramulla,1,Karnah,,high,Table-B gazette p.17
+1,Baramulla,2,Trehgam,,high,Table-B gazette p.17
+1,Baramulla,3,Kupwara,,high,Table-B gazette p.17
+1,Baramulla,4,Lolab,,high,Table-B gazette p.17
+1,Baramulla,5,Handwara,,high,Table-B gazette p.17
+1,Baramulla,6,Langate,,high,Table-B gazette p.17
+1,Baramulla,7,Sopore,,high,Table-B gazette p.17
+1,Baramulla,8,Rafiabad,,high,Table-B gazette p.17
+1,Baramulla,9,Uri,,high,Table-B gazette p.17
+1,Baramulla,10,Baramulla,,high,Table-B gazette p.17
+1,Baramulla,11,Gulmarg,,high,Table-B gazette p.17
+1,Baramulla,12,Wagoora-Kreeri,,high,Table-B gazette p.17
+1,Baramulla,13,Pattan,,high,Table-B gazette p.17
+1,Baramulla,14,Sonawari,,high,Table-B gazette p.17
+1,Baramulla,15,Bandipora,,high,Table-B gazette p.17
+1,Baramulla,16,Gurez,ST,high,Table-B gazette p.17
+1,Baramulla,27,Budgam,,high,Table-B gazette p.17
+1,Baramulla,28,Beerwah,,high,Table-B gazette p.17
+2,Srinagar,17,Kangan,ST,high,Table-B gazette p.17
+2,Srinagar,18,Ganderbal,,high,Table-B gazette p.17
+2,Srinagar,19,Hazratbal,,high,Table-B gazette p.17
+2,Srinagar,20,Khanyar,,high,Table-B gazette p.17
+2,Srinagar,21,Habbakadal,,high,Table-B gazette p.17
+2,Srinagar,22,Lal Chowk,,high,Table-B gazette p.17
+2,Srinagar,23,Channapora,,high,Table-B gazette p.17
+2,Srinagar,24,Zadibal,,high,Table-B gazette p.17
+2,Srinagar,25,Eidgah,,high,Table-B gazette p.17
+2,Srinagar,26,Central Shalteng,,high,Table-B gazette p.17
+2,Srinagar,29,Khansahib,,high,Table-B gazette p.17
+2,Srinagar,30,Chrar-i-Sharief,,high,Table-B gazette p.17
+2,Srinagar,31,Chadoora,,high,Table-B gazette p.17
+2,Srinagar,32,Pampore,,high,Table-B gazette p.17
+2,Srinagar,33,Tral,,high,Table-B gazette p.17
+2,Srinagar,34,Pulwama,,high,Table-B gazette p.17
+2,Srinagar,35,Rajpora,,high,Table-B gazette p.17
+2,Srinagar,37,Shopian,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,36,Zainapora,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,38,D.H. Pora,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,39,Kulgam,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,40,Devsar,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,41,Dooru,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,42,Kokernag,ST,high,Table-B gazette p.17
+3,Anantnag-Rajouri,43,Anantnag West,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,44,Anantnag,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,45,Srigufwara-Bijbehara,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,46,Shangus-Anantnag East,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,47,Pahalgam,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,84,Nowshera,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,85,Rajouri,ST,high,Table-B gazette p.17
+3,Anantnag-Rajouri,86,Budhal,ST,high,Table-B gazette p.17
+3,Anantnag-Rajouri,87,Thanamandi,ST,high,Table-B gazette p.17
+3,Anantnag-Rajouri,88,Surankote,ST,high,Table-B gazette p.17
+3,Anantnag-Rajouri,89,Poonch Haveli,,high,Table-B gazette p.17
+3,Anantnag-Rajouri,90,Mendhar,ST,high,Table-B gazette p.17
+4,Udhampur,48,Inderwal,,high,Table-B gazette p.17
+4,Udhampur,49,Kishtwar,,high,Table-B gazette p.17
+4,Udhampur,50,Padder-Nagseni,,high,Table-B gazette p.17
+4,Udhampur,51,Bhadarwah,,high,Table-B gazette p.17
+4,Udhampur,52,Doda,,high,Table-B gazette p.17
+4,Udhampur,53,Doda West,,high,Table-B gazette p.17
+4,Udhampur,54,Ramban,,high,Table-B gazette p.17
+4,Udhampur,55,Banihal,,high,Table-B gazette p.17
+4,Udhampur,59,Udhampur West,,high,Table-B gazette p.17
+4,Udhampur,60,Udhampur East,,high,Table-B gazette p.17
+4,Udhampur,61,Chenani,,high,Table-B gazette p.17
+4,Udhampur,62,Ramnagar,SC,high,Table-B gazette p.17
+4,Udhampur,63,Bani,,high,Table-B gazette p.17
+4,Udhampur,64,Billawar,,high,Table-B gazette p.17
+4,Udhampur,65,Basohli,,high,Table-B gazette p.17
+4,Udhampur,66,Jasrota,,high,Table-B gazette p.17
+4,Udhampur,67,Kathua,SC,high,Table-B gazette p.17
+4,Udhampur,68,Hiranagar,,high,Table-B gazette p.17
+5,Jammu,56,Gulabgarh,ST,high,Table-B gazette p.17
+5,Jammu,57,Reasi,,high,Table-B gazette p.17
+5,Jammu,58,Shri Mata Vaishno Devi,,high,Table-B gazette p.17
+5,Jammu,69,Ramgarh,SC,high,Table-B gazette p.17
+5,Jammu,70,Samba,,high,Table-B gazette p.17
+5,Jammu,71,Vijaypur,,high,Table-B gazette p.17
+5,Jammu,72,Bishnah,SC,high,Table-B gazette p.17
+5,Jammu,73,Suchetgarh,SC,high,Table-B gazette p.17
+5,Jammu,74,R.S.Pura-Jammu South,,high,Table-B gazette p.17
+5,Jammu,75,Bahu,,high,Table-B gazette p.17
+5,Jammu,76,Jammu East,,high,Table-B gazette p.17
+5,Jammu,77,Nagrota,,high,Table-B gazette p.17
+5,Jammu,78,Jammu West,,high,Table-B gazette p.17
+5,Jammu,79,Jammu North,,high,Table-B gazette p.17
+5,Jammu,80,Marh,SC,high,Table-B gazette p.17
+5,Jammu,81,Akhnoor,SC,high,Table-B gazette p.17
+5,Jammu,82,Chhamb,,high,Table-B gazette p.17
+5,Jammu,83,Kalakote-Sunderbani,,high,Table-B gazette p.17

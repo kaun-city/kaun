@@ -1,30 +1,14 @@
 pc_code,pc_id,pc,ac,spatial_pc
 37-7,S01_7,Andhra Pradesh 7-Amalapuram,46-Gannavaram,Andhra Pradesh 11-Machilipatnam
 37-13,S01_13,Andhra Pradesh 13-Guntur,93-Prathipadu,Andhra Pradesh 6-Kakinada
-18-1,S03_1,Assam 1-Kokrajhar,58-Tamulpur,Assam 4-Darrang Udalguri
-18-2,S03_2,Assam 2-Dhubri,24-Gauripur,Assam 1-Kokrajhar
-18-2,S03_2,Assam 2-Dhubri,27-Bilasipara East,Assam 1-Kokrajhar
-18-3,S03_3,Assam 3-Barpeta,34-Abhayapuri North,Assam 2-Dhubri
-18-3,S03_3,Assam 3-Barpeta,35-Abhayapuri South,Assam 2-Dhubri
-18-3,S03_3,Assam 3-Barpeta,44-Jania,Assam 2-Dhubri
-18-3,S03_3,Assam 3-Barpeta,45-Baghbar,Assam 2-Dhubri
-18-3,S03_3,Assam 3-Barpeta,47-Chenga,Assam 2-Dhubri
-18-4,S03_4,Assam 4-Darrang Udalguri,59-Nalbari,Assam 3-Barpeta
-18-5,S03_5,Assam 5-Gauhati,51-Jalukbari,Assam 4-Darrang Udalguri
-18-5,S03_5,Assam 5-Gauhati,55-Hajo,Assam 3-Barpeta
-18-5,S03_5,Assam 5-Gauhati,60-Barkhetry,Assam 3-Barpeta
-18-9,S03_9,Assam 9-Nagaon,87-Barhampur,Assam 10-Kaziranga
-18-9,S03_9,Assam 9-Nagaon,90-Jamunamukh,Assam 10-Kaziranga
-18-9,S03_9,Assam 9-Nagaon,91-Hojai,Assam 10-Kaziranga
-18-9,S03_9,Assam 9-Nagaon,92-Lumding,Assam 10-Kaziranga
-18-10,S03_10,Assam 10-Kaziranga,83-Dhing,Assam 11-Sonitpur
-18-10,S03_10,Assam 10-Kaziranga,84-Batadroba,Assam 9-Nagaon
-18-10,S03_10,Assam 10-Kaziranga,85-Rupohihat,Assam 9-Nagaon
-18-12,S03_12,Assam 12-Lakhimpur,99-Majuli,Assam 14-Jorhat
-18-12,S03_12,Assam 12-Lakhimpur,121-Chabua,Assam 13-Dibrugarh
-18-14,S03_14,Assam 14-Jorhat,100-Titabar,Assam 10-Kaziranga
+18-2,S03_2,Assam 2-Dhubri,7-Gauripur,Assam 1-Kokrajhar
+18-5,S03_5,Assam 5-Gauhati,13-Goalpara West,Assam 2-Dhubri
+18-5,S03_5,Assam 5-Gauhati,37-Jalukbari,Assam 4-Darrang Udalguri
+18-9,S03_9,Assam 9-Nagaon,55-Dhing,Assam 11-Sonitpur
+18-9,S03_9,Assam 9-Nagaon,58-Samaguri,Assam 10-Kaziranga
 7-7,U05_7,Delhi 7-South Delhi,36-Bijwasan,Delhi 6-West Delhi
 7-7,U05_7,Delhi 7-South Delhi,37-Palam,Delhi 6-West Delhi
+1-4,U08_4,Jammu & Kashmir 4-Udhampur,68-Hiranagar,Jammu & Kashmir 5-Jammu
 27-28,S13_28,Maharashtra 28-Mumbai North-East,171-Mankhurd Shivaji Nagar,(outside every PC polygon)
 21-18,S18_18,Odisha 18-Bhubaneswar,111-Jayadev,Odisha 17-Puri
 3-1,S19_1,Punjab 1-Gurdaspur,2-Bhoa,Jammu & Kashmir 4-Udhampur
