@@ -1,0 +1,28 @@
+pc_code,pc_id,pc,ac,spatial_pc
+37-7,S01_7,Andhra Pradesh 7-Amalapuram,46-Gannavaram,Andhra Pradesh 11-Machilipatnam
+37-13,S01_13,Andhra Pradesh 13-Guntur,93-Prathipadu,Andhra Pradesh 6-Kakinada
+18-2,S03_2,Assam 2-Dhubri,7-Gauripur,Assam 1-Kokrajhar
+18-5,S03_5,Assam 5-Gauhati,13-Goalpara West,Assam 2-Dhubri
+18-5,S03_5,Assam 5-Gauhati,37-Jalukbari,Assam 4-Darrang Udalguri
+18-9,S03_9,Assam 9-Nagaon,55-Dhing,Assam 11-Sonitpur
+18-9,S03_9,Assam 9-Nagaon,58-Samaguri,Assam 10-Kaziranga
+7-7,U05_7,Delhi 7-South Delhi,36-Bijwasan,Delhi 6-West Delhi
+7-7,U05_7,Delhi 7-South Delhi,37-Palam,Delhi 6-West Delhi
+1-4,U08_4,Jammu & Kashmir 4-Udhampur,68-Hiranagar,Jammu & Kashmir 5-Jammu
+27-28,S13_28,Maharashtra 28-Mumbai North-East,171-Mankhurd Shivaji Nagar,(outside every PC polygon)
+21-18,S18_18,Odisha 18-Bhubaneswar,111-Jayadev,Odisha 17-Puri
+3-1,S19_1,Punjab 1-Gurdaspur,2-Bhoa,Jammu & Kashmir 4-Udhampur
+3-12,S19_12,Punjab 12-Sangrur,107-Dhuri,Punjab 13-Patiala
+3-12,S19_12,Punjab 12-Sangrur,108-Sangrur,Punjab 13-Patiala
+8-8,S20_8,Rajasthan 8-Alwar,65-Alwar Rural,Rajasthan 9-Bharatpur
+8-8,S20_8,Rajasthan 8-Alwar,66-Alwar Urban,Rajasthan 9-Bharatpur
+8-8,S20_8,Rajasthan 8-Alwar,67-Ramgarh,Rajasthan 9-Bharatpur
+8-8,S20_8,Rajasthan 8-Alwar,68-Rajgarh –Laxmangarh,Rajasthan 9-Bharatpur
+33-13,S22_13,Tamil Nadu 13-Viluppuram,73-Vanur,Puducherry 1-Pondicherry
+33-22,S22_22,Tamil Nadu 22-Dindigul,129-Attur,Tamil Nadu 14-Kallakurichi
+16-1,S23_1,Tripura 1-Tripura West,7-Ramnagar,(outside every PC polygon)
+9-5,S24_5,Uttar Pradesh 5-Nagina,24-Noorpur,Uttar Pradesh 6-Moradabad
+9-62,S24_62,Uttar Pradesh 62-Sant Kabir Nagar,279-Alapur,Uttar Pradesh 68-Lalganj
+19-12,S25_12,West Bengal 12-Krishnanagar,85-KRISHNANAGAR DAKSHIN,West Bengal 13-Ranaghat
+19-13,S25_13,West Bengal 13-Ranaghat,84-NABADWIP,West Bengal 12-Krishnanagar
+19-17,S25_17,West Bengal 17-Barasat,118-MADHYAMGRAM,West Bengal 16-Dum Dum

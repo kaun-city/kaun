@@ -5,5 +5,9 @@
   "scripts": {
     "test": "node --test --experimental-strip-types 'tests/**/*.test.mjs'",
     "test:watch": "node --test --watch --experimental-strip-types 'tests/**/*.test.mjs'"
+  },
+  "devDependencies": {
+    "pdfjs-dist": "^4.10.38",
+    "shapefile": "^0.6.6"
   }
 }
