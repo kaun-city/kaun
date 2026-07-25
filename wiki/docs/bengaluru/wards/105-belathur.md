@@ -34,7 +34,7 @@ No MLA record matched this ward's constituency (`—`) in our current dataset.
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. the remainder come from the BBMP FY 2024-25 opencity mirror.
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. It comes from the BBMP FY 2024-25 opencity mirror.
 
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
