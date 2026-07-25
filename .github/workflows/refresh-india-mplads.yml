@@ -1,0 +1,92 @@
+name: Refresh India MPLADS
+
+# Monthly, on the 6th at 05:00 UTC — the day after refresh-india-mospi so the
+# two heavy India jobs do not overlap.
+#
+# WHY MONTHLY AND NOT WEEKLY. The eSAKSHI walk is ~1,100 requests (states →
+# constituencies → the MP in each seat → that MP's fund tiles) against an
+# undocumented government endpoint whose rate limits were never stress-tested.
+# MPLADS balances move slowly; monthly is a fair trade between freshness and
+# not hammering MOSPI. If per-work data ever becomes available in bulk, revisit.
+on:
+  schedule:
+    - cron: '0 5 6 * *'
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "eSAKSHI (official, aggregate) or Empowered Indian (unofficial)"
+        required: true
+        default: esakshi
+        type: choice
+        options:
+          - esakshi
+          - empoweredindian
+      state:
+        description: "optional state-name filter (blank = all)"
+        required: false
+        type: string
+      mode:
+        description: "dry-run (read-only) or apply (writes)"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check the India schema is present
+        id: preflight
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            "$SUPABASE_URL/rest/v1/in_mplads_summary?select=id&limit=1")
+          if [ "$code" = "200" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::in_mplads_summary is not reachable (HTTP $code) - the India schema migration has not been applied yet. Skipping."
+          fi
+
+      - name: Run MPLADS adapter
+        if: steps.preflight.outputs.ready == 'true'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          set -euo pipefail
+          SOURCE="${{ github.event.inputs.source }}"
+          STATE="${{ github.event.inputs.state }}"
+          MODE="${{ github.event.inputs.mode }}"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            SOURCE="esakshi"
+            MODE="apply"
+            STATE=""
+          fi
+          ARGS="--source ${SOURCE:-esakshi}"
+          if [ -n "$STATE" ]; then ARGS="$ARGS --state $STATE"; fi
+          if [ "$MODE" = "apply" ]; then ARGS="$ARGS --apply"; fi
+          node scripts/india/esakshi-mplads.mjs $ARGS
+
+      - name: Upload dry-run reports and review files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: india-mplads-reports
+          path: .artifacts/india/
+          if-no-files-found: ignore
+          retention-days: 30

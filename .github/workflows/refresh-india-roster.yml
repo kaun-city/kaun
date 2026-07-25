@@ -1,15 +1,19 @@
-name: Refresh India MP Roster
+name: Refresh India MP Roster + Activity
 
-# Manual only for now. The adapters in scripts/india/ are SKELETONS — they
-# refuse --apply until implemented — so there is deliberately no cron yet.
-# Intended cadence once implemented:
-#   - cron: '0 4 * * 0'   # Sundays 04:00 UTC, after refresh-wiki-wards (03:00)
-# The roster changes slowly (bypolls, deaths, resignations); weekly is plenty.
+# Weekly. The roster changes slowly (bypolls, deaths, resignations) and
+# attendance only moves while Parliament sits, so once a week is plenty.
 #
-# Order matters: seed-constituencies must have run at least once (every other
+# 04:00 UTC on Sundays, after refresh-wiki-wards (03:00) and the Bengaluru
+# adapters before it (refresh-kppp 01:00, refresh-ifms 02:00), so nothing
+# competes for the same window.
+#
+# ORDER MATTERS. seed-constituencies must have run at least once (every other
 # in_* table has an FK to in_constituencies.pc_code), and the roster must land
-# before the activity and MPLADS jobs, which need in_mps.id.
+# before the activity job, which needs in_mps.id. The scheduled run does
+# roster-then-activity in that order in a single job for exactly that reason.
 on:
+  schedule:
+    - cron: '0 4 * * 0'
   workflow_dispatch:
     inputs:
       job:
@@ -18,12 +22,11 @@ on:
         default: sansad-roster
         type: choice
         options:
+          - roster-then-activity
           - seed-constituencies
           - sansad-roster
           - mp-activity
           - mp-activity-backfill
-          - esakshi-mplads
-          - myneta-affidavits
       mode:
         description: "dry-run (read-only) or apply (writes)"
         required: true
@@ -36,7 +39,7 @@ on:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -44,23 +47,64 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run India adapter (${{ github.event.inputs.job }} / ${{ github.event.inputs.mode }})
+      # The India schema is additive and lands separately (PR #63). Until it is
+      # applied, a scheduled run should be a clear no-op rather than a weekly
+      # red X — a loader failing on a missing table tells nobody anything they
+      # do not already know.
+      - name: Check the India schema is present
+        id: preflight
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            "$SUPABASE_URL/rest/v1/in_constituencies?select=pc_code&limit=1")
+          if [ "$code" = "200" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::in_constituencies is not reachable (HTTP $code) - the India schema migration has not been applied yet. Skipping."
+          fi
+
+      - name: Run India roster / activity
+        if: steps.preflight.outputs.ready == 'true'
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
         run: |
-          case "${{ github.event.inputs.job }}" in
-            seed-constituencies)   SCRIPT="scripts/india/seed-constituencies.mjs"; ARGS="" ;;
-            sansad-roster)         SCRIPT="scripts/india/sansad-roster.mjs";       ARGS="" ;;
-            mp-activity)           SCRIPT="scripts/india/mp-activity.mjs";         ARGS="" ;;
-            mp-activity-backfill)  SCRIPT="scripts/india/mp-activity.mjs";         ARGS="--backfill" ;;
-            esakshi-mplads)        SCRIPT="scripts/india/esakshi-mplads.mjs";      ARGS="" ;;
-            myneta-affidavits)     SCRIPT="scripts/india/myneta-affidavits.mjs";   ARGS="" ;;
-            *) echo "unknown job"; exit 1 ;;
-          esac
-          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
-            node "$SCRIPT" $ARGS --apply
-          else
-            node "$SCRIPT" $ARGS
+          set -euo pipefail
+          JOB="${{ github.event.inputs.job }}"
+          MODE="${{ github.event.inputs.mode }}"
+          # A scheduled run is the refresh itself: roster, then activity, applied.
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            JOB="roster-then-activity"
+            MODE="apply"
           fi
+          FLAG=""
+          if [ "$MODE" = "apply" ]; then FLAG="--apply"; fi
+
+          case "$JOB" in
+            roster-then-activity)
+              node scripts/india/sansad-roster.mjs $FLAG
+              node scripts/india/mp-activity.mjs $FLAG
+              ;;
+            seed-constituencies)  node scripts/india/seed-constituencies.mjs $FLAG ;;
+            sansad-roster)        node scripts/india/sansad-roster.mjs $FLAG ;;
+            mp-activity)          node scripts/india/mp-activity.mjs $FLAG ;;
+            mp-activity-backfill) node scripts/india/mp-activity.mjs --backfill $FLAG ;;
+            *) echo "unknown job: $JOB"; exit 1 ;;
+          esac
+
+      # Unresolved constituency joins are proposed alias rows for a human, never
+      # guesses. Keeping them as an artifact is what makes that reviewable.
+      - name: Upload dry-run reports and review files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: india-roster-reports
+          path: .artifacts/india/
+          if-no-files-found: ignore
+          retention-days: 30
