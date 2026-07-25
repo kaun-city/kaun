@@ -1,0 +1,58 @@
+name: Refresh India Central Projects (MoSPI)
+
+# The one Python pipeline in the repo: MoSPI's Table 6 only exists inside a
+# ~160-page PDF and pdfplumber is what parses it. Same setup-python pattern as
+# deploy-wiki.yml.
+#
+# Manual only for now — scripts/india/mospi/load_flash_report.py is a SKELETON
+# and refuses --apply until implemented. Intended cadence once implemented:
+#   - cron: '0 5 5 * *'   # 5th of each month, 05:00 UTC
+# MoSPI publishes with a ~7-8 week lag, so monthly is the natural beat; the
+# loader is idempotent on (project_code, report_month), so an extra run is a
+# no-op rather than a duplicate.
+on:
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "report month as YYYY-MM (blank = latest published)"
+        required: false
+        type: string
+      mode:
+        description: "dry-run (parse + sanity-gate only) or apply (writes snapshots)"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install parser dependencies
+        run: pip install -r scripts/india/mospi/requirements.txt
+
+      - name: Load MoSPI flash report (${{ github.event.inputs.mode }})
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ -n "${{ github.event.inputs.month }}" ]; then
+            TARGET="--month ${{ github.event.inputs.month }}"
+          else
+            TARGET="--latest"
+          fi
+          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
+            python scripts/india/mospi/load_flash_report.py $TARGET --apply
+          else
+            python scripts/india/mospi/load_flash_report.py $TARGET
+          fi

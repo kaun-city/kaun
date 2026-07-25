@@ -1,0 +1,49 @@
+name: Migrate India Schema
+
+# One-off. Manual only. Defaults to dry-run so a careless click previews
+# (read-only) instead of writing. Creates the eight new in_* tables + the
+# central-project diff view for the "Kaun for India" national layer.
+#
+# ADDITIVE ONLY — no existing table, column, row, policy or grant is touched,
+# and the script is idempotent, so a re-run after a partial failure is safe.
+# Use 'inspect' (read-only catalog dump) to confirm the applied state.
+#
+# DO NOT run 'apply' until the design in docs/design-india-schema.md is
+# reviewed and signed off.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run (preview SQL, read-only) | inspect (read-only catalog dump) | apply (creates 8 in_* tables + 1 view + RLS)"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - inspect
+          - apply
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Migrate India schema (${{ github.event.inputs.mode }})
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
+            node scripts/migrate-india-schema.mjs --apply
+          elif [ "${{ github.event.inputs.mode }}" = "inspect" ]; then
+            node scripts/migrate-india-schema.mjs --inspect
+          else
+            node scripts/migrate-india-schema.mjs
+          fi
