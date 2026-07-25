@@ -35,7 +35,7 @@ No contractor from the city-wide top 100 shows work orders in this ward. The [ka
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **1 are live from BBMP IFMS** (with current bill-stage status); the remainder come from the BBMP FY 2024-25 opencity mirror.
+2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **1 is live from BBMP IFMS** (with current bill-stage status); the remaining 1 comes from the BBMP FY 2024-25 opencity mirror.
 
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
