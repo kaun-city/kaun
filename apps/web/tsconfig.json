@@ -13,6 +13,11 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    // Lets a module inside lib/india import a sibling as "./viz.ts". Node's
+    // --experimental-strip-types loader (which runs the node:test suite) needs
+    // the explicit extension; the bundler resolves it identically. Additive —
+    // every existing extensionless import keeps working.
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",

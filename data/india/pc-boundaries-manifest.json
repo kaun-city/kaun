@@ -1,0 +1,98 @@
+{
+  "version": "2024-2026.07",
+  "built_by": "scripts/india/build-pc-geojson.mjs",
+  "output": "apps/web/public/india-pc.geojson",
+  "seats": 543,
+  "states": 37,
+  "seats_by_state": {
+    "Jammu & Kashmir": 5,
+    "Himachal Pradesh": 4,
+    "Punjab": 13,
+    "Chandigarh": 1,
+    "Uttarakhand": 5,
+    "Haryana": 10,
+    "Delhi": 7,
+    "Rajasthan": 25,
+    "Uttar Pradesh": 80,
+    "Bihar": 40,
+    "Sikkim": 1,
+    "Arunachal Pradesh": 2,
+    "Nagaland": 1,
+    "Manipur": 2,
+    "Mizoram": 1,
+    "Tripura": 2,
+    "Meghalaya": 2,
+    "Assam": 14,
+    "West Bengal": 42,
+    "Jharkhand": 14,
+    "Orissa": 21,
+    "Chhattisgarh": 11,
+    "Madhya Pradesh": 29,
+    "Gujarat": 26,
+    "Daman & Diu": 1,
+    "Dadra & Nagar Haveli": 1,
+    "Maharashtra": 48,
+    "Karnataka": 28,
+    "Goa": 2,
+    "Lakshadweep": 1,
+    "Kerala": 20,
+    "Tamil Nadu": 39,
+    "Puducherry": 1,
+    "Andaman & Nicobar": 1,
+    "Telangana": 17,
+    "Andhra Pradesh": 25,
+    "Ladakh": 1
+  },
+  "geometry_overrides": [
+    {
+      "state_name": "Assam",
+      "st_code": 18,
+      "seats": 14,
+      "source": "shijithpk-2024"
+    },
+    {
+      "state_name": "Jammu & Kashmir",
+      "st_code": 1,
+      "seats": 5,
+      "source": "shijithpk-2024"
+    },
+    {
+      "state_name": "Ladakh",
+      "st_code": 38,
+      "seats": 1,
+      "source": "shijithpk-2024"
+    }
+  ],
+  "simplification": {
+    "method": "Ramer-Douglas-Peucker per ring, then coordinate quantisation",
+    "rdp_tolerance_deg": 0.005,
+    "coordinate_decimals": 4,
+    "min_part_area_deg2": 0.0001,
+    "vertices_before": 120401,
+    "vertices_after": 83194,
+    "output_bytes": 1492741
+  },
+  "sources": {
+    "datameet": {
+      "file": "datameet_india_pc_2019_simplified.geojson",
+      "url": "https://github.com/datameet/maps/tree/master/parliamentary-constituencies",
+      "license": "CC0 1.0 (simplified/attribute version); underlying india_pc_2019.shp is CC-BY-SA 2.5 IN, DataMeet Trust"
+    },
+    "shijithpk": {
+      "files": [
+        "shijithpk_assam_ls_new_borders.geojson",
+        "shijithpk_j_and_k_ls_new_borders.geojson",
+        "shijithpk_ladakh_ls_new_borders.geojson"
+      ],
+      "url": "https://github.com/shijithpk/2024_maps_supplement",
+      "license": "Unlicense (public domain)",
+      "caveat": "Assam / J&K / Ladakh boundaries were re-georeferenced from ECI press-note PDFs in QGIS by the author, who states they are not survey-grade."
+    }
+  },
+  "notes": [
+    "pc_code = <st_code>-<pc_no> unpadded, per scripts/india/lib/pc-code.mjs and the in_constituencies_pc_code_derived CHECK.",
+    "Ladakh uses st_code 38 (Census 2011 predates the 2019 bifurcation); matches data/pc-crosswalk/.",
+    "Reserved (SC/ST) status is deliberately absent — every boundary source under-reports it. It is read from in_constituencies, whose value names its source.",
+    "Assam / J&K / Ladakh geometry is re-georeferenced from ECI press-note PDFs by shijithpk and is explicitly not survey-grade."
+  ]
+}
