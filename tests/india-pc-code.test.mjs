@@ -37,8 +37,9 @@ test("pcCode rejects junk rather than producing a plausible-looking key", () => 
   for (const bad of [[null, 1], [1, null], ["x", 1], [0, 1], [1, 0], [1.5, 2]]) {
     assert.throws(() => pcCode(bad[0], bad[1]), /pcCode: bad/)
   }
-  assert.throws(() => parsePcCode("2-1"), /not a pc_code/)
   assert.throws(() => parsePcCode(undefined), /not a pc_code/)
+  assert.throws(() => parsePcCode("2-"), /not a pc_code/)
+  assert.throws(() => parsePcCode("-1"), /not a pc_code/)
 })
 
 test("normalizer strips case, punctuation and the (SC)/(ST) reservation suffix", () => {
