@@ -193,9 +193,21 @@ function renderWardPage(w, mla, contractorsHere, workOrdersHere) {
   if (workOrdersHere.length === 0) {
     lines.push("No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=" + w.ward_no + ").")
   } else {
+    const total = workOrdersHere.length
     const liveCount = workOrdersHere.filter(wo => wo.data_source === "ifms_direct").length
-    const liveNote = liveCount > 0 ? ` **${liveCount} are live from BBMP IFMS** (with current bill-stage status);` : ""
-    lines.push(`${workOrdersHere.length} work order${workOrdersHere.length === 1 ? "" : "s"} from the city-wide top 200 (by sanctioned amount) ${workOrdersHere.length === 1 ? "is" : "are"} recorded against this ward.${liveNote} the remainder come from the BBMP FY 2024-25 opencity mirror.`)
+    const legacyCount = total - liveCount
+    const mirror = "the BBMP FY 2024-25 opencity mirror"
+    const liveClause = `live from BBMP IFMS** (with current bill-stage status)`
+    let sourceNote
+    const allSubject = total === 1 ? "It" : total === 2 ? "Both" : `All ${total}`
+    if (liveCount === 0) {
+      sourceNote = ` ${allSubject} come${total === 1 ? "s" : ""} from ${mirror}.`
+    } else if (legacyCount === 0) {
+      sourceNote = ` **${allSubject} ${total === 1 ? "is" : "are"} ${liveClause}.`
+    } else {
+      sourceNote = ` **${liveCount} ${liveCount === 1 ? "is" : "are"} ${liveClause}; the remaining ${legacyCount} come${legacyCount === 1 ? "s" : ""} from ${mirror}.`
+    }
+    lines.push(`${total} work order${total === 1 ? "" : "s"} from the city-wide top 200 (by sanctioned amount) ${total === 1 ? "is" : "are"} recorded against this ward.${sourceNote}`)
     lines.push("")
     lines.push("| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |")
     lines.push("|---|---|---|---|---:|---:|---|")
