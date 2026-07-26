@@ -24,7 +24,7 @@
 
 import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
-import { flag, banner, run } from "./lib/cli.mjs"
+import { banner, run } from "./lib/cli.mjs"
 import { openSink, REPO_ROOT } from "./lib/sink.mjs"
 import { parsePcCode } from "./lib/pc-code.mjs"
 import { loadPcReference } from "./lib/pc-reference.mjs"
@@ -53,8 +53,11 @@ function readCsv(path) {
 }
 
 async function main() {
-  const apply = flag("--apply")
-  banner("load-aliases", { source: CSV_PATH, mode: apply ? "apply" : "dry-run" })
+  // banner() parses --apply itself (cli's flag() prepends the dashes — a
+  // hand-rolled flag("--apply") here once matched "----apply", ran dry, and
+  // exited green while writing nothing; tests/india-loaders.test.mjs now
+  // pins the parse).
+  const apply = banner("load-aliases", { source: CSV_PATH })
   const sink = openSink({ loader: "load-aliases", apply })
 
   const rows = readCsv(CSV_PATH)
