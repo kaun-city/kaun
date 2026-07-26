@@ -1,16 +1,16 @@
 name: Refresh India Central Projects (MoSPI)
 
-# The one Python pipeline in the repo: MoSPI's Table 6 only exists inside a
-# ~160-page PDF and pdfplumber is what parses it. Same setup-python pattern as
-# deploy-wiki.yml.
+# Monthly, on the 5th at 05:00 UTC. MoSPI publishes with a ~7-8 week lag, so
+# monthly is the natural beat; the loader is idempotent on
+# (project_code, report_month), so an extra run is a no-op rather than a
+# duplicate snapshot.
 #
-# Manual only for now — scripts/india/mospi/load_flash_report.py is a SKELETON
-# and refuses --apply until implemented. Intended cadence once implemented:
-#   - cron: '0 5 5 * *'   # 5th of each month, 05:00 UTC
-# MoSPI publishes with a ~7-8 week lag, so monthly is the natural beat; the
-# loader is idempotent on (project_code, report_month), so an extra run is a
-# no-op rather than a duplicate.
+# The parse step is the one bit of Python in the repo — Table 6 exists only
+# inside a ~160-page PDF and pdfplumber is what reads it. Same setup-python
+# pattern as deploy-wiki.yml. The LOAD step is Node, like every other adapter.
 on:
+  schedule:
+    - cron: '0 5 5 * *'
   workflow_dispatch:
     inputs:
       month:
@@ -29,9 +29,13 @@ on:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -41,18 +45,45 @@ jobs:
       - name: Install parser dependencies
         run: pip install -r scripts/india/mospi/requirements.txt
 
-      - name: Load MoSPI flash report (${{ github.event.inputs.mode }})
+      # Same reasoning as refresh-india-roster: until the additive India schema
+      # (PR #63) is applied, a scheduled run should be a visible no-op.
+      - name: Check the India schema is present
+        id: preflight
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
-          if [ -n "${{ github.event.inputs.month }}" ]; then
-            TARGET="--month ${{ github.event.inputs.month }}"
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            "$SUPABASE_URL/rest/v1/in_central_projects?select=project_code&limit=1")
+          if [ "$code" = "200" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
           else
-            TARGET="--latest"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::in_central_projects is not reachable (HTTP $code) - the India schema migration has not been applied yet. Skipping."
           fi
-          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
-            python scripts/india/mospi/load_flash_report.py $TARGET --apply
-          else
-            python scripts/india/mospi/load_flash_report.py $TARGET
-          fi
+
+      - name: Load MoSPI flash report
+        if: steps.preflight.outputs.ready == 'true'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          set -euo pipefail
+          MONTH="${{ github.event.inputs.month }}"
+          MODE="${{ github.event.inputs.mode }}"
+          if [ "${{ github.event_name }}" = "schedule" ]; then MODE="apply"; fi
+          if [ -n "$MONTH" ]; then TARGET="--month $MONTH"; else TARGET="--latest"; fi
+          FLAG=""
+          if [ "$MODE" = "apply" ]; then FLAG="--apply"; fi
+          node scripts/india/load-central-projects.mjs $TARGET $FLAG
+
+      - name: Upload dry-run reports and review files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: india-mospi-reports
+          path: .artifacts/india/
+          if-no-files-found: ignore
+          retention-days: 30

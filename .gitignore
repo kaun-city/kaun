@@ -18,5 +18,9 @@ test_*.py
 
 # TypeScript incremental build artifacts
 *.tsbuildinfo
+
+# India loaders: dry-run reports + on-disk HTTP/PDF cache (scripts/india/)
+.artifacts/
+.cache/
 .claude/settings.local.json
 .mcp.json

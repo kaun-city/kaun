@@ -1,0 +1,65 @@
+name: Refresh India MP Affidavits (MyNeta)
+
+# MANUAL DISPATCH ONLY — deliberately no cron.
+#
+# Affidavit data is election-cycle data: the Lok Sabha 2024 declarations do not
+# change until Lok Sabha 2029, apart from bypolls. A cron here would re-scrape
+# ~1,100 pages of a volunteer-run site every week to re-learn the same numbers.
+# Run it after a general election, after a bypoll, or when the parser changes.
+#
+# The full run is ~1,100 requests at 2.5s apart (index → one list page per seat
+# → one detail page per winner), so budget roughly 50 minutes. Use the state or
+# limit inputs to sample.
+on:
+  workflow_dispatch:
+    inputs:
+      state:
+        description: "optional state-name filter (blank = all 543 seats)"
+        required: false
+        type: string
+      limit:
+        description: "optional cap on seats scraped (blank = no cap)"
+        required: false
+        type: string
+      mode:
+        description: "dry-run (read-only) or apply (writes)"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Scrape MyNeta affidavits
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          set -euo pipefail
+          ARGS=""
+          if [ -n "${{ github.event.inputs.state }}" ]; then ARGS="$ARGS --state ${{ github.event.inputs.state }}"; fi
+          if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit ${{ github.event.inputs.limit }}"; fi
+          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then ARGS="$ARGS --apply"; fi
+          node scripts/india/myneta-affidavits.mjs $ARGS
+
+      # Unmatched winners stay needs_review=true and the RLS policy keeps them
+      # out of public reads, so these files are the review queue.
+      - name: Upload dry-run reports and review files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: india-affidavit-reports
+          path: .artifacts/india/
+          if-no-files-found: ignore
+          retention-days: 90
