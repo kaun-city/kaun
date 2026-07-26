@@ -17,6 +17,10 @@ on:
         description: "report month as YYYY-MM (blank = latest published)"
         required: false
         type: string
+      pdf_release:
+        description: "release tag of mirrored PDFs (blank = live PAIMANA; e.g. data-mospi-2026 when their PDF endpoint is down)"
+        required: false
+        type: string
       mode:
         description: "dry-run (parse + sanity-gate only) or apply (writes snapshots)"
         required: true
@@ -69,15 +73,30 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # gh release download (pdf mirror)
         run: |
           set -euo pipefail
           MONTH="${{ github.event.inputs.month }}"
           MODE="${{ github.event.inputs.mode }}"
+          PDF_RELEASE="${{ github.event.inputs.pdf_release }}"
           if [ "${{ github.event_name }}" = "schedule" ]; then MODE="apply"; fi
-          if [ -n "$MONTH" ]; then TARGET="--month $MONTH"; else TARGET="--latest"; fi
           FLAG=""
           if [ "$MODE" = "apply" ]; then FLAG="--apply"; fi
-          node scripts/india/load-central-projects.mjs $TARGET $FLAG
+          if [ -n "$PDF_RELEASE" ]; then
+            # PAIMANA's PDF endpoint intermittently 500s; mirrored report PDFs
+            # (unmodified public documents, provenance in the release notes)
+            # feed the loader's --pdf path. Oldest month first so snapshots
+            # append in publication order.
+            mkdir -p .mospi-mirror
+            gh release download "$PDF_RELEASE" --dir .mospi-mirror --clobber
+            for f in $(ls .mospi-mirror/*.pdf | sort); do
+              echo "=== loading $f ==="
+              node scripts/india/load-central-projects.mjs --pdf "$f" $FLAG
+            done
+          else
+            if [ -n "$MONTH" ]; then TARGET="--month $MONTH"; else TARGET="--latest"; fi
+            node scripts/india/load-central-projects.mjs $TARGET $FLAG
+          fi
 
       - name: Upload dry-run reports and review files
         if: always()
