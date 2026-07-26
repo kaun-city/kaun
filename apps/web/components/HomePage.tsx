@@ -12,6 +12,7 @@ import { LayerControl } from "@/components/LayerControl"
 import { CorporatorVacancy } from "@/components/CorporatorVacancy"
 import { WardFinder } from "@/components/WardFinder"
 import ReportSheet from "@/components/shared/ReportSheet"
+import { SurfaceSwitcher } from "@/components/shared/SurfaceSwitcher"
 import { getCity } from "@/lib/cities"
 import { getLayer } from "@/lib/map-layers"
 import type { ChoroplethData } from "@/components/MapView"
@@ -90,7 +91,12 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
 
 interface WardOption { ward_no: number; ward_name: string; lat: number; lng: number }
 
-export default function HomePage() {
+/**
+ * @param host  Request Host header, threaded down from app/page.tsx so the
+ *              cross-surface links are correct on the city subdomain and in
+ *              local dev. Empty is safe: links then resolve for kaun.city.
+ */
+export default function HomePage({ host = "" }: { host?: string }) {
   const searchParams = useSearchParams()
   // Active city — driven by ?city=X query param. Defaults to Bengaluru.
   // Pin drops in another city update this implicitly via pinResult.city_id.
@@ -365,6 +371,9 @@ export default function HomePage() {
           >
             i
           </a>
+
+          {/* Which Kaun am I on? Compact enough to leave the map alone. */}
+          <SurfaceSwitcher current="city" host={host} variant="overlay" />
 
           <CitySwitcher activeCityId={activeCity.id} />
 

@@ -17,8 +17,8 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-  resolveSurface, cityFromHost, rootDomain, cityUrl, indiaHref, cityHref,
-  CITY_UI_PATHS, CITY_UI_PARAMS, LEGACY_CITY_ID,
+  resolveSurface, cityFromHost, rootDomain, cityUrl, indiaHref, surfaceLinks,
+  CITY_UI_PATHS, CITY_UI_PARAMS, LEGACY_CITY_ID, LEGACY_CITY_LABEL, DATA_SURFACE_URL,
 } from "../apps/web/lib/host-routing.ts"
 
 const base = { search: "", indiaRoot: false, allowHostOverride: false }
@@ -215,10 +215,114 @@ test("indiaHref produces a URL that resolves in whichever mode it is built for",
   assert.equal(indiaHref("c/29-25", false), "/india/c/29-25", "leading slash optional")
 })
 
-test("cityHref stays relative before the cutover and absolute after", () => {
-  assert.equal(cityHref("/", false), "/")
-  assert.equal(cityHref("/data", false), "/data")
-  assert.equal(cityHref("/", true), "https://bengaluru.kaun.city/")
+// ---------------------------------------------------------------------------
+// 5b. surfaceLinks — the cross-surface switcher's whole link matrix
+//
+// The switcher renders on the city UI and on every India page, so a wrong href
+// here is wrong in two places at once. The matrix is asserted entry by entry
+// for every host × mode, then two properties are asserted over the whole grid:
+// no dead host before the cutover, and the wiki never moves.
+// ---------------------------------------------------------------------------
+
+/** {india,city,data} -> href, for terser assertions below. */
+const linksOf = (host, indiaRoot) =>
+  Object.fromEntries(surfaceLinks(host, indiaRoot).map(l => [l.id, l.href]))
+
+test("the switcher always offers the same three surfaces in the same order", () => {
+  for (const host of HOSTS) {
+    for (const indiaRoot of MODES) {
+      const links = surfaceLinks(host, indiaRoot)
+      assert.deepEqual(links.map(l => l.id), ["india", "city", "data"], `${host} ${indiaRoot}`)
+      assert.deepEqual(links.map(l => l.label), ["India", LEGACY_CITY_LABEL, "Data"])
+      for (const l of links) {
+        assert.ok(l.href, `${l.id} on ${host} has an href`)
+        assert.equal(l.external, !l.href.startsWith("/"), `${l.id} external flag matches its href`)
+      }
+    }
+  }
+})
+
+test("before the cutover, the root domain's switcher is entirely relative", () => {
+  for (const host of ["kaun.city", "www.kaun.city", "localhost:3000"]) {
+    const l = linksOf(host, false)
+    assert.equal(l.india, "/india", host)
+    assert.equal(l.city, "/", `${host}: the root IS the city UI until the flag flips`)
+    assert.equal(l.data, DATA_SURFACE_URL, host)
+  }
+})
+
+test("after the cutover, the root domain's switcher sends the city to its subdomain", () => {
+  const l = linksOf("kaun.city", true)
+  assert.equal(l.india, "/", "the root is the national layer now")
+  assert.equal(l.city, `https://${LEGACY_CITY_ID}.kaun.city/`)
+  assert.equal(l.data, DATA_SURFACE_URL)
+  // www is the root domain wearing a hat: strip it, never link to www.bengaluru.
+  assert.equal(linksOf("www.kaun.city", true).city, `https://${LEGACY_CITY_ID}.kaun.city/`)
+})
+
+test("on a city subdomain the national entry is an absolute link home, in both modes", () => {
+  assert.equal(linksOf("bengaluru.kaun.city", false).india, "https://kaun.city/india")
+  assert.equal(linksOf("bengaluru.kaun.city", true).india, "https://kaun.city/")
+  // …and the city entry stays put, because you are already on it.
+  for (const indiaRoot of MODES) {
+    assert.equal(linksOf("bengaluru.kaun.city", indiaRoot).city, "/", `indiaRoot=${indiaRoot}`)
+  }
+})
+
+test("localhost keeps http and its port, so the switcher works in dev", () => {
+  assert.deepEqual(linksOf("localhost:3000", false), {
+    india: "/india", city: "/", data: DATA_SURFACE_URL,
+  })
+  assert.equal(linksOf("localhost:3000", true).city, "http://bengaluru.localhost:3000/")
+  assert.equal(linksOf("bengaluru.localhost:3000", false).india, "http://localhost:3000/india")
+  assert.equal(linksOf("bengaluru.localhost:3000", true).india, "http://localhost:3000/")
+})
+
+test("BEFORE THE CUTOVER, NO LINK NAMES A HOST THAT MAY NOT RESOLVE YET", () => {
+  // This is what makes the switcher mergeable while bengaluru.kaun.city is
+  // still a pending DNS record. The only absolute non-wiki URL allowed is the
+  // one back to the root domain — and it is only ever rendered on a request
+  // that arrived on the city subdomain, which proves that record exists.
+  for (const host of HOSTS) {
+    for (const { id, href } of surfaceLinks(host, false)) {
+      if (id === "data") continue
+      assert.ok(
+        !href.includes(`${LEGACY_CITY_ID}.`),
+        `${id} on ${host} points at the unresolved city subdomain: ${href}`)
+    }
+  }
+  // And a root-domain visitor is given nothing absolute at all.
+  for (const host of ["kaun.city", "www.kaun.city", "localhost:3000"]) {
+    for (const { id, href, external } of surfaceLinks(host, false)) {
+      if (id === "data") continue
+      assert.equal(external, false, `${id} on ${host} left the origin: ${href}`)
+    }
+  }
+})
+
+test("the wiki is the same absolute URL on every host, in every mode", () => {
+  for (const host of HOSTS) {
+    for (const indiaRoot of MODES) {
+      const data = surfaceLinks(host, indiaRoot).find(l => l.id === "data")
+      assert.equal(data.href, "https://data.kaun.city", `${host} ${indiaRoot}`)
+      assert.equal(data.external, true)
+    }
+  }
+})
+
+test("every switcher href is a URL the routing layer resolves rather than bounces", () => {
+  // A relative href is served by the host that rendered it, so run it back
+  // through resolveSurface() and assert it is not answered with a redirect —
+  // a switcher that costs an extra hop is a switcher pointing at the wrong URL.
+  for (const host of HOSTS) {
+    for (const indiaRoot of MODES) {
+      for (const { id, href, external } of surfaceLinks(host, indiaRoot)) {
+        if (external) continue
+        const d = resolveSurface({ ...base, host, pathname: href, indiaRoot })
+        assert.notEqual(d.action, "redirect", `${id} on ${host} indiaRoot=${indiaRoot} -> 308 ${d.url}`)
+      }
+    }
+  }
 })
 
 // ---------------------------------------------------------------------------

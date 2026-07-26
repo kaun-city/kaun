@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { headers } from "next/headers"
 import { IndiaHeader } from "@/components/india/IndiaHeader"
 import { ObjectHeader, Section, Stat } from "@/components/india/ObjectHeader"
 import { ProjectTimeline } from "@/components/india/ProjectTimeline"
@@ -37,6 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { project_code } = await params
+  const host = (await headers()).get("host") ?? ""
   const detail = await fetchProjectDetail(project_code)
   if (!detail) notFound()
 
@@ -48,7 +50,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-3xl mx-auto px-5 py-6">
-        <IndiaHeader />
+        <IndiaHeader host={host} />
 
         <div className="mt-6">
           <ObjectHeader

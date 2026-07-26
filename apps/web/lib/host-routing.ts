@@ -50,6 +50,15 @@ export const CITY_HOSTS = ["bengaluru"] as const
 /** The city whose URLs are already in the wild and must never break. */
 export const LEGACY_CITY_ID = "bengaluru"
 
+/** How that city is written in the UI. */
+export const LEGACY_CITY_LABEL = "Bengaluru"
+
+/**
+ * The open-data wiki. A separate MkDocs deploy on its own host, so it is the one
+ * surface whose URL is the same absolute string in every mode.
+ */
+export const DATA_SURFACE_URL = "https://data.kaun.city"
+
 /**
  * Root-domain paths that belong to the CITY surface, not the national one.
  * Once the root is the India layer these 308 to the city subdomain, carrying
@@ -238,8 +247,67 @@ export function indiaHref(path: string, indiaRoot = process.env.NEXT_PUBLIC_INDI
   return p === "/" ? "/india" : `/india${p}`
 }
 
-/** Link OUT to the city surface. Pre-cutover it is still the root domain. */
-export function cityHref(path = "/", indiaRoot = process.env.NEXT_PUBLIC_INDIA_ROOT === "1"): string {
-  if (!indiaRoot) return path
-  return `https://${LEGACY_CITY_ID}.kaun.city${path}`
+/**
+ * The three surfaces a visitor can switch between, in a fixed order.
+ * `data` is the MkDocs wiki, which is a separate deploy entirely.
+ */
+export type SurfaceId = "india" | "city" | "data"
+
+export interface SurfaceLink {
+  id: SurfaceId
+  label: string
+  /** Relative when the surface is served by this same host, absolute otherwise. */
+  href: string
+  /** True when following it leaves the current origin. */
+  external: boolean
+}
+
+/**
+ * Where each surface lives, as seen from `host` in the current mode.
+ *
+ * This is the whole cross-surface link matrix in one pure function, because the
+ * switcher renders on both surfaces and the two must never disagree about where
+ * the third one is. components/shared/SurfaceSwitcher.tsx is the only caller.
+ *
+ * THE RULE THAT MAKES THIS MERGEABLE TODAY
+ * ----------------------------------------
+ * No href may name a host that is not already serving. Before the cutover the
+ * city subdomain may have no DNS record yet, so:
+ *
+ *   - the city entry is relative ("/") — pre-cutover the root domain IS the city
+ *     UI, so "/" is exactly right and names no new host;
+ *   - the India entry is "/india", which resolves on the root domain today.
+ *
+ * The only absolute non-wiki URL that can appear before the cutover is the link
+ * back to the root domain from a city subdomain — and a request arriving from
+ * that subdomain is itself proof the record exists.
+ *
+ * After the cutover the pair swaps: the root domain is the national layer, so
+ * India is "/" and the city entry becomes an absolute subdomain URL, derived
+ * from the request host so localhost and preview deploys stay coherent.
+ */
+export function surfaceLinks(
+  host: string,
+  indiaRoot = process.env.NEXT_PUBLIC_INDIA_ROOT === "1",
+): SurfaceLink[] {
+  const onCityHost = cityFromHost(host) !== null
+  // Post-cutover the national layer is the root; before it, it is /india.
+  const nationalPath = indiaRoot ? "/" : "/india"
+
+  const india: Pick<SurfaceLink, "href" | "external"> = onCityHost
+    // The national layer never lives on a city subdomain — resolveSurface()
+    // 308s /india/* off it — so from here it is always the root domain.
+    ? { href: `${schemeFor(host)}://${rootDomain(host)}${nationalPath}`, external: true }
+    : { href: nationalPath, external: false }
+
+  const city: Pick<SurfaceLink, "href" | "external"> =
+    onCityHost || !indiaRoot
+      ? { href: "/", external: false }
+      : { href: cityUrl(host, "/", ""), external: true }
+
+  return [
+    { id: "india", label: "India", ...india },
+    { id: "city", label: LEGACY_CITY_LABEL, ...city },
+    { id: "data", label: "Data", href: DATA_SURFACE_URL, external: true },
+  ]
 }

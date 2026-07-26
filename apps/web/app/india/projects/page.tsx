@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
+import { headers } from "next/headers"
 import { IndiaHeader } from "@/components/india/IndiaHeader"
 import { Section } from "@/components/india/ObjectHeader"
 import { ProjectRow } from "@/components/india/ProjectRow"
@@ -34,6 +35,7 @@ type Props = { searchParams: Promise<{ [k: string]: string | string[] | undefine
 
 export default async function ProjectsPage({ searchParams }: Props) {
   const sp = await searchParams
+  const host = (await headers()).get("host") ?? ""
   const sortParam = typeof sp.sort === "string" && SORTS.has(sp.sort as TrackerSort)
     ? (sp.sort as TrackerSort) : "cost_overrun"
   const stateParam = typeof sp.state === "string" && /^\d+$/.test(sp.state) ? Number(sp.state) : null
@@ -50,7 +52,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-4xl mx-auto px-5 py-6">
-        <IndiaHeader />
+        <IndiaHeader host={host} />
 
         <div className="mt-6">
           <p className="text-white/30 text-[10px] uppercase tracking-widest">

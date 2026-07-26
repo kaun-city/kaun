@@ -1,3 +1,4 @@
+import { headers } from "next/headers"
 import IndiaHome from "@/components/india/IndiaHome"
 import { fetchAllSittingMps } from "@/lib/india/api"
 
@@ -12,6 +13,8 @@ import { fetchAllSittingMps } from "@/lib/india/api"
 export const dynamic = "force-dynamic"
 
 export default async function IndiaMapPage() {
-  const mps = await fetchAllSittingMps()
-  return <IndiaHome mps={mps.filter(m => m.pc_code !== null) as Array<{ pc_code: string; name: string; party_abbr: string | null; is_minister: boolean }>} />
+  const [mps, h] = await Promise.all([fetchAllSittingMps(), headers()])
+  return <IndiaHome
+    host={h.get("host") ?? ""}
+    mps={mps.filter(m => m.pc_code !== null) as Array<{ pc_code: string; name: string; party_abbr: string | null; is_minister: boolean }>} />
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { headers } from "next/headers"
 import { IndiaHeader } from "@/components/india/IndiaHeader"
 import { ObjectHeader, Section } from "@/components/india/ObjectHeader"
 import { MpCard } from "@/components/india/MpCard"
@@ -50,6 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ConstituencyPage({ params }: Props) {
   const { pc_code } = await params
+  const host = (await headers()).get("host") ?? ""
   if (!isPcCode(pc_code)) notFound()
 
   const profile = await fetchConstituencyProfile(pc_code)
@@ -70,7 +72,7 @@ export default async function ConstituencyPage({ params }: Props) {
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-3xl mx-auto px-5 py-6">
-        <IndiaHeader />
+        <IndiaHeader host={host} />
 
         <div className="mt-6">
           <ObjectHeader
