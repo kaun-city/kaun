@@ -308,6 +308,9 @@ export function surfaceLinks(
   return [
     { id: "india", label: "India", ...india },
     { id: "city", label: LEGACY_CITY_LABEL, ...city },
-    { id: "data", label: "Data", href: DATA_SURFACE_URL, external: true },
+    // The Data (data.kaun.city) chip is hidden for now — Bharat's call at the
+    // 2026-07-26 cutover: two chips until the wiki surface has its moment.
+    // The wiki keeps linking INTO the app; restore by re-adding the entry.
+    // { id: "data", label: "Data", href: DATA_SURFACE_URL, external: true },
   ]
 }
