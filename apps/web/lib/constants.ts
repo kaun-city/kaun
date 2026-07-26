@@ -4,6 +4,28 @@ export const PARTY_COLORS: Record<string, string> = {
   "JD(S)": "#138808",
   JDS: "#138808",
   AAP: "#0066CC",
+  // National layer (india.kaun.city): the parties holding Lok Sabha seats.
+  // Additive only — every key above keeps its existing colour. PartyBadge
+  // still falls back to grey for anything unlisted.
+  SP: "#ED1B24",
+  AITC: "#20603D",
+  DMK: "#E5241A",
+  TDP: "#FFD700",
+  "SHSUBT": "#F47216",
+  SHS: "#F47216",
+  NCP: "#00B2B2",
+  "NCP(SP)": "#009FE3",
+  RJD: "#008000",
+  JDU: "#3B8DBC",
+  "JD(U)": "#3B8DBC",
+  CPIM: "#CC0000",
+  "CPI(M)": "#CC0000",
+  YSRCP: "#1569C7",
+  BRS: "#EC1C24",
+  IUML: "#008B45",
+  JMM: "#0D7C3E",
+  AIMIM: "#0F8A3C",
+  IND: "#8A8A8A",
 }
 
 export const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
