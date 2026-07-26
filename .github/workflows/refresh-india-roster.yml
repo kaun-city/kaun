@@ -75,6 +75,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # gh release download (zenodo mirror)
         run: |
           set -euo pipefail
           JOB="${{ github.event.inputs.job }}"
@@ -95,7 +96,16 @@ jobs:
             seed-constituencies)  node scripts/india/seed-constituencies.mjs $FLAG ;;
             sansad-roster)        node scripts/india/sansad-roster.mjs $FLAG ;;
             mp-activity)          node scripts/india/mp-activity.mjs $FLAG ;;
-            mp-activity-backfill) node scripts/india/mp-activity.mjs --backfill $FLAG ;;
+            mp-activity-backfill)
+              # zenodo.org rejects GitHub-runner IPs (verified 2026-07-26: API
+              # reachable from residential, 'fetch failed' from two runners).
+              # The backfill files are static (cutoff 2025-12-31), so they are
+              # mirrored unmodified as release assets (CC BY 4.0, attributed)
+              # and fed to the loader via --zenodo-dir.
+              mkdir -p .zenodo-mirror
+              gh release download data-zenodo-2025-12 --dir .zenodo-mirror --clobber
+              node scripts/india/mp-activity.mjs --backfill --zenodo-dir .zenodo-mirror $FLAG
+              ;;
             load-aliases)         node scripts/india/load-aliases.mjs $FLAG ;;
             *) echo "unknown job: $JOB"; exit 1 ;;
           esac
