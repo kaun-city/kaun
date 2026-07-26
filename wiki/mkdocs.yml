@@ -68,12 +68,20 @@ nav:
     - RTI Responses:
       - Upload RTI: bengaluru/rti-responses/_template.md
   - India:
+    - Constituencies (all 543): india/constituencies/index.md
+    - Central Projects (overruns): india/projects.md
     - PC Crosswalk (543 seats ↔ ACs): india/pc-crosswalk.md
+    - Live India map ↗: https://kaun.city/india
   - Pan-India Sources: sources/index.md
   - About:
     - Partners & Contributors: about/partners.md
     - API Reference: about/api.md
     - Contributing: about/contributing.md
+  # The wiki is the reference half of Kaun; the interactive map and per-seat
+  # pages are the other half. A top-level nav entry with an absolute URL renders
+  # as a header tab under navigation.tabs, so the live app is one click away
+  # from every page here — the same direction the generated pages link in.
+  - kaun.city ↗: https://kaun.city
 
 markdown_extensions:
   - admonition

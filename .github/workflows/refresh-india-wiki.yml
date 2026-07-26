@@ -1,0 +1,92 @@
+name: Refresh India Wiki Pages
+
+# Weekly, Sundays 04:30 UTC (10:00 IST) — AFTER refresh-india-roster at 04:00,
+# so the constituency pages are generated from that morning's roster and
+# activity rather than from last week's. The Sunday chain, in order:
+#
+#   01:00 refresh-kppp          (Bengaluru)
+#   02:00 refresh-ifms          (Bengaluru)
+#   03:00 refresh-wiki-wards    (Bengaluru wiki, PR)
+#   04:00 refresh-india-roster  (sansad roster, then MP activity)
+#   04:30 refresh-india-wiki    (this — India wiki, PR)
+#
+# MPLADS, affidavits and the MoSPI monthly load run on their own cadences; the
+# generator renders an explicit "not loaded yet" state for whichever of them has
+# not landed, so a run is never blocked on them and a later run trues it up.
+#
+# NO SECRETS. The generator reads Supabase PostgREST with the PUBLIC anon key —
+# the same key apps/web/lib/supabase.ts already ships in the browser bundle. The
+# anon role is not a convenience here: in_mp_affidavits is row-restricted by RLS
+# to reviewed rows, so reading as anon is what keeps an unreviewed criminal-case
+# join out of a public wiki. The script refuses to run with any other role.
+on:
+  schedule:
+    - cron: '30 4 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      # The India schema lands separately. Until it is applied a scheduled run
+      # should be a clear no-op rather than a weekly red X — same posture as
+      # refresh-india-roster's preflight. No key is needed to ask: the anon role
+      # can read in_constituencies, and a 200 is the whole signal.
+      - name: Check the India schema is present
+        id: preflight
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            "https://xgygxfyfsvccqqmtboeu.supabase.co/rest/v1/in_constituencies?select=pc_code&limit=1" \
+            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneWd4Znlmc3ZjY3FxbXRib2V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NDg1NzIsImV4cCI6MjA4ODEyNDU3Mn0.5dzsC5-Ex-Umk-9DTM5xNsQB-t0my-MtWq9WUPhidD4")
+          if [ "$code" = "200" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::in_constituencies is not reachable (HTTP $code) - the India schema migration has not been applied yet. Skipping."
+          fi
+
+      - name: Regenerate India wiki pages
+        if: steps.preflight.outputs.ready == 'true'
+        run: node scripts/generate-wiki/india-index.mjs
+
+      - name: Open PR if content changed
+        if: steps.preflight.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "bharatnyusta"
+          git config user.email "bharatnyusta@users.noreply.github.com"
+          if git diff --quiet --exit-code wiki/docs/india/; then
+            echo "No India data changes; skipping PR."
+            exit 0
+          fi
+
+          BRANCH="auto/india-wiki-$(date -u +%Y-%m-%d)"
+          # If the branch already exists (same-day re-run), suffix with epoch.
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            BRANCH="${BRANCH}-$(date -u +%H%M%S)"
+          fi
+
+          git checkout -b "$BRANCH"
+          git add wiki/docs/india/
+          git commit -m "wiki: auto-refresh India constituency pages (scheduled by refresh-india-wiki)"
+          git push -u origin "$BRANCH"
+
+          STATS=$(git diff --shortstat master -- wiki/docs/india/ | xargs)
+          BODY=$(printf '%s\n\n%s' \
+            "Scheduled refresh by \`refresh-india-wiki\`. Regenerates the 543 constituency pages and the central-projects tracker from the India tables, read with the public anon key; pushes only if content actually changed. $STATS." \
+            'Sections whose pipeline has not landed render an explicit "not loaded yet" state rather than an empty table or a zero, so a partial week is legible rather than broken.')
+          gh pr create \
+            --title "wiki: auto-refresh India constituency pages ($(date -u +%Y-%m-%d))" \
+            --body "$BODY"
