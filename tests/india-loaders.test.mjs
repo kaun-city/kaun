@@ -860,3 +860,227 @@ test("load-aliases honors --apply: refuses to run without credentials", async ()
   assert.equal(r.status, 1)
   assert.match(r.stderr + r.stdout, /--apply needs credentials/)
 })
+
+/* ========================================================================== */
+/* load-affidavit-review — the human sign-off that clears needs_review        */
+/* ========================================================================== */
+
+const REVIEW_REF = new PcReference([
+  { pc_code: "27-31", st_code: 27, pc_no: 31, state_name: "Maharashtra", pc_name: "Mumbai South", pc_name_norm: "mumbai south" },
+  { pc_code: "27-40", st_code: 27, pc_no: 40, state_name: "Maharashtra", pc_name: "Osmanabad", pc_name_norm: "osmanabad" },
+  { pc_code: "9-5", st_code: 9, pc_no: 5, state_name: "Uttar Pradesh", pc_name: "Nagina", pc_name_norm: "nagina" },
+], "fixture")
+
+/** A minimal well-formed decision row; spread over it to break one thing. */
+function reviewRow(over = {}) {
+  return {
+    election: "LokSabha2024", pc_code: "27-31", myneta_candidate_id: "111",
+    state: "MAHARASHTRA", constituency: "MUMBAI SOUTH",
+    mp_name_source: "Arvind Ganpat Sawant", mp_name_roster: "Arvind Ganpat Sawant",
+    source_party: "ShivSena (Uddhav Balasaheb Thackeray)", roster_party: "SHSUBT",
+    resolution: "accept", rationale: "same party, two labels", reviewed_by: null,
+    ...over,
+  }
+}
+
+test("parseResolution accepts exactly the four decision forms", async () => {
+  const { parseResolution } = await import("../scripts/india/load-affidavit-review.mjs")
+  assert.deepEqual(parseResolution("accept"), { kind: "accept", party_abbr: null })
+  assert.deepEqual(parseResolution("reject"), { kind: "reject", party_abbr: null })
+  assert.deepEqual(parseResolution("UNRESOLVED"), { kind: "UNRESOLVED", party_abbr: null })
+  assert.deepEqual(parseResolution("map_to:SHSUBT"), { kind: "map_to", party_abbr: "SHSUBT" })
+  assert.deepEqual(parseResolution("map_to:ASP (KR)"), { kind: "map_to", party_abbr: "ASP (KR)" })
+  // Not decisions: a bare map_to would clear needs_review and change nothing.
+  assert.equal(parseResolution("map_to:"), null)
+  assert.equal(parseResolution("map_to"), null)
+  assert.equal(parseResolution("Accept"), null)
+  assert.equal(parseResolution(""), null)
+  assert.equal(parseResolution(null), null)
+})
+
+test("decisionPatch touches only the review fields, and reject/UNRESOLVED touch nothing", async () => {
+  const { decisionPatch, parseResolution } = await import("../scripts/india/load-affidavit-review.mjs")
+  const now = "2026-07-26T00:00:00.000Z"
+
+  const accept = decisionPatch(parseResolution("accept"), now)
+  assert.deepEqual(accept, { needs_review: false, match_method: "manual_reviewed", updated_at: now })
+  assert.ok(!("party_abbr" in accept))          // accept never rewrites the source's label
+
+  assert.deepEqual(decisionPatch(parseResolution("map_to:SHSUBT"), now), {
+    needs_review: false, match_method: "manual_reviewed", updated_at: now, party_abbr: "SHSUBT",
+  })
+
+  // A rejected or undecided row must stay private — no patch at all.
+  assert.equal(decisionPatch(parseResolution("reject"), now), null)
+  assert.equal(decisionPatch(parseResolution("UNRESOLVED"), now), null)
+})
+
+test("validate refuses anything that is not a named, evidenced, resolvable decision", async () => {
+  const { validate } = await import("../scripts/india/load-affidavit-review.mjs")
+  const bad = rows => validate(rows, { ref: REVIEW_REF, apply: false }).bad
+  const problem = rows => bad(rows)[0].problem
+
+  assert.equal(bad([reviewRow()]).length, 0)
+  assert.match(problem([reviewRow({ pc_code: "027-031" })]), /malformed pc_code/)
+  assert.match(problem([reviewRow({ pc_code: "29-25" })]), /not in the 543-seat reference/)
+  assert.match(problem([reviewRow({ myneta_candidate_id: "abc" })]), /not an integer/)
+  assert.match(problem([reviewRow({ rationale: null })]), /no rationale/)
+  assert.match(problem([reviewRow({ resolution: "looks fine to me" })]), /bad resolution/)
+  assert.match(problem([reviewRow({ election: null })]), /missing election/)
+
+  // Two decisions for one seat, or one candidate reviewed twice: both are a
+  // human editing error, and both would trip a database constraint.
+  assert.match(
+    problem([reviewRow(), reviewRow({ myneta_candidate_id: "222" })]),
+    /duplicate pc_code 27-31/)
+  assert.match(
+    problem([reviewRow(), reviewRow({ pc_code: "9-5" })]),
+    /duplicate \(myneta_candidate_id, election\)/)
+})
+
+test("load-affidavit-review will not apply a decision nobody has signed", async () => {
+  const { validate } = await import("../scripts/india/load-affidavit-review.mjs")
+  const rows = [
+    reviewRow(),                                                    // unsigned accept
+    reviewRow({ pc_code: "9-5", myneta_candidate_id: "222", resolution: "map_to:ASP (KR)" }),
+    reviewRow({ pc_code: "27-40", myneta_candidate_id: "333", resolution: "UNRESOLVED" }),
+  ]
+
+  // Dry run: the committed file legitimately ships unsigned, so it must parse.
+  const dry = validate(rows, { ref: REVIEW_REF, apply: false })
+  assert.equal(dry.bad.length, 0)
+  assert.equal(dry.rows.length, 3)
+
+  // --apply: the two rows that would actually be written are refused; the
+  // UNRESOLVED one needs no signature because it is never written.
+  const applied = validate(rows, { ref: REVIEW_REF, apply: true })
+  assert.equal(applied.bad.length, 2)
+  for (const b of applied.bad) assert.match(b.problem, /without reviewed_by/)
+  assert.deepEqual(applied.rows.map(r => r.resolution), ["UNRESOLVED"])
+
+  // Signed, and the same rows go through.
+  const signed = validate(rows.map(r => ({ ...r, reviewed_by: "bharatnyusta" })),
+    { ref: REVIEW_REF, apply: true })
+  assert.equal(signed.bad.length, 0)
+  assert.equal(signed.rows.length, 3)
+})
+
+test("planWrites merges onto the stored row and refuses an unsafe seat assignment", async () => {
+  const { validate, planWrites } = await import("../scripts/india/load-affidavit-review.mjs")
+  const now = "2026-07-26T00:00:00.000Z"
+  const decide = over => validate([reviewRow({ reviewed_by: "bharatnyusta", ...over })],
+    { ref: REVIEW_REF, apply: true }).rows
+
+  const stored = {
+    id: 7, myneta_candidate_id: 111, election: "LokSabha2024", pc_code: null,
+    candidate_name: "Arvind Ganpat Sawant", party_abbr: "ShivSena (Uddhav Balasaheb Thackeray)",
+    criminal_cases: 2, needs_review: true, match_method: null, parse_status: "ok",
+  }
+
+  const { writes, problems } = planWrites(decide({ resolution: "map_to:SHSUBT" }), [stored], now)
+  assert.equal(problems.length, 0)
+  assert.equal(writes.length, 1)
+  assert.ok(!("id" in writes[0]))                    // the bigserial is never rewritten
+  assert.equal(writes[0].criminal_cases, 2)          // untouched columns survive the merge
+  assert.equal(writes[0].pc_code, "27-31")           // the reviewed seat is assigned
+  assert.equal(writes[0].party_abbr, "SHSUBT")
+  assert.equal(writes[0].needs_review, false)
+  assert.equal(writes[0].match_method, "manual_reviewed")
+
+  // A review file naming a row the table does not have describes fiction.
+  assert.match(planWrites(decide({ myneta_candidate_id: "999" }), [stored], now)
+    .problems[0].problem, /no in_mp_affidavits row/)
+
+  // in_mp_affidavits_one_winner_per_pc: never hand a seat to a second winner.
+  const occupied = [stored, { ...stored, id: 8, myneta_candidate_id: 222, pc_code: "27-31" }]
+  assert.match(planWrites(decide({}), occupied, now).problems[0].problem,
+    /already held by myneta_candidate_id 222/)
+
+  // A stored pc_code that disagrees with the review file is a human error, not
+  // a thing to overwrite.
+  assert.match(planWrites(decide({}), [{ ...stored, pc_code: "27-40" }], now)
+    .problems[0].problem, /disagrees with the review file/)
+
+  // reject / UNRESOLVED stay private: no write is planned at all.
+  for (const resolution of ["reject", "UNRESOLVED"]) {
+    const r = planWrites(decide({ resolution }), [stored], now)
+    assert.equal(r.writes.length, 0)
+    assert.equal(r.problems.length, 0)
+  }
+})
+
+test("the committed affidavit-review.csv is a valid, fully evidenced decision file", async () => {
+  const { readCsv, validate, COLUMNS, CSV_PATH } =
+    await import("../scripts/india/load-affidavit-review.mjs")
+  const { referenceFromCrosswalk } = await import("../scripts/india/lib/pc-reference.mjs")
+  const ref = referenceFromCrosswalk()
+  if (!ref) return                                   // crosswalk absent: nothing to check against
+
+  const rows = readCsv(CSV_PATH)
+  assert.ok(rows.length > 0)
+  assert.deepEqual(Object.keys(rows[0]), COLUMNS)
+
+  // It must pass the dry-run gate as committed (reviewed_by is Bharat's to
+  // fill), and every row must carry its evidence.
+  const { bad } = validate(rows, { ref, apply: false })
+  assert.deepEqual(bad.map(b => `${b.pc_code}: ${b.problem}`), [])
+  for (const r of rows) assert.ok(r.rationale && r.rationale.length > 20, `thin rationale on ${r.pc_code}`)
+})
+
+test("load-affidavit-review honors --apply: refuses to run without credentials", async () => {
+  const { spawnSync } = await import("node:child_process")
+  const env = { ...process.env }
+  delete env.SUPABASE_URL; delete env.NEXT_PUBLIC_SUPABASE_URL
+  delete env.SUPABASE_SERVICE_KEY; delete env.SUPABASE_SERVICE_ROLE_KEY
+  delete env.KAUN_LOCAL_PG
+  const r = spawnSync("node", ["scripts/india/load-affidavit-review.mjs", "--apply"],
+    { env, encoding: "utf8" })
+  assert.equal(r.status, 1)
+  assert.match(r.stderr + r.stdout, /--apply needs credentials/)
+})
+
+test("load-affidavit-review --apply exits non-zero when reviewed_by is empty", async () => {
+  const { spawnSync } = await import("node:child_process")
+  const { writeFileSync, rmSync, mkdtempSync } = await import("node:fs")
+  const { join } = await import("node:path")
+  const { tmpdir } = await import("node:os")
+  const { COLUMNS } = await import("../scripts/india/load-affidavit-review.mjs")
+
+  const dir = mkdtempSync(join(tmpdir(), "kaun-review-"))
+  const csv = join(dir, "affidavit-review.csv")
+  const row = {
+    election: "LokSabha2024", pc_code: "27-31", myneta_candidate_id: "111",
+    state: "MAHARASHTRA", constituency: "MUMBAI SOUTH",
+    mp_name_source: "Arvind Ganpat Sawant", mp_name_roster: "Arvind Ganpat Sawant",
+    source_party: "SHSUBT", roster_party: "SHSUBT", resolution: "accept",
+    rationale: "same party under two published labels; nothing factual in dispute",
+    reviewed_by: "",
+  }
+  const render = r => [COLUMNS.join(","), COLUMNS.map(c => r[c]).join(",")].join("\n") + "\n"
+
+  // Past the credentials gate (a local throwaway URL that is never reached,
+  // because validation fails first), an unsigned decision must stop the run.
+  const env = { ...process.env }
+  delete env.SUPABASE_URL; delete env.NEXT_PUBLIC_SUPABASE_URL
+  delete env.SUPABASE_SERVICE_KEY; delete env.SUPABASE_SERVICE_ROLE_KEY
+  env.KAUN_LOCAL_PG = "postgres://localhost:5499/kaun_review_test_absent"
+  const runIt = () => spawnSync("node",
+    ["scripts/india/load-affidavit-review.mjs", "--apply", "--csv", csv],
+    { env, encoding: "utf8" })
+
+  try {
+    writeFileSync(csv, render(row))
+    const unsigned = runIt()
+    assert.equal(unsigned.status, 1)
+    assert.match(unsigned.stderr + unsigned.stdout, /without reviewed_by/)
+    assert.match(unsigned.stderr + unsigned.stdout, /nothing written/)
+
+    // Signed, the same file gets past validation and on to the database (which
+    // is deliberately absent here, so it fails later and differently).
+    writeFileSync(csv, render({ ...row, reviewed_by: "bharatnyusta" }))
+    const signed = runIt()
+    assert.doesNotMatch(signed.stderr + signed.stdout, /without reviewed_by/)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})

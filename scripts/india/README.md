@@ -17,6 +17,8 @@ refuses to run without credentials in the environment.
 | `esakshi-mplads.mjs` | `in_mplads_summary` | eSAKSHI (+ Empowered Indian) | monthly |
 | `load-central-projects.mjs` | `in_central_projects(+_snapshots)` | MoSPI PAIMANA flash report PDFs | monthly |
 | `mospi/parse_flash_report.py` | — (parse step only) | MoSPI Table 6 PDF → JSON | called by the loader |
+| `load-aliases.mjs` | `in_pc_source_aliases` | `data/india/pc-source-aliases.csv` (human-reviewed) | when a decision is committed |
+| `load-affidavit-review.mjs` | `in_mp_affidavits` (review flag only) | `data/india/affidavit-review.csv` (human-reviewed) | when a decision is committed |
 
 ## The rule every one of these must follow
 
@@ -37,6 +39,20 @@ Each run's review files land next to the report:
 
 The CSV columns for an alias candidate are deliberately blank where a decision
 belongs (`pc_code`, `method`, `reviewed_by`).
+
+## The review loop
+
+A review file is not a dead end. The decision a human writes into it is
+committed under `data/india/` and carried back into the database by exactly one
+loader, which validates and never decides:
+
+| Committed decision file | Loader | What it unblocks |
+|---|---|---|
+| `data/india/pc-source-aliases.csv` | `load-aliases.mjs` | a source's constituency id → `pc_code` |
+| `data/india/affidavit-review.csv` | `load-affidavit-review.mjs` | `in_mp_affidavits.needs_review`, which RLS uses to keep an uncorroborated affidavit private |
+
+Both refuse to write a row whose `reviewed_by` is blank. `affidavit-review.csv`
+is committed unsigned on purpose — filling `reviewed_by` in is the sign-off.
 
 ## Order of operations
 
