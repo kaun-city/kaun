@@ -2,9 +2,27 @@ name: Refresh Sakala Performance
 
 # Sakala (sakala.kar.nic.in) blocks all known datacenter IP ranges with
 # "Host not in allowlist" 403s — every GitHub Actions runner is blocked.
-# Verified May 2026. Keeping the workflow callable on demand so it can be
-# triggered from a laptop on residential ISP; the cron schedule is removed
-# because it can never succeed in CI and was failing every 1st of the month.
+# Verified May 2026 (not re-tested from CI since — assume still true).
+# Confirmed 2026-07-26 that a residential IP reaches the site fine; while
+# investigating that, found and fixed a second, unrelated bug in
+# refresh-sakala.mjs itself (see that file's Step 1 comment) that broke the
+# scrape even from a residential IP.
+#
+# Operational flow (fetch/load split — the permanent fix):
+#   1. LOCAL, on a residential connection:
+#        node scripts/refresh-sakala.mjs --fetch-only \
+#          --out=data/sakala/sakala-<year>.json --year=<year> --month=13
+#      Scrapes + parses only, writes a JSON artifact. No Supabase env
+#      needed for this step.
+#   2. Commit the artifact under data/sakala/ and open a PR.
+#   3. After merge, dispatch the `load-sakala` workflow (dry-run by
+#      default; `apply` input to write) — it reads data/sakala/*.json and
+#      upserts to Supabase. It never talks to sakala.kar.nic.in, so it
+#      isn't IP-blocked and runs fine in CI.
+#
+# This workflow (direct scrape-and-upsert from CI) is kept dispatchable in
+# case the block ever lifts, or for running from a self-hosted runner on a
+# residential IP. Until then, use the flow above.
 on:
   workflow_dispatch:
     inputs:
@@ -20,9 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '20'
 

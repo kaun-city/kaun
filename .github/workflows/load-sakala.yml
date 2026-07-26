@@ -1,0 +1,43 @@
+name: Load Sakala Performance
+
+# Loads the JSON artifacts committed under data/sakala/ into Supabase. Those
+# artifacts are produced locally (residential IP) by
+# `refresh-sakala.mjs --fetch-only`, since sakala.kar.nic.in blocks GitHub
+# Actions IPs — this workflow only talks to Supabase, so it isn't blocked.
+#
+# Manual only. Defaults to dry-run so a careless click previews (row counts,
+# no writes) instead of writing. The upsert is idempotent on
+# (assembly_name, year, month, department_code), so re-running apply is safe.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run (preview, read-only) or apply (upserts data/sakala/*.json to Supabase)"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Load Sakala artifacts (${{ github.event.inputs.mode }})
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
+            node scripts/load-sakala.mjs --apply
+          else
+            node scripts/load-sakala.mjs
+          fi
