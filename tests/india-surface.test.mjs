@@ -25,7 +25,7 @@ import {
 } from "../apps/web/lib/india/format.ts"
 import { INDIA_LAYERS, getIndiaLayer, rampFor } from "../apps/web/lib/india/layers.ts"
 import { RAMP_DIVERGING, RAMP_SEQUENTIAL, divergingColor, barFraction } from "../apps/web/lib/india/viz.ts"
-import { PC_GEOJSON_VERSION, LOK_SABHA_SEATS } from "../apps/web/lib/india/constants.ts"
+import { PC_GEOJSON_VERSION, PC_GEOJSON_URL, LOK_SABHA_SEATS, INDIA_REVALIDATE_SECONDS } from "../apps/web/lib/india/constants.ts"
 
 // ---------------------------------------------------------------------------
 // pc-code mirror
@@ -219,4 +219,59 @@ test("the attendance layer explains why a seat can legitimately have no value", 
   const attendance = getIndiaLayer("attendance")
   assert.match(attendance.absentNote ?? "", /minister/i,
     "a blank cabinet seat must be explained, not left looking like missing data")
+})
+
+// ---------------------------------------------------------------------------
+// caching posture
+//
+// Next requires a route's `revalidate` to be a literal, so the three India
+// pages that are incrementally regenerated cannot import the constant the Data
+// Cache uses — they carry the number instead. That is two places for one
+// decision, so this asserts they still agree, and that the pages that must
+// stay per-request have not quietly been made static.
+// ---------------------------------------------------------------------------
+
+const pageSource = (p) =>
+  readFileSync(new URL(`../apps/web/app/india/${p}`, import.meta.url), "utf8")
+
+test("the boundary asset is fetched by a versioned URL, because it is served immutable", () => {
+  // next.config.ts freezes /india-pc.geojson for a year. That is only correct
+  // while the URL carries the version the test above pins to the file itself —
+  // otherwise a re-delimitation would never reach a browser that had already
+  // loaded the map.
+  assert.equal(PC_GEOJSON_URL, `/india-pc.geojson?v=${PC_GEOJSON_VERSION}`)
+  const config = readFileSync(new URL("../apps/web/next.config.ts", import.meta.url), "utf8")
+  assert.match(config, /\/india-pc\.geojson/, "the asset must still be listed as immutable")
+  assert.match(config, /immutable/)
+})
+
+test("the incrementally regenerated India pages use the documented revalidate period", () => {
+  const ISR_PAGES = ["page.tsx", "c/[pc_code]/page.tsx", "projects/[project_code]/page.tsx"]
+  for (const p of ISR_PAGES) {
+    const src = pageSource(p)
+    const m = src.match(/^export const revalidate = (\d+)/m)
+    assert.ok(m, `${p} declares no revalidate — it would fall back to per-request rendering`)
+    assert.equal(Number(m[1]), INDIA_REVALIDATE_SECONDS,
+      `${p} disagrees with INDIA_REVALIDATE_SECONDS in lib/india/constants.ts`)
+    assert.doesNotMatch(src, /^export const dynamic\s*=/m, `${p} is both ISR and force-dynamic`)
+  }
+
+  // A dynamic segment is only cacheable when it declares generateStaticParams,
+  // even with revalidate set. Both object routes rely on that.
+  for (const p of ["c/[pc_code]/page.tsx", "projects/[project_code]/page.tsx"]) {
+    assert.match(pageSource(p), /export function generateStaticParams/,
+      `${p} needs generateStaticParams (may return []) for revalidate to apply`)
+  }
+})
+
+test("no India page reads headers() except the one that is per-request anyway", () => {
+  // headers() forces per-request rendering. The tracker is already dynamic on
+  // its search params so it may read one; anything else doing so has silently
+  // opted itself out of the caching this surface depends on.
+  for (const p of ["page.tsx", "c/[pc_code]/page.tsx", "projects/[project_code]/page.tsx"]) {
+    assert.doesNotMatch(pageSource(p), /next\/headers/,
+      `${p} reads headers() and can no longer be prerendered`)
+  }
+  assert.match(pageSource("projects/page.tsx"), /^export const dynamic = "force-dynamic"$/m,
+    "the tracker renders from searchParams and must stay per-request")
 })

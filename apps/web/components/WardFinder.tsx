@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo, useRef, useEffect } from "react"
+import { WARD_CROSSWALK_URL } from "@/lib/constants"
 
 interface CrosswalkRow {
   bbmp225_no: number
@@ -40,7 +41,7 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
 
   useEffect(() => {
     if (!open || rows.length > 0) return
-    fetch("/bengaluru-ward-crosswalk.json")
+    fetch(WARD_CROSSWALK_URL)
       .then(r => r.json())
       .then(data => {
         setRows(

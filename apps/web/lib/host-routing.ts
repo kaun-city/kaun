@@ -60,6 +60,28 @@ export const LEGACY_CITY_LABEL = "Bengaluru"
 export const DATA_SURFACE_URL = "https://data.kaun.city"
 
 /**
+ * The domain to assume when there is no request Host header to read.
+ *
+ * There is now one such case, and it is deliberate: the India object pages
+ * (/india/c/<seat>, /india/projects/<code>) and the national map are rendered
+ * ahead of a request under ISR, so calling headers() there would force every
+ * one of them back to per-request rendering — the exact cost this caching work
+ * exists to remove. Those pages therefore render the surface switcher with no
+ * host, and it resolves for production, which is what SurfaceSwitcher's own
+ * prop documentation has always promised ("Absent, links resolve for the
+ * production domain") and what rootDomain() previously failed to deliver — it
+ * produced "https://bengaluru./" from an empty host.
+ *
+ * The only href this affects is the city chip AFTER the cutover; before it the
+ * city entry is relative on every host. So in the one mode where the fallback
+ * is used, it names the host that is actually serving. In local dev a
+ * prerendered India page's Bengaluru chip points at production rather than at
+ * bengaluru.localhost:3000; the per-request pages (the tracker, the city UI)
+ * still read the real host and stay dev-correct.
+ */
+export const PRODUCTION_ROOT_DOMAIN = "kaun.city"
+
+/**
  * Root-domain paths that belong to the CITY surface, not the national one.
  * Once the root is the India layer these 308 to the city subdomain, carrying
  * their query string. `/` is handled separately because it is only a city URL
@@ -143,11 +165,14 @@ export function cityFromHost(host: string): string | null {
  *   www.kaun.city            -> kaun.city
  *   bengaluru.kaun.city      -> kaun.city
  *   bengaluru.localhost:3000 -> localhost:3000
+ *   "" (prerendered)         -> kaun.city
  *
  * Stripping a city label matters: a "go to the national layer" link rendered on
  * bengaluru.kaun.city has to point at kaun.city, not at bengaluru.kaun.city.
  */
 export function rootDomain(host: string): string {
+  // No Host header: an ISR-rendered page. See PRODUCTION_ROOT_DOMAIN.
+  if (!host.trim()) return PRODUCTION_ROOT_DOMAIN
   const h = hostname(host)
   const label = h.split(".")[0]
   const base = (label === "www" || (CITY_HOSTS as readonly string[]).includes(label)) && h.includes(".")

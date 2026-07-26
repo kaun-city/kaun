@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { indiaHref } from "@/lib/host-routing"
 import { SurfaceSwitcher } from "@/components/shared/SurfaceSwitcher"
 
@@ -12,6 +13,12 @@ import { SurfaceSwitcher } from "@/components/shared/SurfaceSwitcher"
  * The nav here is intra-surface only. Leaving the India layer is the surface
  * switcher's job — it used to also carry a "bengaluru" link, which is now the
  * switcher's city entry and would otherwise be the same destination twice.
+ *
+ * Everything indiaHref() returns is a path on this same Next app on this same
+ * host, in both cutover modes, so all of it is next/link: the destinations
+ * prefetch and the transition is client-side. The only cross-host link on the
+ * India surface is the switcher's city entry, and SurfaceSwitcher keeps that a
+ * plain anchor off its own `external` flag.
  */
 export function IndiaHeader({
   variant = "page",
@@ -30,21 +37,21 @@ export function IndiaHeader({
         ? "absolute top-4 left-4 right-16 z-[900] flex flex-wrap items-center gap-x-3 gap-y-1.5 select-none pointer-events-none"
         : "flex items-center gap-3 flex-wrap"
     }>
-      <a href={indiaHref("/")} className={`shrink-0 ${overlay ? "pointer-events-auto" : ""}`}>
+      <Link href={indiaHref("/")} className={`shrink-0 ${overlay ? "pointer-events-auto" : ""}`}>
         <span className="text-white font-bold text-xl tracking-tight">
           KAUN<span className="text-[#FF9933]">?</span>
         </span>
         <span className="text-white/30 font-normal ml-2 text-sm align-middle">India</span>
-      </a>
+      </Link>
 
       <SurfaceSwitcher current="india" host={host} variant={overlay ? "overlay" : "inline"} />
 
       <nav className={`flex items-center gap-3 text-xs ${overlay ? "pointer-events-auto" : ""}`}>
-        <a href={indiaHref("/")} className="text-white/40 hover:text-white/80 transition-colors">Map</a>
+        <Link href={indiaHref("/")} className="text-white/40 hover:text-white/80 transition-colors">Map</Link>
         <span className="text-white/10">·</span>
-        <a href={indiaHref("/projects")} className="text-white/40 hover:text-white/80 transition-colors">
+        <Link href={indiaHref("/projects")} className="text-white/40 hover:text-white/80 transition-colors">
           Project overruns
-        </a>
+        </Link>
       </nav>
     </header>
   )

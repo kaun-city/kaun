@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { surfaceLinks, type SurfaceId } from "@/lib/host-routing"
 
 /**
@@ -19,6 +20,15 @@ import { surfaceLinks, type SurfaceId } from "@/lib/host-routing"
  * than being re-derived per surface. The active surface is deliberately NOT an
  * anchor: a link to the page you are on is noise for everyone and a trap for
  * screen readers.
+ *
+ * `external` decides next/link versus a plain anchor, and nothing else may.
+ * The flag means "following this leaves the current origin", and a soft
+ * navigation across origins is not a thing — a <Link> to bengaluru.kaun.city
+ * from kaun.city would try to fetch an RSC payload from another host. The
+ * relative ones are this same Next app on this same host, so they get a Link
+ * and prefetch. surfaceLinks() computes the flag and host-routing.test.mjs
+ * asserts it agrees with the href on every host in every mode, so the question
+ * is answered in one place, once.
  */
 export function SurfaceSwitcher({
   current,
@@ -56,14 +66,11 @@ export function SurfaceSwitcher({
             </span>
           )
         }
-        return (
-          <a
-            key={link.id}
-            href={link.href}
-            className={`${cls} text-white/45 hover:text-white/85 hover:bg-white/5`}
-          >
-            {link.label}
-          </a>
+        const linkCls = `${cls} text-white/45 hover:text-white/85 hover:bg-white/5`
+        return link.external ? (
+          <a key={link.id} href={link.href} className={linkCls}>{link.label}</a>
+        ) : (
+          <Link key={link.id} href={link.href} className={linkCls}>{link.label}</Link>
         )
       })}
     </nav>

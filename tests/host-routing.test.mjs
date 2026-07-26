@@ -19,6 +19,7 @@ import assert from "node:assert/strict"
 import {
   resolveSurface, cityFromHost, rootDomain, cityUrl, indiaHref, surfaceLinks,
   CITY_UI_PATHS, CITY_UI_PARAMS, LEGACY_CITY_ID, LEGACY_CITY_LABEL, DATA_SURFACE_URL,
+  PRODUCTION_ROOT_DOMAIN,
 } from "../apps/web/lib/host-routing.ts"
 
 const base = { search: "", indiaRoot: false, allowHostOverride: false }
@@ -200,6 +201,30 @@ test("rootDomain strips www and keeps the port", () => {
   assert.equal(rootDomain("kaun.city"), "kaun.city")
   assert.equal(rootDomain("www.kaun.city"), "kaun.city")
   assert.equal(rootDomain("localhost:3000"), "localhost:3000")
+})
+
+test("with no Host header at all, links resolve for production", () => {
+  // The India object pages and the national map are prerendered under ISR, so
+  // they have no request to read a Host header from and render the switcher
+  // with host="". Before this fallback existed that produced the literal
+  // "https://bengaluru./" — a dead link on every prerendered page.
+  assert.equal(rootDomain(""), PRODUCTION_ROOT_DOMAIN)
+  assert.equal(rootDomain("   "), PRODUCTION_ROOT_DOMAIN)
+  assert.equal(cityUrl("", "/", ""), `https://${LEGACY_CITY_ID}.${PRODUCTION_ROOT_DOMAIN}/`)
+  assert.equal(cityFromHost(""), null, "no host is not a city host")
+
+  // Post-cutover — the only mode in which an absolute city URL is rendered.
+  const post = Object.fromEntries(surfaceLinks("", true).map(l => [l.id, l]))
+  assert.equal(post.india.href, "/")
+  assert.equal(post.india.external, false)
+  assert.equal(post.city.href, `https://${LEGACY_CITY_ID}.${PRODUCTION_ROOT_DOMAIN}/`)
+  assert.equal(post.city.external, true)
+
+  // Pre-cutover nothing absolute is emitted, so the fallback cannot be wrong.
+  for (const { id, href, external } of surfaceLinks("", false)) {
+    assert.equal(external, false, `${id} left the origin before the cutover: ${href}`)
+    assert.ok(href.startsWith("/"), `${id}: ${href}`)
+  }
 })
 
 test("cityUrl uses http only for localhost", () => {

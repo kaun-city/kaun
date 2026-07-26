@@ -12,7 +12,9 @@
 
 import { test } from "node:test"
 import assert from "node:assert/strict"
+import { readFileSync } from "node:fs"
 import { bengaluru } from "../apps/web/lib/cities/bengaluru.ts"
+import { WARD_CROSSWALK_URL, WARD_CROSSWALK_VERSION } from "../apps/web/lib/constants.ts"
 
 const REGISTRY = { bengaluru }
 const getCity = (id) => REGISTRY[id ?? "bengaluru"] ?? bengaluru
@@ -54,4 +56,23 @@ test("Bengaluru center is in the right bbox", () => {
   const [lat, lng] = bengaluru.center
   assert.ok(lat > 12.7 && lat < 13.3, `Bengaluru lat ${lat} should be between 12.7 and 13.3`)
   assert.ok(lng > 77.3 && lng < 77.9, `Bengaluru lng ${lng} should be between 77.3 and 77.9`)
+})
+
+// ---------------------------------------------------------------------------
+// the committed ward-crosswalk asset
+//
+// next.config.ts serves apps/web/public/bengaluru-ward-crosswalk.json with
+// `immutable, max-age=31536000`, which is only safe because the URL names the
+// asset's version. Rebuild the crosswalk without bumping WARD_CROSSWALK_VERSION
+// and every browser that has already seen it would keep the old file for a
+// year. This is the assertion that stops that happening.
+// ---------------------------------------------------------------------------
+
+test("the ward crosswalk asset's version matches the constant its URL is built from", () => {
+  const asset = JSON.parse(
+    readFileSync(new URL("../apps/web/public/bengaluru-ward-crosswalk.json", import.meta.url), "utf8"))
+  assert.equal(asset.version, WARD_CROSSWALK_VERSION,
+    "bump WARD_CROSSWALK_VERSION in apps/web/lib/constants.ts when the crosswalk is rebuilt")
+  assert.equal(WARD_CROSSWALK_URL, `/bengaluru-ward-crosswalk.json?v=${WARD_CROSSWALK_VERSION}`)
+  assert.ok(Array.isArray(asset.rows) && asset.rows.length > 0, "the asset still carries rows")
 })

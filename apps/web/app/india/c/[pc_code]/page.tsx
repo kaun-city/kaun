@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { notFound } from "next/navigation"
-import { headers } from "next/headers"
 import { IndiaHeader } from "@/components/india/IndiaHeader"
 import { ObjectHeader, Section } from "@/components/india/ObjectHeader"
 import { MpCard } from "@/components/india/MpCard"
@@ -27,8 +27,39 @@ import {
  * crawlable URL with real content in the HTML; the read path is the same
  * lib/india/api.ts the client components use, so there is one way to read
  * these tables and only one.
+ *
+ * INCREMENTALLY REGENERATED, ON DEMAND. 543 seats, each a page whose content
+ * changes when a weekly or monthly cron writes a row, and never otherwise. So
+ * a seat is rendered the first time somebody asks for it and then reused for
+ * an hour. There is deliberately no generateStaticParams: prerendering all 543
+ * at build time would put 543 cold page renders in front of every deploy for
+ * seats most of which nobody will open that hour, and ISR reaches the same
+ * steady state without paying for it up front.
+ *
+ * Being prerenderable is also what makes the seat preview's "open constituency
+ * page" button feel instant — a <Link> to a dynamic route can only prefetch the
+ * loading skeleton, but a <Link> to this one prefetches the finished page.
+ * That is why the page takes no headers(); see PRODUCTION_ROOT_DOMAIN in
+ * lib/host-routing.ts.
  */
-export const dynamic = "force-dynamic"
+export const revalidate = 3600 // = INDIA_REVALIDATE_SECONDS; must be a literal (Next segment config)
+
+/**
+ * Empty on purpose, and required to be here.
+ *
+ * `revalidate` alone does not make a dynamic segment incrementally static —
+ * Next only treats [pc_code] as cacheable when the route declares
+ * generateStaticParams at all. Returning no params says "prerender none of
+ * them at build time"; dynamicParams stays true, so the first request for a
+ * seat renders it and every request for the next hour is served the result.
+ *
+ * Prerendering all 543 here is a one-line change if a cold first visit ever
+ * proves to be the thing worth fixing. It is not today: it would add 543 page
+ * renders to every deploy, for a hit rate concentrated in a few dozen seats.
+ */
+export function generateStaticParams() {
+  return []
+}
 
 type Props = { params: Promise<{ pc_code: string }> }
 
@@ -51,7 +82,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ConstituencyPage({ params }: Props) {
   const { pc_code } = await params
-  const host = (await headers()).get("host") ?? ""
   if (!isPcCode(pc_code)) notFound()
 
   const profile = await fetchConstituencyProfile(pc_code)
@@ -72,7 +102,7 @@ export default async function ConstituencyPage({ params }: Props) {
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-3xl mx-auto px-5 py-6">
-        <IndiaHeader host={host} />
+        <IndiaHeader />
 
         <div className="mt-6">
           <ObjectHeader
@@ -81,7 +111,7 @@ export default async function ConstituencyPage({ params }: Props) {
             subtitle={
               <>
                 {c.pc_name_hi && <span className="text-white/40">{c.pc_name_hi} · </span>}
-                <a href={indiaHref("/")} className="text-[#FF9933]/60 hover:text-[#FF9933]">see on the map</a>
+                <Link href={indiaHref("/")} className="text-[#FF9933]/60 hover:text-[#FF9933]">see on the map</Link>
               </>
             }
             chips={[
@@ -139,12 +169,12 @@ export default async function ConstituencyPage({ params }: Props) {
               <div className="space-y-2">
                 {projects.map(p => <ProjectRow key={p.project_code} p={p} />)}
               </div>
-              <a
+              <Link
                 href={indiaHref(`/projects?state=${c.st_code}`)}
                 className="inline-block mt-3 text-[#FF9933]/70 hover:text-[#FF9933] text-xs"
               >
                 All {projectsTotal.toLocaleString("en-IN")} central projects in {c.state_name} &rarr;
-              </a>
+              </Link>
             </>
           )}
         </Section>
