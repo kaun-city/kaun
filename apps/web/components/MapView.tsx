@@ -8,6 +8,10 @@
  */
 
 import { useEffect, useRef, useState, MutableRefObject } from "react"
+// Bundled statically so the map is never styled late: if this CSS arrives after
+// the map mounts, the attribution control renders as a full-width in-flow strip
+// whose CARTO/OSM links capture clicks anywhere on the map surface.
+import "leaflet/dist/leaflet.css"
 import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON, PathOptions } from "leaflet"
 import type { Feature } from "geojson"
 import type { PinResult } from "@/lib/types"
@@ -299,12 +303,6 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
     if (container._leaflet_id) {
       delete container._leaflet_id
     }
-
-    // Leaflet CSS  must load after mount
-    const link = document.createElement("link")
-    link.rel = "stylesheet"
-    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    document.head.appendChild(link)
 
     import("leaflet").then((L) => {
       const map = L.map(containerRef.current!, {
