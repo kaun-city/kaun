@@ -25,6 +25,15 @@ interface Props {
  * accountability stat for the city and it ticks up every day.
  *
  * Only renders for Bengaluru; other cities return null.
+ *
+ * The width is explicit, not a max-width: this box is absolutely positioned at
+ * left-1/2, so shrink-to-fit sizing offers it only the right half of the map —
+ * about 187px on a 375px phone, which squeezed the sentence into a four-line
+ * ribbon. An explicit width opts out of shrink-to-fit, and -translate-x-1/2
+ * still centres it.
+ *
+ * At full width the card also reached under the "New ward?" pill, which is
+ * 16px into its bottom edge on a phone, so below sm it sits a notch higher.
  */
 export function CorporatorVacancy({ cityId }: Props) {
   const [days, setDays] = useState(() => daysSince(VACANCY_START))
@@ -37,12 +46,12 @@ export function CorporatorVacancy({ cityId }: Props) {
   if (cityId !== "bengaluru") return null
 
   return (
-    <div className="absolute bottom-36 left-1/2 -translate-x-1/2 z-[900] pointer-events-auto">
+    <div className="absolute bottom-44 sm:bottom-36 left-1/2 -translate-x-1/2 z-[900] pointer-events-auto">
       <div className="
         flex items-center gap-3 px-5 py-3 rounded-2xl
         bg-[#111]/90 backdrop-blur-md border border-red-500/20
         shadow-xl shadow-red-500/5
-        max-w-[min(420px,90vw)]
+        w-[min(420px,90vw)]
       ">
         <div className="shrink-0 flex flex-col items-center justify-center w-16 h-14 rounded-xl bg-red-500/10">
           <span className="text-red-400 text-xl font-bold leading-none tabular-nums">

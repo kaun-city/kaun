@@ -175,113 +175,132 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
           onFeaturesLoaded={setFeatures}
         />
 
-        {/* Layer switcher + legend */}
-        <div className="absolute bottom-4 left-4 z-[900] w-[min(20rem,calc(100vw-2rem))]
-          bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl p-3">
-          <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">Paint the map</p>
-          <div className="flex flex-wrap gap-1.5">
-            <button
-              onClick={() => setLayerId(null)}
-              className={`text-[11px] px-2 py-1 rounded border transition-colors ${
-                layerId === null
-                  ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
-                  : "border-white/10 text-white/40 hover:text-white/70"}`}
-            >
-              None
-            </button>
-            {INDIA_LAYERS.map(l => (
+        {/* Bottom rail — the layer panel and the seat preview.
+            Below md they are a single bottom-anchored column, preview above the
+            legend, because both panels are as wide as the viewport allows: put
+            side by side they landed on top of each other and the preview (z-950)
+            hid the legend — the colour ramp, the range, and the "no value for N
+            of 543 seats" line — which is the honest part of a choropleth.
+            The rail is pointer-events-none and only as tall as its content, so
+            the map underneath still pans; the panels re-enable pointers.
+            `pb-11` clears Leaflet's attribution bar, which is two lines tall at
+            phone widths and sits at z-1000, above both panels.
+            From md up the rail stops generating a box (`md:contents`) and each
+            panel returns to its own corner, unchanged. md, not sm: at 640 two
+            20rem panels still overlap by 2rem. */}
+        <div className="absolute inset-x-0 bottom-0 z-[900] flex flex-col-reverse gap-2 p-4 pb-11
+          pointer-events-none md:contents">
+
+          {/* Layer switcher + legend */}
+          <div className="pointer-events-auto w-full
+            md:absolute md:bottom-4 md:left-4 md:z-[900] md:w-[min(20rem,calc(100vw-2rem))]
+            bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl p-3">
+            <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">Paint the map</p>
+            <div className="flex flex-wrap gap-1.5">
               <button
-                key={l.id}
-                onClick={() => setLayerId(l.id)}
+                onClick={() => setLayerId(null)}
                 className={`text-[11px] px-2 py-1 rounded border transition-colors ${
-                  layerId === l.id
+                  layerId === null
                     ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
                     : "border-white/10 text-white/40 hover:text-white/70"}`}
               >
-                {l.label}
+                None
               </button>
-            ))}
+              {INDIA_LAYERS.map(l => (
+                <button
+                  key={l.id}
+                  onClick={() => setLayerId(l.id)}
+                  className={`text-[11px] px-2 py-1 rounded border transition-colors ${
+                    layerId === l.id
+                      ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
+                      : "border-white/10 text-white/40 hover:text-white/70"}`}
+                >
+                  {l.label}
+                </button>
+              ))}
+            </div>
+
+            {layer && (
+              <div className="mt-2.5 space-y-1.5">
+                <p className="text-white/40 text-[11px] leading-snug">{layer.description}</p>
+                <div className="flex items-center gap-1">
+                  {rampFor(layer).map((c, i) => (
+                    <span key={i} className="h-2 flex-1 rounded-sm" style={{ backgroundColor: c }} />
+                  ))}
+                </div>
+                <div className="flex items-center justify-between text-white/25 text-[10px]">
+                  <span>{legendNums.length ? formatValue(Math.min(...legendNums), layer.format) : "—"}</span>
+                  <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-white/25 text-[10px]">
+                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: NO_DATA_FILL }} />
+                  <span>
+                    {layerLoading
+                      ? "loading…"
+                      : `no value for ${(features.length || LOK_SABHA_SEATS) - painted} of ${features.length || LOK_SABHA_SEATS} seats`}
+                  </span>
+                </div>
+                {layer.absentNote && (
+                  <p className="text-white/20 text-[10px] leading-snug">{layer.absentNote}</p>
+                )}
+                <p className="text-white/15 text-[10px]">Source: {layer.source}</p>
+              </div>
+            )}
           </div>
 
-          {layer && (
-            <div className="mt-2.5 space-y-1.5">
-              <p className="text-white/40 text-[11px] leading-snug">{layer.description}</p>
-              <div className="flex items-center gap-1">
-                {rampFor(layer).map((c, i) => (
-                  <span key={i} className="h-2 flex-1 rounded-sm" style={{ backgroundColor: c }} />
-                ))}
+          {/* Seat preview — a doorway to the seat's own page, never a substitute */}
+          {selected && (
+            <div className="pointer-events-auto w-full
+              md:absolute md:bottom-4 md:right-4 md:z-[950] md:w-[min(20rem,calc(100vw-2rem))]
+              bg-[#111] border border-white/10 rounded-xl p-4 shadow-2xl">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-white/30 text-[10px] uppercase tracking-widest">
+                    {selected.state_name} · seat {selected.pc_no}
+                  </p>
+                  <p className="text-white font-semibold text-base mt-0.5">{selected.pc_name}</p>
+                  {(() => {
+                    const mp = mpBySeat.get(selected.pc_code)
+                    if (!mp) {
+                      return <p className="text-white/30 text-xs mt-1">No sitting MP on record for this seat.</p>
+                    }
+                    return (
+                      <p className="text-white/50 text-xs mt-1">
+                        {mp.name}{mp.party_abbr ? ` · ${mp.party_abbr}` : ""}
+                      </p>
+                    )
+                  })()}
+                  {layer && (
+                    <p className="text-white/40 text-xs mt-1.5">
+                      {layer.label}:{" "}
+                      {values && values[selected.pc_code] !== undefined
+                        ? <span className="text-white/80">{formatValue(values[selected.pc_code], layer.format)}</span>
+                        : <span className="text-white/25 italic">no value recorded</span>}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => setSelected(null)}
+                  className="text-white/30 hover:text-white/70 text-lg leading-none w-7 h-7 flex items-center justify-center shrink-0"
+                  aria-label="Close"
+                >&times;</button>
               </div>
-              <div className="flex items-center justify-between text-white/25 text-[10px]">
-                <span>{legendNums.length ? formatValue(Math.min(...legendNums), layer.format) : "—"}</span>
-                <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-white/25 text-[10px]">
-                <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: NO_DATA_FILL }} />
-                <span>
-                  {layerLoading
-                    ? "loading…"
-                    : `no value for ${(features.length || LOK_SABHA_SEATS) - painted} of ${features.length || LOK_SABHA_SEATS} seats`}
-                </span>
-              </div>
-              {layer.absentNote && (
-                <p className="text-white/20 text-[10px] leading-snug">{layer.absentNote}</p>
-              )}
-              <p className="text-white/15 text-[10px]">Source: {layer.source}</p>
+              {/* next/link, not an anchor: the seat page is this same app on
+                  this same host in both cutover modes (indiaHref returns a path,
+                  never a URL), and it is prerendered — so hovering this button
+                  prefetches the whole page and the click is a paint. This is the
+                  map's one job; it should not feel like leaving. */}
+              <Link
+                href={indiaHref(`/c/${selected.pc_code}`)}
+                className="mt-3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
+                  bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95 text-black font-semibold text-sm
+                  transition-all duration-150"
+              >
+                Open constituency page &rarr;
+              </Link>
             </div>
           )}
         </div>
-
-        {/* Seat preview — a doorway to the seat's own page, never a substitute */}
-        {selected && (
-          <div className="absolute bottom-4 right-4 z-[950] w-[min(20rem,calc(100vw-2rem))]
-            bg-[#111] border border-white/10 rounded-xl p-4 shadow-2xl">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <p className="text-white/30 text-[10px] uppercase tracking-widest">
-                  {selected.state_name} · seat {selected.pc_no}
-                </p>
-                <p className="text-white font-semibold text-base mt-0.5">{selected.pc_name}</p>
-                {(() => {
-                  const mp = mpBySeat.get(selected.pc_code)
-                  if (!mp) {
-                    return <p className="text-white/30 text-xs mt-1">No sitting MP on record for this seat.</p>
-                  }
-                  return (
-                    <p className="text-white/50 text-xs mt-1">
-                      {mp.name}{mp.party_abbr ? ` · ${mp.party_abbr}` : ""}
-                    </p>
-                  )
-                })()}
-                {layer && (
-                  <p className="text-white/40 text-xs mt-1.5">
-                    {layer.label}:{" "}
-                    {values && values[selected.pc_code] !== undefined
-                      ? <span className="text-white/80">{formatValue(values[selected.pc_code], layer.format)}</span>
-                      : <span className="text-white/25 italic">no value recorded</span>}
-                  </p>
-                )}
-              </div>
-              <button
-                onClick={() => setSelected(null)}
-                className="text-white/30 hover:text-white/70 text-lg leading-none w-7 h-7 flex items-center justify-center shrink-0"
-                aria-label="Close"
-              >&times;</button>
-            </div>
-            {/* next/link, not an anchor: the seat page is this same app on
-                this same host in both cutover modes (indiaHref returns a path,
-                never a URL), and it is prerendered — so hovering this button
-                prefetches the whole page and the click is a paint. This is the
-                map's one job; it should not feel like leaving. */}
-            <Link
-              href={indiaHref(`/c/${selected.pc_code}`)}
-              className="mt-3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
-                bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95 text-black font-semibold text-sm
-                transition-all duration-150"
-            >
-              Open constituency page &rarr;
-            </Link>
-          </div>
-        )}
       </div>
     </main>
   )
