@@ -10,7 +10,7 @@ import { isFixtureMode } from "@/lib/india/fixtures"
  * page being empty. So the banner is unmissable, it names the flag that turns
  * it off, and it renders on every India page including the shared ones.
  *
- * Renders nothing at all when NEXT_PUBLIC_KAUN_INDIA_FIXTURES=0.
+ * Renders nothing at all in live-data mode (the default).
  */
 export function FixtureBanner() {
   if (!isFixtureMode()) return null
@@ -19,9 +19,8 @@ export function FixtureBanner() {
       <p className="max-w-5xl mx-auto text-amber-300/90 text-[11px] leading-snug">
         <span className="font-semibold uppercase tracking-widest text-[10px] mr-2">Preview data</span>
         These pages are running on a committed fixture set of four Karnataka seats — real rows from
-        public sources, but a sample, not the live national dataset. The <code className="font-mono">in_*</code> tables
-        are not deployed yet. Set <code className="font-mono">NEXT_PUBLIC_KAUN_INDIA_FIXTURES=0</code> once the
-        schema and loaders have run.
+        public sources, but a sample, not the live national dataset
+        (<code className="font-mono">NEXT_PUBLIC_KAUN_INDIA_FIXTURES=1</code> is set; unset it for live data).
       </p>
     </div>
   )

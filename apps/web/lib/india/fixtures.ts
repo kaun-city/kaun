@@ -37,13 +37,15 @@ import type {
 } from "./types"
 
 /**
- * Fixture mode. Defaults ON because the tables genuinely do not exist yet —
- * pointing the surface at production today returns 404s from PostgREST, not
- * data. Set NEXT_PUBLIC_KAUN_INDIA_FIXTURES=0 once #63 is applied and the
- * loaders have run; the read path is identical either way.
+ * Fixture mode. Defaulted ON while the in_* tables did not exist; as of
+ * 2026-07-26 the schema is applied and every loader has run against prod
+ * (543 seats / 788 MPs / affidavits / activity / MPLADS / 2,033 projects),
+ * so live data is the default. Set NEXT_PUBLIC_KAUN_INDIA_FIXTURES=1 to
+ * force the committed 4-seat sample (local dev without network, demos);
+ * the read path is identical either way.
  */
 export function isFixtureMode(): boolean {
-  return (process.env.NEXT_PUBLIC_KAUN_INDIA_FIXTURES ?? "1") !== "0"
+  return process.env.NEXT_PUBLIC_KAUN_INDIA_FIXTURES === "1"
 }
 
 /** Term the fixtures describe. */
