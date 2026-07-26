@@ -1,0 +1,16 @@
+source,source_key,source_label,st_code,pc_code,method,reviewed_by,note
+sansad,5714,Daman and Diu,25,25-1,manual_reviewed,bharatnyusta,merged-UT spelling; ECI numbering keeps Daman & Diu as seat 1 under DataMeet st_code 25
+sansad,5536,Dadra and Nagar Haveli,26,26-2,manual_reviewed,bharatnyusta,merged-UT spelling; seat 2 under DataMeet st_code 26 (ST) — winner Delkar Kalaben matches both sources
+sansad,371,Andaman and Nicobar Islands,35,35-1,manual_reviewed,bharatnyusta,"crosswalk name 'Andaman & Nicobar' ('and' vs '&'); winner Bishnu Pada Ray matches"
+sansad,5120,Puducherry,34,34-1,manual_reviewed,bharatnyusta,crosswalk name 'Pondicherry' (2008 order spelling); winner Ve Vaithilingam matches
+myneta,579,ANDAMAN AND NICOBAR ISLANDS,35,35-1,manual_reviewed,bharatnyusta,same seat as sansad:371; winner Bishnu Pada Ray matches
+myneta,20,ANANTHAPUR,37,37-19,manual_reviewed,bharatnyusta,transliteration of Anantapur (AP 19)
+myneta,14,NARSARAOPET,37,37-14,manual_reviewed,bharatnyusta,transliteration of Narasaraopet (AP 14)
+myneta,24,THIRUPATHI (SC),37,37-23,manual_reviewed,bharatnyusta,transliteration of Tirupati (AP 23); SC suffix consistent with reserved status
+myneta,102,DADAR & NAGAR HAVELI (ST),26,26-2,manual_reviewed,bharatnyusta,same seat as sansad:5536; ST suffix matches crosswalk reserved status; winner Delkar Kalaben matches
+myneta,283,HATKANANGALE,27,27-48,manual_reviewed,bharatnyusta,spelling of Hatkanangle (MH 48)
+myneta,338,PUDUCHERRY,34,34-1,manual_reviewed,bharatnyusta,same seat as sansad:5120; winner Ve Vaithilingam matches
+myneta,447,HARIDWAR,5,5-5,manual_reviewed,bharatnyusta,crosswalk name 'Hardwar' (2008 order spelling; UK 5)
+myneta,446,NAINITAL-UDHAM SINGH NAGAR,5,5-4,manual_reviewed,bharatnyusta,crosswalk name 'Nainital-Udhamsingh Nagar' (UK 4)
+myneta,549,BURDWAN - DURGAPUR,19,19-39,manual_reviewed,bharatnyusta,crosswalk name 'Bardhaman-Durgapur' (WB 39)
+myneta,534,COOCH BEHAR (SC),19,19-1,manual_reviewed,bharatnyusta,crosswalk name 'Coochbehar' (WB 1); SC suffix consistent with reserved status
