@@ -23,6 +23,7 @@ import { colorFor } from "@/lib/map-layers"
 import { INDIA_CENTER, INDIA_MAX_ZOOM, INDIA_MIN_ZOOM, INDIA_ZOOM, PC_GEOJSON_URL } from "@/lib/india/constants"
 import { NO_DATA_FILL, NO_DATA_STROKE } from "@/lib/india/viz"
 import { rampFor, type IndiaLayerMeta } from "@/lib/india/layers"
+import type { MapView } from "@/lib/india/map-view-store"
 
 export interface PcFeatureProps {
   pc_code: string
@@ -60,10 +61,18 @@ interface Props {
   /** Set by the parent so the search box can fly to a seat. */
   focusRef?: MutableRefObject<{ focus: (pcCode: string) => void } | null>
   onFeaturesLoaded?: (features: PcFeatureProps[]) => void
+  /**
+   * Where to open the map, when the visitor has been here before in this tab.
+   * Read once, at map construction; changing it later does nothing.
+   */
+  initialView?: MapView | null
+  /** Fired after every pan and zoom, so the parent can remember the viewport. */
+  onViewChange?: (view: MapView) => void
 }
 
 export default function IndiaMapView({
   values, breaks, layer, stateFilter, onSelect, focusRef, onFeaturesLoaded,
+  initialView = null, onViewChange,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
@@ -73,10 +82,23 @@ export default function IndiaMapView({
   const layerRef = useRef(layer)
   const filterRef = useRef(stateFilter)
   const onSelectRef = useRef(onSelect)
+  const onViewChangeRef = useRef(onViewChange)
   const resizeCleanupRef = useRef<(() => void) | null>(null)
   const [loading, setLoading] = useState(true)
 
+  /**
+   * A restored viewport is the visitor's own last view, and it must survive the
+   * one automatic fit that would otherwise run over it: the state-filter effect
+   * fires as soon as the boundaries land, and a restored filter would make it
+   * re-fit the whole state, throwing away exactly the pan and zoom we came back
+   * for. So the first effective run of that effect is skipped — once — when the
+   * map opened on a restored view. Every later filter change fits normally.
+   */
+  const restoredViewRef = useRef(initialView !== null)
+  const initialViewRef = useRef(initialView)
+
   useEffect(() => { onSelectRef.current = onSelect }, [onSelect])
+  useEffect(() => { onViewChangeRef.current = onViewChange }, [onViewChange])
 
   function propsOf(feature?: Feature): PcFeatureProps | null {
     return (feature?.properties as PcFeatureProps | undefined) ?? null
@@ -120,6 +142,7 @@ export default function IndiaMapView({
     const map = mapRef.current
     const gj = geojsonRef.current
     if (!map || !gj) return
+    if (restoredViewRef.current) { restoredViewRef.current = false; return }
     if (stateFilter === null) {
       map.setView(INDIA_CENTER, INDIA_ZOOM, { animate: true })
       return
@@ -165,9 +188,12 @@ export default function IndiaMapView({
     document.head.appendChild(link)
 
     import("leaflet").then((L) => {
+      const restored = initialViewRef.current
       const map = L.map(containerRef.current!, {
-        center: INDIA_CENTER,
-        zoom: INDIA_ZOOM,
+        // Coming back from a seat page: open where the visitor left off rather
+        // than snapping to the whole country and making them find it again.
+        center: restored ? restored.center : INDIA_CENTER,
+        zoom: restored ? restored.zoom : INDIA_ZOOM,
         minZoom: INDIA_MIN_ZOOM,
         maxZoom: INDIA_MAX_ZOOM,
         // India needs a fractional default zoom to fit Kashmir and Kanyakumari
@@ -188,9 +214,21 @@ export default function IndiaMapView({
       const remeasure = () => map.invalidateSize()
       const t = setTimeout(remeasure, 60)
       window.addEventListener("resize", remeasure)
+
+      // Report the viewport after it settles, never during the gesture — this
+      // writes to sessionStorage and Leaflet fires `move` on every frame.
+      const reportView = () => {
+        const c = map.getCenter()
+        onViewChangeRef.current?.({ center: [c.lat, c.lng], zoom: map.getZoom() })
+      }
+      map.on("moveend", reportView)
+      map.on("zoomend", reportView)
+
       resizeCleanupRef.current = () => {
         clearTimeout(t)
         window.removeEventListener("resize", remeasure)
+        map.off("moveend", reportView)
+        map.off("zoomend", reportView)
       }
       L.control.zoom({ position: "topright" }).addTo(map)
 

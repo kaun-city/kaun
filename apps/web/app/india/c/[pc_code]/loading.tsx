@@ -9,5 +9,5 @@ import { ObjectPageSkeleton } from "@/components/india/ObjectPageSkeleton"
  * Parliament, local area development funds, over time, central projects.
  */
 export default function Loading() {
-  return <ObjectPageSkeleton sections={5} />
+  return <ObjectPageSkeleton sections={5} backToMap />
 }

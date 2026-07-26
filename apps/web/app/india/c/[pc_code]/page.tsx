@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { IndiaHeader } from "@/components/india/IndiaHeader"
+import { BackToMap } from "@/components/india/BackToMap"
 import { ObjectHeader, Section } from "@/components/india/ObjectHeader"
 import { MpCard } from "@/components/india/MpCard"
 import { ActivityCard } from "@/components/india/ActivityCard"
@@ -11,6 +12,7 @@ import { ProjectRow } from "@/components/india/ProjectRow"
 import { SourcesFooter } from "@/components/india/SourcesFooter"
 import { fetchConstituencyProfile } from "@/lib/india/api"
 import { isPcCode } from "@/lib/india/pc-code"
+import { mapHrefForSeat } from "@/lib/india/map-url-state"
 import { indiaHref } from "@/lib/host-routing"
 import { FIXTURE_ACTIVITY_BENCHMARKS, isFixtureMode } from "@/lib/india/fixtures"
 import { formatMonth } from "@/lib/india/format"
@@ -115,6 +117,14 @@ export default async function ConstituencyPage({ params }: Props) {
   const { constituency: c, mp, affidavit, activity, mplads, projects, projectsTotal } = profile
   const reportMonth = projects[0]?.report_month ?? null
 
+  /**
+   * The map, with this seat already selected. Used by both ways back — the
+   * BackToMap control's no-history fallback and the "see on the map" link in
+   * the subtitle — so neither of them ever drops a reader onto an unfocused
+   * national map and makes them hunt for the seat they were just reading.
+   */
+  const mapHref = mapHrefForSeat(indiaHref("/"), c.pc_code)
+
   const sources = [
     SOURCE_PC_BOUNDARIES,
     SOURCE_ROSTER,
@@ -126,90 +136,100 @@ export default async function ConstituencyPage({ params }: Props) {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="max-w-3xl mx-auto px-5 py-6">
-        <IndiaHeader />
+      {/* pb-28 on phones clears the fixed back control; from md up it is an
+          in-flow chip and the ordinary padding is enough again. */}
+      <div className="max-w-3xl mx-auto px-5 py-6 pb-28 md:pb-6">
+        <BackToMap href={mapHref} />
 
-        <div className="mt-6">
-          <ObjectHeader
-            eyebrow={`${c.state_name} · Lok Sabha seat ${c.pc_no}`}
-            title={c.pc_name}
-            subtitle={
+        {/* The entry animation lives on this wrapper and not on the container
+            above, because a transform makes an element the containing block for
+            every fixed descendant — animating the container would peel the back
+            control off the viewport and slide it with the page. */}
+        <div className="kaun-page-enter">
+          <IndiaHeader />
+
+          <div className="mt-6">
+            <ObjectHeader
+              eyebrow={`${c.state_name} · Lok Sabha seat ${c.pc_no}`}
+              title={c.pc_name}
+              subtitle={
+                <>
+                  {c.pc_name_hi && <span className="text-white/40">{c.pc_name_hi} · </span>}
+                  <Link href={mapHref} className="text-[#FF9933]/60 hover:text-[#FF9933]">see on the map</Link>
+                </>
+              }
+              chips={[
+                { label: "seat", value: c.pc_code, title: "Kaun's constituency key: <state code>-<seat number>" },
+                ...(c.reserved_for
+                  ? [{ label: "reserved", value: c.reserved_for, title: `Source: ${c.reserved_source}` }]
+                  : []),
+                ...(mp ? [{ label: "term", value: mp.term_label }] : []),
+                ...(c.geom_source ? [{ label: "boundary", value: c.geom_source }] : []),
+              ]}
+              /* presence slot intentionally empty in v1 — see ObjectHeader */
+            />
+          </div>
+
+          {!c.reserved_for && (
+            <p className="text-white/20 text-[11px] mt-3 leading-snug">
+              Reservation status (SC/ST) is shown only when it comes from the Delimitation Order. Every
+              boundary and roster file checked under-reports it, so Kaun leaves it blank rather than
+              repeating a figure it knows to be wrong.
+            </p>
+          )}
+
+          <Section title="Who holds this seat">
+            <MpCard mp={mp} affidavit={affidavit} />
+          </Section>
+
+          <Section title="In Parliament" note="components, not a score">
+            <ActivityCard
+              activity={activity}
+              benchmarks={isFixtureMode() ? FIXTURE_ACTIVITY_BENCHMARKS : null}
+            />
+          </Section>
+
+          <Section title="Local area development funds">
+            <MpladsCard rows={mplads} />
+          </Section>
+
+          {affidavit && (
+            <Section title="Over time">
+              <AffidavitTimeline affidavit={affidavit} />
+            </Section>
+          )}
+
+          <Section
+            title={`Central projects in ${c.state_name}`}
+            note={reportMonth ? `MoSPI report, ${formatMonth(reportMonth)}` : undefined}
+          >
+            <p className="text-white/30 text-[11px] leading-snug mb-2.5">{MOSPI_STATE_LEVEL_NOTE}</p>
+            {projects.length === 0 ? (
+              <div className="rounded-xl bg-white/5 p-4">
+                <p className="text-white/50 text-sm">No central projects loaded for this state yet.</p>
+              </div>
+            ) : (
               <>
-                {c.pc_name_hi && <span className="text-white/40">{c.pc_name_hi} · </span>}
-                <Link href={indiaHref("/")} className="text-[#FF9933]/60 hover:text-[#FF9933]">see on the map</Link>
+                <div className="space-y-2">
+                  {projects.map(p => <ProjectRow key={p.project_code} p={p} />)}
+                </div>
+                <Link
+                  href={indiaHref(`/projects?state=${c.st_code}`)}
+                  className="inline-block mt-3 text-[#FF9933]/70 hover:text-[#FF9933] text-xs"
+                >
+                  All {projectsTotal.toLocaleString("en-IN")} central projects in {c.state_name} &rarr;
+                </Link>
               </>
+            )}
+          </Section>
+
+          <SourcesFooter
+            sources={sources}
+            crosswalkNote={
+              "Constituency-to-district mapping: not applied on this page. MoSPI's own data stops at the state, so nothing below state level is claimed here."
             }
-            chips={[
-              { label: "seat", value: c.pc_code, title: "Kaun's constituency key: <state code>-<seat number>" },
-              ...(c.reserved_for
-                ? [{ label: "reserved", value: c.reserved_for, title: `Source: ${c.reserved_source}` }]
-                : []),
-              ...(mp ? [{ label: "term", value: mp.term_label }] : []),
-              ...(c.geom_source ? [{ label: "boundary", value: c.geom_source }] : []),
-            ]}
-            /* presence slot intentionally empty in v1 — see ObjectHeader */
           />
         </div>
-
-        {!c.reserved_for && (
-          <p className="text-white/20 text-[11px] mt-3 leading-snug">
-            Reservation status (SC/ST) is shown only when it comes from the Delimitation Order. Every
-            boundary and roster file checked under-reports it, so Kaun leaves it blank rather than
-            repeating a figure it knows to be wrong.
-          </p>
-        )}
-
-        <Section title="Who holds this seat">
-          <MpCard mp={mp} affidavit={affidavit} />
-        </Section>
-
-        <Section title="In Parliament" note="components, not a score">
-          <ActivityCard
-            activity={activity}
-            benchmarks={isFixtureMode() ? FIXTURE_ACTIVITY_BENCHMARKS : null}
-          />
-        </Section>
-
-        <Section title="Local area development funds">
-          <MpladsCard rows={mplads} />
-        </Section>
-
-        {affidavit && (
-          <Section title="Over time">
-            <AffidavitTimeline affidavit={affidavit} />
-          </Section>
-        )}
-
-        <Section
-          title={`Central projects in ${c.state_name}`}
-          note={reportMonth ? `MoSPI report, ${formatMonth(reportMonth)}` : undefined}
-        >
-          <p className="text-white/30 text-[11px] leading-snug mb-2.5">{MOSPI_STATE_LEVEL_NOTE}</p>
-          {projects.length === 0 ? (
-            <div className="rounded-xl bg-white/5 p-4">
-              <p className="text-white/50 text-sm">No central projects loaded for this state yet.</p>
-            </div>
-          ) : (
-            <>
-              <div className="space-y-2">
-                {projects.map(p => <ProjectRow key={p.project_code} p={p} />)}
-              </div>
-              <Link
-                href={indiaHref(`/projects?state=${c.st_code}`)}
-                className="inline-block mt-3 text-[#FF9933]/70 hover:text-[#FF9933] text-xs"
-              >
-                All {projectsTotal.toLocaleString("en-IN")} central projects in {c.state_name} &rarr;
-              </Link>
-            </>
-          )}
-        </Section>
-
-        <SourcesFooter
-          sources={sources}
-          crosswalkNote={
-            "Constituency-to-district mapping: not applied on this page. MoSPI's own data stops at the state, so nothing below state level is claimed here."
-          }
-        />
       </div>
     </div>
   )
