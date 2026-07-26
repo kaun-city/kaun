@@ -81,9 +81,11 @@ export default function IndiaHome({ mps, host = "" }: { mps: MpLite[]; host?: st
       <div className="relative flex-1 min-h-0">
         <IndiaHeader variant="overlay" host={host} />
 
-        {/* Search — seat name, seat code, or MP name.
-            Sits lower on phones, where the header wraps onto a second line. */}
-        <div className="absolute top-[4.5rem] sm:top-16 left-4 z-[900] w-[min(22rem,calc(100vw-2rem))]">
+        {/* Search — seat name, seat code, or MP name. Phones stack it above the
+            state filter (below the wrapped two-line header) and keep clear of
+            the zoom control pinned to the right edge; sm+ puts them side by
+            side. z sits above the filter so the results list can drop over it. */}
+        <div className="absolute top-[4.5rem] sm:top-16 left-4 right-14 z-[910] sm:right-auto sm:w-[min(22rem,calc(100vw-2rem))]">
           <input
             value={q}
             onChange={e => setQ(e.target.value)}
@@ -120,8 +122,8 @@ export default function IndiaHome({ mps, host = "" }: { mps: MpLite[]; host?: st
           )}
         </div>
 
-        {/* State filter */}
-        <div className="absolute top-[4.5rem] sm:top-16 right-4 z-[900]">
+        {/* State filter — below the search on phones, beside it from sm up */}
+        <div className="absolute top-[7.5rem] right-14 z-[900] sm:top-16 sm:right-4">
           <select
             value={stateFilter ?? ""}
             onChange={e => setStateFilter(e.target.value === "" ? null : Number(e.target.value))}
