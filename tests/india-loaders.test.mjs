@@ -838,3 +838,25 @@ test("padToUniformKeys: ragged loader rows become a uniform PostgREST payload", 
   assert.equal(padded[2].pc_code, "2-1")              // real values untouched
   assert.equal(padded[0].mpsno, 1)
 })
+
+test("cli flag() prepends the dashes — '--apply' in argv is flag('apply')", async () => {
+  const { flag } = await import("../scripts/india/lib/cli.mjs")
+  const argv = ["node", "loader.mjs", "--apply"]
+  assert.equal(flag("apply", argv), true)
+  // The regression: a hand-rolled flag("--apply") silently never matches.
+  assert.equal(flag("--apply", argv), false)
+})
+
+test("load-aliases honors --apply: refuses to run without credentials", async () => {
+  const { spawnSync } = await import("node:child_process")
+  // If --apply parsed as dry-run (the original bug), this exits 0 having
+  // written nothing; the correct behavior without credentials is the
+  // openSink refusal path, exit 1 with the 'needs credentials' message.
+  const env = { ...process.env }
+  delete env.SUPABASE_URL; delete env.NEXT_PUBLIC_SUPABASE_URL
+  delete env.SUPABASE_SERVICE_KEY; delete env.SUPABASE_SERVICE_ROLE_KEY
+  delete env.KAUN_LOCAL_PG
+  const r = spawnSync("node", ["scripts/india/load-aliases.mjs", "--apply"], { env, encoding: "utf8" })
+  assert.equal(r.status, 1)
+  assert.match(r.stderr + r.stdout, /--apply needs credentials/)
+})
