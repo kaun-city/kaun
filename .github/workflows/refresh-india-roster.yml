@@ -27,6 +27,7 @@ on:
           - sansad-roster
           - mp-activity
           - mp-activity-backfill
+          - load-aliases
       mode:
         description: "dry-run (read-only) or apply (writes)"
         required: true
@@ -95,6 +96,7 @@ jobs:
             sansad-roster)        node scripts/india/sansad-roster.mjs $FLAG ;;
             mp-activity)          node scripts/india/mp-activity.mjs $FLAG ;;
             mp-activity-backfill) node scripts/india/mp-activity.mjs --backfill $FLAG ;;
+            load-aliases)         node scripts/india/load-aliases.mjs $FLAG ;;
             *) echo "unknown job: $JOB"; exit 1 ;;
           esac
 
