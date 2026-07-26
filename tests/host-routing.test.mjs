@@ -228,12 +228,12 @@ test("indiaHref produces a URL that resolves in whichever mode it is built for",
 const linksOf = (host, indiaRoot) =>
   Object.fromEntries(surfaceLinks(host, indiaRoot).map(l => [l.id, l.href]))
 
-test("the switcher always offers the same three surfaces in the same order", () => {
+test("the switcher always offers the same two surfaces in the same order (Data hidden for now)", () => {
   for (const host of HOSTS) {
     for (const indiaRoot of MODES) {
       const links = surfaceLinks(host, indiaRoot)
-      assert.deepEqual(links.map(l => l.id), ["india", "city", "data"], `${host} ${indiaRoot}`)
-      assert.deepEqual(links.map(l => l.label), ["India", LEGACY_CITY_LABEL, "Data"])
+      assert.deepEqual(links.map(l => l.id), ["india", "city"], `${host} ${indiaRoot}`)
+      assert.deepEqual(links.map(l => l.label), ["India", LEGACY_CITY_LABEL])
       for (const l of links) {
         assert.ok(l.href, `${l.id} on ${host} has an href`)
         assert.equal(l.external, !l.href.startsWith("/"), `${l.id} external flag matches its href`)
@@ -247,7 +247,6 @@ test("before the cutover, the root domain's switcher is entirely relative", () =
     const l = linksOf(host, false)
     assert.equal(l.india, "/india", host)
     assert.equal(l.city, "/", `${host}: the root IS the city UI until the flag flips`)
-    assert.equal(l.data, DATA_SURFACE_URL, host)
   }
 })
 
@@ -255,7 +254,6 @@ test("after the cutover, the root domain's switcher sends the city to its subdom
   const l = linksOf("kaun.city", true)
   assert.equal(l.india, "/", "the root is the national layer now")
   assert.equal(l.city, `https://${LEGACY_CITY_ID}.kaun.city/`)
-  assert.equal(l.data, DATA_SURFACE_URL)
   // www is the root domain wearing a hat: strip it, never link to www.bengaluru.
   assert.equal(linksOf("www.kaun.city", true).city, `https://${LEGACY_CITY_ID}.kaun.city/`)
 })
@@ -271,7 +269,7 @@ test("on a city subdomain the national entry is an absolute link home, in both m
 
 test("localhost keeps http and its port, so the switcher works in dev", () => {
   assert.deepEqual(linksOf("localhost:3000", false), {
-    india: "/india", city: "/", data: DATA_SURFACE_URL,
+    india: "/india", city: "/",
   })
   assert.equal(linksOf("localhost:3000", true).city, "http://bengaluru.localhost:3000/")
   assert.equal(linksOf("bengaluru.localhost:3000", false).india, "http://localhost:3000/india")
@@ -300,12 +298,12 @@ test("BEFORE THE CUTOVER, NO LINK NAMES A HOST THAT MAY NOT RESOLVE YET", () => 
   }
 })
 
-test("the wiki is the same absolute URL on every host, in every mode", () => {
+test("the Data chip stays hidden until deliberately restored", () => {
+  // Bharat's 2026-07-26 call: two chips at cutover. If someone re-adds the
+  // entry, this test forces them to restore the full wiki-URL assertions too.
   for (const host of HOSTS) {
     for (const indiaRoot of MODES) {
-      const data = surfaceLinks(host, indiaRoot).find(l => l.id === "data")
-      assert.equal(data.href, "https://data.kaun.city", `${host} ${indiaRoot}`)
-      assert.equal(data.external, true)
+      assert.equal(surfaceLinks(host, indiaRoot).find(l => l.id === "data"), undefined, `${host} ${indiaRoot}`)
     }
   }
 })
