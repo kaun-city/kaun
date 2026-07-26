@@ -100,15 +100,18 @@ reproduces the declaration, it does not verify it.
 
 Ministers and the Speaker do not sign the attendance register, do not ask questions and do not introduce private member bills. Their metrics are recorded as **not applicable — never as zero**, because a zero here would read as absenteeism and would be false.
 
-_Recorded reason: This MP is a minister. Ministers represent the government in debates, so we do not report their participation. They do not sign the attendance register, ask questions, or introduce private member bills. Data corresponds to the period from 24-06-2024 to 18-04-2026.._
+_Recorded reason: Minister/Speaker: does not sign the attendance register, ask questions, or introduce private member bills (PRS mp_note; sansad.in signedDaysCount)._
 
 ---
 
 ## Local area development funds (MPLADS)
 
-**MPLADS figures have not been loaded for this seat yet.** Each MP is entitled to recommend works
-worth ₹5 crore a year in their constituency; the allocation, the release and the unspent balance
-come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once that pipeline has run.
+| Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| eSAKSHI (official) | ₹14.70 Cr | ₹28.51 L | ₹14.41 Cr | 1.9% | 140 | 74 | 2 | 2026-07-26 |
+
+_eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
+row is present it is kept separate rather than merged, so every figure carries its own provenance._
 
 ---
 
@@ -116,9 +119,18 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-**No central projects loaded for Uttarakhand yet.** MoSPI's Flash Report tracks every central
-project of ₹150 crore or more and publishes monthly with a ~7–8 week lag; the first load is
-pending, or this state has no projects in the latest report Kaun holds.
+The 6 projects in Uttarakhand furthest above sanctioned cost, as of the May 2026 report.
+
+| Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
+|---|---|---:|---:|---:|---|---:|
+| [Tapovan-Vishnugad HEP [4x130 MW]](https://kaun.city/india/projects/602185) | Ministry of Power | ₹2,978 Cr | ₹10,907 Cr | +₹7,929 Cr | 196 months later | 77% |
+| [Vishnugad Pipalkoti Hydro Electric Project [444 MW]](https://kaun.city/india/projects/602195) | Ministry of Power | ₹3,860 Cr | ₹6,405 Cr | +₹2,545 Cr | 66 months later | 81% |
+| [Establishment of new GMC Pithoragarh](https://kaun.city/india/projects/707087) | Ministry of Health & Family Welfare | ₹325 Cr | ₹769 Cr | +₹444 Cr | unchanged 0 months | 84% |
+| [CONSTRUCTION OF 300 BEDDED HOSPITAL AT HARIDWAR](https://kaun.city/india/projects/612259) | Ministry of Labour and Employment | ₹102 Cr | ₹298 Cr | +₹195 Cr | 21 months later | 89% |
+| [Green Building Development Project](https://kaun.city/india/projects/701766) | Ministry of Housing & Urban Affairs | ₹151 Cr | ₹206 Cr | +₹55.03 Cr | 37 months later | 40% |
+| [Construction of 4-lane connectivity to Banbasa ICP at India Nepal border from NH-09 old NH-125 Sitarganj-Tanakpur at Km 40.00 near Jagbuda bridge under Bharatmala Priyojana of NH-109D on EPC mode in the State of Uttarakhand](https://kaun.city/india/projects/619142) | Ministry of Road Transport & Highways | ₹217 Cr | ₹237 Cr | +₹20.04 Cr | 31 months later | 75% |
+
+[All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=5)
 
 ---
 
@@ -130,5 +142,8 @@ pending, or this state has no projects in the latest report Kaun holds.
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
 | Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
+| Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
+| MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
+| Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
 _Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

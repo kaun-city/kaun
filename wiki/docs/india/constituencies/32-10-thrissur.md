@@ -102,15 +102,18 @@ reproduces the declaration, it does not verify it.
 
 Ministers and the Speaker do not sign the attendance register, do not ask questions and do not introduce private member bills. Their metrics are recorded as **not applicable — never as zero**, because a zero here would read as absenteeism and would be false.
 
-_Recorded reason: This MP is a minister. Ministers represent the government in debates, so we do not report their participation. They do not sign the attendance register, ask questions, or introduce private member bills. Data corresponds to the period from 24-06-2024 to 18-04-2026.._
+_Recorded reason: Minister/Speaker: does not sign the attendance register, ask questions, or introduce private member bills (PRS mp_note; sansad.in signedDaysCount)._
 
 ---
 
 ## Local area development funds (MPLADS)
 
-**MPLADS figures have not been loaded for this seat yet.** Each MP is entitled to recommend works
-worth ₹5 crore a year in their constituency; the allocation, the release and the unspent balance
-come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once that pipeline has run.
+| Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| eSAKSHI (official) | ₹14.70 Cr | ₹1.60 Cr | ₹13.10 Cr | 10.9% | 90 | 52 | 13 | 2026-07-26 |
+
+_eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
+row is present it is kept separate rather than merged, so every figure carries its own provenance._
 
 ---
 
@@ -118,9 +121,18 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-**No central projects loaded for Kerala yet.** MoSPI's Flash Report tracks every central
-project of ₹150 crore or more and publishes monthly with a ~7–8 week lag; the first load is
-pending, or this state has no projects in the latest report Kaun holds.
+The 6 projects in Kerala furthest above sanctioned cost, as of the May 2026 report.
+
+| Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
+|---|---|---:|---:|---:|---|---:|
+| [6L of Taliparamba to Muzhappilangad from Km 134.650 to Km 170.6 of NH-66](https://kaun.city/india/projects/618596) | Ministry of Road Transport & Highways | ₹2,715 Cr | ₹3,558 Cr | +₹843 Cr | 43 months later | 83% |
+| [Kottankulangara- Start of Kollam Bypass](https://kaun.city/india/projects/618607) | Ministry of Road Transport & Highways | ₹2,842 Cr | ₹3,680 Cr | +₹838 Cr | 29 months later | 74% |
+| [6L of Perole Nileshwar town to Taliparamba from Km 94.248 to Km 134.650 of NH-66](https://kaun.city/india/projects/619206) | Ministry of Road Transport & Highways | ₹3,042 Cr | ₹3,868 Cr | +₹826 Cr | 38 months later | 87% |
+| [6L of Chengala - Neeleshwaram from km. 56.200 to km. 93.468](https://kaun.city/india/projects/618595) | Ministry of Road Transport & Highways | ₹1,746 Cr | ₹2,538 Cr | +₹792 Cr | 35 months later | 91% |
+| [Kozhikode Bypass Calicut Bypass Vengalam Jn. to Ramanattukara Jn.](https://kaun.city/india/projects/619098) | Ministry of Road Transport & Highways | ₹1,425 Cr | ₹2,139 Cr | +₹714 Cr | 40 months later | 99% |
+| [6L of Azhiyur-Vengalam from km. 189.200 to km. 230.400 of NH-66](https://kaun.city/india/projects/618597) | Ministry of Road Transport & Highways | ₹3,206 Cr | ₹3,898 Cr | +₹693 Cr | 34 months later | 60% |
+
+[All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=32)
 
 ---
 
@@ -132,5 +144,8 @@ pending, or this state has no projects in the latest report Kaun holds.
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
 | Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
+| Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
+| MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
+| Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
 _Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

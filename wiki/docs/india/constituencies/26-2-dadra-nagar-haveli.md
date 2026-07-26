@@ -35,13 +35,24 @@ constituencies: Dadra & Nagar Haveli (94%), Thane (3%), Valsad (3%). _(no-assemb
 
 ## Who holds this seat
 
-**No MP is linked to this seat.** Either the roster has not been loaded, or it holds a member
-whose constituency name has not yet been resolved to this seat code.
+**Delkar Kalaben Mohanbhai** (Bharatiya Janata Party) holds this seat.
 
-4 sitting members were awaiting a reviewed alias row when this page was generated. Kaun resolves a source's constituency label to a seat through a
-reviewed alias table and exact normalized matching only — never by similarity — so an
-unresolved name stays visibly unresolved rather than being guessed onto a seat. Matching
-"Mahbubnagar" to "Mahabubnagar" automatically is exactly the error this refuses to make.
+| Field | Value |
+|---|---|
+| Name | Delkar Kalaben Mohanbhai |
+| Party | Bharatiya Janata Party (BJP) |
+| Term | LS18 |
+| Status | Sitting |
+| Terms served | 2 |
+| Age | 54 |
+| Gender | Female |
+| Qualification | Graduate |
+| Profession | Political Activist |
+| Constituency name at source | Dadra and Nagar Haveli |
+| Official profile | [sansad.in](https://sansad.in/ls/members/biography/5536) |
+
+_sansad.in spells this seat "Dadra and Nagar Haveli". The two names were matched by `alias_table` — never by similarity._
+
 
 ---
 
@@ -55,20 +66,33 @@ The underlying declarations are public at [myneta.info](https://myneta.info) in 
 
 ## In Parliament
 
-**Parliamentary activity has not been loaded for this seat yet.** The attendance, questions and
-debate figures come from PRS MP Track and sansad.in on a separate cadence to the roster; this
-section fills in on the next refresh once that pipeline has run.
+Components, not a score. Kaun publishes what Parliament records and does not compose it into a
+single ranking — attendance, questions and debates measure different things and a weighted
+average of them measures none of them.
 
-Nothing here is a zero. An absent figure is absent, and Kaun will not render it as 0 —
-that is the difference between "not recorded" and "did nothing".
+| Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 20/07/2026 to 13/08/2026 | 20 | 0 | 0.0% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 28 | 22 | 78.6% | — | — | — | — |
+| 01/12/2025 to 19/12/2025 | 15 | 12 | 80.0% | 134 | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 20 | 95.2% | 120 | 2 | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 26 | 96.3% | 148 | 513 | — | — |
+| 25/11/2024 to 20/12/2024 | 20 | 18 | 90.0% | 89 | 129 | — | — |
+| 22/07/2024 to 09/08/2024 | 15 | 14 | 93.3% | 48 | 5 | — | — |
+| 24/06/2024 to 02/07/2024 | 7 | 7 | 100.0% | — | — | — | — |
+
+_A dash is a value the source does not record. It is never a zero._
 
 ---
 
 ## Local area development funds (MPLADS)
 
-**MPLADS figures have not been loaded for this seat yet.** Each MP is entitled to recommend works
-worth ₹5 crore a year in their constituency; the allocation, the release and the unspent balance
-come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once that pipeline has run.
+| Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| eSAKSHI (official) | ₹14.70 Cr | ₹0 | ₹14.70 Cr | 0.0% | 39 | 0 | 0 | 2026-07-26 |
+
+_eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
+row is present it is kept separate rather than merged, so every figure carries its own provenance._
 
 ---
 
@@ -88,5 +112,8 @@ pending, or this state has no projects in the latest report Kaun holds.
 |---|---|---|
 | Seat identity and boundaries (543) | [DataMeet + shijithpk 2024 supplement](https://github.com/datameet/maps/tree/master/parliamentary-constituencies) | 2008 delimitation, with the 2022 J&K and 2023 Assam orders applied. Assam, J&K and Ladakh outlines were re-georeferenced from ECI press-note PDFs and are not survey-grade. |
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
+| MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
+| Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
+| MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 
 _Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

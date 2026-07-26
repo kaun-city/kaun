@@ -28,11 +28,11 @@ means the pipeline has not landed yet, not that the seat has no data.
 | Dataset | Table | Rows readable | Status |
 |---|---|---:|---|
 | Seats, boundaries and reservation | `in_constituencies` | 543 | complete — all 543 seats |
-| Sitting MPs (18th Lok Sabha) | `in_mps` | 540 | 536 seats matched to a sitting MP · 4 awaiting a reviewed alias row · 3 vacant |
+| Sitting MPs (18th Lok Sabha) | `in_mps` | 540 | 540 seats matched to a sitting MP · 3 vacant |
 | Nomination affidavits (publicly cleared) | `in_mp_affidavits` | 515 | 515 seats |
-| Parliamentary activity | `in_mp_activity` | 0 | **not loaded yet** |
-| MPLADS allocation and spend | `in_mplads_summary` | 0 | **not loaded yet** |
-| Central projects ≥ ₹150 Cr | `in_central_projects` | 0 | **first monthly load pending** |
+| Parliamentary activity | `in_mp_activity` | 4,857 | 544 MPs |
+| MPLADS allocation and spend | `in_mplads_summary` | 553 | 516 seats |
+| Central projects ≥ ₹150 Cr | `in_central_projects` | 2,033 | latest report held: May 2026 |
 
 "Rows readable" is what the **public** anon role can see. `in_mp_affidavits` is row-restricted:
 an affidavit becomes readable only after its MyNeta↔seat join has been reviewed, so a low number
@@ -42,7 +42,7 @@ there means review is pending, not that the scrape failed.
 
 ## Seats by state
 
-543 seats across 36 states and union territories. 536 have a sitting MP in the roster; 7 do not.
+543 seats across 36 states and union territories. 540 have a sitting MP in the roster; 3 do not.
 
 A seat shows no MP for one of two reasons, and they are different reasons:
 
@@ -50,7 +50,7 @@ A seat shows no MP for one of two reasons, and they are different reasons:
   happened. Kaun keeps the predecessor's row and names them on the seat page, but never presents
   them as the current MP.
 - **Not matched** — the roster holds an MP whose constituency name has not yet been resolved to a
-  seat code. 4 sitting MPs (Delkar Kalaben Mohanbhai — "Dadra and Nagar Haveli"; Ve Vaithilingam — "Puducherry"; Bishnu Pada Ray — "Andaman and Nicobar Islands"; Patel Umeshbhai Babubhai — "Daman and Diu") were awaiting a reviewed alias row when this page was generated. Names resolve through a reviewed alias table and exact
+  seat code. Names resolve through a reviewed alias table and exact
   normalized matching only — never by similarity — so an unresolved name stays visibly
   unresolved instead of being guessed onto a seat.
 
@@ -62,7 +62,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 
 | Seat | Constituency | Reserved | Sitting MP | Party | Declared cases | Live |
 |---|---|---|---|---|---|---|
-| `35-1` | [Andaman & Nicobar](35-1-andaman-nicobar.md) | — | _not matched_ | — | _pending review_ | [open →](https://kaun.city/india/c/35-1) |
+| `35-1` | [Andaman & Nicobar](35-1-andaman-nicobar.md) | — | Bishnu Pada Ray | BJP | _pending review_ | [open →](https://kaun.city/india/c/35-1) |
 
 ### Andhra Pradesh
 
@@ -205,8 +205,8 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 
 | Seat | Constituency | Reserved | Sitting MP | Party | Declared cases | Live |
 |---|---|---|---|---|---|---|
-| `25-1` | [Daman & Diu](25-1-daman-diu.md) | — | _not matched_ | — | _pending review_ | [open →](https://kaun.city/india/c/25-1) |
-| `26-2` | [Dadra & Nagar Haveli](26-2-dadra-nagar-haveli.md) | ST | _not matched_ | — | _pending review_ | [open →](https://kaun.city/india/c/26-2) |
+| `25-1` | [Daman & Diu](25-1-daman-diu.md) | — | Patel Umeshbhai Babubhai | Ind. | _pending review_ | [open →](https://kaun.city/india/c/25-1) |
+| `26-2` | [Dadra & Nagar Haveli](26-2-dadra-nagar-haveli.md) | ST | Delkar Kalaben Mohanbhai | BJP | _pending review_ | [open →](https://kaun.city/india/c/26-2) |
 
 ### Delhi
 
@@ -562,7 +562,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 
 | Seat | Constituency | Reserved | Sitting MP | Party | Declared cases | Live |
 |---|---|---|---|---|---|---|
-| `34-1` | [Pondicherry](34-1-pondicherry.md) | — | _not matched_ | — | _pending review_ | [open →](https://kaun.city/india/c/34-1) |
+| `34-1` | [Pondicherry](34-1-pondicherry.md) | — | Ve Vaithilingam | INC | _pending review_ | [open →](https://kaun.city/india/c/34-1) |
 
 ### Punjab
 

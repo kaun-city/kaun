@@ -85,9 +85,12 @@ that is the difference between "not recorded" and "did nothing".
 
 ## Local area development funds (MPLADS)
 
-**MPLADS figures have not been loaded for this seat yet.** Each MP is entitled to recommend works
-worth ₹5 crore a year in their constituency; the allocation, the release and the unspent balance
-come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once that pipeline has run.
+| Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| eSAKSHI (official) | ₹4.90 Cr | ₹3.07 Cr | ₹1.83 Cr | 62.7% | 32 | 17 | 1 | 2026-07-26 |
+
+_eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
+row is present it is kept separate rather than merged, so every figure carries its own provenance._
 
 ---
 
@@ -95,9 +98,18 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-**No central projects loaded for West Bengal yet.** MoSPI's Flash Report tracks every central
-project of ₹150 crore or more and publishes monthly with a ~7–8 week lag; the first load is
-pending, or this state has no projects in the latest report Kaun holds.
+The 6 projects in West Bengal furthest above sanctioned cost, as of the May 2026 report.
+
+| Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
+|---|---|---:|---:|---:|---|---:|
+| [Joka-BBD Bag new metro project](https://kaun.city/india/projects/705730) | Ministry of Railways | ₹4,835 Cr | ₹10,362 Cr | +₹5,527 Cr | 36 months later | 51% |
+| [Rammam-III HEPP [3x40 MW]](https://kaun.city/india/projects/602184) | Ministry of Power | ₹1,382 Cr | ₹2,866 Cr | +₹1,484 Cr | 114 months later | 56% |
+| [Durgapur - Haldia Pipeline [Section-3B of JHBDPL Project]](https://kaun.city/india/projects/617302) | Ministry of Petroleum & Natural Gas | ₹1,740 Cr | ₹2,493 Cr | +₹753 Cr | 69 months later | 95% |
+| [Baranagar-Barrackpore and Dakshineshwar- Construction of Metro Railway](https://kaun.city/india/projects/706777) | Ministry of Railways | ₹2,298 Cr | ₹2,734 Cr | +₹436 Cr | 48 months later | 17% |
+| [Tarakeshwar-Bishnupur New Line [82.47 km]](https://kaun.city/india/projects/400273) | Ministry of Railways | ₹1,189 Cr | ₹1,542 Cr | +₹353 Cr | 83 months later | 97% |
+| [Haldia Panagarh Pipeline Project](https://kaun.city/india/projects/709753) | Ministry of Petroleum & Natural Gas | ₹1,010 Cr | ₹1,107 Cr | +₹97.00 Cr | 9 months later | 96% |
+
+[All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=19)
 
 ---
 
@@ -108,5 +120,7 @@ pending, or this state has no projects in the latest report Kaun holds.
 | Seat identity and boundaries (543) | [DataMeet + shijithpk 2024 supplement](https://github.com/datameet/maps/tree/master/parliamentary-constituencies) | 2008 delimitation, with the 2022 J&K and 2023 Assam orders applied. Assam, J&K and Ladakh outlines were re-georeferenced from ECI press-note PDFs and are not survey-grade. |
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
+| MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
+| Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
 _Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

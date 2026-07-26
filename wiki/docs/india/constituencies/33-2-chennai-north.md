@@ -91,20 +91,35 @@ reproduces the declaration, it does not verify it.
 
 ## In Parliament
 
-**Parliamentary activity has not been loaded for this seat yet.** The attendance, questions and
-debate figures come from PRS MP Track and sansad.in on a separate cadence to the roster; this
-section fills in on the next refresh once that pipeline has run.
+Components, not a score. Kaun publishes what Parliament records and does not compose it into a
+single ranking — attendance, questions and debates measure different things and a weighted
+average of them measures none of them.
 
-Nothing here is a zero. An absent figure is absent, and Kaun will not render it as 0 —
-that is the difference between "not recorded" and "did nothing".
+| Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 20/07/2026 to 13/08/2026 | 20 | 4 | 20.0% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 28 | 20 | 71.4% | — | — | — | — |
+| 01/12/2025 to 19/12/2025 | 15 | 14 | 93.3% | 23 | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | 20 | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | 20 | — | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 24 | 88.9% | 37 | 304 | — | — |
+| 25/11/2024 to 20/12/2024 | 20 | 19 | 95.0% | 25 | 127 | — | — |
+| 22/07/2024 to 09/08/2024 | 15 | 11 | 73.3% | 56 | 135 | — | — |
+| 24/06/2024 to 02/07/2024 | 7 | 6 | 85.7% | — | — | — | — |
+| Term to date (Second Term) | — | — | 85.2% | 131 | 21 | 1 | — |
+
+_A dash is a value the source does not record. It is never a zero._
 
 ---
 
 ## Local area development funds (MPLADS)
 
-**MPLADS figures have not been loaded for this seat yet.** Each MP is entitled to recommend works
-worth ₹5 crore a year in their constituency; the allocation, the release and the unspent balance
-come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once that pipeline has run.
+| Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| eSAKSHI (official) | ₹17.15 Cr | ₹8.05 Cr | ₹9.10 Cr | 46.9% | 100 | 60 | 11 | 2026-07-26 |
+
+_eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
+row is present it is kept separate rather than merged, so every figure carries its own provenance._
 
 ---
 
@@ -112,9 +127,18 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-**No central projects loaded for Tamil Nadu yet.** MoSPI's Flash Report tracks every central
-project of ₹150 crore or more and publishes monthly with a ~7–8 week lag; the first load is
-pending, or this state has no projects in the latest report Kaun holds.
+The 6 projects in Tamil Nadu furthest above sanctioned cost, as of the May 2026 report.
+
+| Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
+|---|---|---:|---:|---:|---|---:|
+| [CBR 9 MMTPA Project](https://kaun.city/india/projects/604795) | Ministry of Petroleum & Natural Gas | ₹31,580 Cr | ₹36,354 Cr | +₹4,774 Cr | 40 months later | 10% |
+| [Madurai- Tuticorin New Line](https://kaun.city/india/projects/705489) | Ministry of Railways | ₹601 Cr | ₹2,084 Cr | +₹1,483 Cr | 114 months later | 14% |
+| [ALL India Institute of Medical Sciences-AIIMS Madurai](https://kaun.city/india/projects/701168) | Ministry of Health & Family Welfare | ₹1,264 Cr | ₹2,022 Cr | +₹758 Cr | 50 months later | 51% |
+| [Mahabalipuram - Pondicherry Pkg-II [Mugaiyur to Marakkanam]](https://kaun.city/india/projects/619130) | Ministry of Road Transport & Highways | ₹1,116 Cr | ₹1,464 Cr | +₹348 Cr | 15 months later | 53% |
+| [Balance works of four lane from km 43.950 Thiruvallur Bypass to km 61.470 Veppampattu Bypass passing through Thannerkulam, Thozur and Sevapet Bypass 17.520 kms of Tirupathi- Tiruttani- Chennai section of NH 205](https://kaun.city/india/projects/619222) | Ministry of Road Transport & Highways | ₹468 Cr | ₹700 Cr | +₹232 Cr | 21 months later | 98% |
+| [Salem - Ulundurpet section from km 0.313 to km 136.670 of NH-68](https://kaun.city/india/projects/618943) | Ministry of Road Transport & Highways | ₹861 Cr | ₹1,020 Cr | +₹159 Cr | 185 months later | 100% |
+
+[All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=33)
 
 ---
 
@@ -126,5 +150,8 @@ pending, or this state has no projects in the latest report Kaun holds.
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
 | Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
+| Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
+| MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
+| Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
 _Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
