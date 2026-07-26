@@ -170,8 +170,16 @@ class SupabaseBackend {
     return { apikey: this.serviceKey, Authorization: `Bearer ${this.serviceKey}` }
   }
 
-  /** PostgREST upsert — the repo's normal data path (scripts/lib/db.mjs). */
+  /** PostgREST upsert — the repo's normal data path (scripts/lib/db.mjs).
+   *  PostgREST requires every object in a bulk payload to carry the SAME
+   *  keys (PGRST102 otherwise). Loaders legitimately emit ragged rows —
+   *  an RS member has no pc_code, a legacy row has no PMGID — so pad each
+   *  row to the union of the batch's keys with explicit nulls. This is the
+   *  behavior the SQL path (buildUpsertSql) already has; only keys some
+   *  loader row actually emits are padded, so DB-side DEFAULT columns
+   *  (id, created_at) are never touched. */
   async upsertRest(table, rows, conflict) {
+    rows = padToUniformKeys(rows)
     const qs = conflict.length ? `?on_conflict=${conflict.join(",")}` : ""
     const r = await fetch(`${this.url}/rest/v1/${table}${qs}`, {
       method: "POST",
@@ -394,6 +402,14 @@ export class Sink {
 }
 
 /** Minimal CSV writer for the human-review files. */
+/** Pad ragged rows to the union of the batch's keys with explicit nulls —
+ *  PostgREST bulk payloads must be uniform (PGRST102). Pure; exported for
+ *  tests. */
+export function padToUniformKeys(rows) {
+  const allKeys = [...new Set(rows.flatMap(r => Object.keys(r)))]
+  return rows.map(r => Object.fromEntries(allKeys.map(k => [k, r[k] ?? null])))
+}
+
 export function toCsv(rows) {
   if (!rows.length) return ""
   const cols = [...new Set(rows.flatMap(r => Object.keys(r)))]
