@@ -8,7 +8,8 @@
  * applied to one did not reach the other.
  *
  * So the India surface has exactly one read module: this one. It uses the same
- * query() helper as lib/api.ts, and both the server components (constituency
+ * query() helper as lib/api.ts — through cachedQuery() below, which is the one
+ * place caching is turned on — and both the server components (constituency
  * page) and the client components (map, tracker) call these same functions.
  * There is no /api/data/india/* route in this PR; when one is wanted for third
  * parties it must be a thin wrapper over these functions, not a second
@@ -26,7 +27,8 @@
  * projects, ordering activity rows) is shared by both paths, so fixture mode
  * exercises the real derivation rather than a parallel one.
  */
-import { query } from "../supabase"
+import { query as rawQuery } from "../supabase"
+import { INDIA_REVALIDATE_SECONDS } from "./constants"
 import { monthsBetween } from "./format"
 import type { IndiaLayerId } from "./layers"
 import type {
@@ -38,6 +40,33 @@ import {
   FIXTURE_MPLADS, FIXTURE_MPS, FIXTURE_PROJECTS, FIXTURE_SNAPSHOTS,
   type FixtureSnapshot,
 } from "./fixtures"
+
+/**
+ * Every read below goes through here rather than through query() directly.
+ *
+ * WHY THE WHOLE MODULE IS CACHED AND NOTHING ELSE IS. These tables are written
+ * by the refresh crons — the MP roster weekly, MoSPI and MPLADS monthly,
+ * affidavits by hand. Nothing a visitor can do changes a row, so a read is
+ * either identical to the last one or up to INDIA_REVALIDATE_SECONDS behind a
+ * file that arrives twelve times a year. Caching it is not a trade-off here;
+ * an uncached read is simply the same query asked again.
+ *
+ * What this buys, concretely, on a constituency page: the profile is seven
+ * round trips to Supabase, of which the four behind "central projects in this
+ * state" are shared by every seat in that state, and generateMetadata asks for
+ * the whole profile a second time to build the title. All of it collapses onto
+ * one cache entry per distinct query.
+ *
+ * The Data Cache is keyed on the full request URL, so the state-scoped project
+ * queries are shared across seats automatically and nothing needs a key of its
+ * own. Mutations do not pass through this module at all.
+ */
+function cachedQuery<T = unknown>(
+  table: string,
+  params: Record<string, string> = {},
+): Promise<T[]> {
+  return rawQuery<T>(table, params, { revalidate: INDIA_REVALIDATE_SECONDS })
+}
 
 /** How many state projects the constituency page lists before "see all". */
 export const PC_PROJECTS_LIMIT = 8
@@ -60,7 +89,7 @@ export async function fetchConstituency(pcCode: string): Promise<Constituency | 
   if (isFixtureMode()) {
     return FIXTURE_CONSTITUENCIES.find(c => c.pc_code === pcCode) ?? null
   }
-  const rows = await query<Constituency>("in_constituencies", {
+  const rows = await cachedQuery<Constituency>("in_constituencies", {
     pc_code: `eq.${pcCode}`, select: C_COLS, limit: "1",
   })
   return rows[0] ?? null
@@ -76,7 +105,7 @@ export async function fetchSittingMp(pcCode: string): Promise<Mp | null> {
   if (isFixtureMode()) {
     return FIXTURE_MPS.find(m => m.pc_code === pcCode && m.status === "Sitting") ?? null
   }
-  const rows = await query<Mp>("in_mps", {
+  const rows = await cachedQuery<Mp>("in_mps", {
     pc_code: `eq.${pcCode}`, house: "eq.LS", status: "eq.Sitting",
     select: MP_COLS, limit: "1",
   })
@@ -90,7 +119,7 @@ export async function fetchSittingMp(pcCode: string): Promise<Mp | null> {
  */
 export async function fetchAffidavit(pcCode: string): Promise<MpAffidavit | null> {
   if (isFixtureMode()) return FIXTURE_AFFIDAVITS[pcCode] ?? null
-  const rows = await query<MpAffidavit>("in_mp_affidavits", {
+  const rows = await cachedQuery<MpAffidavit>("in_mp_affidavits", {
     pc_code: `eq.${pcCode}`, is_winner: "eq.true",
     select: AFF_COLS, order: "election.desc", limit: "1",
   })
@@ -100,7 +129,7 @@ export async function fetchAffidavit(pcCode: string): Promise<MpAffidavit | null
 /** Term-cumulative row first, then sessions newest-first. */
 export async function fetchActivity(mpId: number, pcCode: string): Promise<MpActivity[]> {
   if (isFixtureMode()) return FIXTURE_ACTIVITY[pcCode] ?? []
-  return await query<MpActivity>("in_mp_activity", {
+  return await cachedQuery<MpActivity>("in_mp_activity", {
     mp_id: `eq.${mpId}`, select: ACT_COLS, order: "period_kind.asc,session_no.desc",
   })
 }
@@ -108,7 +137,7 @@ export async function fetchActivity(mpId: number, pcCode: string): Promise<MpAct
 /** eSAKSHI first — it is the official source; Empowered Indian is unofficial. */
 export async function fetchMplads(pcCode: string): Promise<MpladsSummary[]> {
   if (isFixtureMode()) return FIXTURE_MPLADS[pcCode] ?? []
-  return await query<MpladsSummary>("in_mplads_summary", {
+  return await cachedQuery<MpladsSummary>("in_mplads_summary", {
     pc_code: `eq.${pcCode}`, select: MPLADS_COLS, order: "source.asc,captured_at.desc",
   })
 }
@@ -127,7 +156,7 @@ export async function fetchLatestReportMonth(): Promise<string | null> {
     return FIXTURE_SNAPSHOTS.reduce<string | null>(
       (max, s) => (max === null || s.report_month > max ? s.report_month : max), null)
   }
-  const rows = await query<{ report_month: string }>("v_in_central_project_changes", {
+  const rows = await cachedQuery<{ report_month: string }>("v_in_central_project_changes", {
     select: "report_month", order: "report_month.desc", limit: "1",
   })
   return rows[0]?.report_month ?? null
@@ -185,12 +214,12 @@ export async function fetchTrackedProjects(opts: {
     select: PROJ_COLS, is_ongoing: "eq.true", order: "project_code.asc",
   }
   if (opts.stCode != null) identityParams["st_code"] = `eq.${opts.stCode}`
-  const projects = await query<CentralProject>("in_central_projects", identityParams)
+  const projects = await cachedQuery<CentralProject>("in_central_projects", identityParams)
   if (projects.length === 0) return { rows: [], reportMonth, total: 0 }
 
   // 2. latest month's change row for those projects, ordered by the metric
   const codeList = `(${projects.map(p => p.project_code).join(",")})`
-  const latest = await query<CentralProjectChange>("v_in_central_project_changes", {
+  const latest = await cachedQuery<CentralProjectChange>("v_in_central_project_changes", {
     report_month: `eq.${reportMonth}`, project_code: `in.${codeList}`,
     select: CHANGE_COLS, order: SORT_ORDER[sort], limit: String(limit),
   })
@@ -199,7 +228,7 @@ export async function fetchTrackedProjects(opts: {
   //    last change". Only the two boolean flags are filtered on, so this stays
   //    a small result even over a long history.
   const windowCodes = `(${latest.map(r => r.project_code).join(",")})`
-  const moved = latest.length === 0 ? [] : await query<CentralProjectChange>("v_in_central_project_changes", {
+  const moved = latest.length === 0 ? [] : await cachedQuery<CentralProjectChange>("v_in_central_project_changes", {
     project_code: `in.${windowCodes}`,
     or: "(cost_revised.is.true,schedule_changed.is.true)",
     select: "project_code,report_month,cost_revised,schedule_changed",
@@ -376,7 +405,7 @@ export async function fetchConstituencyProfile(pcCode: string): Promise<Constitu
 export async function fetchProjectStates(): Promise<Array<{ st_code: number; name: string; count: number }>> {
   const rows = isFixtureMode()
     ? FIXTURE_PROJECTS.map(p => ({ st_code: p.st_code, state_raw: p.state_raw }))
-    : await query<{ st_code: number | null; state_raw: string | null }>("in_central_projects", {
+    : await cachedQuery<{ st_code: number | null; state_raw: string | null }>("in_central_projects", {
       is_ongoing: "eq.true", select: "st_code,state_raw",
     })
 
@@ -418,12 +447,12 @@ export async function fetchProjectDetail(projectCode: string): Promise<ProjectDe
     project = FIXTURE_PROJECTS.find(p => p.project_code === projectCode) ?? null
     history = changesFromSnapshots(FIXTURE_SNAPSHOTS.filter(s => s.project_code === projectCode))
   } else {
-    const rows = await query<CentralProject>("in_central_projects", {
+    const rows = await cachedQuery<CentralProject>("in_central_projects", {
       project_code: `eq.${projectCode}`, select: PROJ_COLS, limit: "1",
     })
     project = rows[0] ?? null
     history = project
-      ? await query<CentralProjectChange>("v_in_central_project_changes", {
+      ? await cachedQuery<CentralProjectChange>("v_in_central_project_changes", {
         project_code: `eq.${projectCode}`, select: CHANGE_COLS, order: "report_month.asc",
       })
       : []
@@ -463,7 +492,7 @@ export async function fetchIndiaLayerValues(layerId: IndiaLayerId): Promise<Reco
       }
       return out
     }
-    const rows = await query<{ pc_code: string | null; criminal_cases: number | null }>("in_mp_affidavits", {
+    const rows = await cachedQuery<{ pc_code: string | null; criminal_cases: number | null }>("in_mp_affidavits", {
       is_winner: "eq.true", select: "pc_code,criminal_cases",
     })
     for (const r of rows) if (r.pc_code && r.criminal_cases !== null) out[r.pc_code] = r.criminal_cases
@@ -478,7 +507,7 @@ export async function fetchIndiaLayerValues(layerId: IndiaLayerId): Promise<Reco
       }
       return out
     }
-    const rows = await query<{ pc_code: string | null; utilization_pct: number | null }>("in_mplads_summary", {
+    const rows = await cachedQuery<{ pc_code: string | null; utilization_pct: number | null }>("in_mplads_summary", {
       source: "eq.esakshi", select: "pc_code,utilization_pct",
     })
     for (const r of rows) if (r.pc_code && r.utilization_pct !== null) out[r.pc_code] = r.utilization_pct
@@ -496,11 +525,11 @@ export async function fetchIndiaLayerValues(layerId: IndiaLayerId): Promise<Reco
     }
     return out
   }
-  const mps = await query<{ id: number; pc_code: string | null }>("in_mps", {
+  const mps = await cachedQuery<{ id: number; pc_code: string | null }>("in_mps", {
     house: "eq.LS", status: "eq.Sitting", select: "id,pc_code",
   })
   const seatOf = new Map(mps.map(m => [m.id, m.pc_code]))
-  const acts = await query<{ mp_id: number; attendance_pct: number | null; metrics_excluded: boolean }>("in_mp_activity", {
+  const acts = await cachedQuery<{ mp_id: number; attendance_pct: number | null; metrics_excluded: boolean }>("in_mp_activity", {
     period_kind: "eq.term", select: "mp_id,attendance_pct,metrics_excluded",
   })
   for (const a of acts) {
@@ -516,7 +545,7 @@ export async function fetchAllConstituencies(): Promise<Pick<Constituency, "pc_c
     return FIXTURE_CONSTITUENCIES.map(({ pc_code, st_code, pc_no, state_name, pc_name }) =>
       ({ pc_code, st_code, pc_no, state_name, pc_name }))
   }
-  return await query("in_constituencies", {
+  return await cachedQuery("in_constituencies", {
     select: "pc_code,st_code,pc_no,state_name,pc_name", order: "st_code.asc,pc_no.asc",
   })
 }
@@ -527,7 +556,7 @@ export async function fetchAllSittingMps(): Promise<Array<Pick<Mp, "pc_code" | "
     return FIXTURE_MPS.filter(m => m.status === "Sitting")
       .map(({ pc_code, name, party_abbr, is_minister }) => ({ pc_code, name, party_abbr, is_minister }))
   }
-  return await query("in_mps", {
+  return await cachedQuery("in_mps", {
     house: "eq.LS", status: "eq.Sitting", select: "pc_code,name,party_abbr,is_minister",
   })
 }

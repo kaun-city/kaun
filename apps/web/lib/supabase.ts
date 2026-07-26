@@ -30,11 +30,29 @@ export async function rpc<T = unknown>(fn: string, params: Record<string, unknow
   }
 }
 
-/** Query a Supabase table via PostgREST */
+/**
+ * Query a Supabase table via PostgREST.
+ *
+ * CACHING IS OPT-IN, PER CALL, AND STAYS THAT WAY.
+ * ------------------------------------------------
+ * Passing `revalidate` puts the response in Next's Data Cache for that many
+ * seconds. Omitting it leaves the request exactly as uncached as it has always
+ * been — Next's default for fetch is no-store — which is why adding this
+ * option cannot change the behaviour of a single existing caller.
+ *
+ * That default matters more than the feature does. /api/* is read by the BNP
+ * export pipeline and by crons that expect to see what is in the database
+ * right now, and a cache turned on globally here would silently start serving
+ * them yesterday's rows. Only lib/india/api.ts opts in (see cachedQuery there),
+ * and only for reads that back pages whose data refreshes weekly at best.
+ *
+ * In the browser the `next` key is an unknown RequestInit property and is
+ * ignored, so the client components that call through here are unaffected.
+ */
 export async function query<T = unknown>(
   table: string,
   params: Record<string, string> = {},
-  options: { select?: string; order?: string; limit?: number } = {}
+  options: { select?: string; order?: string; limit?: number; revalidate?: number } = {}
 ): Promise<T[]> {
   try {
     const url = new URL(`${SUPABASE_URL}/rest/v1/${table}`)
@@ -44,7 +62,10 @@ export async function query<T = unknown>(
     for (const [k, v] of Object.entries(params)) {
       url.searchParams.set(k, v)
     }
-    const res = await fetch(url.toString(), { headers })
+    const res = await fetch(url.toString(), {
+      headers,
+      ...(options.revalidate !== undefined ? { next: { revalidate: options.revalidate } } : {}),
+    })
     if (!res.ok) return []
     return await res.json()
   } catch {

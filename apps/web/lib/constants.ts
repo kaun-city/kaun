@@ -1,3 +1,12 @@
+/**
+ * The BBMP-225 ↔ DataMeet-243 ward crosswalk asset, and the version recorded
+ * inside it. next.config.ts serves the file `immutable` for a year, which is
+ * only correct while the URL names the version — bump this when the crosswalk
+ * is rebuilt. tests/cities-registry.test.mjs asserts the two agree.
+ */
+export const WARD_CROSSWALK_VERSION = "2023f-2026.05"
+export const WARD_CROSSWALK_URL = `/bengaluru-ward-crosswalk.json?v=${WARD_CROSSWALK_VERSION}`
+
 export const PARTY_COLORS: Record<string, string> = {
   INC: "#19AAED",
   BJP: "#FF6B00",

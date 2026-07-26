@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { notFound } from "next/navigation"
-import { headers } from "next/headers"
 import { IndiaHeader } from "@/components/india/IndiaHeader"
 import { ObjectHeader, Section, Stat } from "@/components/india/ObjectHeader"
 import { ProjectTimeline } from "@/components/india/ProjectTimeline"
@@ -18,8 +18,18 @@ import { OVERRUN_SCALE_CR, SLIP_SCALE_MONTHS } from "@/components/india/ProjectR
  * Same object-page structure as a constituency: identity → key facts → money →
  * time → sources. A project is not a row inside a table; it is a thing with a
  * stable URL that can be linked, cited and — later — attached to.
+ *
+ * ISR on demand, same reasoning as the constituency page: the underlying
+ * snapshots arrive once a month from MoSPI, there are a few thousand projects
+ * and no reason to render one before somebody asks for it. Prerenderable also
+ * means the tracker's rows prefetch the whole page rather than a skeleton.
  */
-export const dynamic = "force-dynamic"
+export const revalidate = 3600 // = INDIA_REVALIDATE_SECONDS; must be a literal (Next segment config)
+
+/** Empty on purpose — see the constituency page for why it has to be here. */
+export function generateStaticParams() {
+  return []
+}
 
 type Props = { params: Promise<{ project_code: string }> }
 
@@ -38,7 +48,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { project_code } = await params
-  const host = (await headers()).get("host") ?? ""
   const detail = await fetchProjectDetail(project_code)
   if (!detail) notFound()
 
@@ -50,7 +59,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-3xl mx-auto px-5 py-6">
-        <IndiaHeader host={host} />
+        <IndiaHeader />
 
         <div className="mt-6">
           <ObjectHeader
@@ -61,8 +70,8 @@ export default async function ProjectPage({ params }: Props) {
                 {project.agency ? `${project.agency} · ` : ""}
                 {project.state_raw ?? "state not stated"}
                 {project.st_code !== null && (
-                  <> · <a href={indiaHref(`/projects?state=${project.st_code}`)}
-                    className="text-[#FF9933]/60 hover:text-[#FF9933]">other projects in this state</a></>
+                  <> · <Link href={indiaHref(`/projects?state=${project.st_code}`)}
+                    className="text-[#FF9933]/60 hover:text-[#FF9933]">other projects in this state</Link></>
                 )}
               </>
             }

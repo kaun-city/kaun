@@ -10,6 +10,7 @@
  */
 
 import dynamic from "next/dynamic"
+import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { quantileBreaks, formatValue } from "@/lib/map-layers"
 import { INDIA_LAYERS, getIndiaLayer, rampFor, type IndiaLayerId } from "@/lib/india/layers"
@@ -24,7 +25,34 @@ const IndiaMapView = dynamic(() => import("./IndiaMapView"), { ssr: false })
 
 interface MpLite { pc_code: string; name: string; party_abbr: string | null; is_minister: boolean }
 
-export default function IndiaHome({ mps, host = "" }: { mps: MpLite[]; host?: string }) {
+/**
+ * Per-tab memo of the choropleth values, keyed by layer.
+ *
+ * Painting a layer reads every affidavit, or every MPLADS summary, or the
+ * whole roster joined to activity — one to two full-table reads each. Toggling
+ * between two layers to compare them is the obvious thing to do with this
+ * control, and without this it re-ran those reads every time, so the second
+ * look at a layer was as slow as the first and the map went grey in between.
+ *
+ * Promises are cached, not results, so a fast double-click on the same layer
+ * makes one request rather than two racing ones. Module scope means it lives
+ * as long as the tab: this file is "use client", so nothing here is shared
+ * between visitors, and a page reload — the only way this data can have
+ * changed under a visitor — clears it. A failed fetch is evicted so the next
+ * click retries rather than caching the error.
+ */
+const layerValues = new Map<IndiaLayerId, Promise<Record<string, number>>>()
+
+function layerValuesFor(layerId: IndiaLayerId): Promise<Record<string, number>> {
+  const hit = layerValues.get(layerId)
+  if (hit) return hit
+  const p = fetchIndiaLayerValues(layerId)
+  p.catch(() => layerValues.delete(layerId))
+  layerValues.set(layerId, p)
+  return p
+}
+
+export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   const [features, setFeatures] = useState<PcFeatureProps[]>([])
   const [selected, setSelected] = useState<PcFeatureProps | null>(null)
   const [stateFilter, setStateFilter] = useState<number | null>(null)
@@ -41,7 +69,7 @@ export default function IndiaHome({ mps, host = "" }: { mps: MpLite[]; host?: st
     if (!layerId) { setValues(null); return }
     let cancelled = false
     setLayerLoading(true)
-    fetchIndiaLayerValues(layerId)
+    layerValuesFor(layerId)
       .then(v => { if (!cancelled) { setValues(v); setLayerLoading(false) } })
       .catch(() => { if (!cancelled) { setValues({}); setLayerLoading(false) } })
     return () => { cancelled = true }
@@ -79,7 +107,7 @@ export default function IndiaHome({ mps, host = "" }: { mps: MpLite[]; host?: st
   return (
     <main className="flex flex-col h-full bg-[#0A0A0A] overflow-hidden">
       <div className="relative flex-1 min-h-0">
-        <IndiaHeader variant="overlay" host={host} />
+        <IndiaHeader variant="overlay" />
 
         {/* Search — seat name, seat code, or MP name. Phones stack it above the
             state filter (below the wrapped two-line header) and keep clear of
@@ -239,14 +267,19 @@ export default function IndiaHome({ mps, host = "" }: { mps: MpLite[]; host?: st
                 aria-label="Close"
               >&times;</button>
             </div>
-            <a
+            {/* next/link, not an anchor: the seat page is this same app on
+                this same host in both cutover modes (indiaHref returns a path,
+                never a URL), and it is prerendered — so hovering this button
+                prefetches the whole page and the click is a paint. This is the
+                map's one job; it should not feel like leaving. */}
+            <Link
               href={indiaHref(`/c/${selected.pc_code}`)}
               className="mt-3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
                 bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95 text-black font-semibold text-sm
                 transition-all duration-150"
             >
               Open constituency page &rarr;
-            </a>
+            </Link>
           </div>
         )}
       </div>

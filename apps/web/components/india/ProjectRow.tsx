@@ -3,8 +3,11 @@
  * project list and by the tracker table's card layout on narrow screens.
  *
  * Always a link to the project's own page — a project is an object with a
- * stable URL, not a row that only exists inside a table.
+ * stable URL, not a row that only exists inside a table. next/link, because
+ * that page is this same app on this same host and is prerendered: the row
+ * prefetches it, so opening a project is a paint rather than a page load.
  */
+import Link from "next/link"
 import { indiaHref } from "@/lib/host-routing"
 import { formatCrore, formatCroreDelta, formatMonth, formatPct, formatSlip } from "@/lib/india/format"
 import { divergingColor } from "@/lib/india/viz"
@@ -27,7 +30,7 @@ export function ProjectRow({ p }: { p: TrackedProject }) {
   const slipColor = divergingColor(p.schedule_slip_months, SLIP_SCALE_MONTHS)
 
   return (
-    <a
+    <Link
       href={indiaHref(`/projects/${p.project_code}`)}
       className="block rounded-xl bg-white/5 hover:bg-white/[0.08] transition-colors p-4"
     >
@@ -72,6 +75,6 @@ export function ProjectRow({ p }: { p: TrackedProject }) {
             : `as of ${formatMonth(p.report_month)}`}
         </span>
       </div>
-    </a>
+    </Link>
   )
 }

@@ -20,6 +20,14 @@ import { SOURCE_MOSPI } from "@/lib/india/constants"
  * sitting still. That is what in_central_project_snapshots and
  * v_in_central_project_changes exist to compute, and it is what leads this page
  * — "what changed" comes before the ranking.
+ *
+ * THE ONE INDIA PAGE THAT STAYS PER-REQUEST. Its content is a function of
+ * ?sort= and ?state=, so there is no single page to prerender. The reads
+ * underneath it still go through lib/india/api.ts and are still cached, so a
+ * repeat of any given sort/state combination costs no Supabase round trip;
+ * only the render is per-request. Because it stays dynamic it keeps reading
+ * headers(), which is also why its surface switcher stays host-exact in local
+ * development while the prerendered pages' resolves for production.
  */
 export const dynamic = "force-dynamic"
 

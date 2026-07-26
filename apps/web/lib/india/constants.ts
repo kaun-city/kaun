@@ -11,8 +11,36 @@ import type { SourceEntry } from "@/components/india/SourcesFooter"
  *  tests/india-surface.test.mjs asserts the two agree. */
 export const PC_GEOJSON_VERSION = "2024-2026.07"
 
-/** The committed boundary asset. Served statically; middleware skips it. */
-export const PC_GEOJSON_URL = "/india-pc.geojson"
+/**
+ * The committed boundary asset. Served statically; middleware skips it.
+ *
+ * 1.4 MB, fetched on every load of the national map, and it changes only when
+ * a delimitation does. next.config.ts serves it `immutable` for a year, which
+ * is only safe because the URL carries the asset's own version: bump
+ * PC_GEOJSON_VERSION (the test above asserts the file and the constant agree)
+ * and every client asks for a different URL. Query strings are part of the
+ * cache key in browsers and on the Vercel CDN alike, and the proxy matcher
+ * keys off the pathname, so the versioned URL still skips middleware.
+ */
+export const PC_GEOJSON_URL = `/india-pc.geojson?v=${PC_GEOJSON_VERSION}`
+
+/**
+ * How long a rendered India page may be reused before Next re-renders it, and
+ * how long a PostgREST read stays in the Data Cache.
+ *
+ * An hour, chosen against the refresh crons rather than by feel — nothing
+ * behind these pages moves faster than weekly:
+ *
+ *   refresh-india-roster      Sundays 04:00 UTC   (sitting MPs)
+ *   refresh-india-mospi       5th of the month    (central project snapshots)
+ *   refresh-india-mplads      6th of the month    (MPLADS utilisation)
+ *   refresh-india-affidavits  manual only         (ECI affidavits)
+ *
+ * So the worst case is a page an hour behind a monthly file. Shorter would buy
+ * nothing a visitor could observe; longer would make a correction to a wrong
+ * fact — the thing this site is for — sit unpublished.
+ */
+export const INDIA_REVALIDATE_SECONDS = 3600
 
 /** Total Lok Sabha seats. Used for "N of 543" copy and as a build assertion. */
 export const LOK_SABHA_SEATS = 543
