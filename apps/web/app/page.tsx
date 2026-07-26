@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
+import { headers } from "next/headers"
 import HomePage from "@/components/HomePage"
 
 type Props = { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }
@@ -67,10 +68,15 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {}
 }
 
-export default function Page() {
+export default async function Page() {
+  // The surface switcher needs to know which host served this page: on
+  // bengaluru.kaun.city the link to the national layer is an absolute URL back
+  // to the root domain. This route is already dynamic (generateMetadata reads
+  // searchParams), so reading a header costs nothing.
+  const host = (await headers()).get("host") ?? ""
   return (
     <Suspense>
-      <HomePage />
+      <HomePage host={host} />
     </Suspense>
   )
 }

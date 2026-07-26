@@ -24,7 +24,7 @@ const IndiaMapView = dynamic(() => import("./IndiaMapView"), { ssr: false })
 
 interface MpLite { pc_code: string; name: string; party_abbr: string | null; is_minister: boolean }
 
-export default function IndiaHome({ mps }: { mps: MpLite[] }) {
+export default function IndiaHome({ mps, host = "" }: { mps: MpLite[]; host?: string }) {
   const [features, setFeatures] = useState<PcFeatureProps[]>([])
   const [selected, setSelected] = useState<PcFeatureProps | null>(null)
   const [stateFilter, setStateFilter] = useState<number | null>(null)
@@ -79,10 +79,11 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   return (
     <main className="flex flex-col h-full bg-[#0A0A0A] overflow-hidden">
       <div className="relative flex-1 min-h-0">
-        <IndiaHeader variant="overlay" />
+        <IndiaHeader variant="overlay" host={host} />
 
-        {/* Search — seat name, seat code, or MP name */}
-        <div className="absolute top-16 left-4 z-[900] w-[min(22rem,calc(100vw-2rem))]">
+        {/* Search — seat name, seat code, or MP name.
+            Sits lower on phones, where the header wraps onto a second line. */}
+        <div className="absolute top-[4.5rem] sm:top-16 left-4 z-[900] w-[min(22rem,calc(100vw-2rem))]">
           <input
             value={q}
             onChange={e => setQ(e.target.value)}
@@ -120,7 +121,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
         </div>
 
         {/* State filter */}
-        <div className="absolute top-16 right-4 z-[900]">
+        <div className="absolute top-[4.5rem] sm:top-16 right-4 z-[900]">
           <select
             value={stateFilter ?? ""}
             onChange={e => setStateFilter(e.target.value === "" ? null : Number(e.target.value))}
