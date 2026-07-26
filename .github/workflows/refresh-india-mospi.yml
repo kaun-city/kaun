@@ -73,6 +73,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # gh release download (pdf mirror)
         run: |
           set -euo pipefail
