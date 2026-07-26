@@ -823,3 +823,18 @@ test("the staleness view is read-only to the public, like every other in_* objec
   assert.match(STALENESS_SQL, /GRANT SELECT ON public\.v_in_central_project_staleness TO anon, authenticated;/)
   assert.ok(!/GRANT\s+(INSERT|UPDATE|DELETE|ALL)/i.test(STALENESS_SQL))
 })
+
+test("padToUniformKeys: ragged loader rows become a uniform PostgREST payload", async () => {
+  const { padToUniformKeys } = await import("../scripts/india/lib/sink.mjs")
+  const padded = padToUniformKeys([
+    { mpsno: 1, house: "LS", pc_code: "29-25" },
+    { mpsno: 2, house: "RS" },                       // RS: no pc_code by design
+    { mpsno: 3, house: "LS", pc_code: "2-1", term_start: "2024-06-04" },
+  ])
+  const keys = padded.map(r => Object.keys(r).sort().join(","))
+  assert.equal(new Set(keys).size, 1)                 // uniform
+  assert.equal(padded[1].pc_code, null)               // padded, explicitly null
+  assert.equal(padded[0].term_start, null)
+  assert.equal(padded[2].pc_code, "2-1")              // real values untouched
+  assert.equal(padded[0].mpsno, 1)
+})
