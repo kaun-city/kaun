@@ -92,20 +92,32 @@ reproduces the declaration, it does not verify it.
 
 ## In Parliament
 
-**Parliamentary activity has not been loaded for this seat yet.** The attendance, questions and
-debate figures come from PRS MP Track and sansad.in on a separate cadence to the roster; this
-section fills in on the next refresh once that pipeline has run.
+Components, not a score. Kaun publishes what Parliament records and does not compose it into a
+single ranking — attendance, questions and debates measure different things and a weighted
+average of them measures none of them.
 
-Nothing here is a zero. An absent figure is absent, and Kaun will not render it as 0 —
-that is the difference between "not recorded" and "did nothing".
+| Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 20/07/2026 to 13/08/2026 | 20 | 5 | 25.0% | — | — | — | — |
+| 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | 281 | — | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 26 | 96.3% | 457 | 5 | — | — |
+| 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | 336 | 3 | — | — |
+| 22/07/2024 to 09/08/2024 | 15 | 13 | 86.7% | — | — | — | — |
+| 24/06/2024 to 02/07/2024 | 7 | 7 | 100.0% | — | — | — | — |
+| Term to date (First Term) | — | — | 98.5% | 201 | 19 | 0 | — |
+
+_A dash is a value the source does not record. It is never a zero._
 
 ---
 
 ## Local area development funds (MPLADS)
 
-**MPLADS figures have not been loaded for this seat yet.** Each MP is entitled to recommend works
-worth ₹5 crore a year in their constituency; the allocation, the release and the unspent balance
-come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once that pipeline has run.
+| Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| eSAKSHI (official) | ₹14.70 Cr | ₹4.73 Cr | ₹9.97 Cr | 32.2% | 270 | 256 | 58 | 2026-07-26 |
+
+_eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
+row is present it is kept separate rather than merged, so every figure carries its own provenance._
 
 ---
 
@@ -113,9 +125,18 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-**No central projects loaded for Gujarat yet.** MoSPI's Flash Report tracks every central
-project of ₹150 crore or more and publishes monthly with a ~7–8 week lag; the first load is
-pending, or this state has no projects in the latest report Kaun holds.
+The 6 projects in Gujarat furthest above sanctioned cost, as of the May 2026 report.
+
+| Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
+|---|---|---:|---:|---:|---|---:|
+| [Sardar Sarovar Project](https://kaun.city/india/projects/701372) | Department of Water Resources, River Development & GR | ₹20,718 Cr | ₹33,413 Cr | +₹12,694 Cr | 75 months later | 94% |
+| [Vadodara Mumbai Expressway Ena -Kim Phase IB - Pkg VI [Km 217.500 to Km 254.430]](https://kaun.city/india/projects/618464) | Ministry of Road Transport & Highways | ₹2,272 Cr | ₹4,297 Cr | +₹2,025 Cr | 29 months later | 99% |
+| [Vadodara Mumbai Expressway Gandeva to Ena Phase IB - Pkg VII [Km 190.00 to Km 217.500]](https://kaun.city/india/projects/618465) | Ministry of Road Transport & Highways | ₹1,710 Cr | ₹3,392 Cr | +₹1,682 Cr | 30 months later | 97% |
+| [Vadodara Mumbai Expressway Kim to Ankleshwar Phase IA - Pkg V](https://kaun.city/india/projects/618463) | Ministry of Road Transport & Highways | ₹1,325 Cr | ₹2,807 Cr | +₹1,483 Cr | 57 months later | 91% |
+| [National Maritime Heritage Complex [NMHC] Phase-I](https://kaun.city/india/projects/707215) | Ministry of Ports, Shipping and Waterways | ₹573 Cr | ₹1,238 Cr | +₹665 Cr | 24 months later | 78% |
+| [Miyagam-Karjan-Dabhoi-Samlaya [GC]](https://kaun.city/india/projects/705458) | Ministry of Railways | ₹484 Cr | ₹1,039 Cr | +₹555 Cr | 69 months later | 45% |
+
+[All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=24)
 
 ---
 
@@ -127,5 +148,8 @@ pending, or this state has no projects in the latest report Kaun holds.
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
 | Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
+| Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
+| MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
+| Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
 _Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

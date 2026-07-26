@@ -105,20 +105,33 @@ reproduces the declaration, it does not verify it.
 
 ## In Parliament
 
-**Parliamentary activity has not been loaded for this seat yet.** The attendance, questions and
-debate figures come from PRS MP Track and sansad.in on a separate cadence to the roster; this
-section fills in on the next refresh once that pipeline has run.
+Components, not a score. Kaun publishes what Parliament records and does not compose it into a
+single ranking — attendance, questions and debates measure different things and a weighted
+average of them measures none of them.
 
-Nothing here is a zero. An absent figure is absent, and Kaun will not render it as 0 —
-that is the difference between "not recorded" and "did nothing".
+| Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 20/07/2026 to 13/08/2026 | 20 | 5 | 25.0% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 28 | 27 | 96.4% | — | — | — | — |
+| 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 24 | 88.9% | 5 | 118 | — | — |
+| 25/11/2024 to 20/12/2024 | 20 | 17 | 85.0% | 5 | 126 | — | — |
+| 22/07/2024 to 09/08/2024 | 15 | 14 | 93.3% | — | 47 | — | — |
+| 24/06/2024 to 02/07/2024 | 7 | 7 | 100.0% | — | — | — | — |
+| Term to date (First Term) | — | — | 92.6% | 14 | 11 | 0 | — |
+
+_A dash is a value the source does not record. It is never a zero._
 
 ---
 
 ## Local area development funds (MPLADS)
 
-**MPLADS figures have not been loaded for this seat yet.** Each MP is entitled to recommend works
-worth ₹5 crore a year in their constituency; the allocation, the release and the unspent balance
-come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once that pipeline has run.
+| Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| eSAKSHI (official) | ₹14.70 Cr | ₹9.42 Cr | ₹5.28 Cr | 64.1% | 323 | 226 | 50 | 2026-07-26 |
+
+_eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
+row is present it is kept separate rather than merged, so every figure carries its own provenance._
 
 ---
 
@@ -126,9 +139,18 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-**No central projects loaded for Meghalaya yet.** MoSPI's Flash Report tracks every central
-project of ₹150 crore or more and publishes monthly with a ~7–8 week lag; the first load is
-pending, or this state has no projects in the latest report Kaun holds.
+The 6 projects in Meghalaya furthest above sanctioned cost, as of the May 2026 report.
+
+| Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
+|---|---|---:|---:|---:|---|---:|
+| [Byrnihat-Shillong New Rail Line- 108 km](https://kaun.city/india/projects/705396) | Ministry of Railways | ₹8,324 Cr | ₹8,342 Cr | +₹18.00 Cr | 72 months later | 2% |
+| [Rehabilitation and Up-gradation of Nongstoin Wahkaji section of Project Road Km 0000 to Km 43060 to Intermediate Lane with earthern shoulder under SARDP-NE Phase-A in the State of Meghalaya on EPC mode. Job No- SARDP-NE ong-Don- Maw/MG/2020-21/294](https://kaun.city/india/projects/617885) | Ministry of Road Transport & Highways | ₹303 Cr | ₹303 Cr | no change | 34 months later | 99% |
+| [Improvement and Widening of National Highway No. 127B Darugiri - Songsak - Williamnagar Junction Section to two lane with paved shoulder from design Km 0000 to Km 36635 Design length 36.635 Km existing Km 112000 to Km 151060 of NH-1278 under Bharatmala Pariyojana Lot-1 Pkg-1B Meghalaya portion](https://kaun.city/india/projects/618294) | Ministry of Road Transport & Highways | ₹801 Cr | ₹801 Cr | no change | on original schedule | 25% |
+| [Improvement/Widening of New NH-217 Dainadubi-Darugiri section to Two lane with paved shoulder in Meghalaya from design Km 0000 to Km 40840 existing Km 8600 to Km 53000 of Old NH-62 under BMP Lot-1 Pkg-1B Meghalaya portion](https://kaun.city/india/projects/618295) | Ministry of Road Transport & Highways | ₹706 Cr | ₹706 Cr | no change | on original schedule | 42% |
+| [Improvement/Widening to 2-L with Paved Shoulder/ 4-Laning of NH-40 section from Km 151330 to Km 163400 design Km 63.530 to Km 71.520 including Dawki Bridge of length 368 m between Shillong-Dawki under JICA ODA Loan assistance Phase-II Pkg- 5 -Balance work](https://kaun.city/india/projects/618374) | Ministry of Road Transport & Highways | ₹284 Cr | ₹284 Cr | no change | on original schedule | 41% |
+| [Improvement/Widening to 2-Lane with Paved Shoulder from design Km 45.760 to Km 63.530 between Shillong-Dawki under JICA ODA Loan assistance Phase-II -Balance work Pkg-4](https://kaun.city/india/projects/618375) | Ministry of Road Transport & Highways | ₹446 Cr | ₹446 Cr | no change | 6 months later | 51% |
+
+[All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=17)
 
 ---
 
@@ -140,5 +162,8 @@ pending, or this state has no projects in the latest report Kaun holds.
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
 | Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
+| Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
+| MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
+| Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
 _Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

@@ -98,15 +98,18 @@ reproduces the declaration, it does not verify it.
 
 Ministers and the Speaker do not sign the attendance register, do not ask questions and do not introduce private member bills. Their metrics are recorded as **not applicable — never as zero**, because a zero here would read as absenteeism and would be false.
 
-_Recorded reason: This MP is a minister. Ministers represent the government in debates, so we do not report their participation. They do not sign the attendance register, ask questions, or introduce private member bills. Data corresponds to the period from 24-06-2024 to 18-04-2026.._
+_Recorded reason: Minister/Speaker: does not sign the attendance register, ask questions, or introduce private member bills (PRS mp_note; sansad.in signedDaysCount)._
 
 ---
 
 ## Local area development funds (MPLADS)
 
-**MPLADS figures have not been loaded for this seat yet.** Each MP is entitled to recommend works
-worth ₹5 crore a year in their constituency; the allocation, the release and the unspent balance
-come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once that pipeline has run.
+| Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| eSAKSHI (official) | ₹14.70 Cr | ₹5.61 Cr | ₹9.09 Cr | 38.2% | 74 | 63 | 15 | 2026-07-26 |
+
+_eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
+row is present it is kept separate rather than merged, so every figure carries its own provenance._
 
 ---
 
@@ -114,9 +117,18 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-**No central projects loaded for Rajasthan yet.** MoSPI's Flash Report tracks every central
-project of ₹150 crore or more and publishes monthly with a ~7–8 week lag; the first load is
-pending, or this state has no projects in the latest report Kaun holds.
+The 6 projects in Rajasthan furthest above sanctioned cost, as of the May 2026 report.
+
+| Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
+|---|---|---:|---:|---:|---|---:|
+| [Rajasthan Refinery Project](https://kaun.city/india/projects/701263) | Ministry of Petroleum & Natural Gas | ₹43,129 Cr | ₹79,459 Cr | +₹36,330 Cr | 44 months later | 92% |
+| [4L Greenfield spur from Delhi-Vadodara Greenfield expressway near Bandikui to Jaipur](https://kaun.city/india/projects/619063) | Ministry of Road Transport & Highways | ₹1,636 Cr | ₹2,170 Cr | +₹534 Cr | 19 months later | 100% |
+| [Gudha-Thatha Mithri Construction of Railway Track Project](https://kaun.city/india/projects/705752) | Ministry of Railways | ₹819 Cr | ₹967 Cr | +₹148 Cr | on original schedule | 95% |
+| [Delhi-Vadodara Greenfield Alignment NH-148N Pkg-14 Ch. 388.420 to Ch. 419.000 [Junction with NH- 76 to Junction with NH-12 near village Ummedpura]](https://kaun.city/india/projects/618456) | Ministry of Road Transport & Highways | ₹1,119 Cr | ₹1,194 Cr | +₹74.82 Cr | 22 months later | 100% |
+| [Sangariya near Chautala-Rasisar near Bikaner section of NH-754K Phase-I AJ/SR- Package-7](https://kaun.city/india/projects/618611) | Ministry of Road Transport & Highways | ₹521 Cr | ₹548 Cr | +₹27.79 Cr | 36 months later | 100% |
+| [Tanot -Ramgarh-Bhadasar-Jaisalmer NH-68 and BhadasarMokal-Sarkaritala up to Pakisthan Border NH-968 Pkg-BM/5](https://kaun.city/india/projects/618796) | Ministry of Road Transport & Highways | ₹829 Cr | ₹830 Cr | +₹1.79 Cr | 62 months later | 100% |
+
+[All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=8)
 
 ---
 
@@ -128,5 +140,8 @@ pending, or this state has no projects in the latest report Kaun holds.
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
 | Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
+| Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
+| MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
+| Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
 _Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
