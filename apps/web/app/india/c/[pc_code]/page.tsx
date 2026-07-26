@@ -32,20 +32,45 @@ export const dynamic = "force-dynamic"
 
 type Props = { params: Promise<{ pc_code: string }> }
 
+/**
+ * Metadata is the other half of the share card.
+ *
+ * The image (opengraph-image.tsx in this segment) is what a reader sees; these
+ * strings are what they read under it, what a search result shows, and what a
+ * screen reader announces. So the OG title names the three things that make a
+ * link worth opening — the seat, the state, and the member who holds it —
+ * rather than repeating the site name, which the siteName field already
+ * carries. Next fills openGraph.images and twitter.images from the sibling
+ * opengraph-image.tsx, resolved against the metadataBase set in the India
+ * layout; nothing here needs to name an image URL.
+ */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { pc_code } = await params
-  if (!isPcCode(pc_code)) return {}
+  const fallback: Metadata = { title: "Lok Sabha constituency | KAUN?" }
+  if (!isPcCode(pc_code)) return fallback
   const profile = await fetchConstituencyProfile(pc_code)
-  if (!profile) return {}
+  if (!profile) return fallback
+
   const { constituency: c, mp } = profile
+  const who = mp ? `${mp.name}${mp.party_abbr ? ` (${mp.party_abbr})` : ""}` : null
   const title = `${c.pc_name}, ${c.state_name} | KAUN?`
-  const description = mp
-    ? `${mp.name}${mp.party_abbr ? ` (${mp.party_abbr})` : ""} holds ${c.pc_name}. Declared record, parliamentary activity, MPLADS spend and central projects — from public sources.`
+  const ogTitle = who
+    ? `${c.pc_name}, ${c.state_name} — ${who}`
+    : `${c.pc_name}, ${c.state_name}`
+  const description = who
+    ? `${who} holds ${c.pc_name}. Declared record, parliamentary activity, MPLADS spend and central projects — from public sources.`
     : `${c.pc_name} in ${c.state_name}: declared record, parliamentary activity and central projects, from public sources.`
+
+  // Relative in both modes (/india/c/29-25 or /c/29-25) and absolute-ised
+  // against metadataBase, so the canonical never names a city subdomain.
+  const url = indiaHref(`/c/${pc_code}`)
+
   return {
     title,
     description,
-    openGraph: { title, description, type: "profile" },
+    alternates: { canonical: url },
+    openGraph: { title: ogTitle, description, url, type: "profile", siteName: "Kaun", locale: "en_IN" },
+    twitter: { card: "summary_large_image", title: ogTitle, description },
   }
 }
 
