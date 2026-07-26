@@ -135,23 +135,92 @@ export function parseWinnerFromList(html) {
   return null
 }
 
+/**
+ * Peel the trailing balanced "(…)" group off a string, scanning from the end
+ * so nested parens inside the group survive.
+ *
+ *   "P C Mohan(Bharatiya Janata Party(BJP))" → { before: "P C Mohan",
+ *                                                inner: "Bharatiya Janata Party(BJP)" }
+ *   "NORTH WEST DELHI (SC)(DELHI (NCT))"     → { before: "NORTH WEST DELHI (SC)",
+ *                                                inner: "DELHI (NCT)" }
+ *
+ * Same balanced-scanner idea as the MoSPI parser's agency-name handling: a
+ * regex cannot do this, and every attempt to fake it splits in the wrong place.
+ */
+export function peelTrailingParens(s) {
+  const str = String(s ?? "").trim()
+  if (!str.endsWith(")")) return { before: str, inner: null }
+  let depth = 0
+  for (let i = str.length - 1; i >= 0; i--) {
+    if (str[i] === ")") depth++
+    else if (str[i] === "(") {
+      depth--
+      if (depth === 0) {
+        return {
+          before: str.slice(0, i).trim(),
+          inner: str.slice(i + 1, str.length - 1).trim(),
+        }
+      }
+    }
+  }
+  return { before: str, inner: null }   // unbalanced — leave it alone
+}
+
+/**
+ * Is a trailing parenthesised group a party ABBREVIATION, or part of the
+ * party's actual name?
+ *
+ *   "Bharatiya Janata Party(BJP)"                 → BJP is an abbreviation
+ *   "ShivSena (Uddhav Balasaheb Thackeray)"       → a faction name, NOT an abbr
+ *   "Lok Janshakti Party(Ram Vilas)"              → a faction name, NOT an abbr
+ *
+ * An abbreviation is short and unspaced. Getting this wrong is not cosmetic:
+ * it previously produced party_full="ShivSena", party_abbr="Uddhav Balasaheb
+ * Thackeray" and turned every Shiv Sena (UBT) seat into a false party conflict.
+ */
+export function looksLikeAbbreviation(s) {
+  const v = String(s ?? "").trim()
+  if (!v || v.length > 12) return false
+  if (/\s/.test(v)) return false
+  return /^[A-Za-z0-9&.()\-/]+$/.test(v)
+}
+
 /** "P C Mohan(Bharatiya Janata Party(BJP)):Constituency- BANGALORE CENTRAL(KARNATAKA) - …" */
 export function parseTitle(html) {
   const t = text(/<title>([\s\S]*?)<\/title>/i.exec(html)?.[1])
   if (!t) return {}
-  const m = /^(.*?)\((.*)\):Constituency-\s*(.*?)\(([^()]*)\)\s*-/.exec(t)
-  if (!m) return { title_tag: t }
-  // party arrives as "Bharatiya Janata Party(BJP" — the closing paren is eaten
-  // by the outer group, so split rather than trying to balance it.
-  const partyBlob = m[2]
-  const abbrM = /\(([^()]+)\)?\s*$/.exec(partyBlob)
+  const marker = ":Constituency-"
+  const split = t.indexOf(marker)
+  if (split === -1) return { title_tag: t }
+
+  // Everything after the marker, minus the trailing
+  // " - Affidavit Information of Candidate:" tail.
+  let seatPart = t.slice(split + marker.length)
+  const tail = seatPart.lastIndexOf(" - ")
+  if (tail !== -1) seatPart = seatPart.slice(0, tail)
+
+  const name = peelTrailingParens(t.slice(0, split))
+  const seat = peelTrailingParens(seatPart)
+
+  let partyFull = name.inner
+  let partyAbbr = null
+  if (partyFull) {
+    const party = peelTrailingParens(partyFull)
+    // Only treat the trailing group as an abbreviation when it looks like one;
+    // otherwise it is part of the party's name and stays in party_full.
+    if (party.inner && looksLikeAbbreviation(party.inner)) {
+      partyFull = party.before || partyFull
+      partyAbbr = party.inner
+    }
+  }
+
   return {
     title_tag: t,
-    candidate_name: m[1].trim() || null,
-    party_full: partyBlob.replace(/\(([^()]*)\)?$/, "").trim() || null,
-    party_abbr: abbrM ? abbrM[1].trim() : null,
-    constituency_label: m[3].trim() || null,
-    state_label: m[4].trim() || null,
+    candidate_name: name.before || null,
+    party_full: partyFull || null,
+    party_abbr: partyAbbr,
+    constituency_label: seat.before || null,
+    state_label: seat.inner || null,
   }
 }
 
@@ -230,14 +299,48 @@ export function parseOtherElections(html) {
   return out.length ? out : null
 }
 
-/** Party comparison for the structural check. "Ind." vs "IND" must agree. */
+const IND_ALIASES = new Set(["IND", "INDEPENDENT", "INDEPENDENTS"])
+
+/**
+ * Every party label a source offers, normalized to alphanumerics — which also
+ * absorbs the en-dash/hyphen and spacing differences between the two sites.
+ */
+export function partyLabels(...labels) {
+  const out = new Set()
+  for (const l of labels) {
+    const n = String(l ?? "")
+      .toUpperCase()
+      .replace(/&/g, " AND ")          // "Jammu & Kashmir" ≡ "Jammu and Kashmir"
+      .split(/[^A-Z0-9]+/)
+      .filter(t => t && t !== "AND")   // the connector is house style, nothing more
+      .join("")
+    if (n) out.add(IND_ALIASES.has(n) ? "IND" : n)
+  }
+  return out
+}
+
+/**
+ * Party comparison for the structural check — COMPARE LIKE WITH LIKE.
+ *
+ * MyNeta and sansad each publish an abbreviation AND a full name, but they do
+ * not agree on which goes where: MyNeta's list page shows "Nationalist Congress
+ * Party – Sharadchandra Pawar" where sansad's partySname is "NCPSP", and
+ * sansad's partySname is itself sometimes a long name ("YSR Congress Party").
+ * Comparing one side's full name against the other's abbreviation produced 58
+ * phantom "disagreements" on the first full pass — every one the same party.
+ *
+ * So both sides pass in every label they have, and any match is agreement.
+ *
+ * Returns true (corroborated), false (both sides named a party and nothing
+ * matched — a real conflict, worth a human), or null (one side told us nothing,
+ * so there is nothing to corroborate).
+ */
 export function samePartyish(a, b) {
-  const n = s => String(s ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "")
-  const x = n(a), y = n(b)
-  if (!x || !y) return null            // unknown on one side, not a disagreement
-  if (x === y) return true
-  const IND = new Set(["IND", "INDEPENDENT"])
-  return IND.has(x) && IND.has(y)
+  const x = a instanceof Set ? a : partyLabels(a)
+  const y = b instanceof Set ? b : partyLabels(b)
+  if (!x.size || !y.size) return null
+  for (const v of x) if (y.has(v)) return true
+  return false
 }
 
 /* -------------------------------------------------------------------------- */
@@ -256,7 +359,11 @@ async function main() {
 
   // Sitting MPs, for the party-agreement corroboration. Absent → every row
   // stays needs_review, which is the safe default rather than a silent guess.
-  const mpRows = await sink.select("in_mps", { columns: "id,pc_code,name,party_abbr,house,status" })
+  // party_full as well as party_abbr: the corroboration compares every label
+  // each side offers, not one field against a differently-shaped one.
+  const mpRows = await sink.select("in_mps", {
+    columns: "id,pc_code,name,party_abbr,party_full,house,status",
+  })
   const sittingByPc = new Map(
     mpRows.filter(m => m.house === "LS" && m.status === "Sitting" && m.pc_code)
       .map(m => [m.pc_code, m]))
@@ -308,15 +415,19 @@ async function main() {
 
     if (res.pc_code) {
       const mp = sittingByPc.get(res.pc_code)
-      const partyAgrees = mp ? samePartyish(winner.party_abbr ?? d.party_abbr, mp.party_abbr) : null
+      const partyAgrees = mp
+        ? samePartyish(partyLabels(winner.party_abbr, d.party_abbr, d.party_full),
+                       partyLabels(mp.party_abbr, mp.party_full))
+        : null
       pc_code = res.pc_code
       match_method = res.method === "alias_table" ? "alias_table" : "one_winner_per_pc"
       if (!mp) {
         reviewReason = "no sitting in_mps row to corroborate (run sansad-roster first)"
       } else if (partyAgrees === false) {
-        reviewReason = `party disagreement: myneta "${winner.party_abbr}" vs roster "${mp.party_abbr}"`
+        reviewReason = `party conflict: myneta "${d.party_full ?? winner.party_abbr}" ` +
+          `vs roster "${mp.party_full ?? mp.party_abbr}"`
       } else if (partyAgrees === null) {
-        reviewReason = "party unknown on one side"
+        reviewReason = "party missing on one side — nothing to corroborate"
       } else {
         needs_review = false
       }

@@ -33,6 +33,7 @@ import {
 import {
   parseRupees, parseConstituencyIndex, parseWinnerFromList, parseTitle,
   parseCandidateDetail, parseOtherElections, parseCriminalCharges, samePartyish,
+  peelTrailingParens, looksLikeAbbreviation, partyLabels,
 } from "../scripts/india/myneta-affidavits.mjs"
 import {
   parseDmy, applyMinisterRule, attendancePct, parsePrsAttendance, parsePrsInt,
@@ -500,7 +501,76 @@ test("party agreement tolerates house style but not a real disagreement", () => 
   assert.equal(samePartyish("Ind.", "IND"), true)
   assert.equal(samePartyish("BJP", "BJP"), true)
   assert.equal(samePartyish("BJP", "INC"), false)
-  assert.equal(samePartyish("BJP", null), null)     // unknown ≠ disagreement
+  assert.equal(samePartyish("BJP", null), null)     // unknown is not a disagreement
+})
+
+/* --- regressions from the first full 543-seat pass ------------------------ */
+
+test("a trailing paren group is peeled by balance, not by regex", () => {
+  assert.deepEqual(peelTrailingParens("P C Mohan(Bharatiya Janata Party(BJP))"),
+    { before: "P C Mohan", inner: "Bharatiya Janata Party(BJP)" })
+  // Delhi: the STATE itself contains parens, and the seat carries an (SC) tag.
+  assert.deepEqual(peelTrailingParens("NORTH WEST DELHI (SC)(DELHI (NCT))"),
+    { before: "NORTH WEST DELHI (SC)", inner: "DELHI (NCT)" })
+  assert.deepEqual(peelTrailingParens("no parens here"),
+    { before: "no parens here", inner: null })
+  // Unbalanced input is left alone rather than mangled.
+  assert.deepEqual(peelTrailingParens("broken ))"), { before: "broken ))", inner: null })
+})
+
+test("an abbreviation is short and unspaced; a faction name is not", () => {
+  assert.equal(looksLikeAbbreviation("BJP"), true)
+  assert.equal(looksLikeAbbreviation("JD(S)"), true)
+  assert.equal(looksLikeAbbreviation("Uddhav Balasaheb Thackeray"), false)
+  assert.equal(looksLikeAbbreviation("Ram Vilas"), false)
+  assert.equal(looksLikeAbbreviation(""), false)
+})
+
+test("titles parse when the STATE contains parentheses (all 7 Delhi seats)", () => {
+  // The first full pass marked every Delhi winner parse_status='failed' — the
+  // state is published as "DELHI (NCT)" and the old regex required a state with
+  // no parens in it. Seven seats silently lost their criminal-case counts.
+  const t = parseTitle("<title>Yogender Chandoliya(Bharatiya Janata Party(BJP)):" +
+    "Constituency- NORTH WEST DELHI (SC)(DELHI (NCT)) - Affidavit Information of Candidate:</title>")
+  assert.equal(t.candidate_name, "Yogender Chandoliya")
+  assert.equal(t.party_full, "Bharatiya Janata Party")
+  assert.equal(t.party_abbr, "BJP")
+  assert.equal(t.constituency_label, "NORTH WEST DELHI (SC)")
+  assert.equal(t.state_label, "DELHI (NCT)")
+})
+
+test("a factional party name is not mistaken for an abbreviation", () => {
+  // Old behaviour: party_full="ShivSena", party_abbr="Uddhav Balasaheb
+  // Thackeray" — which turned every Shiv Sena (UBT) seat into a party conflict.
+  const t = parseTitle("<title>Bandu Haribhau Jadhav(ShivSena (Uddhav Balasaheb Thackeray)):" +
+    "Constituency- PARBHANI(MAHARASHTRA) - Affidavit Information of Candidate:</title>")
+  assert.equal(t.candidate_name, "Bandu Haribhau Jadhav")
+  assert.equal(t.party_full, "ShivSena (Uddhav Balasaheb Thackeray)")
+  assert.equal(t.party_abbr, null)
+  assert.equal(t.constituency_label, "PARBHANI")
+  assert.equal(t.state_label, "MAHARASHTRA")
+})
+
+test("party comparison compares like with like, across both sides' labels", () => {
+  // The 58 phantom conflicts on the first pass were MyNeta's FULL name compared
+  // against sansad's ABBREVIATION. Both sides now offer everything they have.
+  assert.equal(samePartyish(
+    partyLabels("Nationalist Congress Party – Sharadchandra Pawar"),
+    partyLabels("NCPSP", "Nationalist Congress Party - Sharadchandra Pawar")), true)
+  assert.equal(samePartyish(
+    partyLabels("Lok Janshakti Party(Ram Vilas)"),
+    partyLabels("LJSP(RV)", "Lok Jan Shakti Party (Ram Vilas)")), true)
+  // "&" and "and" are house style, exactly as for state names.
+  assert.equal(samePartyish(
+    partyLabels("Jammu & Kashmir National Conference"),
+    partyLabels("J&KNC", "Jammu and Kashmir National Conference")), true)
+  // A genuine conflict still fails, and is not folded away.
+  assert.equal(samePartyish(partyLabels("BJP"), partyLabels("INC", "Indian National Congress")), false)
+  // Transliteration differences are NOT folded — same rule as constituency
+  // names. These stay flagged for a human.
+  assert.equal(samePartyish(
+    partyLabels("Aazad Samaj Party (Kanshi Ram)"),
+    partyLabels("Azad Samaj Party (Kanshi Ram)")), false)
 })
 
 /* ========================================================================== */
