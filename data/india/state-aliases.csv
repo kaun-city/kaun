@@ -1,0 +1,11 @@
+source,label,resolution,st_code,state_name,reason
+mospi,CHHATISGARH,state,22,Chhattisgarh,"MoSPI spells the state with one t throughout the flash-report annexures (2009-10 to 2023-24); the Census-2011 and DataMeet spelling is Chhattisgarh, st_code 22. Same state, MoSPI house spelling — not a near match."
+mospi,Orissa,state,21,Odisha,"pre-2011 name. Renamed by the Orissa (Alteration of Name) Act 2011; Census st_code 21 is unchanged, and MoSPI kept printing the old name in the 2009-2012 annexures."
+mospi,Uttaranchal,state,5,Uttarakhand,"pre-2007 name. Renamed by the Uttaranchal (Alteration of Name) Act 2006, effective 1 January 2007; Census st_code 5 is unchanged."
+mospi,Jharkhandd,state,20,Jharkhand,"a typo in MoSPI's own annexure — the state name with a doubled final d. Recorded as one explicit label rather than reached by similarity scoring."
+mospi,A & N ISLANDS,state,35,Andaman & Nicobar,"MoSPI's abbreviation of Andaman & Nicobar Islands. Needs an entry because the shared state normaliser drops the word 'Islands' as decoration, which leaves the two-letter 'a n' and matches nothing."
+mospi,D & N HAVELI,state,26,Dadra & Nagar Haveli,"MoSPI's abbreviation of Dadra & Nagar Haveli. Since 2020 it is one UT with Daman & Diu but the two Census codes survive; 26 is the Dadra & Nagar Haveli side, matching the sansad:5536 decision already in data/india/pc-source-aliases.csv."
+mospi,J & K,state,1,Jammu & Kashmir,"MoSPI's abbreviation of Jammu & Kashmir. The shared normaliser turns it into 'j k', which matches nothing. Ladakh is st_code 38 and is never folded in here."
+mospi,Himachal Pr.,state,2,Himachal Pradesh,"MoSPI abbreviates Pradesh to 'Pr.' in a handful of 2009-2011 rows."
+mospi,Offshore,not_a_state,,,"not a place. MoSPI files offshore oil and gas projects (Mumbai High, the KG basin) under 'Offshore' because they sit outside every state's territory. st_code stays NULL, as it would if the label were unreadable — the difference this row records is that the source was precise and there is nothing left to resolve."
+mospi,PAN India,multi_state,,,"MoSPI's label for a project with no single location (telecom and pipeline networks). The whole country, so no single st_code — the same answer as 'Multi State', reached from a different word."

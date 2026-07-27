@@ -90,9 +90,10 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync
 import { resolve, dirname, join, basename } from "path"
 import { fileURLToPath } from "url"
 import { openSink, REPO_ROOT } from "./lib/sink.mjs"
-import { loadPcReference, loadAliases, aliasCandidate, normalizeStateName } from "./lib/pc-reference.mjs"
+import { loadPcReference, loadAliases, aliasCandidate, readStateAliases,
+         buildStateIndex, classifyState } from "./lib/pc-reference.mjs"
 import { flag, opt, banner, run } from "./lib/cli.mjs"
-import { monthCellToDate, monthsBetween, classifyState } from "./load-central-projects.mjs"
+import { monthCellToDate, monthsBetween } from "./load-central-projects.mjs"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const LOADER = "load-mospi-historical"
@@ -256,6 +257,48 @@ export function artifactRows(parsed) {
   const seen = new Map()
   for (const row of out) seen.set(row.ocms_code, row)
   return [...seen.values()].sort((a, b) => (a.sl_no ?? 0) - (b.sl_no ?? 0))
+}
+
+/**
+ * How this backfill is allowed to touch a row that already exists.
+ *
+ * A backfill must not overwrite what the LIVE monthly loader knows. It may
+ * widen the sighting window, fill in a legacy code, and fill in a state the row
+ * does not have; it may not rename a project, RE-POINT a state that is already
+ * set, or touch is_ongoing.
+ *
+ * The state columns are here for a specific reason. They were NOT in
+ * updateColumns before, which meant a project inserted once with a NULL state
+ * kept it forever — 400 of the 642 stateless projects in production were last
+ * seen in October 2024, a report whose annexure states every single row, and
+ * they were stateless only because the row already existed when that month was
+ * loaded. Resolving a state and then not writing it is the same as not
+ * resolving it. COALESCE keeps the monthly loader's answer wherever it has one;
+ * is_multi_state is a NOT NULL boolean and cannot be COALESCEd, so it moves
+ * only for a row that has no attribution at all.
+ */
+export const PROJECT_UPSERT = {
+  updateColumns: [
+    "legacy_ocms_code", "first_seen_month", "last_seen_month", "updated_at",
+    "state_raw", "st_code", "is_multi_state",
+  ],
+  updateExpressions: {
+    first_seen_month: `LEAST("in_central_projects".first_seen_month, EXCLUDED.first_seen_month)`,
+    last_seen_month: `GREATEST("in_central_projects".last_seen_month, EXCLUDED.last_seen_month)`,
+    legacy_ocms_code: `COALESCE("in_central_projects".legacy_ocms_code, EXCLUDED.legacy_ocms_code)`,
+    state_raw: `COALESCE("in_central_projects".state_raw, EXCLUDED.state_raw)`,
+    // A row the monthly loader has already called MULTI-STATE keeps its NULL.
+    // Its st_code is NULL on purpose, not for want of an answer: MoSPI's
+    // modern Table 6 prints "Multi-States (Karnataka, Maharashtra)" for 39
+    // projects whose historical annexure named only one of them, and filling
+    // one in would silently narrow a project that spans several.
+    st_code: `CASE WHEN "in_central_projects".is_multi_state ` +
+      `THEN "in_central_projects".st_code ` +
+      `ELSE COALESCE("in_central_projects".st_code, EXCLUDED.st_code) END`,
+    is_multi_state: `CASE WHEN "in_central_projects".st_code IS NULL ` +
+      `AND NOT "in_central_projects".is_multi_state ` +
+      `THEN EXCLUDED.is_multi_state ELSE "in_central_projects".is_multi_state END`,
+  },
 }
 
 /**
@@ -463,10 +506,36 @@ async function main() {
   const existing = await sink.select("in_central_projects",
     { columns: "project_code,legacy_ocms_code" })
   const byOcms = new Map()
+  const codeOwners = new Map()
   for (const p of existing) {
-    if (p.legacy_ocms_code) byOcms.set(String(p.legacy_ocms_code).toUpperCase(), p.project_code)
+    if (!p.legacy_ocms_code) continue
+    const code = String(p.legacy_ocms_code).toUpperCase()
+    if (!codeOwners.has(code)) codeOwners.set(code, [])
+    codeOwners.get(code).push(p.project_code)
+    // When one OCMS code is held by two rows — a real MoSPI project_code and a
+    // synthetic "ocms:" one minted by an earlier run — the REAL one is the
+    // project. Writing to the synthetic row instead would keep the duplicate
+    // alive and leave the row the site actually renders untouched.
+    const prev = byOcms.get(code)
+    if (prev == null || (prev.startsWith("ocms:") && !p.project_code.startsWith("ocms:"))) {
+      byOcms.set(code, p.project_code)
+    }
   }
   sink.count("existing projects with a legacy OCMS code", byOcms.size)
+  // One OCMS code held by two project_code rows means the same project exists
+  // twice: a real MoSPI code and a synthetic "ocms:" row minted by an earlier
+  // backfill before the modern row carried its legacy code. This loader writes
+  // to one of them and leaves the other stranded — including its state. Not
+  // repaired here (merging two identities is a reviewed decision, not a
+  // loader's), but it must not be invisible.
+  const shared = [...codeOwners].filter(([, owners]) => owners.length > 1)
+  if (shared.length) {
+    sink.count("OCMS codes held by more than one existing project row", shared.length)
+    sink.review("duplicate-ocms-identities", shared.map(([code, owners]) =>
+      ({ legacy_ocms_code: code, project_codes: owners.join(" "), written_by_this_run: byOcms.get(code) })))
+    sink.warn(`${shared.length} OCMS code(s) are held by two existing in_central_projects ` +
+      "rows; this run updates one of each pair and the other keeps whatever it has")
+  }
   if (!byOcms.size) {
     sink.warn("no existing in_central_projects rows were readable — every historical " +
       "project will be reported as a new identity. Re-run with credentials to see " +
@@ -476,20 +545,21 @@ async function main() {
   /* ---- 3. transform ----------------------------------------------------- */
   const reference = await loadPcReference(sink)
   const aliases = await loadAliases(sink, ["mospi"])
-  const statesByNorm = new Map()
-  for (const r of reference?.rows ?? []) {
-    const k = normalizeStateName(r.state_name)
-    if (!statesByNorm.has(k)) statesByNorm.set(k, r.st_code)
-  }
-  for (const [key, pcCodeValue] of aliases) {
-    const label = key.slice("mospi:".length)
-    const row = reference?.byCode.get(pcCodeValue)
-    if (row) statesByNorm.set(normalizeStateName(label), row.st_code)
+  const stateAliases = readStateAliases(undefined, { reference })
+  const stateIndex = buildStateIndex({
+    reference, pcAliases: aliases, stateAliases, source: "mospi",
+  })
+  sink.note(`state aliases: ${stateIndex.aliases.size} committed entr(ies) from ` +
+    "data/india/state-aliases.csv")
+  for (const [k, codes] of stateIndex.ambiguous) {
+    sink.warn(`state name "${k}" spans st_codes ${[...codes].join(", ")} — ` +
+      `resolving to ${stateIndex.states.get(k)} (the lower Census code)`)
   }
 
   const projects = new Map()          // project_code -> row
   const snapshots = []
   const stateCandidates = new Map()
+  const stateSightings = new Map()    // project_code -> newest month that PRINTED a state
   let matched = 0, minted = 0, unitRejected = 0
 
   for (const r of rows) {
@@ -500,10 +570,6 @@ async function main() {
     }
     const known = byOcms.get(r.ocms_code)
     const projectCode = known ?? syntheticProjectCode(r.ocms_code)
-    const st = classifyState(r.state_raw, statesByNorm)
-    if (st.unresolved && r.state_raw) {
-      stateCandidates.set(r.state_raw, (stateCandidates.get(r.state_raw) ?? 0) + 1)
-    }
 
     const prev = projects.get(projectCode)
     if (!prev) {
@@ -517,9 +583,9 @@ async function main() {
         project_name: r.project_name ?? "(unnamed)",
         sector: r.sector ?? null,
         agency: r.agency ?? null,
-        state_raw: r.state_raw ?? null,
-        st_code: st.st_code,
-        is_multi_state: st.is_multi_state,
+        state_raw: prev?.state_raw ?? null,     // filled below — see THE STATE
+        st_code: null,                          // IS NOT A LATEST-VALUE FIELD
+        is_multi_state: false,
         first_seen_month: prev ? min(prev.first_seen_month, r.report_month) : r.report_month,
         last_seen_month: prev ? max(prev.last_seen_month, r.report_month) : r.report_month,
         // A historical row says nothing about whether the project is ongoing
@@ -533,6 +599,27 @@ async function main() {
     } else {
       prev.first_seen_month = min(prev.first_seen_month, r.report_month)
       prev.last_seen_month = max(prev.last_seen_month, r.report_month)
+    }
+
+    // THE STATE IS NOT A LATEST-VALUE FIELD.
+    //
+    // Every other descriptive column takes the newest report's value, because
+    // the newest report is the most current. A state does not work that way:
+    // it does not change, and about a third of the monthly cuts do not print
+    // one at all. The post-2020 "On Schedule" and "Ahead of Schedule"
+    // annexures clip the project cell mid-OCMS-code — "[N04000083" with no
+    // closing bracket and nothing after it — so a project whose last sighting
+    // happens to fall in one of those cuts loses a state that MoSPI printed
+    // for it in every earlier month.
+    //
+    // So the state comes from the newest report that ACTUALLY PRINTED ONE for
+    // this project. That is not a guess and not a join: it is the same OCMS
+    // code, which is this loader's only notion of identity, and MoSPI's own
+    // attribution of it. A project MoSPI never located stays NULL.
+    const seen = stateSightings.get(projectCode)
+    if (r.state_raw && (seen == null || r.report_month >= seen)) {
+      stateSightings.set(projectCode, r.report_month)
+      projects.get(projectCode).state_raw = r.state_raw
     }
 
     snapshots.push({
@@ -569,6 +656,28 @@ async function main() {
 
   const projectRows = [...projects.values()]
 
+  // Resolve once per PROJECT, not once per snapshot row: state_raw above is
+  // already the newest label MoSPI actually printed for the project.
+  const byReason = new Map()
+  const multiMembers = []
+  for (const p of projectRows) {
+    const st = classifyState(p.state_raw, stateIndex)
+    p.st_code = st.st_code
+    p.is_multi_state = st.is_multi_state
+    byReason.set(st.reason, (byReason.get(st.reason) ?? 0) + 1)
+    if (st.unresolved && p.state_raw) {
+      stateCandidates.set(p.state_raw, (stateCandidates.get(p.state_raw) ?? 0) + 1)
+    }
+    // The member states of a genuinely multi-state project are parsed and kept
+    // in the review artifact rather than thrown away. in_central_projects has
+    // no column for them; see data/india/mospi-historical/METHODOLOGY.md for
+    // the recommendation on where they should live.
+    if (st.is_multi_state && st.member_st_codes.length) {
+      multiMembers.push({ project_code: p.project_code, state_raw: p.state_raw,
+                          member_st_codes: st.member_st_codes.join(" ") })
+    }
+  }
+
   const months = [...new Set(snapshots.map(s => s.report_month))].sort()
   sink.count("report months", months.length)
   sink.count("snapshot rows", snapshots.length)
@@ -578,6 +687,14 @@ async function main() {
   sink.count("rows rejected by the per-row unit check", unitRejected)
   sink.count("resolved to a state", projectRows.filter(p => p.st_code != null).length)
   sink.count("multi-state", projectRows.filter(p => p.is_multi_state).length)
+  // WHY a project has no st_code, which the boolean pair alone cannot say.
+  // "no_state_printed" is the source declining to locate the project (the
+  // 2009-10 and April 2010 annexures carry no state column at all);
+  // "not_a_state" is the source being precise about an offshore block;
+  // "no_exact_state_match" is the only one of the three that is our problem.
+  for (const [reason, n] of [...byReason].sort((a, b) => b[1] - a[1])) {
+    sink.count(`state attribution: ${reason}`, n)
+  }
   sink.count("with a revised schedule", snapshots.filter(s => s.revised_doc_month).length)
   sink.count("with a schedule slip > 0",
     snapshots.filter(s => (s.schedule_slip_months ?? 0) > 0).length)
@@ -585,6 +702,12 @@ async function main() {
     s.revised_cost_cr != null && s.original_cost_cr != null &&
     s.revised_cost_cr !== s.original_cost_cr).length)
   if (months.length) sink.note(`report months: ${months[0]} … ${months[months.length - 1]}`)
+
+  if (multiMembers.length) {
+    sink.review("multi-state-members", multiMembers)
+    sink.note(`${multiMembers.length} multi-state project(s) name their member states; ` +
+      "the list is in the review artifact (the schema has nowhere to put it yet)")
+  }
 
   if (stateCandidates.size) {
     sink.review("state-alias-candidates", [...stateCandidates].map(([label, n]) =>
@@ -595,21 +718,8 @@ async function main() {
   }
 
   /* ---- 4. write --------------------------------------------------------- */
-  await sink.upsert("in_central_projects", projectRows, {
-    conflict: ["project_code"], batch: 200,
-    updateColumns: [
-      // A backfill must not overwrite what the LIVE monthly loader knows. It may
-      // widen the sighting window and fill in a legacy code; it may not rename a
-      // project, re-point its state, or touch is_ongoing on a row that already
-      // exists.
-      "legacy_ocms_code", "first_seen_month", "last_seen_month", "updated_at",
-    ],
-    updateExpressions: {
-      first_seen_month: `LEAST("in_central_projects".first_seen_month, EXCLUDED.first_seen_month)`,
-      last_seen_month: `GREATEST("in_central_projects".last_seen_month, EXCLUDED.last_seen_month)`,
-      legacy_ocms_code: `COALESCE("in_central_projects".legacy_ocms_code, EXCLUDED.legacy_ocms_code)`,
-    },
-  })
+  await sink.upsert("in_central_projects", projectRows,
+    { conflict: ["project_code"], batch: 200, ...PROJECT_UPSERT })
   await sink.upsert("in_central_project_snapshots", snapshots, {
     conflict: ["project_code", "report_month"], batch: 200,
   })

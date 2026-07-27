@@ -322,15 +322,107 @@ A refused report writes no CSV and records its reasons in `manifest.json`.
   instead of a percentage. The raw milestone string is kept in
   `snapshots.raw.milestones`; the percentage column is left NULL rather than
   derived from it.
-- **State resolution** — the 2009-2011 reports clip the project cell right after
-  the code and carry no agency or state at all, so those rows have
-  `state_raw = NULL`. Later years carry it and are resolved through the same
-  alias path as the monthly loader, with unmatched labels reported for review.
+- **State resolution** — see the section below. Two months of the series carry
+  no state column at all and two of the post-2020 cuts have it clipped away by
+  MoSPI; those rows stay NULL, on purpose.
+- **Duplicate identities from an earlier run** — 734 OCMS codes are currently
+  held by TWO `in_central_projects` rows: a real MoSPI `project_code` and a
+  synthetic `ocms:` one. They exist because PostgREST silently caps a read at
+  1,000 rows, so earlier runs of this loader matched against 615 of the table's
+  5,279 legacy codes and minted a new identity for every project they "did not
+  find". The read is paginated now (`selectRest` in `scripts/india/lib/sink.mjs`)
+  and no new identity is minted at all — every one of the 4,409 historical
+  projects matches an existing `project_code`. The existing duplicates are
+  listed in the loader's `duplicate-ocms-identities` review artifact; merging
+  two identities is a reviewed decision, not something a loader should do on its
+  own, so they are reported rather than collapsed. This loader writes to the
+  REAL `project_code` of each pair, never the synthetic twin.
 - **Identity reach** — only about a tenth of the projects in any historical
   report still appear in the current one, because most of them completed and
   left the ongoing list years ago. The rest are loaded as their own `ocms:`
   identities, which is correct: they are real projects with real overruns, and
   they simply have no modern row to attach to.
+
+## How a project gets its state
+
+`in_central_projects.st_code` is a DataMeet-extended Census-2011 code and is set
+only when MoSPI's own label resolves to one **exactly**. There is no similarity
+scoring anywhere in this path. Resolution is, in order:
+
+1. **the committed alias table**, `data/india/state-aliases.csv` — one row per
+   label, each with a written reason. This is where MoSPI's own spellings live:
+   `CHHATISGARH` (one t), `Orissa` and `Uttaranchal` (pre-rename names),
+   `A & N ISLANDS` and `J & K` (abbreviations), and `Offshore` / `PAN India`,
+   which are recorded as *not a state* and *the whole country* rather than as
+   labels we failed to read.
+2. **MoSPI's own multi-state wording** — `MULTI STATE`, `Multi-States (Bihar,
+   Jharkhand)`, `All India`. `st_code` stays NULL and `is_multi_state` is set.
+   Where the label names its members they are parsed and written to the
+   loader's `multi-state-members` review artifact (see the recommendation
+   below).
+3. **an exact match** on the normalised state name. Normalising folds case,
+   punctuation, `&` vs `and`, and *word breaks* — MoSPI's narrow state column
+   wraps a word with no hyphen and in a different place each time
+   (`MAHARASHT RA`, `MAHARASHTR A`, `CHHATTISGA RH`), so the break position is
+   not information. It does **not** tolerate a changed, missing or extra letter:
+   `CHHATISGARH` still does not match `Chhattisgarh` and needs the alias row.
+
+Anything left over stays NULL and is written to the loader's
+`state-alias-candidates` review artifact for a human.
+
+### The state is not a latest-value field
+
+Every other descriptive column takes its value from the project's newest report.
+The state does not: it does not change, and about a third of the monthly cuts do
+not print one. So the state is taken from the newest report that *actually
+printed one* for that OCMS code. Same project, same code, MoSPI's own
+attribution — not a join and not a guess.
+
+### Where a NULL state is the right answer
+
+- **October 2009 and April 2010** — the annexure has no state and no agency at
+  all; the cell ends at the OCMS code. The agency appears inside the project
+  name in parentheses and nothing locates the project.
+- **the post-2020 "On Schedule" and "Ahead of Schedule" cuts** — MoSPI clips the
+  project cell part-way through the code (`[N04000083`, no closing bracket,
+  nothing after it). Every row in those two cuts is stateless in the document.
+  A project that also appears in an earlier month with a state keeps it, by the
+  rule above; one that never does stays NULL.
+- **`Offshore`** — Mumbai High, the KG basin. Outside every state's territory.
+  The alias table records this as a decision, so it is not counted as a parse
+  failure.
+
+## Recommended, not done: member states of a multi-state project
+
+`is_multi_state = true` with `st_code = NULL` is honest but lossy where MoSPI
+names the members — `Multi-States (Bihar, Jharkhand)`. The natural home is a
+join table:
+
+```sql
+CREATE TABLE IF NOT EXISTS public.in_central_project_states (
+  project_code text NOT NULL
+    REFERENCES public.in_central_projects (project_code) ON DELETE CASCADE,
+  st_code      integer NOT NULL,
+  source_label text    NOT NULL,        -- the verbatim MoSPI string
+  CONSTRAINT in_central_project_states_pkey PRIMARY KEY (project_code, st_code)
+);
+```
+
+It is deliberately **not** in this change, for one reason: no historical report
+names its members. Every multi-state row in the whole 2009-2024 archive is the
+bare label `MULTI STATE`, so the table would be created empty by this loader and
+filled only by the live monthly one (`load-central-projects.mjs`), whose Table 6
+does print `Multi-States (…)` — about 199 of the 537 multi-state projects in
+production. Wiring it therefore means changing the live monthly pipeline and
+creating an ordering dependency (migrate before load) for data this backfill
+does not have. The member codes this loader *can* parse are written to the
+`multi-state-members` review artifact so nothing is lost in the meantime.
+
+The same applies to a `state_attribution` column recording *why* `st_code` is
+NULL (`no_state_printed` / `not_a_state` / `multi_state` / `no_exact_state_match`).
+The loader now counts every project under exactly those reasons at the end of a
+run; promoting the count to a stored column is a schema change worth making
+alongside the join table, not before it.
 
 ## Corrections
 

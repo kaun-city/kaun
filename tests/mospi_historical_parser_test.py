@@ -22,6 +22,16 @@ Each era is represented because each era broke something different:
   2024-04  no readable consolidated annexure; one of the five partition tables
   2024-10  the transitional format: modern column semantics, but no cell
            borders and no number row — read from its own printed gutters
+
+Three more were cut for the state-attribution repair, one per way the state was
+being lost (PR: fix/mospi-state-attribution):
+  2017-10  the project cell's tail is agency,state,FUNDING TYPE — three fields,
+           not two, so the state was coming out as "GUJARAT , G"
+  2020-10  an agency group heading printed BETWEEN two numbered rows, with no
+           Total line to close the first, glued onto the state above it
+  2020-10  the On Schedule cut, whose project cell MoSPI itself clips mid-code
+           ("[N04000083" and nothing after) — no state to read, and the honest
+           answer is NULL
 """
 import json
 import os
@@ -277,6 +287,23 @@ def test_project_cell():
     got = P.parse_project_cell("NEW BG LINE - [N22000206]NFR,MULTI STATE")
     check("multi state", got["state"], "MULTI STATE")
 
+    # THE TAIL HAS THREE FIELDS FROM 2016-17 ON: agency, state, funding type.
+    # Joining the last two into the state produced ninety-odd labels that are
+    # not places — "PUNJAB, EPC", "MAHARASHTRA, PPP (BOT)" — and none resolved.
+    for cell, state in [
+            ("KAKRAPAR ATOMIC POWER PROJECT - 3 AND 4 - [N02000010]NPCIL,GUJARAT , G", "GUJARAT"),
+            ("SHAHKOT-MOGA SECTION OF NH-71 - [N24000385]MoRTH,PUNJAB ,EPC", "PUNJAB"),
+            ("LIFE EXTENSION - [N16000213]ONGC,MAHARASHTRA ,Central Sector Projects", "MAHARASHTRA"),
+            ("2-LANING - [N24000560]MoRTH,MADHYA PRADESH ,PPP (BOT)", "MADHYA PRADESH"),
+            # the third field printed empty, which is how 2019-20 and April 2020
+            # leave it — already worked, and must keep working
+            ("WIDENING TO 2LPS - [N24000916]MoRTH,ODISHA ,", "ODISHA"),
+            ("MULTI-STATE LINE - [N22000206]NFR,MULTI STATE ,G", "MULTI STATE")]:
+        got = P.parse_project_cell(cell)
+        check(f"state out of {cell[-28:]!r}", got["state"], state)
+    check("the agency is still the first tail field",
+          P.parse_project_cell("X - [N02000010]NPCIL,GUJARAT , G")["agency"], "NPCIL")
+
     got = P.parse_project_cell("SOME PROJECT WITH NO CODE AT ALL")
     check("no code", got["ocms_code"], None)
     check("no code keeps the name", got["project_name"], "SOME PROJECT WITH NO CODE AT ALL")
@@ -411,6 +438,125 @@ def test_rows_off_a_real_page():
           ("03/2020", "12/2020"))
     # Every row on this page carries an identity.
     check("no row lost its code", sum(1 for r in records if not r["ocms_code"]), 0)
+
+
+def read_fixture_rows(label, annexure="consolidated"):
+    """One fixture page through the real geometry + row assembly."""
+    fixture = load(label)
+    mapping_fields, lines, idx, edges = columns_of(fixture)
+    mapping = {i: f for i, f in enumerate(mapping_fields) if f}
+    run = {"label": annexure, "pages": [
+        {"pageno": fixture["page"], "lines": lines, "idx": idx,
+         "edges": edges, "mapping": mapping}]}
+    records, _health = P.read_run(run, [])
+    return {r["ocms_code"]: r for r in records}, records
+
+
+def test_agency_heading_between_two_rows_is_not_part_of_either():
+    """
+    October 2020, delayed cut, page 337. The block reads:
+
+        1  PROTOTYPE FAST BREEDER    …
+           REACTOR (BHAVINI, 500 MWE) -
+           [020100044]BHAVNI,TAMIL NADU
+           Nuclear Power Corporation Of   ← the NEXT block's agency heading
+           India Limited                  ← …wrapped onto a second line
+        2  KAKRAPAR ATOMIC POWER     …
+
+    Appending those two lines to row 1 gave it a state of "TAMIL NADU Nuclear
+    Power Corporation Of India Limited", which is not a place and resolved to
+    nothing. The same shape produced "RAJASTHAN Northern Railway", "ODISHA
+    Neyveli Lignite Corporation" and "WEST BENGAL Uttar Pradesh Jal Nigam"
+    across the whole 2020-2024 partitioned era.
+    """
+    by_code, records = read_fixture_rows("2020-10-delayed-agency-heading", "delayed")
+    bhavini = by_code["020100044"]
+    check("the heading did not join the state", bhavini["state"], "TAMIL NADU")
+    check("the agency is still the cell's own", bhavini["agency"], "BHAVNI")
+    check("the name is untouched", bhavini["project_name"],
+          "PROTOTYPE FAST BREEDER REACTOR (BHAVINI, 500 MWE)")
+    # Everything else about the row must be exactly where it was: dropping the
+    # heading may not cost the row a figure printed on a genuine wrap line.
+    check("original cost", bhavini["original_cost_cr"], 3492.0)
+    check("anticipated cost is the revised one", bhavini["revised_cost_cr"], 6840.0)
+    check("expenditure", bhavini["cumulative_expenditure_cr"], 5882.78)
+    check("original DoC", bhavini["original_target_doc"], "09/2010")
+    check("anticipated DoC is the revised one", bhavini["revised_doc"], "10/2022")
+    check("the revised APPROVED cost rides along", bhavini["latest_approved_cost_cr"], 5677.0)
+    check("the revised APPROVED date rides along", bhavini["approved_revised_doc"], "09/2016")
+    check("the next row is its own row", by_code["N02000010"]["state"], "GUJARAT")
+    check("no row on the page lost its state",
+          sum(1 for r in records if r["state"] is None), 0)
+
+
+def test_a_state_wrapped_across_two_lines_is_not_a_heading():
+    """
+    The counter-case, and the reason the heading rule is not simply "a
+    project-column line with no code". April 2024 wraps the cell mid-state:
+
+        [N04000092]AAI,ARUNACHAL
+        PRADESH
+
+    That second line is printed at the row's own wrap spacing, not a block
+    apart, and dropping it would have truncated Arunachal Pradesh to
+    "ARUNACHAL" — trading one wrong state for another.
+    """
+    by_code, _records = read_fixture_rows("2024-04-delayed-partition", "delayed")
+    check("wrapped state survives", by_code["N04000092"]["state"], "ARUNACHAL PRADESH")
+    check("and the one after it", by_code["N04000090"]["state"], "TAMIL NADU")
+    check("an unwrapped state is unaffected", by_code["N04000088"]["state"], "GUJARAT")
+    # 2015-04 wraps a state the same way in a different era and layout.
+    by_code, _records = read_fixture_rows("2015-04-sector-wise-details")
+    check("2015 wrapped state", by_code["N06000049"]["state"], "MADHYA PRADESH")
+
+
+def test_a_cell_mospi_itself_clipped_yields_no_state():
+    """
+    October 2020, On Schedule cut, page 324. MoSPI clips the project cell in
+    this annexure part-way through the OCMS code — "[N04000083" with no closing
+    bracket, no agency and no state after it — so there is nothing to read. The
+    honest answer is NULL, and it was previously the NEXT block's agency
+    heading instead.
+    """
+    by_code, records = read_fixture_rows(
+        "2020-10-on-schedule-clipped-cell", "on_schedule")
+    row = by_code["N04000083"]
+    check("no state was invented", row["state"], None)
+    check("no agency was invented", row["agency"], None)
+    check("the identity survives the clip", row["ocms_code"], "N04000083")
+    check_true("the name is still read",
+               row["project_name"].startswith("CONSTRUCTION OF NEW INTEGRATED TERMINAL"),
+               f"(got {row['project_name']!r})")
+    check("every row in this cut is stateless",
+          sum(1 for r in records if r["state"]), 0)
+
+
+def test_the_funding_type_column_never_reaches_the_state():
+    """October 2017, page 61: the tail's third field is a bare "G"."""
+    by_code, _records = read_fixture_rows("2017-10-contract-type-tail")
+    check("gujarat", by_code["N02000010"]["state"], "GUJARAT")
+    check("rajasthan", by_code["N02000027"]["state"], "RAJASTHAN")
+    check("tamil nadu", by_code["020100044"]["state"], "TAMIL NADU")
+    check("the agency is unaffected", by_code["N02000010"]["agency"], "NPCIL")
+    check("and so are the figures", by_code["N02000010"]["original_cost_cr"], 11459.0)
+
+
+def test_line_pitch_separates_a_wrap_from_a_new_block():
+    """
+    The measurement the heading rule rests on. Both spacings are set by MoSPI's
+    own report generator and are compared with each other, per page, never with
+    a constant — so a different font size in a different year changes nothing.
+    """
+    lines = [(100.0, []), (109.2, []), (118.4, []), (131.0, []),
+             (140.2, []), (149.4, []), (162.0, []), (171.2, [])]
+    check("the modal gap is the wrap spacing", P.line_pitch(lines), 9.0)
+    check_true("a block gap clears the margin",
+               131.0 - 118.4 > P.line_pitch(lines) + P.BLOCK_GAP_MARGIN)
+    check_true("a wrap gap does not",
+               109.2 - 100.0 <= P.line_pitch(lines) + P.BLOCK_GAP_MARGIN)
+    # Too few lines to have a modal anything: say nothing rather than guess,
+    # which leaves the row assembly exactly where it was before this rule.
+    check("a short page declines to answer", P.line_pitch(lines[:3]), None)
 
 
 # ---------------------------------------------------------------------------

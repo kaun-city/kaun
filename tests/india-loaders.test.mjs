@@ -17,10 +17,11 @@ import assert from "node:assert/strict"
 import { existsSync } from "fs"
 
 import {
-  sqlLiteral, quote, ident, buildUpsertSql, toCsv,
+  sqlLiteral, quote, ident, buildUpsertSql, toCsv, SupabaseBackend,
 } from "../scripts/india/lib/sink.mjs"
 import {
-  normalizeStateName, PcReference, aliasCandidate,
+  normalizeStateName, PcReference, aliasCandidate, stateKey, stateAliasKey,
+  buildStateIndex, readStateAliases, referenceFromCrosswalk, STATE_ALIASES_CSV,
 } from "../scripts/india/lib/pc-reference.mjs"
 import {
   toMultiPolygon, ringArea, sanitizeMultiPolygon, geomSql,
@@ -126,6 +127,36 @@ test("toCsv quotes embedded commas, quotes and newlines", () => {
 /* ========================================================================== */
 /* pc-reference — state names and the no-fuzzy-matching rule                  */
 /* ========================================================================== */
+
+test("a table read comes back whole, not just its first PostgREST page", async () => {
+  // PostgREST enforces its own row ceiling (Supabase ships db-max-rows = 1000)
+  // and does not say that it did: a request for limit=100000 returns 200 OK
+  // with exactly 1000 rows. Reading in_central_projects that way matched the
+  // MoSPI backfill against 615 of the table's 5,279 legacy OCMS codes and
+  // minted a second, synthetic identity for every project it "did not find".
+  const TOTAL = 2350
+  const all = Array.from({ length: TOTAL }, (_, i) => ({ project_code: `p${i}` }))
+  const seen = []
+  const realFetch = globalThis.fetch
+  globalThis.fetch = async (url) => {
+    const q = new URL(url).searchParams
+    const offset = Number(q.get("offset") ?? 0)
+    const limit = Math.min(Number(q.get("limit")), 1000)   // the server's own cap
+    seen.push({ offset, limit, order: q.get("order") })
+    return { ok: true, json: async () => all.slice(offset, offset + limit) }
+  }
+  try {
+    const backend = new SupabaseBackend({ url: "https://x.supabase.co", serviceKey: "k" })
+    const rows = await backend.selectRest("in_central_projects", { columns: "project_code" })
+    assert.equal(rows.length, TOTAL, "every row must come back, not the first page")
+    assert.deepEqual(new Set(rows.map(r => r.project_code)).size, TOTAL, "no row may repeat")
+    assert.equal(seen.length, 3, "2350 rows is three pages")
+    // Paging without a total order can skip or repeat rows between requests.
+    assert.ok(seen.every(s => s.order), "every page must be ordered")
+  } finally {
+    globalThis.fetch = realFetch
+  }
+})
 
 test("state-name normalization folds only connector noise", () => {
   const same = [
@@ -758,20 +789,111 @@ test("report months come off the filename, and split parts are flagged", () => {
   assert.equal(archive[0].is_split_part, true, "Part-I/Part-II splits must be visible, not silently loaded")
 })
 
+const STATE_REF = new PcReference([
+  { pc_code: "37-1", st_code: 37, pc_no: 1, state_name: "Andhra Pradesh", pc_name: "Araku", pc_name_norm: "araku" },
+  { pc_code: "36-6", st_code: 36, pc_no: 6, state_name: "Telangana", pc_name: "Mahabubnagar", pc_name_norm: "mahabubnagar" },
+  { pc_code: "27-1", st_code: 27, pc_no: 1, state_name: "Maharashtra", pc_name: "Nandurbar", pc_name_norm: "nandurbar" },
+  { pc_code: "33-1", st_code: 33, pc_no: 1, state_name: "Tamil Nadu", pc_name: "Thiruvallur", pc_name_norm: "thiruvallur" },
+  { pc_code: "22-1", st_code: 22, pc_no: 1, state_name: "Chhattisgarh", pc_name: "Sarguja", pc_name_norm: "sarguja" },
+  { pc_code: "9-1", st_code: 9, pc_no: 1, state_name: "Uttar Pradesh", pc_name: "Saharanpur", pc_name_norm: "saharanpur" },
+  { pc_code: "35-1", st_code: 35, pc_no: 1, state_name: "Andaman & Nicobar", pc_name: "Andaman & Nicobar Islands", pc_name_norm: "andaman nicobar islands" },
+], "test")
+
+const STATE_INDEX = buildStateIndex({
+  reference: STATE_REF, source: "mospi",
+  stateAliases: new Map([
+    ["chhatisgarh", { source: "mospi", label: "CHHATISGARH", resolution: "state", st_code: 22, reason: "one-t spelling" }],
+    ["anislands", { source: "mospi", label: "A & N ISLANDS", resolution: "state", st_code: 35, reason: "abbreviation" }],
+    ["offshore", { source: "mospi", label: "Offshore", resolution: "not_a_state", st_code: null, reason: "outside every state" }],
+  ]),
+})
+
 test("state strings resolve, or are marked multi-state, or go to review", () => {
-  const byNorm = new Map([
-    [normalizeStateName("Andhra Pradesh"), 37],
-    [normalizeStateName("Telangana"), 36],
-  ])
-  assert.deepEqual(classifyState("Andhra Pradesh", byNorm),
-    { st_code: 37, is_multi_state: false, unresolved: false })
-  assert.deepEqual(classifyState("Multi State", byNorm),
-    { st_code: null, is_multi_state: true, unresolved: false })
-  assert.deepEqual(classifyState("Andhra Pradesh, Telangana", byNorm),
-    { st_code: null, is_multi_state: true, unresolved: false })
-  // "Offshore" and "PAN India" are real MoSPI values; neither is a state.
-  assert.equal(classifyState("Offshore", byNorm).unresolved, true)
-  assert.equal(classifyState("Offshore", byNorm).st_code, null)
+  assert.deepEqual(classifyState("Andhra Pradesh", STATE_INDEX),
+    { st_code: 37, is_multi_state: false, unresolved: false, member_st_codes: [], reason: "exact_normalized" })
+  assert.deepEqual(classifyState("Multi State", STATE_INDEX),
+    { st_code: null, is_multi_state: true, unresolved: false, member_st_codes: [], reason: "multi_state" })
+  assert.deepEqual(classifyState("Andhra Pradesh, Telangana", STATE_INDEX),
+    { st_code: null, is_multi_state: true, unresolved: false, member_st_codes: [36, 37], reason: "multi_state" })
+  // A multi-state label that NAMES its members keeps them, rather than
+  // discarding the one thing it says beyond "more than one".
+  assert.deepEqual(
+    classifyState("Multi-States (Andhra Pradesh, Telangana)", STATE_INDEX).member_st_codes,
+    [36, 37])
+  // Nothing printed at all is a different admission from a label we could not
+  // read, and from a project that is genuinely nowhere.
+  assert.equal(classifyState(null, STATE_INDEX).reason, "no_state_printed")
+  assert.equal(classifyState(null, STATE_INDEX).unresolved, false)
+  assert.equal(classifyState("Offshore", STATE_INDEX).reason, "not_a_state")
+  assert.equal(classifyState("Offshore", STATE_INDEX).unresolved, false)
+  assert.equal(classifyState("Offshore", STATE_INDEX).st_code, null)
+  assert.equal(classifyState("Bengaluru", STATE_INDEX).reason, "no_exact_state_match")
+  assert.equal(classifyState("Bengaluru", STATE_INDEX).unresolved, true)
+})
+
+test("a state label broken across a printed line still matches exactly", () => {
+  // MoSPI's narrow state column wraps a word with no hyphen and in a different
+  // place each time; the parser can only rejoin the halves with a space.
+  for (const label of ["MAHARASHT RA", "MAHARASHTR A", "MAHARASHTRA", "Maharashtra"]) {
+    assert.equal(classifyState(label, STATE_INDEX).st_code, 27, label)
+  }
+  assert.equal(classifyState("CHHATTISGA RH", STATE_INDEX).st_code, 22)
+  assert.equal(classifyState("UTTAR PRADESH", STATE_INDEX).st_code, 9)
+  // …and ignoring the break must not start merging real states. Every one of
+  // the 36 stays distinct with its spaces removed.
+  const ref = referenceFromCrosswalk()
+  if (ref) {
+    const byKey = new Map()
+    for (const r of ref.rows) {
+      const prev = byKey.get(stateKey(r.state_name))
+      assert.ok(prev == null || prev === normalizeStateName(r.state_name),
+        `${r.state_name} collides with another state once spaces are removed`)
+      byKey.set(stateKey(r.state_name), normalizeStateName(r.state_name))
+    }
+  }
+  // A missing or changed LETTER is still not a match — that is what the alias
+  // table is for, and it is the line between normalization and guessing.
+  assert.equal(classifyState("CHHATISGARH", STATE_INDEX).reason, "alias_table")
+  assert.equal(classifyState("CHATTISGARH", STATE_INDEX).unresolved, true)
+})
+
+test("a contract type printed after the state is not part of the state", () => {
+  // The parser now splits MoSPI's "<agency>,<state>,<funding type>" tail
+  // properly; these are what the labels looked like when it did not.
+  assert.equal(classifyState("MAHARASHTRA, EPC", STATE_INDEX).unresolved, true,
+    "a bled contract type must go to review, never resolve to the state")
+  assert.equal(classifyState("MAHARASHTRA", STATE_INDEX).st_code, 27)
+})
+
+test("the committed state-alias table is valid and every row carries a reason", () => {
+  const ref = referenceFromCrosswalk()
+  const aliases = readStateAliases(STATE_ALIASES_CSV, { reference: ref })
+  assert.ok(aliases.size > 0, "state-aliases.csv should not be empty")
+  for (const [key, row] of aliases) {
+    assert.equal(key, stateAliasKey(row.label))
+    assert.ok(row.reason && row.reason.length > 20,
+      `${row.label} needs a real reason, got ${JSON.stringify(row.reason)}`)
+    if (row.resolution === "state") {
+      assert.ok(Number.isInteger(row.st_code), `${row.label} needs an st_code`)
+    } else {
+      assert.equal(row.st_code, null, `${row.label} must not carry an st_code`)
+    }
+  }
+  // An alias must never contradict a name the reference already knows.
+  if (ref) {
+    const index = buildStateIndex({ reference: ref, stateAliases: aliases, source: "mospi" })
+    for (const [key, row] of aliases) {
+      const direct = index.states.get(stateKey(row.label))
+      if (direct != null && row.resolution === "state") {
+        assert.equal(direct, row.st_code,
+          `alias ${row.label} disagrees with the reference's own st_code`)
+      }
+    }
+    assert.equal(classifyState("A & N ISLANDS", index).st_code, 35)
+    assert.equal(classifyState("Orissa", index).st_code, 21)
+    assert.equal(classifyState("Offshore", index).reason, "not_a_state")
+    assert.equal(classifyState("PAN India", index).is_multi_state, true)
+  }
 })
 
 test("unknown parser fields fall through to snapshots.raw rather than being dropped", () => {

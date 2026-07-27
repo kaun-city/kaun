@@ -28,8 +28,9 @@ import {
 import {
   syntheticProjectCode, costLooksLikeCrore, unitSanity, toCsv, fromCsv,
   readSnapshotRow, artifactRows, gateReport, statedCountTolerance,
-  SNAPSHOT_COLUMNS, SNAPSHOT_DIR, MANIFEST,
+  SNAPSHOT_COLUMNS, SNAPSHOT_DIR, MANIFEST, PROJECT_UPSERT,
 } from "../scripts/india/load-mospi-historical.mjs"
+import { buildUpsertSql } from "../scripts/india/lib/sink.mjs"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, "..")
@@ -499,6 +500,48 @@ test("the series moves plausibly across years for a long-running project", () =>
   assert.ok(beforeApproval / dated < 0.01,
     `${beforeApproval} of ${dated} rows commission before approval — ` +
     `that is a date-column defect, not publisher noise`)
+})
+
+/* ========================================================================== */
+/* what the backfill is allowed to write over                                 */
+/* ========================================================================== */
+
+test("the backfill fills a missing state and never re-points one that is set", () => {
+  const sql = buildUpsertSql("in_central_projects", [{
+    project_code: "ocms:N06000126", legacy_ocms_code: "N06000126",
+    state_raw: "JHARKHAND", st_code: 20, is_multi_state: false,
+    first_seen_month: "2015-04-01", last_seen_month: "2020-10-01",
+    updated_at: "2026-07-27T00:00:00.000Z",
+  }], { conflict: ["project_code"], ...PROJECT_UPSERT })
+
+  // Resolving a state and then not writing it is the same as not resolving it:
+  // the state columns were absent from updateColumns, so a project inserted
+  // once with a NULL state kept it forever.
+  for (const c of ["state_raw", "st_code", "is_multi_state"]) {
+    assert.ok(PROJECT_UPSERT.updateColumns.includes(c), `${c} must be writable`)
+  }
+  assert.match(sql, /"state_raw" = COALESCE\("in_central_projects"\.state_raw, EXCLUDED\.state_raw\)/)
+  assert.match(sql, /"st_code" = CASE WHEN "in_central_projects"\.is_multi_state/)
+  assert.match(sql, /ELSE COALESCE\("in_central_projects"\.st_code, EXCLUDED\.st_code\) END/)
+  // …but a row the LIVE monthly loader already located keeps its answer, and a
+  // NOT NULL boolean that cannot be COALESCEd moves only for a row with no
+  // attribution at all.
+  assert.match(sql, /"is_multi_state" = CASE WHEN "in_central_projects"\.st_code IS NULL/)
+  // A row the MONTHLY loader has already called multi-state keeps its NULL
+  // st_code. MoSPI's modern Table 6 prints "Multi-States (Karnataka,
+  // Maharashtra)" for projects whose historical annexure named only one of
+  // them, and filling that one in would silently narrow the project.
+  assert.match(sql, /"st_code" = CASE WHEN "in_central_projects"\.is_multi_state THEN "in_central_projects"\.st_code/)
+
+  // Everything else about an existing row is still off limits.
+  for (const c of ["project_name", "sector", "agency", "is_ongoing", "data_source"]) {
+    assert.ok(!PROJECT_UPSERT.updateColumns.includes(c),
+      `${c} belongs to the live monthly loader and must not be backfilled over`)
+  }
+  assert.ok(!/"is_ongoing" =/.test(sql), "is_ongoing must never appear in the DO UPDATE")
+  // The sighting window still merges rather than overwrites.
+  assert.match(sql, /"first_seen_month" = LEAST\(/)
+  assert.match(sql, /"last_seen_month" = GREATEST\(/)
 })
 
 /* ========================================================================== */
