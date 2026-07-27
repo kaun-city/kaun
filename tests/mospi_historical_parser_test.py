@@ -20,6 +20,8 @@ Each era is represented because each era broke something different:
   2015-04  the delay column's header bled into the anticipated-date column
   2020-04  the widest layout, and the one whose serial numbers are glued
   2024-04  no readable consolidated annexure; one of the five partition tables
+  2024-10  the transitional format: modern column semantics, but no cell
+           borders and no number row — read from its own printed gutters
 """
 import json
 import os
@@ -409,6 +411,181 @@ def test_rows_off_a_real_page():
           ("03/2020", "12/2020"))
     # Every row on this page carries an identity.
     check("no row lost its code", sum(1 for r in records if not r["ocms_code"]), 0)
+
+
+# ---------------------------------------------------------------------------
+# the transitional (October 2024) format
+# ---------------------------------------------------------------------------
+
+def test_transitional_title_detection():
+    # Only the full ongoing list ("… as of <date>") is the transitional
+    # annexure. The North-East subset shares the layout and must stay out, and
+    # so must the month-delta tables and the contents page's list of titles.
+    rx = P.TRANSITIONAL_TITLE_RE
+    check_true("table 7 is transitional",
+               bool(rx.search("Table:-7. Project List: Ongoing Projects as of 31st October 2024")))
+    for other in ("Table:-6. Project List: Ongoing Projects of North-East Region",
+                  "Table:-3. Project List: Completed during October 2024",
+                  "Table:-4. Project List: Added during October 2024",
+                  "Table:-5. Project List: Frozen/Deleted during October 2024"):
+        check(f"not transitional: {other[:40]}", bool(rx.search(other)), False)
+
+
+def test_transitional_header_ladder():
+    check("state", P.classify_transitional_header("State"), "state")
+    check("sector", P.classify_transitional_header("Sector"), "sector")
+    check("serial", P.classify_transitional_header("Sl No"), "sl_no")
+    check("project", P.classify_transitional_header(
+        "Project Name (Agency Name) (Project Code)"), "project")
+    check("approval", P.classify_transitional_header(
+        "Date of Approval (MM/YYYY)"), "approval")
+    check("doc", P.classify_transitional_header(
+        "Date of Commissioning Original (Revised) {Anticipated} (MM/YYYY)"), "doc")
+    # "in Rs. Crore" appears under BOTH money columns; expenditure must win its
+    # own column before the bare cost test runs.
+    check("cost", P.classify_transitional_header(
+        "Cost Original (Revised) {Anticipated} in Rs. Crore"), "cost")
+    check("expenditure", P.classify_transitional_header(
+        "Cumulative Expenditure in Rs. Crore"), "cumulative_expenditure")
+    check("progress", P.classify_transitional_header("Physical Progress (%)"),
+          "physical_progress")
+    check("blank", P.classify_transitional_header("  "), None)
+
+
+def test_transitional_wrapped_values():
+    # The wrapper character IS the column: bare/(revised)/{anticipated}.
+    check("bare is original", P.transitional_wrapped("417.23"), ("original", "417.23"))
+    check("parens are revised approved", P.transitional_wrapped("(707.73)"),
+          ("revised", "707.73"))
+    check("braces are anticipated", P.transitional_wrapped("{707.73}"),
+          ("anticipated", "707.73"))
+    check("NA in parens", P.transitional_wrapped("(N.A.)"), ("revised", "N.A."))
+
+
+def test_transitional_months():
+    check("slash month", P.clean_transitional_month("9/2018"), "09/2018")
+    # The revised APPROVED date is the one value printed as "May-23".
+    check("Mon-YY", P.clean_transitional_month("May-23"), "05/2023")
+    check("Mon-YY unpadded", P.clean_transitional_month("Dec-21"), "12/2021")
+    check("NA", P.clean_transitional_month("N.A."), None)
+    check("not a month", P.clean_transitional_month("417.23"), None)
+
+
+def test_transitional_project_cell():
+    got = P.parse_transitional_project_cell(
+        "CONSTRUCTION OF NEW INTEGRATED TERMINAL BUILDING AT VSI AIRPORT, "
+        "PORTBLAIR (AAI) (N04000073)")
+    check("name", got["project_name"],
+          "CONSTRUCTION OF NEW INTEGRATED TERMINAL BUILDING AT VSI AIRPORT, PORTBLAIR")
+    check("agency", got["agency"], "AAI")
+    check("code", got["ocms_code"], "N04000073")
+
+    # A parenthesised figure in the NAME must stay in the name; the code is the
+    # last OCMS-shaped group, and the balanced group before it is the agency —
+    # including agencies that nest parens.
+    got = P.parse_transitional_project_cell(
+        "LUDHIANA KILA RAIPUR (19 KMS) WITH FREIGHT LINE "
+        "(Central Organisation for Railway Electrification (CORE)) (N22000584)")
+    check("nested agency", got["agency"],
+          "Central Organisation for Railway Electrification (CORE)")
+    check("name keeps its own parens", got["project_name"],
+          "LUDHIANA KILA RAIPUR (19 KMS) WITH FREIGHT LINE")
+    check("nested code", got["ocms_code"], "N22000584")
+
+    got = P.parse_transitional_project_cell("SOME PROJECT WITH NO CODE")
+    check("no code", got["ocms_code"], None)
+    check("no code keeps name", got["project_name"], "SOME PROJECT WITH NO CODE")
+
+
+def test_transitional_rows_off_a_real_page():
+    fixture = load("2024-10-transitional")
+    page = FixturePage(fixture["words"])
+    lines = P.visual_lines(page)
+    warnings = []
+    entry = P.transitional_page_entry(lines, fixture["page"], warnings)
+    check_true("header block found", entry is not None, f"(warnings {warnings})")
+
+    _edges, nbands = P.transitional_band_edges(
+        [w for _top, ws in entry["data"] for w in ws])
+    check("nine columns off one page", nbands, 9)
+
+    records, health, pages_used = P.read_transitional([entry], warnings)
+    check("pages used", pages_used, 1)
+    check("rows on the page", len(records), 7)
+    check("serials run from 1", health["starts_at"], 1)
+    check("no serial gap", health["forward_gap"], 0)
+
+    first = records[0]
+    check("state", first["state"], "ANDAMAN AND NICOBAR ISLANDS")
+    check("sector", first["sector"], "CIVIL AVIATION")
+    check("code", first["ocms_code"], "N04000073")
+    check("agency", first["agency"], "AAI")
+    check_true("name spans its wrapped lines",
+               first["project_name"].startswith("CONSTRUCTION OF NEW INTEGRATED TERMINAL"),
+               f"(got {first['project_name']!r})")
+    check("approval", first["approval_date"], "10/2013")
+    check("original DoC", first["original_target_doc"], "09/2018")
+    check("anticipated DoC is the revised one", first["revised_doc"], "06/2023")
+    check("revised approved DoC read from Mon-YY", first["approved_revised_doc"], "05/2023")
+    check("original cost", first["original_cost_cr"], 417.23)
+    check("anticipated cost is the revised one", first["revised_cost_cr"], 707.73)
+    check("revised approved cost", first["latest_approved_cost_cr"], 707.73)
+    check("expenditure", first["cumulative_expenditure_cr"], 698.8)
+    check("progress", first["physical_progress_pct"], 100.0)
+
+    # Sector changes on row 2, state carries; both carry through row 4+,
+    # whose labels the report does not reprint.
+    check("sector moves with its label", records[1]["sector"], "RAILWAYS")
+    check("state carries forward", records[3]["state"], "ANDAMAN AND NICOBAR ISLANDS")
+    check("sector carries forward", records[3]["sector"], "ROAD TRANSPORT AND HIGHWAYS")
+    # An (N.A.) revised line is an absent value, not a parse failure.
+    check("NA revised approved DoC", records[1]["approved_revised_doc"], None)
+    check("every row has a code", sum(1 for r in records if not r["ocms_code"]), 0)
+
+
+def test_transitional_total_line_is_not_a_row():
+    # The grand-total block at the annexure's foot ("Total 2,609,935.22 … /
+    # (-) / {3,109,678.35}") must close the open row and attach to nothing.
+    # A minimal page mimicking the real geometry: all nine columns present in
+    # the data (the reader refuses anything else) and a header row to name them.
+    word = lambda t, x, top: {"text": t, "x0": x, "x1": x + 4 * len(t), "top": top}
+    entry = {"pageno": 1, "header": [(0, [
+        word("State", 40, 0), word("Sector", 90, 0), word("Sl.No", 142, 0),
+        word("Project", 165, 0), word("Approval", 290, 0),
+        word("Commissioning", 330, 0), word("Cost", 400, 0),
+        word("Expenditure", 468, 0), word("Progress", 540, 0)])], "data": [
+        (0, [word("WEST", 40, 0), word("WATER", 90, 0), word("1", 145, 0),
+             word("PROJECT", 165, 0), word("ALPHA", 195, 0),
+             word("1/2018", 290, 0), word("12/2021", 345, 0), word("172.10", 400, 0),
+             word("47.20", 470, 0), word("100", 540, 0)]),
+        (10, [word("(KMDA)", 165, 10)]),
+        (20, [word("(N30000048)", 165, 20)]),
+        (30, [word("Total", 165, 30), word("2,609,935.22", 400, 30),
+              word("1,644,087.19", 470, 30)]),
+        (40, [word("(-)", 400, 40)]),
+        (50, [word("{3,109,678.35}", 400, 50)]),
+    ]}
+    warnings = []
+    records, health, _pages = P.read_transitional([entry], warnings)
+    check("one row, not two", len(records), 1)
+    check("the total is not in the name", records[0]["project_name"], "PROJECT ALPHA")
+    check("agency", records[0]["agency"], "KMDA")
+    check("the grand total never becomes a cost", records[0]["original_cost_cr"], 172.10)
+
+    # A name that merely CONTAINS the word — this report really does wrap names
+    # onto lines like "(TOTAL LENGTH 27.10 KM) ON" — is not a total row, and
+    # treating it as one would truncate the name without disturbing the serial
+    # run that would otherwise catch it.
+    entry["data"] = entry["data"][:1] + [
+        (10, [word("(TOTAL", 165, 10), word("LENGTH", 191, 10), word("27.10", 217, 10),
+              word("KM)", 239, 10)]),
+    ] + entry["data"][1:]
+    warnings = []
+    records, _health, _pages = P.read_transitional([entry], warnings)
+    check("a name containing TOTAL survives", records[0]["project_name"],
+          "PROJECT ALPHA (TOTAL LENGTH 27.10 KM)")
+    check("its agency is still read", records[0]["agency"], "KMDA")
+    check("its code is still read", records[0]["ocms_code"], "N30000048")
 
 
 def main():

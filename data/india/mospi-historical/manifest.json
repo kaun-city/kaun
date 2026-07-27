@@ -1085,28 +1085,21 @@
     {
       "report_month": "2024-10",
       "source_pdf": "2024-25_10_October.pdf",
-      "era": "unknown",
+      "era": "transitional",
       "parser_version": "flash-report-historical/v1",
-      "stated_project_count": null,
-      "extracted_count": 0,
-      "distinct_ocms_codes": 0,
-      "rows_written": 0,
+      "stated_project_count": 1747,
+      "extracted_count": 1747,
+      "distinct_ocms_codes": 1747,
+      "rows_written": 1747,
       "serial_forward_gap": 0,
       "serial_backward_steps": 0,
-      "median_original_cost_cr": null,
-      "pages_used": 0,
+      "median_original_cost_cr": 586,
+      "pages_used": 223,
       "total_pages": 278,
-      "gate": "refused",
-      "gate_failures": [
-        "no ongoing-project annexure was identified",
-        "no rows were extracted",
-        "unit check: no original cost figures at all"
-      ],
+      "gate": "ok",
+      "gate_failures": [],
       "gate_notes": [],
-      "warnings": [
-        "no consolidated annexure and an incomplete partition set; annexures seen: []",
-        "no ongoing-project annexure could be identified"
-      ]
+      "warnings": []
     }
   ]
 }
