@@ -884,197 +884,176 @@
       "era": "partitioned",
       "parser_version": "flash-report-historical/v1",
       "stated_project_count": 1666,
-      "extracted_count": 1548,
-      "distinct_ocms_codes": 1535,
-      "rows_written": 0,
+      "extracted_count": 1665,
+      "distinct_ocms_codes": 1665,
+      "rows_written": 1665,
       "serial_forward_gap": 0,
-      "serial_backward_steps": 1,
-      "median_original_cost_cr": 446.77,
-      "pages_used": 106,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 453.63,
+      "pages_used": 116,
       "total_pages": 590,
-      "gate": "refused",
-      "gate_failures": [
-        "the report states 1666 ongoing projects but 1535 distinct OCMS code(s) were extracted",
-        "13 duplicate OCMS code(s)"
-      ],
+      "gate": "ok",
+      "gate_failures": [],
       "gate_notes": [
-        "the annexure's numbering steps backwards 1 time(s) — MoSPI renumbering, no rows lost"
+        "the report states 1666 ongoing projects but 1665 distinct OCMS code(s) were extracted (within the ±8 tolerance)"
       ],
       "warnings": [
-        "on_schedule: the annexure's own numbering steps backwards 1 time(s) — MoSPI renumbering, no rows lost",
-        "13 OCMS code(s) appear more than once (e.g. ['N06000035', 'N06000044', 'N10000014', 'N16000273', 'N16000315'])"
+        "ahead: 13 of 21 row(s) re-list projects the schedule-status cuts already carry — dropped in favour of the primary cut's rows"
       ]
     },
     {
       "report_month": "2021-04",
       "source_pdf": "2021-22_04_FR_APr_2021.pdf",
-      "era": "consolidated",
+      "era": "partitioned",
       "parser_version": "flash-report-historical/v1",
       "stated_project_count": 1737,
-      "extracted_count": 1737,
-      "distinct_ocms_codes": 1615,
-      "rows_written": 0,
+      "extracted_count": 1735,
+      "distinct_ocms_codes": 1735,
+      "rows_written": 1735,
       "serial_forward_gap": 0,
       "serial_backward_steps": 0,
-      "median_original_cost_cr": 456.32,
-      "pages_used": 93,
+      "median_original_cost_cr": 450,
+      "pages_used": 125,
       "total_pages": 732,
-      "gate": "refused",
-      "gate_failures": [
-        "the report states 1737 ongoing projects but 1615 distinct OCMS code(s) were extracted"
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [
+        "the report states 1737 ongoing projects but 1735 distinct OCMS code(s) were extracted (within the ±9 tolerance)"
       ],
-      "gate_notes": [],
-      "warnings": []
+      "warnings": [
+        "the consolidated annexure does not account for itself (122 row(s) carry no OCMS code); reading the schedule-status partition instead",
+        "ahead: 14 of 23 row(s) re-list projects the schedule-status cuts already carry — dropped in favour of the primary cut's rows"
+      ]
     },
     {
       "report_month": "2021-10",
       "source_pdf": "2021-22_10_FR_oct_2021.pdf",
-      "era": "consolidated",
+      "era": "partitioned",
       "parser_version": "flash-report-historical/v1",
       "stated_project_count": 1680,
-      "extracted_count": 1680,
-      "distinct_ocms_codes": 1601,
-      "rows_written": 0,
-      "serial_forward_gap": 300,
+      "extracted_count": 1677,
+      "distinct_ocms_codes": 1677,
+      "rows_written": 1677,
+      "serial_forward_gap": 0,
       "serial_backward_steps": 0,
-      "median_original_cost_cr": 462.3,
-      "pages_used": 93,
+      "median_original_cost_cr": 466,
+      "pages_used": 121,
       "total_pages": 716,
-      "gate": "refused",
-      "gate_failures": [
-        "the annexure's own numbering skips 300 row(s) that were not extracted (1680 row(s) extracted)",
-        "the report states 1680 ongoing projects but 1601 distinct OCMS code(s) were extracted"
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [
+        "the report states 1680 ongoing projects but 1677 distinct OCMS code(s) were extracted (within the ±8 tolerance)"
       ],
-      "gate_notes": [],
       "warnings": [
-        "consolidated: the annexure's own numbering skips 300 row(s) that were not extracted"
+        "consolidated: the annexure's own numbering skips 300 row(s) that were not extracted",
+        "the consolidated annexure does not account for itself (its numbering skips 300 row(s)); reading the schedule-status partition instead",
+        "ahead: 8 of 17 row(s) re-list projects the schedule-status cuts already carry — dropped in favour of the primary cut's rows"
       ]
     },
     {
       "report_month": "2022-04",
       "source_pdf": "2022-23_04_FR_APr_2022.pdf",
-      "era": "consolidated",
+      "era": "partitioned",
       "parser_version": "flash-report-historical/v1",
       "stated_project_count": null,
-      "extracted_count": 1547,
-      "distinct_ocms_codes": 1455,
-      "rows_written": 0,
-      "serial_forward_gap": 12,
+      "extracted_count": 1559,
+      "distinct_ocms_codes": 1559,
+      "rows_written": 1559,
+      "serial_forward_gap": 0,
       "serial_backward_steps": 0,
-      "median_original_cost_cr": 483.87,
-      "pages_used": 84,
+      "median_original_cost_cr": 478.74,
+      "pages_used": 125,
       "total_pages": 708,
-      "gate": "refused",
-      "gate_failures": [
-        "the annexure's own numbering skips 12 row(s) that were not extracted (1547 row(s) extracted)"
-      ],
+      "gate": "ok",
+      "gate_failures": [],
       "gate_notes": [],
       "warnings": [
-        "consolidated: the annexure's own numbering skips 12 row(s) that were not extracted"
+        "the consolidated annexure does not account for itself (90 row(s) carry no OCMS code); reading the schedule-status partition instead",
+        "ahead: 7 of 13 row(s) re-list projects the schedule-status cuts already carry — dropped in favour of the primary cut's rows"
       ]
     },
     {
       "report_month": "2022-10",
       "source_pdf": "2022-23_10_FR_oct_2022.pdf",
-      "era": "unknown",
+      "era": "partitioned",
       "parser_version": "flash-report-historical/v1",
       "stated_project_count": null,
-      "extracted_count": 0,
-      "distinct_ocms_codes": 0,
-      "rows_written": 0,
+      "extracted_count": 1521,
+      "distinct_ocms_codes": 1521,
+      "rows_written": 1521,
       "serial_forward_gap": 0,
       "serial_backward_steps": 0,
-      "median_original_cost_cr": null,
-      "pages_used": 0,
+      "median_original_cost_cr": 473.22,
+      "pages_used": 120,
       "total_pages": 710,
-      "gate": "refused",
-      "gate_failures": [
-        "no ongoing-project annexure was identified",
-        "no rows were extracted",
-        "unit check: no original cost figures at all"
-      ],
+      "gate": "ok",
+      "gate_failures": [],
       "gate_notes": [],
       "warnings": [
-        "no consolidated annexure and an incomplete partition set; annexures seen: ['delayed', 'other', 'without_doc']",
-        "no ongoing-project annexure could be identified"
+        "ahead: 3 of 13 row(s) re-list projects the schedule-status cuts already carry — dropped in favour of the primary cut's rows"
       ]
     },
     {
       "report_month": "2023-04",
       "source_pdf": "2023-24_04_FR_APril_2023.pdf",
-      "era": "unknown",
+      "era": "partitioned",
       "parser_version": "flash-report-historical/v1",
       "stated_project_count": null,
-      "extracted_count": 0,
-      "distinct_ocms_codes": 0,
-      "rows_written": 0,
+      "extracted_count": 1601,
+      "distinct_ocms_codes": 1601,
+      "rows_written": 1601,
       "serial_forward_gap": 0,
       "serial_backward_steps": 0,
-      "median_original_cost_cr": null,
-      "pages_used": 0,
+      "median_original_cost_cr": 515.45,
+      "pages_used": 130,
       "total_pages": 758,
-      "gate": "refused",
-      "gate_failures": [
-        "no ongoing-project annexure was identified",
-        "no rows were extracted",
-        "unit check: no original cost figures at all"
-      ],
+      "gate": "ok",
+      "gate_failures": [],
       "gate_notes": [],
       "warnings": [
-        "no consolidated annexure and an incomplete partition set; annexures seen: ['delayed', 'other', 'without_doc']",
-        "no ongoing-project annexure could be identified"
+        "ahead: 9 of 20 row(s) re-list projects the schedule-status cuts already carry — dropped in favour of the primary cut's rows"
       ]
     },
     {
       "report_month": "2023-10",
       "source_pdf": "2023-24_10_FR_oct_2023.pdf",
-      "era": "unknown",
+      "era": "partitioned",
       "parser_version": "flash-report-historical/v1",
       "stated_project_count": null,
-      "extracted_count": 0,
-      "distinct_ocms_codes": 0,
-      "rows_written": 0,
+      "extracted_count": 1782,
+      "distinct_ocms_codes": 1782,
+      "rows_written": 1782,
       "serial_forward_gap": 0,
       "serial_backward_steps": 0,
-      "median_original_cost_cr": null,
-      "pages_used": 0,
+      "median_original_cost_cr": 517.05,
+      "pages_used": 141,
       "total_pages": 741,
-      "gate": "refused",
-      "gate_failures": [
-        "no ongoing-project annexure was identified",
-        "no rows were extracted",
-        "unit check: no original cost figures at all"
-      ],
+      "gate": "ok",
+      "gate_failures": [],
       "gate_notes": [],
       "warnings": [
-        "no consolidated annexure and an incomplete partition set; annexures seen: ['delayed', 'other', 'without_doc']",
-        "no ongoing-project annexure could be identified"
+        "ahead: 17 of 61 row(s) re-list projects the schedule-status cuts already carry — dropped in favour of the primary cut's rows"
       ]
     },
     {
       "report_month": "2024-04",
       "source_pdf": "2024-25_04_April_Part-II_List_of_tables.pdf",
-      "era": "unknown",
+      "era": "partitioned",
       "parser_version": "flash-report-historical/v1",
       "stated_project_count": null,
-      "extracted_count": 0,
-      "distinct_ocms_codes": 0,
-      "rows_written": 0,
+      "extracted_count": 1825,
+      "distinct_ocms_codes": 1825,
+      "rows_written": 1825,
       "serial_forward_gap": 0,
       "serial_backward_steps": 0,
-      "median_original_cost_cr": null,
-      "pages_used": 0,
+      "median_original_cost_cr": 564,
+      "pages_used": 143,
       "total_pages": 572,
-      "gate": "refused",
-      "gate_failures": [
-        "no ongoing-project annexure was identified",
-        "no rows were extracted",
-        "unit check: no original cost figures at all"
-      ],
+      "gate": "ok",
+      "gate_failures": [],
       "gate_notes": [],
       "warnings": [
-        "no consolidated annexure and an incomplete partition set; annexures seen: ['delayed', 'other', 'without_doc']",
-        "no ongoing-project annexure could be identified"
+        "ahead: 1 of 39 row(s) re-list projects the schedule-status cuts already carry — dropped in favour of the primary cut's rows"
       ]
     },
     {

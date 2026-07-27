@@ -19,7 +19,7 @@ Each era is represented because each era broke something different:
   2012-04  the annexure is titled "Sector Wise Details"
   2015-04  the delay column's header bled into the anticipated-date column
   2020-04  the widest layout, and the one whose serial numbers are glued
-  2024-04  no consolidated annexure; this is one of the three partition tables
+  2024-04  no readable consolidated annexure; one of the five partition tables
 """
 import json
 import os
@@ -183,6 +183,16 @@ def test_annexure_kind():
           "on_schedule")
     check("without-DoC partition",
           P.annexure_kind("Details of Projects Without Date of Commissioning"), "without_doc")
+    # The two cuts the post-2020 partition was originally missing. "Without
+    # ORIGINAL Date of Commissioning" is a distinct annexure, not a re-cut —
+    # without it October 2020 reconciles 118 rows short — and it must never be
+    # swallowed by the without_doc pattern.
+    check("without-ORIGINAL-DoC partition",
+          P.annexure_kind("Details of Projects Without Original Date of Commissioning"),
+          "without_original_doc")
+    check("ahead partition",
+          P.annexure_kind("Details of Projects Ahead of Schedule w.r.t. Original Schedule"),
+          "ahead")
     # These are re-cuts of rows the ongoing annexures already carry.
     for other in ("List of ongoing projects having cost overrun w.r.t. to Latest Approved Cost",
                   "Details of Projects Without Milestones w.r.t. Original Schedule",
@@ -190,6 +200,53 @@ def test_annexure_kind():
                   "Month wise List of Completed Projects",
                   "Details of Ongoing Projects Under -Public Private Partnership Mode"):
         check(f"other: {other[:40]}", P.annexure_kind(other), "other")
+
+
+def test_accounting_failure_names_what_broke():
+    # The checks that decide whether a consolidated annexure can be trusted or
+    # the report should fall back to its schedule-status partition. April 2021
+    # is the motivating case: a clean 1..1737 serial run whose road pages print
+    # the serial at the bottom of each block, shifting 122 codes off their rows.
+    ok = [{"ocms_code": "A1"}, {"ocms_code": "A2"}]
+    clean = {"c": {"forward_gap": 0, "starts_at": 1}}
+    check("clean read passes", P.accounting_failure(ok, clean), None)
+    check("a forward gap is named",
+          P.accounting_failure(ok, {"c": {"forward_gap": 3, "starts_at": 1}}),
+          "its numbering skips 3 row(s)")
+    check("a missed leading page is named",
+          P.accounting_failure(ok, {"c": {"forward_gap": 0, "starts_at": 12}}),
+          "its numbering does not start at 1")
+    check("codeless rows are named",
+          P.accounting_failure([{"ocms_code": "A1"}, {"ocms_code": None}], clean),
+          "1 row(s) carry no OCMS code")
+    check("duplicated codes are named",
+          P.accounting_failure([{"ocms_code": "A1"}, {"ocms_code": "A1"}], clean),
+          "1 OCMS code(s) appear more than once")
+
+
+def test_ahead_relistings_are_dropped_in_favour_of_the_primary_cut():
+    # October 2020's "Ahead of Schedule" annexure re-lists 13 of its 21 projects
+    # from the delayed and on-schedule cuts (they are ahead of their LATEST
+    # schedule, not their original one). The re-listings must go — they would
+    # trip the loader's duplicate-code gate — and the rows unique to the ahead
+    # annexure must stay, because they complete the partition.
+    def row(code, annexure):
+        return {"ocms_code": code, "annexure": annexure}
+    records = [row("A1", "delayed"), row("A2", "on_schedule"), row("A3", "without_doc"),
+               row("A1", "ahead"), row("A4", "ahead"), row(None, "ahead")]
+    warnings = []
+    kept = P.drop_ahead_relistings(records, warnings)
+    check("relisted ahead row dropped",
+          [(r["ocms_code"], r["annexure"]) for r in kept],
+          [("A1", "delayed"), ("A2", "on_schedule"), ("A3", "without_doc"),
+           ("A4", "ahead"), (None, "ahead")])
+    check_true("the drop is recorded", warnings and "1 of 3" in warnings[0],
+               f"(got {warnings})")
+    # No ahead annexure at all — records pass through untouched, no warning.
+    warnings = []
+    untouched = [row("A1", "delayed"), row("A2", "without_original_doc")]
+    check("no ahead, no change", P.drop_ahead_relistings(untouched, warnings), untouched)
+    check("no ahead, no warning", warnings, [])
 
 
 # ---------------------------------------------------------------------------

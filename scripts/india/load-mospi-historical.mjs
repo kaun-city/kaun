@@ -67,16 +67,16 @@
  * OCMS code in it, so every row would land as its own identity keyed on nothing
  * stable, and the "time series" would be 200 disconnected points per year.
  *
- * October 2020 onward. MoSPI stopped printing a consolidated annexure and split
- * the ongoing list by schedule status. The three schedule-status annexures parse
- * cleanly but their union does not reconcile to the report's own count (October
- * 2020: 1,548 rows against a stated 1,666), so they are not the partition they
- * look like. The gate refuses those months rather than publishing a series that
- * is quietly 7% short.
+ * That era is inventoried in data/india/mospi-historical/archive-inventory.csv,
+ * refused with a stated reason in manifest.json, and documented as an open gap
+ * in that directory's METHODOLOGY.md.
  *
- * Both are inventoried in data/india/mospi-historical/archive-inventory.csv,
- * refused with a stated reason in manifest.json, and documented as open gaps in
- * that directory's METHODOLOGY.md.
+ * (October 2020 onward once sat in this list too — the ongoing list is split by
+ * schedule status there, and the union of the three annexures it APPEARS to be
+ * split into runs 118 short of the report's own count. The real partition is
+ * five annexures, two of which were being misread as re-cuts; see PARTITION_RES
+ * in scripts/india/mospi/parse_historical_report.py. Those months now
+ * reconcile and load.)
  */
 import { execFileSync } from "child_process"
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync } from "fs"
