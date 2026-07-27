@@ -68,7 +68,7 @@ occasional step whose **output** is committed here.
 
 ---
 
-## The three eras
+## The eras
 
 Established by reading one report per financial year across the whole archive.
 
@@ -76,7 +76,8 @@ Established by reading one report per financial year across the whole archive.
 |---|---|---|
 | April 2001 … April 2009 | Summary-only reports (17-50 pages). A per-project table exists but prints **no OCMS project code**, and stacks original / (revised) / [anticipated] inside single cells. | **No** — see the identity floor below |
 | October 2009 … April 2020 | One consolidated annexure holding every ongoing project — titled "Sector Wise Details" (2012-2016), "Detail of ongoing Projects Costing Rs 150 Crore and above" (2017-2020), or **untitled** (2009-2011, and October 2016) | Yes — this is what is committed here |
-| October 2020 … 2024-25 | **No trustworthy consolidated annexure.** One is often still printed, but it either has no column-number row to anchor on (October 2020) or misattributes rows when read serial-first (April 2021). The ongoing list is instead read from its **five-way partition** — see below | Yes — the partition reconciles; see below |
+| October 2020 … April 2024 | **No trustworthy consolidated annexure.** One is often still printed, but it either has no column-number row to anchor on (October 2020) or misattributes rows when read serial-first (April 2021). The ongoing list is instead read from its **five-way partition** — see below | Yes — the partition reconciles; see below |
+| October 2024 | **Transitional.** The modern report's table numbering and column semantics, none of its cell borders, and no column-number row either — see below | Yes |
 
 The cutover between the first two rows falls **inside** 2009-10: the April 2009
 report has no coded annexure and the October 2009 one does. That is exactly why
@@ -166,6 +167,53 @@ Annexures 1-4 are required for a partitioned month to load; the ahead annexure
 is folded in when present but never required, because a month with nothing
 ahead of schedule prints no such annexure.
 
+### October 2024 — the transitional format
+
+One report sits between the eras, and it is the reason this backfill needed a
+second reader rather than a wider one. The archive's October 2024 file already
+prints the **modern** report's tables — `Table:-7. Project List: Ongoing
+Projects as of 31st October 2024` is the full ongoing list, Table 6 is the
+North-East subset — with the modern column semantics: one code per project, and
+original / (revised) / {anticipated} stacked inside single Date-of-Commissioning
+and Cost columns. The 2025-26 layout arrived a year early.
+
+But it draws **no cell borders**, so `parse_flash_report.py`'s line-coordinate
+strategy has nothing to anchor on; and it prints **no column-number row**, so
+the number-row anchors this parser uses everywhere else are absent too. Both
+parsers correctly refused it, which is why this month was a documented hole in
+the series rather than a wrong row in it.
+
+It is read from its own printed gutters instead. The x-intervals covered by the
+data words are pooled across all 223 pages of the annexure and merged across
+gaps narrower than 3pt; the nine intervals that survive **are** the columns, and
+the boundaries sit at the midpoints of the gaps between them. Pooling across
+every page is what makes this safe rather than a guess: a gutter survives only
+if no word on any page of the annexure crosses it, which is the definition of a
+column boundary in a machine-generated table. (The narrowest real gutter is
+4.3pt at its tightest; the widest gap *within* a column is under 2pt.) The
+columns are then named from the header block through the same kind of ordered
+ladder, for the same reason — "Cumulative Expenditure in Rs. Crore" must not be
+caught by the bare cost test. A page whose bands do not map to exactly the nine
+expected fields is refused rather than read.
+
+The wrapper character carries the semantics the older formats spread across
+separate columns, and the report's own header says so: a bare figure is the
+**original**, `(...)` is the **revised approved** one, `{...}` is the
+**anticipated** one. The anticipated figure maps to `revised_cost_cr` /
+`revised_doc_month` exactly as in every other era, and the revised approved
+figures ride along in `snapshots.raw` — the mapping the whole dataset hangs on,
+below, is unchanged. This is also the only place a date is printed as `May-23`
+rather than `5/2023`, in the revised approved commissioning line.
+
+The `(N24000821)` codes it prints are OCMS codes in parentheses instead of
+brackets — the same identity space as `[N24000821]` in the April 2024 report six
+months earlier, and the same values the 2025-26 Table 6 later carries as
+`legacy_ocms_code` beside its new bare-digit `project_code`. So the month joins
+the series on the same key as every other, with no special case downstream.
+
+It gates like any other report: 1,747 rows, serials a contiguous 1..1,747, 1,747
+distinct codes, none missing, against the 1,747 the report's own Table 1 states.
+
 ---
 
 ## The identity floor — why 2001-2009 is a gap and not a guess
@@ -242,7 +290,9 @@ Each report is checked against itself before a single row is written:
    disagrees with itself: October 2014 opens with "the status of the 748 Central
    Sector Infrastructure Projects" while its own summary table says "No of
    Projects in Current Month 747" and its annexure lists exactly 747. A wider gap
-   means the wrong annexure is being read, and stays fatal.
+   means the wrong annexure is being read, and stays fatal. The transitional
+   October 2024 report states no count in prose; its figure is the Total row of
+   its own sector-wise overview table.
 3. **Units.** A report whose median original cost is below ₹50 crore is not
    denominated in crore — MoSPI only tracks projects of ₹150 crore and above.
 4. **The report month**, read off the stamp the annexure repeats on every one of
@@ -262,11 +312,6 @@ A refused report writes no CSV and records its reasons in `manifest.json`.
   the tables in separate PDFs; the Part-I files carry no per-project annexure
   and are refused ("no rows extracted"), which is correct — their months load
   from the Part-II files.
-- **October 2024** — the archive's October 2024 file is already the modern
-  bordered Table-6 document (the 2025-26 format arrived a year early), which is
-  `parse_flash_report.py`'s document, not this parser's. It is refused here and
-  stays a hole in the committed series until it is routed through the modern
-  parser.
 - **Density** — the committed series is annual and semi-annual anchors, not every
   month. The archive holds all 291 reports and the pipeline is per-report; adding
   months is a matter of fetching and parsing more of them, not of new code.

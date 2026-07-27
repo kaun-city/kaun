@@ -22,8 +22,8 @@ to latch onto and pdfplumber's table extraction returns nothing. A different
 document calls for a different reader; merging the two would produce one function
 with two disjoint halves and a flag.
 
-THE THREE ERAS
-==============
+THE ERAS
+========
 Established by reading one report per financial year, 2001-02 to 2024-25:
 
   2001-04 … 2009-04   summary-only reports (17-50 pages). The per-project table
@@ -55,6 +55,19 @@ Established by reading one report per financial year, 2001-02 to 2024-25:
                       October 2020: 539 + 194 + 794 + 130 + 8 = 1,665 distinct
                       codes against a stated 1,666 — inside the loader's
                       documented MoSPI-disagrees-with-itself tolerance.
+  October 2024        one report in a TRANSITIONAL format: the modern report's
+                      table numbering and column semantics ("Table:-7. Project
+                      List: Ongoing Projects as of 31st October 2024", a
+                      per-project code, Original/(Revised)/{Anticipated} stacked
+                      inside single Date-of-Commissioning and Cost columns) but
+                      NONE of the 2025-26 format's drawn cell borders, and no
+                      column-number row either — so neither parse_flash_report.py
+                      (which anchors on drawn lines) nor the number-row-anchored
+                      readers here can touch it. It gets its own reader below
+                      (see "THE TRANSITIONAL FORMAT"). Its "(N24000821)"-style
+                      project codes ARE the OCMS codes the rest of this series
+                      is keyed on — the modern bare-digit project_code did not
+                      exist yet — so its rows join the series like any other.
 
 THE IDENTITY FLOOR (why 2001-2009 is a documented gap, not a silent one)
 ------------------------------------------------------------------------
@@ -513,6 +526,327 @@ def annexure_kind(head_text):
 
 
 # ---------------------------------------------------------------------------
+# THE TRANSITIONAL FORMAT (October 2024)
+# ---------------------------------------------------------------------------
+# One report sits between the eras. October 2024 already prints the modern
+# report's tables ("Table:-7. Project List: Ongoing Projects as of 31st October
+# 2024" is the full ongoing list; Table 6 is the North-East subset), already
+# stacks Original/(Revised)/{Anticipated} inside single DoC and Cost columns,
+# and already prints one code per project — but draws no cell borders and
+# prints no column-number row, so neither the modern parser's line-coordinate
+# strategy nor the number-row anchors above have anything to hold on to.
+#
+# What it DOES have is nine columns separated by printed gutters that no word
+# crosses on any of its 223 table pages. So the columns are found from the
+# words themselves: the disjoint x-intervals covered by the data words, pooled
+# across every page of the annexure, ARE the columns, and the boundaries are
+# the midpoints of the gaps between them. Pooling across pages is what makes
+# this safe — a gutter survives only if no word on any page crosses it, which
+# is exactly the definition of a column boundary in a machine-generated table.
+#
+# The wrapper character carries the semantics the older formats spread across
+# separate columns: a bare value is the ORIGINAL figure, "(...)" is the REVISED
+# APPROVED one, "{...}" is the ANTICIPATED one — the report's own header says
+# so ("Original (Revised) {Anticipated}"). The anticipated figure maps to
+# revised_* exactly as in every other era (see the module docstring), and the
+# revised approved figure rides along to snapshots.raw.
+#
+# The "(N24000821)" codes this format prints in the project cell are OCMS
+# codes in parentheses instead of brackets — the same identity space as
+# "[N24000821]" in April 2024 six months earlier, and the same values the
+# 2025-26 Table 6 later carries as legacy_ocms_code beside its new bare-digit
+# project_code. They join the series' identity rule unchanged.
+
+TRANSITIONAL_TITLE_RE = re.compile(
+    r"project\s+list\s*:?[-–]?\s*ongoing\s+projects\s+as\s+of", re.I)
+# The OCMS code as this format prints it: "(N24000821)" — parens, not brackets.
+TRANSITIONAL_CODE_RE = re.compile(r"\(\s*([A-Z]?\d{6,})\s*\)")
+# "47 of 269" — the page footer, centred, which would otherwise bridge two
+# columns and glue their bands together.
+TRANSITIONAL_FOOTER_RE = re.compile(r"^\d{1,4}\s+of\s+\d{1,4}$")
+# Page furniture above the column header ("MOSPI_ ( October 2024) _FR_ …",
+# "Table:-7. …") spans the full width; letting it vote on the header text
+# would scatter title words like "Sector" and "Projects" across every band.
+TRANSITIONAL_NOISE_RE = re.compile(r"_FR_|^\s*table\s*:", re.I)
+# Two columns are distinct when the printed gutter between them is at least
+# this wide at its narrowest point across the whole annexure. The narrowest
+# real gutter in October 2024 (state|sector) is 4.3pt at its tightest; the
+# widest gap WITHIN a column is under 2pt.
+TRANSITIONAL_MIN_GAP = 3.0
+
+# The nine columns this format prints, named from its own header.
+TRANSITIONAL_FIELDS = frozenset((
+    "state", "sector", "sl_no", "project", "approval", "doc", "cost",
+    "cumulative_expenditure", "physical_progress"))
+
+# Ordered for the same reason COLUMN_RULES is: "Cumulative Expenditure in Rs.
+# Crore" must not be caught by a bare cost test.
+TRANSITIONAL_COLUMN_RULES = [
+    ("expenditure",   "cumulative_expenditure"),
+    ("commissioning", "doc"),
+    ("approval",      "approval"),
+    ("progress",      "physical_progress"),
+    ("project",       "project"),
+    ("cost",          "cost"),
+    ("state",         "state"),
+    ("sector",        "sector"),
+]
+
+
+def classify_transitional_header(text):
+    """Header text for one transitional column -> field name, or None."""
+    t = normalize_header(text)
+    if not t:
+        return None
+    for needle, field in TRANSITIONAL_COLUMN_RULES:
+        if needle in t:
+            return field
+    if re.search(r"s[li]?\.?n[o0]", t):
+        return "sl_no"
+    return None
+
+
+def transitional_band_edges(words, min_gap=TRANSITIONAL_MIN_GAP):
+    """
+    Column boundaries for the borderless transitional layout: merge the words'
+    x-intervals across gaps narrower than min_gap; the surviving gaps are the
+    printed gutters and the boundaries sit at their midpoints.
+    Returns (edges, band_count).
+    """
+    spans = sorted((w["x0"], w["x1"]) for w in words)
+    bands = []
+    for x0, x1 in spans:
+        if bands and x0 - bands[-1][1] < min_gap:
+            bands[-1][1] = max(bands[-1][1], x1)
+        else:
+            bands.append([x0, x1])
+    edges = [(a[1] + b[0]) / 2 for a, b in zip(bands, bands[1:])]
+    return edges, len(bands)
+
+
+# The revised APPROVED date is the one value this format prints as "May-23"
+# instead of "5/2023". Two-digit years are unambiguous here: no revised
+# approved date in an October 2024 report predates 2000.
+TRANSITIONAL_MONYY_RE = re.compile(r"^([A-Za-z]{3,9})[-\s]?(\d{2})$")
+
+
+def clean_transitional_month(v):
+    """'9/2018' or 'May-23' -> 'MM/YYYY'; anything else -> None."""
+    got = clean_month(v)
+    if got is not None:
+        return got
+    v = none_if_dash(v)
+    if v is None:
+        return None
+    m = TRANSITIONAL_MONYY_RE.match(v)
+    if not m:
+        return None
+    mon = MONTH_ABBR.get(m.group(1)[:3].upper())
+    if mon is None:
+        return None
+    return f"{mon:02d}/20{m.group(2)}"
+
+
+def transitional_wrapped(value):
+    """
+    '417.23' -> ('original', '417.23'); '(707.73)' -> ('revised', '707.73');
+    '{707.73}' -> ('anticipated', '707.73'). The wrapper IS the column
+    semantics in this format — the header stacks all three quantities into one
+    printed column and distinguishes them exactly this way.
+    """
+    v = (value or "").strip()
+    if v.startswith("{") and v.endswith("}"):
+        return "anticipated", v[1:-1].strip()
+    if v.startswith("(") and v.endswith(")"):
+        return "revised", v[1:-1].strip()
+    return "original", v
+
+
+def parse_transitional_project_cell(text):
+    """
+    "CONSTRUCTION OF NITB (AAI) (N04000091)" -> name / agency / ocms_code.
+
+    The code is the LAST parenthesised OCMS-shaped group; the balanced paren
+    group before it is the agency (agencies nest parens, and project names
+    contain parenthesised figures that must stay in the name).
+    """
+    text = re.sub(r"\s+", " ", (text or "")).strip()
+    matches = list(TRANSITIONAL_CODE_RE.finditer(text))
+    if not matches:
+        return {"project_name": none_if_dash(text), "ocms_code": None, "agency": None}
+    m = matches[-1]
+    rest = (text[:m.start()] + " " + text[m.end():]).strip()
+    agency = None
+    if rest.endswith(")"):
+        depth = 0
+        for i in range(len(rest) - 1, -1, -1):
+            if rest[i] == ")":
+                depth += 1
+            elif rest[i] == "(":
+                depth -= 1
+                if depth == 0:
+                    agency = none_if_dash(rest[i + 1:-1])
+                    rest = rest[:i].strip()
+                    break
+    return {"project_name": none_if_dash(rest), "ocms_code": m.group(1),
+            "agency": agency}
+
+
+def transitional_page_entry(lines, pageno, warnings):
+    """
+    One transitional annexure page -> {pageno, header, data} line groups, or
+    None when the page's header block cannot be found. The header block ends
+    at the last "(MM/YYYY)" line; page footers are dropped here so they can
+    neither join a row nor glue two column bands together.
+    """
+    hdr_end = None
+    for i, (_top, ws) in enumerate(lines[:12]):
+        if any("MM/YYYY" in w["text"] for w in ws):
+            hdr_end = i
+    if hdr_end is None:
+        warnings.append(f"page {pageno}: transitional annexure page but no "
+                        "header block was found — page skipped")
+        return None
+    header = []
+    for top, ws in lines[:hdr_end + 1]:
+        if TRANSITIONAL_NOISE_RE.search(" ".join(w["text"] for w in ws)):
+            continue
+        header.append((top, ws))
+    data = []
+    for top, ws in lines[hdr_end + 1:]:
+        if TRANSITIONAL_FOOTER_RE.match(" ".join(w["text"] for w in ws).strip()):
+            continue
+        data.append((top, ws))
+    return {"pageno": pageno, "header": header, "data": data}
+
+
+def read_transitional(pages, warnings):
+    """
+    The transitional annexure's pages -> (records, serial health, pages used).
+
+    State and sector are group labels printed only on the row where they
+    change, wrapped over several lines in their own narrow columns; both carry
+    forward until the next label. Rows themselves are delimited by the serial
+    column, and a row's continuation lines (wrapped names, the (Revised) and
+    {Anticipated} lines) attach to the open row — across page breaks too,
+    which is why this reads all pages in one pass.
+    """
+    all_words = [w for p in pages for _top, ws in p["data"] for w in ws]
+    edges, nbands = transitional_band_edges(all_words)
+    header_text = {}
+    for _top, ws in pages[0]["header"]:
+        for i, text in bucket(ws, edges).items():
+            header_text[i] = (header_text.get(i, "") + " " + text).strip()
+    mapping = {}
+    for i in range(nbands):
+        field = classify_transitional_header(header_text.get(i, ""))
+        if field and field not in mapping.values():
+            mapping[i] = field
+    if set(mapping.values()) != TRANSITIONAL_FIELDS or nbands != len(TRANSITIONAL_FIELDS):
+        warnings.append(
+            f"transitional annexure: {nbands} column band(s) mapped to "
+            f"{sorted(mapping.values())} — the layout moved, refusing to guess")
+        return [], None, 0
+    col_of = {v: k for k, v in mapping.items()}
+
+    records = []
+    state = sector = None
+    pending = None
+
+    def flush():
+        nonlocal pending, state, sector
+        if pending is None:
+            return
+        p, pending = pending, None
+        if p["state"]:
+            state = " ".join(p["state"])
+        if p["sector"]:
+            sector = " ".join(p["sector"])
+        name = parse_transitional_project_cell(" ".join(p["project"]))
+        rec = {
+            "sl_no": p["sl_no"], "sector": sector, "annexure": "transitional",
+            "project_name": name["project_name"], "ocms_code": name["ocms_code"],
+            "agency": name["agency"], "state": state,
+            "approval_date": None, "original_target_doc": None, "revised_doc": None,
+            "original_cost_cr": None, "revised_cost_cr": None,
+            "cumulative_expenditure_cr": None, "physical_progress_pct": None,
+            "latest_approved_cost_cr": None, "approved_revised_doc": None,
+            "delay_months_reported": None, "milestones": None,
+            "source_page": p["source_page"],
+        }
+        for v in p["approval"]:
+            kind, val = transitional_wrapped(v)
+            # The parenthesised second line under Approval is the actual start
+            # date ("(May-23)"), which this schema does not carry.
+            if kind == "original" and rec["approval_date"] is None:
+                rec["approval_date"] = clean_month(val)
+        for v in p["doc"]:
+            kind, val = transitional_wrapped(v)
+            key = {"original": "original_target_doc", "revised": "approved_revised_doc",
+                   "anticipated": "revised_doc"}[kind]
+            if rec[key] is None:
+                rec[key] = clean_transitional_month(val)
+        for v in p["cost"]:
+            kind, val = transitional_wrapped(v)
+            key = {"original": "original_cost_cr", "revised": "latest_approved_cost_cr",
+                   "anticipated": "revised_cost_cr"}[kind]
+            if rec[key] is None:
+                rec[key] = clean_num(val)
+        if p["cumulative_expenditure"]:
+            rec["cumulative_expenditure_cr"] = clean_num(p["cumulative_expenditure"][0])
+        if p["physical_progress"]:
+            rec["physical_progress_pct"] = clean_num(p["physical_progress"][0])
+        records.append(rec)
+
+    label_fields = ("state", "sector", "sl_no", "project")
+    value_fields = ("project", "approval", "doc", "cost",
+                    "cumulative_expenditure", "physical_progress")
+    for page in pages:
+        for _top, ws in page["data"]:
+            cells = bucket(ws, edges)
+            # The grand total at the annexure's foot closes the open row and
+            # joins nothing. Recognised by its label bands reading EXACTLY
+            # "Total", not by a line merely starting with the word: project
+            # names in this report really do wrap onto lines like "(TOTAL
+            # LENGTH 27.10 KM) ON", and swallowing one would truncate a name
+            # without disturbing the serial run that would otherwise catch it.
+            label = " ".join((cells.get(col_of[f], "") or "").strip()
+                             for f in label_fields).strip().lower()
+            if label in ("total", "grand total"):
+                flush()
+                continue
+            sl_text = (cells.get(col_of["sl_no"], "") or "").strip()
+            if re.fullmatch(r"\d{1,6}", sl_text):
+                flush()
+                pending = {"sl_no": int(sl_text), "source_page": page["pageno"],
+                           "state": [], "sector": [],
+                           **{f: [] for f in value_fields}}
+            if pending is None:
+                # A label line before any row on the first page, or stray
+                # figures after a Total line: only the labels matter.
+                for band in ("state", "sector"):
+                    v = (cells.get(col_of[band], "") or "").strip()
+                    if v:
+                        if band == "state":
+                            state = v
+                        else:
+                            sector = v
+                continue
+            for band in ("state", "sector"):
+                v = (cells.get(col_of[band], "") or "").strip()
+                if v:
+                    pending[band].append(v)
+            for band in value_fields:
+                v = (cells.get(col_of[band], "") or "").strip()
+                if v:
+                    pending[band].append(v)
+    flush()
+
+    health = serial_health(records, "transitional", warnings)
+    return records, health, len(pages)
+
+
+# ---------------------------------------------------------------------------
 # Report-level metadata
 # ---------------------------------------------------------------------------
 
@@ -568,6 +902,21 @@ def parse_stated_count(pdf, report_month=None, max_pages=40):
     table.
     """
     pages = [(page.extract_text() or "").replace("\n", " ") for page in pdf.pages[:max_pages]]
+
+    # The transitional (October 2024) format states no count in prose; its
+    # figure is the Total row of "Table:-1. Overview of Ongoing Projects:
+    # Sector-wise Distribution". The title only exists in that format, so this
+    # cannot fire on any other era, and the tabulated figure is preferred for
+    # the same reason "No of Projects in Current Month" is below.
+    for text in pages:
+        if "Overview of Ongoing Projects" not in text:
+            continue
+        m = re.search(r"\bTotal\s+([\d,]{2,7})\s", text)
+        if m:
+            n = int(m.group(1).replace(",", ""))
+            if 50 <= n <= 20000:
+                return n
+
     own = None
     if report_month:
         year, month = int(report_month[:4]), int(report_month[5:7])
@@ -598,17 +947,26 @@ MERGE_MAX_PAGE_GAP = 25
 
 def build_runs(pdf, warnings):
     """
-    Candidate annexure pages, grouped into runs.
-
-    A run is a maximal stretch of pages (allowing a two-page gap for an
-    interleaved chart) that share a column-mapping SIGNATURE — the tuple of
-    field names the header ladder produced. Signature rather than title, because
-    two annexures with the same title can have different column sets across
-    years and, in 2010-11, the table pages carry no title at all.
+    Candidate annexure pages, grouped into runs — plus, separately, the pages
+    of the October 2024 transitional annexure, which prints neither the
+    bracketed codes nor the number row the runs machinery anchors on and is
+    read by read_transitional instead. Returns (runs, transitional_pages).
     """
     runs = []
+    transitional = []
     for pageno, page in enumerate(pdf.pages, start=1):
         text = page.extract_text() or ""
+        # The transitional annexure titles every one of its pages; the check is
+        # against the page head so the contents page's table list cannot match.
+        if TRANSITIONAL_TITLE_RE.search("\n".join(text.split("\n")[:4])):
+            ok, why = check_units(text)
+            if not ok:
+                warnings.append(f"page {pageno}: {why} — page skipped")
+                continue
+            entry = transitional_page_entry(visual_lines(page), pageno, warnings)
+            if entry:
+                transitional.append(entry)
+            continue
         if not OCMS_RE.search(text):
             continue
         lines = visual_lines(page)
@@ -659,7 +1017,7 @@ def build_runs(pdf, warnings):
                 runs[-1]["kind"] = kind
         else:
             runs.append({"signature": signature, "kind": kind, "pages": [entry]})
-    return merge_runs(runs)
+    return merge_runs(runs), transitional
 
 
 def merge_runs(runs):
@@ -1058,9 +1416,15 @@ def extract_projects(pdf_path):
         total_pages = len(pdf.pages)
         report_month = parse_report_month(pdf)
         stated_count = parse_stated_count(pdf, report_month)
-        runs = build_runs(pdf, warnings)
-        era, chosen = select_runs(runs, warnings)
-        records, per_annexure, serials, pages_used = read_chosen(chosen, warnings)
+        runs, transitional = build_runs(pdf, warnings)
+        if transitional:
+            era = "transitional"
+            records, health, pages_used = read_transitional(transitional, warnings)
+            per_annexure = {"transitional": len(records)}
+            serials = {"transitional": health} if health else {}
+        else:
+            era, chosen = select_runs(runs, warnings)
+            records, per_annexure, serials, pages_used = read_chosen(chosen, warnings)
 
         # A consolidated annexure is preferred — it is the list itself, and it
         # carries the fullest column set — but only while its own accounting

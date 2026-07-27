@@ -77,6 +77,13 @@
  * five annexures, two of which were being misread as re-cuts; see PARTITION_RES
  * in scripts/india/mospi/parse_historical_report.py. Those months now
  * reconcile and load.)
+ *
+ * (October 2024 sat here too. It is a transitional document — the modern
+ * report's tables and column semantics, but no cell borders and no
+ * column-number row, so BOTH parsers refused it. It now reads through the
+ * transitional path in parse_historical_report.py, which finds its columns from
+ * the printed gutters instead. Its "(N24000821)" project codes are the same
+ * OCMS codes this series is keyed on, so nothing here needed a special case.)
  */
 import { execFileSync } from "child_process"
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync } from "fs"
