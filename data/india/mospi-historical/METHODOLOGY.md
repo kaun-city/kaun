@@ -325,18 +325,32 @@ A refused report writes no CSV and records its reasons in `manifest.json`.
 - **State resolution** — see the section below. Two months of the series carry
   no state column at all and two of the post-2020 cuts have it clipped away by
   MoSPI; those rows stay NULL, on purpose.
-- **Duplicate identities from an earlier run** — 734 OCMS codes are currently
-  held by TWO `in_central_projects` rows: a real MoSPI `project_code` and a
-  synthetic `ocms:` one. They exist because PostgREST silently caps a read at
-  1,000 rows, so earlier runs of this loader matched against 615 of the table's
-  5,279 legacy codes and minted a new identity for every project they "did not
-  find". The read is paginated now (`selectRest` in `scripts/india/lib/sink.mjs`)
-  and no new identity is minted at all — every one of the 4,409 historical
-  projects matches an existing `project_code`. The existing duplicates are
-  listed in the loader's `duplicate-ocms-identities` review artifact; merging
-  two identities is a reviewed decision, not something a loader should do on its
-  own, so they are reported rather than collapsed. This loader writes to the
-  REAL `project_code` of each pair, never the synthetic twin.
+- **Duplicate identities from an earlier run** — 734 OCMS codes are held by
+  more than one `in_central_projects` row. They exist because PostgREST
+  silently caps a read at 1,000 rows, so earlier runs of this loader matched
+  against 615 of the table's 5,279 legacy codes and minted a new identity for
+  every project they "did not find". The read is paginated now (`selectRest` in
+  `scripts/india/lib/sink.mjs`) and no new identity is minted at all — every one
+  of the historical projects matches an existing `project_code`.
+
+  The 734 are not one thing, and only 708 of them are this bug:
+
+  | shape | count | disposition |
+  |---|---|---|
+  | 1 synthetic `ocms:` row + 1 real `project_code` | 708 | merged — see below |
+  | 1 synthetic row + 2–4 real `project_code`s | 12 | left intact: no unique survivor, and picking one would be a guess |
+  | 2–4 real `project_code`s, no synthetic row | 14 | MoSPI reissued the code across project rows; not this bug |
+
+  The 708 are collapsed by `scripts/india/merge-ocms-identities.mjs` from the
+  reviewed, committed pair list in `data/india/ocms-identity-merges.csv`. That
+  is deliberately a separate, signed, one-off script: merging two identities is
+  a reviewed decision, and **this loader must never do it on its own**. It keeps
+  writing to the REAL `project_code` of each pair, never the synthetic twin, and
+  keeps reporting what it sees in its `duplicate-ocms-identities` review
+  artifact.
+
+  The other 3,369 `ocms:` rows have no real counterpart at all. They are the
+  rule working correctly and are not touched.
 - **Identity reach** — only about a tenth of the projects in any historical
   report still appear in the current one, because most of them completed and
   left the ongoing list years ago. The rest are loaded as their own `ocms:`

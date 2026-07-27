@@ -1282,3 +1282,209 @@ test("load-affidavit-review --apply exits non-zero when reviewed_by is empty", a
     rmSync(dir, { recursive: true, force: true })
   }
 })
+
+/* ========================================================================== */
+/* merge-ocms-identities — collapsing the identities a truncated read minted   */
+/* ========================================================================== */
+
+/** A minimal in_central_projects row. */
+const proj = (project_code, legacy_ocms_code, extra = {}) => ({
+  project_code, legacy_ocms_code, project_name: project_code,
+  state_raw: null, st_code: null, is_ongoing: true,
+  first_seen_month: "2015-04-01", last_seen_month: "2026-05-01", ...extra,
+})
+
+/** A minimal in_central_project_snapshots row. */
+const snap = (project_code, report_month, extra = {}) => ({
+  project_code, report_month, sl_no: 1, original_cost_cr: 100, revised_cost_cr: 120,
+  raw: { ocms_code: "N1", annexure: "A" }, source_page: 12,
+  parser_version: "flash-report-historical/v1",
+  ingested_at: "2026-07-01T00:00:00.000Z", ...extra,
+})
+
+test("only a 1-synthetic + 1-real pair is mergeable; nothing else is guessed at", async () => {
+  const { enumerateDuplicates } = await import("../scripts/india/merge-ocms-identities.mjs")
+
+  const found = enumerateDuplicates([
+    // the bug: one synthetic twin of a project that already had a real code
+    proj("400005", "N18000337"), proj("ocms:N18000337", "N18000337"),
+    // no unique survivor — merging would be picking one of two real projects
+    proj("617906", "N24002118"), proj("618022", "N24002118"), proj("ocms:N24002118", "N24002118"),
+    // MoSPI's own reissue of a code across real rows; not this bug
+    proj("617989", "N24001450"), proj("618141", "N24001450"),
+    // a historical project with no modern row — the rule working correctly
+    proj("ocms:N06000123", "N06000123"),
+    // a plain modern row
+    proj("702635", "N28000058"),
+  ])
+
+  assert.deepEqual(found.mergeable.map(m => [m.code, m.synthetic.project_code, m.surviving.project_code]),
+    [["N18000337", "ocms:N18000337", "400005"]])
+  assert.deepEqual(found.ambiguous.map(a => a.code), ["N24002118"])
+  assert.deepEqual(found.realOnly.map(a => a.code), ["N24001450"])
+  assert.equal(found.unpairedSynthetic, 1, "a standalone ocms: row is not a duplicate")
+})
+
+test("a colliding month is dropped only when it is the same observation", async () => {
+  const { planPair } = await import("../scripts/india/merge-ocms-identities.mjs")
+  const pair = {
+    legacy_ocms_code: "N18000337",
+    synthetic_project_code: "ocms:N18000337",
+    surviving_project_code: "400005",
+    surviving: proj("400005", "N18000337", { first_seen_month: "2022-10-01", last_seen_month: "2026-05-01" }),
+  }
+
+  // Same row under two names: the loader wrote it twice, once per identity,
+  // from the same committed CSV. Only project_code and ingested_at differ.
+  const plan = planPair(pair,
+    [snap("ocms:N18000337", "2022-10-01"), snap("ocms:N18000337", "2014-04-01")],
+    [snap("400005", "2022-10-01", { ingested_at: "2026-07-27T00:00:00.000Z" })])
+
+  assert.deepEqual(plan.move, ["2014-04-01"], "a month the survivor lacks moves")
+  assert.deepEqual(plan.drop, ["2022-10-01"], "a month it already holds identically is dropped")
+  assert.equal(plan.collisions.length, 1)
+  assert.equal(plan.collisions[0].verdict, "identical")
+  assert.equal(plan.collisions[0].kept, "400005")
+  assert.equal(plan.collisions[0].dropped, "ocms:N18000337")
+  assert.ok(plan.collisions[0].reason, "every collision records why, per row")
+  // The survivor's window widens to cover what moved onto it, and only outwards.
+  assert.deepEqual(plan.window, { first_seen_month: "2014-04-01" })
+})
+
+test("a colliding month whose values disagree is never silently dropped", async () => {
+  const { planPair } = await import("../scripts/india/merge-ocms-identities.mjs")
+  const pair = {
+    legacy_ocms_code: "N18000337",
+    synthetic_project_code: "ocms:N18000337",
+    surviving_project_code: "400005",
+    surviving: proj("400005", "N18000337", { first_seen_month: "2014-04-01" }),
+  }
+  const plan = planPair(pair,
+    [snap("ocms:N18000337", "2022-10-01", { revised_cost_cr: 999 })],
+    [snap("400005", "2022-10-01")])
+
+  assert.equal(plan.drop.length, 0, "nothing is dropped when the two rows are not the same row")
+  assert.equal(plan.collisions[0].verdict, "differs")
+  assert.equal(plan.collisions[0].differing_columns, "revised_cost_cr")
+  assert.equal(plan.collisions[0].kept, "", "no winner is picked")
+})
+
+test("ingested_at and project_code are excluded from the comparison, nothing else is", async () => {
+  const { snapshotDiff, NOT_COMPARED } = await import("../scripts/india/merge-ocms-identities.mjs")
+  assert.deepEqual([...NOT_COMPARED].sort(), ["ingested_at", "project_code"])
+  // Two writes of the same observation under two identities.
+  assert.deepEqual(snapshotDiff(
+    snap("ocms:N1", "2022-10-01"),
+    snap("400005", "2022-10-01", { ingested_at: "2026-07-27T00:00:00.000Z" })), [])
+  // raw is compared: it carries the annexure and the milestone strings.
+  assert.deepEqual(snapshotDiff(
+    snap("ocms:N1", "2022-10-01"),
+    snap("400005", "2022-10-01", { raw: { ocms_code: "N1" } })), ["raw"])
+})
+
+test("the twin is deleted last, and only once nothing references it", async () => {
+  const { mergeSql } = await import("../scripts/india/merge-ocms-identities.mjs")
+  const sql = mergeSql({
+    synthetic: "ocms:N18000337", surviving: "400005",
+    move: ["2014-04-01"], drop: ["2022-10-01"], window: { first_seen_month: "2014-04-01" },
+  })
+
+  // in_central_project_snapshots references in_central_projects ON DELETE
+  // CASCADE, so deleting the twin before its snapshots have moved destroys
+  // them. Order is the safety property, and the guard is what makes it hold
+  // even if a step in between failed.
+  assert.match(sql[0], /^DELETE FROM "in_central_project_snapshots"/)
+  assert.match(sql[1], /^UPDATE "in_central_project_snapshots" SET project_code = '400005'/)
+  assert.match(sql[2], /^UPDATE "in_central_projects" SET "first_seen_month" = '2014-04-01'/)
+  assert.match(sql[3], /^DELETE FROM "in_central_projects" WHERE project_code = 'ocms:N18000337'/)
+  assert.match(sql[3], /NOT EXISTS \(SELECT 1 FROM "in_central_project_snapshots"/)
+  assert.equal(sql.length, 4)
+
+  // Re-running after a completed merge plans nothing but the guarded delete,
+  // which matches no row.
+  const empty = mergeSql({ synthetic: "ocms:N1", surviving: "400005", move: [], drop: [], window: {} })
+  assert.equal(empty.length, 1)
+  assert.match(empty[0], /^DELETE FROM "in_central_projects"/)
+})
+
+test("merge-ocms-identities refuses a decision row that is not a synthetic→real merge", async () => {
+  const { validateDecisions } = await import("../scripts/india/merge-ocms-identities.mjs")
+  const projects = [proj("400005", "N18000337"), proj("ocms:N18000337", "N18000337"),
+    proj("702635", "N28000058")]
+  const row = {
+    legacy_ocms_code: "N18000337", synthetic_project_code: "ocms:N18000337",
+    surviving_project_code: "400005", reviewed_by: "bharatnyusta", rationale: "the pair",
+  }
+  const bad = rows => validateDecisions(rows, projects, { apply: false }).bad.map(b => b.problem)
+
+  assert.equal(validateDecisions([row], projects, { apply: false }).pairs.length, 1)
+  // The survivor must be real; the row being deleted must be synthetic.
+  assert.match(bad([{ ...row, synthetic_project_code: "400005" }])[0], /does not start with "ocms:"/)
+  assert.match(bad([{ ...row, surviving_project_code: "ocms:N18000337" }])[0], /is itself synthetic/)
+  // The code, the twin's name and the table must all agree — no fuzzy pairing.
+  assert.match(bad([{ ...row, legacy_ocms_code: "N28000058", surviving_project_code: "702635" }])[0],
+    /is not "ocms:N28000058"/)
+  assert.match(bad([{ ...row, surviving_project_code: "702635" }])[0], /the table disagrees/)
+  assert.match(bad([{ ...row, rationale: "" }])[0], /a decision with no evidence/)
+  // The first is a valid pair; the second is the one that gets rejected.
+  assert.match(bad([row, row])[0], /duplicate synthetic_project_code/)
+})
+
+test("merge-ocms-identities will not delete a row on an unsigned decision", async () => {
+  const { validateDecisions } = await import("../scripts/india/merge-ocms-identities.mjs")
+  const projects = [proj("400005", "N18000337"), proj("ocms:N18000337", "N18000337")]
+  const row = {
+    legacy_ocms_code: "N18000337", synthetic_project_code: "ocms:N18000337",
+    surviving_project_code: "400005", reviewed_by: null, rationale: "the pair",
+  }
+  // The committed file ships with reviewed_by blank on purpose: a dry run still
+  // reports the whole plan, and --apply refuses until a human has signed it.
+  assert.equal(validateDecisions([row], projects, { apply: false }).pairs.length, 1)
+  const applied = validateDecisions([row], projects, { apply: true })
+  assert.equal(applied.pairs.length, 0)
+  assert.match(applied.bad[0].problem, /no reviewed_by/)
+})
+
+test("merge-ocms-identities is idempotent: a pair whose twin is gone plans nothing", async () => {
+  const { validateDecisions } = await import("../scripts/india/merge-ocms-identities.mjs")
+  // After a successful merge the twin no longer exists. Re-running must be a
+  // no-op, not an error — a half-finished run has to be resumable.
+  const { pairs, done, bad } = validateDecisions([{
+    legacy_ocms_code: "N18000337", synthetic_project_code: "ocms:N18000337",
+    surviving_project_code: "400005", reviewed_by: "bharatnyusta", rationale: "the pair",
+  }], [proj("400005", "N18000337")], { apply: true })
+  assert.deepEqual(bad, [])
+  assert.equal(pairs.length, 0)
+  assert.equal(done.length, 1)
+})
+
+test("the committed merge decisions are a real, well-formed pair list", async () => {
+  const { readCsv, CSV_PATH, COLUMNS, isSynthetic, SYNTHETIC_PREFIX } =
+    await import("../scripts/india/merge-ocms-identities.mjs")
+  const rows = readCsv(CSV_PATH)
+  assert.ok(rows.length > 0, "the decision file must not be empty")
+  assert.deepEqual(Object.keys(rows[0]), COLUMNS)
+  const seen = new Set()
+  for (const r of rows) {
+    assert.ok(isSynthetic(r.synthetic_project_code), `${r.synthetic_project_code} must be synthetic`)
+    assert.ok(!isSynthetic(r.surviving_project_code), `${r.surviving_project_code} must be a real code`)
+    assert.equal(r.synthetic_project_code, SYNTHETIC_PREFIX + r.legacy_ocms_code)
+    assert.ok(r.rationale, "every decision carries its reason")
+    assert.ok(!seen.has(r.synthetic_project_code), "no code is merged twice")
+    seen.add(r.synthetic_project_code)
+  }
+})
+
+test("merge-ocms-identities honors --apply: refuses to run without credentials", async () => {
+  const { spawnSync } = await import("node:child_process")
+  // The flag("--apply") bug would make this exit 0 having written nothing and
+  // claimed success. It must exit non-zero at the credentials gate instead.
+  const env = { ...process.env }
+  delete env.SUPABASE_URL; delete env.NEXT_PUBLIC_SUPABASE_URL
+  delete env.SUPABASE_SERVICE_KEY; delete env.SUPABASE_SERVICE_ROLE_KEY
+  delete env.KAUN_LOCAL_PG
+  const r = spawnSync("node", ["scripts/india/merge-ocms-identities.mjs", "--apply"],
+    { env, encoding: "utf8" })
+  assert.equal(r.status, 1)
+  assert.match(r.stderr + r.stdout, /--apply needs credentials/)
+})

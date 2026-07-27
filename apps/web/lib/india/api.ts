@@ -476,6 +476,49 @@ export async function fetchProjectDetail(projectCode: string): Promise<ProjectDe
 }
 
 /**
+ * The prefix load-mospi-historical.mjs mints for a project it cannot match to
+ * an existing MoSPI project_code. MoSPI's own codes are bare digits, so a
+ * project_code starting with this was always ours, never theirs.
+ */
+const SYNTHETIC_PREFIX = "ocms:"
+
+/**
+ * Where a merged synthetic project went.
+ *
+ * A truncated PostgREST read once minted a second, synthetic identity for
+ * projects that already had a real MoSPI project_code, and 708 of those
+ * `ocms:` rows have since been merged away
+ * (scripts/india/merge-ocms-identities.mjs). Their URLs are real: they were
+ * served, they render, they can have been linked or crawled. Deleting the row
+ * without this would turn each of them into a 404 for a project that still
+ * exists under a different code.
+ *
+ * The forward is not a stored redirect table — it is the same statement the
+ * merge made. `ocms:<CODE>` meant "the project with OCMS code <CODE>", so the
+ * survivor is the row that carries that legacy_ocms_code and is not itself
+ * synthetic. Exact string match, and only when the answer is unambiguous: a
+ * code held by more than one real row (MoSPI has reissued a few) resolves to
+ * nothing and the page 404s honestly rather than guessing which project the
+ * visitor meant.
+ *
+ * Costs one extra query, on the 404 path of a synthetic code only.
+ */
+export async function resolveMergedProjectCode(projectCode: string): Promise<string | null> {
+  if (!projectCode.startsWith(SYNTHETIC_PREFIX)) return null
+  const ocmsCode = projectCode.slice(SYNTHETIC_PREFIX.length)
+  if (!ocmsCode) return null
+  const rows = isFixtureMode()
+    ? FIXTURE_PROJECTS.filter(p => p.legacy_ocms_code === ocmsCode)
+    : await cachedQuery<CentralProject>("in_central_projects", {
+      legacy_ocms_code: `eq.${ocmsCode}`, select: "project_code", limit: "3",
+    })
+  const survivors = rows
+    .map(r => r.project_code)
+    .filter(code => !code.startsWith(SYNTHETIC_PREFIX))
+  return survivors.length === 1 ? survivors[0] : null
+}
+
+/**
  * Per-seat values for one choropleth layer, keyed by pc_code.
  *
  * A seat is absent from the returned map when it has no value — including the
