@@ -1058,6 +1058,33 @@ test("planWrites merges onto the stored row and refuses an unsafe seat assignmen
   }
 })
 
+test("the committed pc-source-aliases.csv is a valid alias table with no bare guesses", async () => {
+  const { readCsv, validate, CSV_PATH } = await import("../scripts/india/load-aliases.mjs")
+  const { referenceFromCrosswalk } = await import("../scripts/india/lib/pc-reference.mjs")
+  const ref = referenceFromCrosswalk()
+  if (!ref) return                                   // crosswalk absent: nothing to check against
+
+  const rows = readCsv(CSV_PATH)
+  assert.ok(rows.length > 0)
+  assert.deepEqual(validate(rows, ref), [])
+
+  // official_lookup and exact_normalized rows are unattributed by design — they
+  // are checkable against a public source, not somebody's word — but every
+  // note must still say what that source was; a blank note here would be a
+  // guess wearing an official_lookup label.
+  for (const r of rows) {
+    if (r.method === "official_lookup") {
+      assert.ok(r.note && r.note.length > 20, `official_lookup with no cited source: ${r.source}:${r.source_key}`)
+    }
+  }
+
+  // (source, source_key) is the table's real-world unique key — a duplicate
+  // here means two decisions for the same source row, and load-aliases would
+  // upsert whichever sorts last, silently discarding the other.
+  const keys = rows.map(r => `${r.source}:${r.source_key}`)
+  assert.deepEqual(keys, [...new Set(keys)])
+})
+
 test("the committed affidavit-review.csv is a valid, fully evidenced decision file", async () => {
   const { readCsv, validate, COLUMNS, CSV_PATH } =
     await import("../scripts/india/load-affidavit-review.mjs")
