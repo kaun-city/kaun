@@ -1,0 +1,43 @@
+name: Verify bot self-merge
+
+# TEMPORARY. Proves the KAUN_BOT_TOKEN path end to end: a PR opened by
+# github-actions[bot], approved and squash-merged by the PAT, with no human
+# click. The weekly wiki refreshes only reach that path when their content
+# actually changed, so a quiet week would otherwise hide a broken token until
+# someone noticed the backlog. Delete this workflow once it has passed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Open, approve and merge a throwaway PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BOT_TOKEN: ${{ secrets.KAUN_BOT_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "$BOT_TOKEN" || { echo "::error::KAUN_BOT_TOKEN is not set"; exit 1; }
+
+          git config user.name "bharatnyusta"
+          git config user.email "bharatnyusta@users.noreply.github.com"
+          BRANCH="ci/bot-merge-check-$(date -u +%Y%m%d%H%M%S)"
+          git checkout -b "$BRANCH"
+          echo "bot self-merge verified at $(date -u +%FT%TZ)" > .github/BOT_MERGE_CHECK
+          git add .github/BOT_MERGE_CHECK
+          git commit -m "ci: verify the bot self-merge path"
+          git push -u origin "$BRANCH"
+
+          gh pr create --title "ci: verify the bot self-merge path" \
+            --body "Throwaway PR from \`verify-bot-merge\`. Opened by github-actions[bot], approved and merged by KAUN_BOT_TOKEN."
+          GH_TOKEN="$BOT_TOKEN" gh pr review "$BRANCH" --approve --body "Automated verification."
+          GH_TOKEN="$BOT_TOKEN" gh pr merge "$BRANCH" --squash --delete-branch
+          echo "::notice::Self-merge succeeded."
