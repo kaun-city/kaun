@@ -67,9 +67,21 @@ _Pradyut Bordoloi is recorded with status `Resigned`. The database enforces at m
 
 ## Declared record
 
-**Affidavit not published yet.** Kaun serves a nomination affidavit only once its MyNeta↔seat join has been reviewed by a human and the source page has parsed cleanly — unreviewed rows are hidden by a database policy, not by this page. Attaching a criminal-case count to the wrong person is the failure this guards against, so the count is withheld rather than guessed.
+From the winning candidate's Election Commission nomination affidavit. **Self-declared** — Kaun
+reproduces the declaration, it does not verify it.
 
-The underlying declarations are public at [myneta.info](https://myneta.info) in the meantime.
+| Declared | Value |
+|---|---|
+| Election | LokSabha2024 |
+| Candidate as named on the affidavit | Pradyut Bordoloi |
+| Pending criminal cases | none declared |
+| Total assets | ₹8.39 Cr |
+| Liabilities | ₹13.00 L |
+| Education | Post Graduate — Master Degree from The School of Social Sciences, Jawaharlal Nehru University, New Delhi in 1980-81, Post Graduate Diploma in Management (Marketing) from Indian Institute of Marketing, New Delhi in 1982-83 |
+| Profession (self-declared) | M.P./ Pensioner |
+| Age at nomination | 64 |
+| Affidavit source | [myneta.info](https://myneta.info/LokSabha2024/candidate.php?candidate_id=2763) |
+
 
 ---
 
@@ -118,6 +130,7 @@ The 6 projects in Assam furthest above sanctioned cost, as of the May 2026 repor
 | Seat identity and boundaries (543) | [DataMeet + shijithpk 2024 supplement](https://github.com/datameet/maps/tree/master/parliamentary-constituencies) | 2008 delimitation, with the 2022 J&K and 2023 Assam orders applied. Assam, J&K and Ladakh outlines were re-georeferenced from ECI press-note PDFs and are not survey-grade. |
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
+| Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-07-27 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

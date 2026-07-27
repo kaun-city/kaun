@@ -72,9 +72,26 @@ geometry disagree the order's text is the fixed point — the published AC bound
 
 ## Declared record
 
-**Affidavit not published yet.** Kaun serves a nomination affidavit only once its MyNeta↔seat join has been reviewed by a human and the source page has parsed cleanly — unreviewed rows are hidden by a database policy, not by this page. Attaching a criminal-case count to the wrong person is the failure this guards against, so the count is withheld rather than guessed.
+From the winning candidate's Election Commission nomination affidavit. **Self-declared** — Kaun
+reproduces the declaration, it does not verify it.
 
-The underlying declarations are public at [myneta.info](https://myneta.info) in the meantime.
+| Declared | Value |
+|---|---|
+| Election | LokSabha2024 |
+| Candidate as named on the affidavit | Y. S. Avinash Reddy |
+| Pending criminal cases | ⚠ 2 |
+| Total assets | ₹40.43 Cr |
+| Liabilities | ₹11.56 Cr |
+| Education | Post Graduate — Master in Business Administration from University of Worcester, UK |
+| Profession (self-declared) | Agriculture and Social Service |
+| Age at nomination | 39 |
+| Affidavit source | [myneta.info](https://myneta.info/LokSabha2024/candidate.php?candidate_id=5111) |
+
+!!! warning "A pending case is an accusation, not a conviction"
+    These are cases the candidate declared as pending against them when filing nomination.
+    Indian law presumes innocence until conviction, and a count says nothing about the
+    seriousness of the charges or who brought them.
+
 
 ---
 
@@ -88,11 +105,11 @@ average of them measures none of them.
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 20 | 2 | 10.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 28 | 22 | 78.6% | — | — | — | — |
-| 01/12/2025 to 19/12/2025 | 15 | 6 | 40.0% | 18 | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 9 | 42.9% | 22 | 57 | — | — |
-| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 9 | 33.3% | 52 | 132 | — | — |
-| 25/11/2024 to 20/12/2024 | 20 | 11 | 55.0% | 29 | — | — | — |
-| 22/07/2024 to 09/08/2024 | 15 | 11 | 73.3% | 54 | 29 | — | — |
+| 01/12/2025 to 19/12/2025 | 15 | 6 | 40.0% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 9 | 42.9% | — | 57 | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 9 | 33.3% | — | 132 | — | — |
+| 25/11/2024 to 20/12/2024 | 20 | 11 | 55.0% | — | — | — | — |
+| 22/07/2024 to 09/08/2024 | 15 | 11 | 73.3% | — | 29 | — | — |
 | 24/06/2024 to 02/07/2024 | 7 | 6 | 85.7% | — | — | — | — |
 | Term to date (Third Term) | — | — | 54.8% | 133 | 13 | 0 | — |
 
@@ -137,8 +154,9 @@ The 6 projects in Andhra Pradesh furthest above sanctioned cost, as of the May 2
 | Seat identity and boundaries (543) | [DataMeet + shijithpk 2024 supplement](https://github.com/datameet/maps/tree/master/parliamentary-constituencies) | 2008 delimitation, with the 2022 J&K and 2023 Assam orders applied. Assam, J&K and Ladakh outlines were re-georeferenced from ECI press-note PDFs and are not survey-grade. |
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
+| Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-07-27 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
