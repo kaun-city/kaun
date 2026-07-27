@@ -76,7 +76,7 @@ Established by reading one report per financial year across the whole archive.
 |---|---|---|
 | April 2001 … April 2009 | Summary-only reports (17-50 pages). A per-project table exists but prints **no OCMS project code**, and stacks original / (revised) / [anticipated] inside single cells. | **No** — see the identity floor below |
 | October 2009 … April 2020 | One consolidated annexure holding every ongoing project — titled "Sector Wise Details" (2012-2016), "Detail of ongoing Projects Costing Rs 150 Crore and above" (2017-2020), or **untitled** (2009-2011, and October 2016) | Yes — this is what is committed here |
-| October 2020 … 2024-25 | **No consolidated annexure.** The ongoing list is split across "Details of Delayed Projects w.r.t. Original Schedule", "Details of On Schedule Projects w.r.t. Original Schedule" and "Details of Projects Without Date of Commissioning" | **Not yet** — the union of those three does not reconcile to the report's own count; see the gaps below |
+| October 2020 … 2024-25 | **No trustworthy consolidated annexure.** One is often still printed, but it either has no column-number row to anchor on (October 2020) or misattributes rows when read serial-first (April 2021). The ongoing list is instead read from its **five-way partition** — see below | Yes — the partition reconciles; see below |
 
 The cutover between the first two rows falls **inside** 2009-10: the April 2009
 report has no coded annexure and the October 2009 one does. That is exactly why
@@ -118,6 +118,53 @@ report, which the consolidated annexure always is, because it cannot be shorter
 than a cut of itself. Overrun re-cuts are excluded by their titles and never by
 their columns: the delayed-projects annexure has Time Overrun and Cost Overrun
 columns of its own, and skipping pages on that basis threw away four years.
+
+### The post-2020 partition — five annexures, not three
+
+From October 2020 the ongoing list is read from its schedule-status partition.
+Some of these reports still print a consolidated annexure, and it is still
+preferred when it accounts for itself — but from October 2020 it rarely does.
+October 2020's has no column-number row at all (a stacked three-line layout the
+geometry cannot anchor on). April 2021's parses into a clean 1..1,737 serial
+run and is still wrong: its road-sector pages print the serial number at the
+*bottom* of each project's block, so serial-first row assembly stitches every
+block to its neighbour's — names, costs and codes shift one project apart, and
+122 rows come out with no code. That is a misattributed parse, not an
+incomplete one, and it is exactly what the count gate caught. So a consolidated
+annexure that skips rows, duplicates codes, or loses codes falls back to the
+partition, which prints the same projects serial-first and reads cleanly.
+
+The partition is five annexures, not the three it first appears to be:
+
+1. **Details of Delayed Projects w.r.t. Original Schedule**
+2. **Details of On Schedule Projects w.r.t. Original Schedule**
+3. **Details of Projects Without Date of Commissioning**
+4. **Details of Projects Without _Original_ Date of Commissioning** — a
+   distinct annexure (projects whose original schedule was never fixed, as
+   opposed to projects reporting no schedule at all), previously mistaken for
+   an overrun-style re-cut. Without it every month reconciles ~120 rows short.
+5. **Details of Projects Ahead of Schedule w.r.t. Original Schedule** — the odd
+   one out. Its title says *original* schedule but its contents say otherwise:
+   most of its rows are projects that are **delayed** against their original
+   schedule and merely ahead of their *latest* one (October 2020's first row is
+   GOPAL JI KANIHA — original commissioning 03/2013, anticipated 03/2022,
+   revised 03/2028), and those rows are re-listings of rows annexures 1-2
+   already carry. The parser keeps only the rows unique to it — the genuinely
+   ahead-of-schedule projects no other cut lists — and drops the re-listings in
+   favour of the primary cut's fuller row.
+
+October 2020 proves the arithmetic on its own numbers: 539 delayed + 194 on
+schedule + 794 without DoC + 130 without original DoC are pairwise disjoint,
+and the report's own narrative says "for 924 projects neither the year of
+commissioning nor the tentative gestation period has been reported" — 794 + 130
+= 924 exactly. With the 8 rows unique to the ahead annexure the union is 1,665
+distinct codes against a stated 1,666, inside the gate's tolerance (the report
+also says "9 projects are ahead of schedule" while its ahead annexure carries 8
+rows found nowhere else — MoSPI disagreeing with itself by one, as it does).
+
+Annexures 1-4 are required for a partitioned month to load; the ahead annexure
+is folded in when present but never required, because a month with nothing
+ahead of schedule prints no such annexure.
 
 ---
 
@@ -211,15 +258,15 @@ A refused report writes no CSV and records its reasons in `manifest.json`.
 - **April 2001 to April 2009** — no OCMS code in the annexure. Inventoried, not
   parsed.
 - **2005-04 and 2009-01** — no report in the archive at all.
-- **October 2020 onward** — MoSPI stopped printing a consolidated annexure and
-  split the ongoing list by schedule status. The three schedule-status
-  annexures parse cleanly, but their union does not reconcile: October 2020
-  yields 1,548 rows against a stated 1,666, so the three are not the partition
-  they appear to be (some projects are in none of them, or a fourth cut exists).
-  The gate refuses those reports rather than publishing a series that is
-  silently 7% short, and every refusal is recorded in `manifest.json` with its
-  reason. Working out the real partition is the next piece of work; it needs
-  reading, not more code.
+- **2024-25 Part-I files** — the Part-I / Part-II split puts the synopsis and
+  the tables in separate PDFs; the Part-I files carry no per-project annexure
+  and are refused ("no rows extracted"), which is correct — their months load
+  from the Part-II files.
+- **October 2024** — the archive's October 2024 file is already the modern
+  bordered Table-6 document (the 2025-26 format arrived a year early), which is
+  `parse_flash_report.py`'s document, not this parser's. It is refused here and
+  stays a hole in the committed series until it is routed through the modern
+  parser.
 - **Density** — the committed series is annual and semi-annual anchors, not every
   month. The archive holds all 291 reports and the pipeline is per-report; adding
   months is a matter of fetching and parsing more of them, not of new code.

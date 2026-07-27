@@ -38,17 +38,23 @@ Established by reading one report per financial year, 2001-02 to 2024-25:
                       ongoing Projects Costing Rs 150 Crore and above"
                       (2017-2020), or untitled (2009-2011). This is the era the
                       committed backfill covers.
-  Oct 2020 … 2024-25  no consolidated annexure at all: the ongoing list is split
-                      by schedule status across "Details of Delayed Projects
-                      w.r.t. Original Schedule", "Details of On Schedule Projects
-                      w.r.t. Original Schedule" and "Details of Projects Without
-                      Date of Commissioning". Those three parse cleanly here, but
-                      their union does not reconcile to the report's own count
-                      (October 2020: 1,548 rows against a stated 1,666), so they
-                      are not the partition they look like. The loader's gate
-                      refuses those months rather than publishing a series that
-                      is quietly short; see data/india/mospi-historical/
-                      METHODOLOGY.md.
+  Oct 2020 … 2024-25  no trustworthy consolidated annexure. One is often still
+                      printed, but either with no column-number row for the
+                      geometry to anchor on (October 2020's stacked three-line
+                      layout) or misattributing rows when read serial-first
+                      (April 2021 prints the serial at the BOTTOM of each road
+                      project's block). What IS readable is the partition: the ongoing
+                      list is cut FIVE ways, not the three it first appears —
+                      "Details of Delayed Projects w.r.t. Original Schedule",
+                      "…On Schedule Projects w.r.t. Original Schedule",
+                      "…Projects Without Date of Commissioning", "…Projects
+                      Without ORIGINAL Date of Commissioning" (a distinct
+                      annexure, previously mistaken for a re-cut), and
+                      "…Projects Ahead of Schedule w.r.t. Original Schedule",
+                      whose unique rows complete the union (see PARTITION_RES).
+                      October 2020: 539 + 194 + 794 + 130 + 8 = 1,665 distinct
+                      codes against a stated 1,666 — inside the loader's
+                      documented MoSPI-disagrees-with-itself tolerance.
 
 THE IDENTITY FLOOR (why 2001-2009 is a documented gap, not a silent one)
 ------------------------------------------------------------------------
@@ -171,7 +177,7 @@ TITLE_NOISE_RE = re.compile(
 # Header text, lowercased with ALL whitespace removed, tested in order.
 COLUMN_RULES = [
     # Overrun columns are READ, not a reason to skip the page. MoSPI's
-    # "Details of Delayed Projects w.r.t. Original Schedule" — one of the three
+    # "Details of Delayed Projects w.r.t. Original Schedule" — one of the five
     # annexures whose union IS the ongoing list from 2020-21 onward — carries
     # Time Overrun and Cost Overrun columns of its own. Treating an overrun
     # HEADER as a signal to skip the page threw that entire annexure away and
@@ -227,10 +233,29 @@ def classify_header(text):
 # Page geometry
 # ---------------------------------------------------------------------------
 
+# Anything printed larger than this is page decoration, not table text. The
+# body of every parsed annexure is 8-14pt; the October 2021 / 2022 reports lay
+# a 72pt "FOR REPORT" stamp ACROSS the table, and pdfplumber merges its letters
+# character-by-character into whichever row they land on — "4 NEYVELI NEW
+# THERMAL POWER PROJECT" comes out as "F4 NEYLVELI NEWA THERMAL PSOWER
+# PRHOJECT", the serial cell reads "F4", the row stops being a row, and the
+# annexure's serial run gains a hole. Dropping oversized characters before word
+# assembly removes the stamp without touching a single body glyph.
+WATERMARK_MIN_SIZE = 40.0
+
+
 def visual_lines(page, tol=3.0):
     """Words grouped into printed lines, each sorted left to right."""
+    try:
+        words = page.filter(
+            lambda obj: obj.get("object_type") != "char"
+            or (obj.get("size") or 0) <= WATERMARK_MIN_SIZE).extract_words()
+    except AttributeError:
+        # Fixture pages implement extract_words() only — word boxes carry no
+        # character sizes, so there is nothing to filter.
+        words = page.extract_words()
     buckets = defaultdict(list)
-    for w in page.extract_words():
+    for w in words:
         buckets[round(w["top"] / tol)].append(w)
     return [(round(min(w["top"] for w in ws), 1), sorted(ws, key=lambda w: w["x0"]))
             for _, ws in sorted(buckets.items())]
@@ -440,15 +465,38 @@ def check_units(page_text):
 
 CONSOLIDATED_RE = re.compile(
     r"detail[s]?\s+of\s+ongoing\s+project|^\s*sector\s+wise\s+details", re.I | re.M)
+# The post-2020 ongoing list is cut FIVE ways, not three. The union of the four
+# schedule-status cuts below is pairwise disjoint and, with "ahead", reconciles
+# to the report's own stated count — October 2020: 539 delayed + 194 on schedule
+# + 794 without DoC + 130 without ORIGINAL DoC + 8 only-in-ahead = 1665 against
+# a stated 1666 (and the report's own narrative confirms the split: "9 ahead,
+# 194 on schedule, 539 delayed" and "for 924 projects neither the year of
+# commissioning nor the tentative gestation period has been reported", where
+# 794 + 130 = 924 exactly).
+#
+# "ahead" is the odd one out. Its title says "w.r.t. Original Schedule" but its
+# contents say otherwise: most of its rows are projects that are DELAYED against
+# their original schedule and merely ahead of their LATEST one (October 2020's
+# first row is GOPAL JI KANIHA — original DoC 03/2013, anticipated 03/2022,
+# revised 03/2028), and those rows are re-listings of rows the delayed and
+# on-schedule annexures already carry. Only the handful of rows unique to it
+# complete the partition, so extract_projects keeps exactly those.
 PARTITION_RES = {
     "delayed": re.compile(r"details?\s+of\s+delayed\s+projects\s+w\.?r\.?t\.?\s+original", re.I),
     "on_schedule": re.compile(r"details?\s+of\s+on\s+schedule\s+projects\s+w\.?r\.?t\.?\s+original", re.I),
     "without_doc": re.compile(r"details?\s+of\s+projects\s+without\s+date\s+of\s+commissioning", re.I),
+    "without_original_doc": re.compile(
+        r"details?\s+of\s+projects\s+without\s+original\s+date\s+of\s+commissioning", re.I),
+    "ahead": re.compile(r"details?\s+of\s+projects\s+ahead\s+of\s+schedule\s+w\.?r\.?t\.?\s+original", re.I),
 }
+# The cuts that are genuinely disjoint slices of the ongoing list. "ahead" is
+# deliberately not here: it is accepted when present and deduplicated, never
+# required, because a month with nothing ahead of schedule prints no such
+# annexure at all.
+PARTITION_CORE = ("delayed", "on_schedule", "without_doc", "without_original_doc")
 OTHER_ANNEXURE_RE = re.compile(
     r"completed|newly\s+added|expenditure\s+is\s+more\s+than|cost\s+overrun|"
-    r"without\s+milestones|latest\s+schedule|public\s+private\s+partnership|"
-    r"ahead\s+of\s+schedule|without\s+original\s+date", re.I)
+    r"without\s+milestones|latest\s+schedule|public\s+private\s+partnership", re.I)
 
 
 def annexure_kind(head_text):
@@ -597,8 +645,15 @@ def build_runs(pdf, warnings):
         kind = annexure_kind("\n".join(text.split("\n")[:8]))
         entry = {"pageno": pageno, "lines": lines, "idx": idx, "edges": edges,
                  "mapping": mapping, "text_head": text[:600]}
+        # A page that carries its OWN title starts its own run when that title
+        # differs from the run's. Two adjacent annexures can share a column
+        # signature exactly — October 2020's "Ahead of Schedule" starts on the
+        # page after "On Schedule" ends with the identical eight columns, and
+        # gluing them together restarted the serial run and double-counted the
+        # on-schedule annexure's rows.
         if runs and runs[-1]["signature"] == signature and \
-                pageno - runs[-1]["pages"][-1]["pageno"] <= 2:
+                pageno - runs[-1]["pages"][-1]["pageno"] <= 2 and \
+                (kind is None or runs[-1]["kind"] in (None, kind)):
             runs[-1]["pages"].append(entry)
             if kind and not runs[-1]["kind"]:
                 runs[-1]["kind"] = kind
@@ -834,6 +889,17 @@ def finalise(pending, annexure_label):
 # Selection
 # ---------------------------------------------------------------------------
 
+def select_partition(runs):
+    """The schedule-status partition, when the report prints a complete one:
+    every one of the four disjoint cuts, plus the "ahead" re-cut when present.
+    None when any core cut is missing — a partial partition is not a list."""
+    partitions = {k: [r for r in runs if r["kind"] == k] for k in PARTITION_RES}
+    if not all(partitions[k] for k in PARTITION_CORE):
+        return None
+    return [max(partitions[k], key=lambda r: len(r["pages"]))
+            for k in PARTITION_RES if partitions[k]]
+
+
 def select_runs(runs, warnings):
     """
     Decide which runs make up "all ongoing projects" for this report.
@@ -841,10 +907,15 @@ def select_runs(runs, warnings):
       consolidated  a run titled "…ongoing projects…" / "Sector Wise Details",
                     or — for 2010-11 and 2011-12, whose table pages print no
                     title at all — the largest untitled run.
-      partitioned   no consolidated run, but all three schedule-status
-                    annexures present; their UNION is the ongoing list.
+      partitioned   no consolidated run, but the four disjoint schedule-status
+                    cuts (PARTITION_CORE) all present; their union, plus the
+                    rows unique to the "ahead" re-cut when that annexure is
+                    printed, is the ongoing list.
 
-    Anything else is refused rather than guessed at.
+    Anything else is refused rather than guessed at. A consolidated run whose
+    OWN read fails its accounting still ends up on the partition — that
+    fallback lives in extract_projects, which is the first place the row-level
+    evidence exists.
     """
     for r in runs:
         r["label"] = r["kind"] or f"untitled/{len([f for f in r['signature'] if f])}col"
@@ -853,11 +924,6 @@ def select_runs(runs, warnings):
     if consolidated:
         best = max(consolidated, key=lambda r: len(r["pages"]))
         return "consolidated", [best]
-
-    partitions = {k: [r for r in runs if r["kind"] == k] for k in PARTITION_RES}
-    if all(partitions.values()):
-        chosen = [max(v, key=lambda r: len(r["pages"])) for v in partitions.values()]
-        return "partitioned", chosen
 
     # THE UNTITLED FALLBACK, AND THE ONE CONDITION THAT MAKES IT SAFE.
     #
@@ -868,8 +934,8 @@ def select_runs(runs, warnings):
     #
     # The test is that the untitled run is the BIGGEST TABLE IN THE REPORT. The
     # consolidated annexure always is: it lists every ongoing project, so it
-    # cannot be shorter than any cut of itself. In the post-2020 reports, which
-    # have no consolidated annexure at all, the untitled runs are 2 and 5 pages
+    # cannot be shorter than any cut of itself. In the post-2020 reports, whose
+    # consolidated annexure is unreadable, the untitled runs are 2 and 5 pages
     # against 81- and 69-page titled ones — and accepting one of those produced
     # 383 rows for a report of about 1,800 projects, which passed the gate
     # because those few pages' own serial numbers were internally tidy.
@@ -878,6 +944,14 @@ def select_runs(runs, warnings):
     # cut of the ongoing list in the same sense — October 2016 prints a 94-page
     # cost-overrun annexure against a 59-page consolidated one, and counting it
     # would reject a report that parses perfectly.
+    #
+    # This check runs BEFORE the partition check for the same reason a titled
+    # consolidated annexure does: October 2016 prints BOTH an untitled
+    # consolidated annexure and a complete schedule-status partition, and the
+    # consolidated one is the fuller source (the partition's cuts drop the
+    # milestones, agency and state columns and print delay as free-text
+    # reasons). A consolidated read that cannot account for itself still falls
+    # back to the partition in extract_projects.
     untitled = [r for r in runs if r["kind"] is None]
     contenders = [r for r in runs if r["kind"] != "other"]
     if untitled:
@@ -889,12 +963,89 @@ def select_runs(runs, warnings):
                 f"({len(best['pages'])} page(s)), which is also the largest table in "
                 "the report")
             return "untitled-consolidated", [best]
+
+    partition = select_partition(runs)
+    if partition:
+        return "partitioned", partition
+
     seen = sorted({r["kind"] for r in runs if r["kind"]})
     warnings.append(
         f"no consolidated annexure and an incomplete partition set; annexures seen: {seen}")
 
     warnings.append("no ongoing-project annexure could be identified")
     return "unknown", []
+
+
+def read_chosen(chosen, warnings):
+    """Read a set of selected runs into records plus their bookkeeping."""
+    records = []
+    per_annexure = {}
+    serials = {}
+    pages_used = 0
+    for run in chosen:
+        got, health = read_run(run, warnings)
+        per_annexure[run["label"]] = len(got)
+        serials[run["label"]] = health
+        pages_used += len(run["pages"])
+        records.extend(got)
+    return records, per_annexure, serials, pages_used
+
+
+def accounting_failure(records, serials):
+    """
+    Why this read of the ongoing list cannot be trusted, or None when it can.
+
+    The same checks the loader's gate applies, asked early enough to try a
+    different annexure instead of refusing the whole report. April 2021 is the
+    month that makes this necessary: its consolidated annexure parses into a
+    clean 1..1737 serial run, but its road-sector pages print the serial number
+    at the BOTTOM of each project's block instead of the top, so serial-first
+    row assembly stitches each block to its neighbour's — names, costs and OCMS
+    codes shift one project apart, and 122 rows come out with no code at all.
+    That parse is not incomplete, it is misattributed, and no column geometry
+    fixes it. The report's schedule-status partition prints those same projects
+    serial-first and reads cleanly — so a consolidated annexure that cannot
+    account for itself falls back to the partition (see extract_projects).
+    """
+    gaps = sum(h["forward_gap"] for h in serials.values())
+    if gaps:
+        return f"its numbering skips {gaps} row(s)"
+    if any(h["starts_at"] != 1 for h in serials.values()):
+        return "its numbering does not start at 1"
+    missing = sum(1 for r in records if not r["ocms_code"])
+    if missing:
+        return f"{missing} row(s) carry no OCMS code"
+    seen = Counter(r["ocms_code"] for r in records if r["ocms_code"])
+    dups = sum(1 for v in seen.values() if v > 1)
+    if dups:
+        return f"{dups} OCMS code(s) appear more than once"
+    return None
+
+
+def drop_ahead_relistings(records, warnings):
+    """
+    The "ahead" annexure is a re-cut, not a slice. Despite its "w.r.t. Original
+    Schedule" title, most of its rows are projects the delayed and on-schedule
+    annexures already carry — ahead of their LATEST schedule while behind (or
+    on) their original one — and keeping both copies would trip the loader's
+    duplicate-code gate on rows that are not a parse defect. The rows unique to
+    it are the genuinely-ahead projects no other cut lists, and they are what
+    completes the partition; the duplicate is dropped in favour of the primary
+    cut's row, which carries the fuller column set.
+    """
+    ahead_total = sum(1 for r in records if r["annexure"] == "ahead")
+    if not ahead_total:
+        return records
+    primary = {r["ocms_code"] for r in records
+               if r["annexure"] != "ahead" and r["ocms_code"]}
+    kept = [r for r in records
+            if not (r["annexure"] == "ahead" and r["ocms_code"] in primary)]
+    if len(kept) != len(records):
+        warnings.append(
+            f"ahead: {len(records) - len(kept)} of {ahead_total} row(s) re-list "
+            "projects the schedule-status cuts already carry — dropped in favour "
+            "of the primary cut's rows")
+    return kept
 
 
 # ---------------------------------------------------------------------------
@@ -909,17 +1060,27 @@ def extract_projects(pdf_path):
         stated_count = parse_stated_count(pdf, report_month)
         runs = build_runs(pdf, warnings)
         era, chosen = select_runs(runs, warnings)
+        records, per_annexure, serials, pages_used = read_chosen(chosen, warnings)
 
-        records = []
-        per_annexure = {}
-        serials = {}
-        pages_used = 0
-        for run in chosen:
-            got, health = read_run(run, warnings)
-            per_annexure[run["label"]] = len(got)
-            serials[run["label"]] = health
-            pages_used += len(run["pages"])
-            records.extend(got)
+        # A consolidated annexure is preferred — it is the list itself, and it
+        # carries the fullest column set — but only while its own accounting
+        # holds. When it does not (April 2021's serial-at-the-bottom road pages,
+        # October 2021's 300-row hole) and the report also prints a complete
+        # schedule-status partition, the partition IS the same list, cut by the
+        # same generator, and reading it is not a guess — its per-annexure
+        # serial runs and the report's own stated count still gate it.
+        if era in ("consolidated", "untitled-consolidated"):
+            why = accounting_failure(records, serials)
+            fallback = select_partition(runs) if why else None
+            if fallback:
+                warnings.append(
+                    f"the {era} annexure does not account for itself ({why}); "
+                    "reading the schedule-status partition instead")
+                era = "partitioned"
+                records, per_annexure, serials, pages_used = read_chosen(fallback, warnings)
+
+    if era == "partitioned":
+        records = drop_ahead_relistings(records, warnings)
 
     # Identity is the OCMS code. A row without one cannot be tied to anything, so
     # it is counted here and refused by the loader rather than silently dropped.
