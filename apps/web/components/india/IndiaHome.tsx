@@ -11,10 +11,12 @@
 
 import dynamic from "next/dynamic"
 import Link from "next/link"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { quantileBreaks, formatValue } from "@/lib/map-layers"
 import { INDIA_LAYERS, getIndiaLayer, rampFor, type IndiaLayerId } from "@/lib/india/layers"
 import { fetchIndiaLayerValues } from "@/lib/india/api"
+import { decodeMapState, encodeMapState } from "@/lib/india/map-url-state"
+import { markMapSeen, readMapView, saveMapView, type MapView } from "@/lib/india/map-view-store"
 import { indiaHref } from "@/lib/host-routing"
 import { LOK_SABHA_SEATS } from "@/lib/india/constants"
 import { NO_DATA_FILL } from "@/lib/india/viz"
@@ -62,8 +64,94 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   const [q, setQ] = useState("")
   const focusRef = useRef<{ focus: (pcCode: string) => void } | null>(null)
 
+  /**
+   * A seat named by the URL that has not been matched to a polygon yet.
+   *
+   * The selection is a whole feature — state name, seat number, centroid — and
+   * those only exist once the 1.4 MB boundary file has landed. So restoring
+   * ?seat= is two steps: hold the code here on mount, resolve it the moment the
+   * features arrive.
+   */
+  const [pendingSeat, setPendingSeat] = useState<string | null>(null)
+
+  /**
+   * The tab's last viewport, read during the first render because
+   * IndiaMapView builds its Leaflet instance in its own mount effect — which
+   * runs BEFORE any effect here, children first. Reading it in an effect would
+   * always be one beat too late. Safe to do during render only because the map
+   * is ssr:false, so this value never reaches server HTML and cannot desync
+   * hydration.
+   */
+  const [initialView] = useState<MapView | null>(() => readMapView())
+
   const layer = getIndiaLayer(layerId)
   const mpBySeat = useMemo(() => new Map(mps.map(m => [m.pc_code, m])), [mps])
+
+  /**
+   * Restore whatever the URL carries — a shared view, or the entry we wrote
+   * before handing off to a seat page and have just come back to.
+   *
+   * In an effect rather than in useState initialisers: this page is prerendered
+   * under ISR with no query string, so seeding state from the URL during render
+   * would make the client's first render disagree with the server's HTML on the
+   * layer buttons and the state <select>. One extra render is cheaper than a
+   * hydration mismatch, and it is invisible behind the boundary download.
+   *
+   * The same pass marks the map as seen for this tab, which is what the seat
+   * page's back control reads to decide between history.back() and a real
+   * navigation. See lib/india/map-view-store.ts.
+   */
+  useEffect(() => {
+    markMapSeen()
+    const url = decodeMapState(window.location.search)
+    if (url.layer) setLayerId(url.layer)
+    if (url.stateFilter !== null) setStateFilter(url.stateFilter)
+    if (url.seat) setPendingSeat(url.seat)
+  }, [])
+
+  // Resolve ?seat= once the polygons exist.
+  useEffect(() => {
+    if (!pendingSeat || features.length === 0) return
+    const feature = features.find(f => f.pc_code === pendingSeat)
+    setPendingSeat(null)
+    if (!feature) return
+    setSelected(feature)
+    // Only fly to it when there is no viewport to honour. With one, the
+    // visitor is already looking at the seat they left from, and re-fitting
+    // would undo the very thing we restored.
+    if (!initialView) focusRef.current?.focus(feature.pc_code)
+  }, [pendingSeat, features, initialView])
+
+  /**
+   * Mirror the map's state into the address bar.
+   *
+   * replaceState, never push: this fires on every layer toggle and every seat
+   * click, and pushing would bury the page the visitor actually came from under
+   * a dozen entries, so their back button would stop working as a back button.
+   * Replacing means the single history entry for the map always describes the
+   * map as it is now — which is the whole trick that makes the round trip to a
+   * seat page and back restore anything at all.
+   *
+   * The first run is skipped because the restore effect above has not been
+   * applied yet at that point: writing then would encode the empty default
+   * state straight over the parameters we were about to read.
+   *
+   * Next patches history.replaceState and copies its own router internals
+   * across, so this is shallow routing, not a fight with the router.
+   */
+  const firstUrlWrite = useRef(true)
+  useEffect(() => {
+    if (firstUrlWrite.current) { firstUrlWrite.current = false; return }
+    const search = encodeMapState(
+      { seat: selected?.pc_code ?? null, layer: layerId, stateFilter },
+      window.location.search,
+    )
+    const next = `${window.location.pathname}${search}${window.location.hash}`
+    const current = `${window.location.pathname}${window.location.search}${window.location.hash}`
+    if (next !== current) window.history.replaceState(null, "", next)
+  }, [selected?.pc_code, layerId, stateFilter])
+
+  const rememberView = useCallback((view: MapView) => saveMapView(view), [])
 
   useEffect(() => {
     if (!layerId) { setValues(null); return }
@@ -173,6 +261,8 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
           onSelect={setSelected}
           focusRef={focusRef}
           onFeaturesLoaded={setFeatures}
+          initialView={initialView}
+          onViewChange={rememberView}
         />
 
         {/* Bottom rail — the layer panel and the seat preview.
