@@ -63,16 +63,16 @@ jobs:
       - name: Open PR if content changed
         if: steps.preflight.outputs.ready == 'true'
         env:
-          # KAUN_BOT_TOKEN, not GITHUB_TOKEN. master's ruleset requires one
-          # approving review and its only bypass actor is OrganizationAdmin;
-          # GITHUB_TOKEN acts as the GitHub Actions app, which cannot be added
-          # as a bypass actor at all (the API refuses it), and a bot cannot
-          # approve its own PR — so every weekly PR was born unmergeable and
-          # waited for a human --admin merge. A PAT acts as its owner, who is
-          # the org admin, so the same PR merges itself. Falls back to
-          # GITHUB_TOKEN so a missing secret still opens the PR to merge by
-          # hand rather than failing the refresh outright.
-          GH_TOKEN: ${{ secrets.KAUN_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          # master's ruleset requires one approving review, and its only bypass
+          # actor is OrganizationAdmin — GITHUB_TOKEN acts as the GitHub Actions
+          # app, which the API refuses to accept as a bypass actor at all. So
+          # every weekly PR was born unmergeable and waited on a human --admin
+          # merge. The two tokens below split author from approver; see the
+          # merge step for why that split is the whole trick. A missing
+          # KAUN_BOT_TOKEN still opens the PR for a manual merge rather than
+          # failing the refresh outright.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BOT_TOKEN: ${{ secrets.KAUN_BOT_TOKEN }}
           HAVE_BOT_TOKEN: ${{ secrets.KAUN_BOT_TOKEN != '' }}
         run: |
           git config user.name "bharatnyusta"
@@ -104,8 +104,17 @@ jobs:
           # Generated content, regenerated from the same tables the site reads:
           # there is nothing for a human to review that re-running would not
           # reproduce. Squash so master keeps one commit per refresh.
+          # Two identities on purpose. The PR is opened by GITHUB_TOKEN, so its
+          # author is github-actions[bot]; KAUN_BOT_TOKEN (a PAT owned by the org
+          # admin) then approves and merges it. Opening it with the PAT instead
+          # makes the admin the author, and nobody may approve their own PR — the
+          # ruleset's one-review rule then blocks the very merge the PAT is there
+          # to perform. Generated content, reproducible by re-running: the review
+          # records who stands behind the automation, not a line-by-line read.
           if [ "$HAVE_BOT_TOKEN" = "true" ]; then
-            gh pr merge "$BRANCH" --squash --delete-branch
+            GH_TOKEN="$BOT_TOKEN" gh pr review "$BRANCH" --approve \
+              --body "Approved by the scheduled refresh: generated content, reproducible by re-running the workflow."
+            GH_TOKEN="$BOT_TOKEN" gh pr merge "$BRANCH" --squash --delete-branch
           else
             echo "::notice::KAUN_BOT_TOKEN is not set - PR opened but left for a manual merge."
           fi
