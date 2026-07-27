@@ -483,6 +483,26 @@ export async function fetchProjectDetail(projectCode: string): Promise<ProjectDe
 const SYNTHETIC_PREFIX = "ocms:"
 
 /**
+ * Does this project_code name a row at all?
+ *
+ * The identity read out of fetchProjectDetail, without the history behind it.
+ * app/india/projects/[project_code]/layout.tsx runs it ABOVE the segment's
+ * Suspense boundary so a missing project can still be answered with a real 404
+ * status; the expensive part — every monthly snapshot, folded into a timeline —
+ * stays below the boundary where the loading skeleton covers it.
+ *
+ * One indexed primary-key lookup, cached like every other read in this module,
+ * and only ever paid on a cold render of a project page.
+ */
+export async function projectExists(projectCode: string): Promise<boolean> {
+  if (isFixtureMode()) return FIXTURE_PROJECTS.some(p => p.project_code === projectCode)
+  const rows = await cachedQuery<{ project_code: string }>("in_central_projects", {
+    project_code: `eq.${projectCode}`, select: "project_code", limit: "1",
+  })
+  return rows.length > 0
+}
+
+/**
  * Where a merged synthetic project went.
  *
  * A truncated PostgREST read once minted a second, synthetic identity for

@@ -15,7 +15,7 @@
 
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { readFileSync } from "node:fs"
+import { readFileSync, existsSync } from "node:fs"
 
 import * as canonical from "../scripts/india/lib/pc-code.mjs"
 import * as mirror from "../apps/web/lib/india/pc-code.ts"
@@ -231,8 +231,8 @@ test("the attendance layer explains why a seat can legitimately have no value", 
 // stay per-request have not quietly been made static.
 // ---------------------------------------------------------------------------
 
-const pageSource = (p) =>
-  readFileSync(new URL(`../apps/web/app/india/${p}`, import.meta.url), "utf8")
+const indiaPath = (p) => new URL(`../apps/web/app/india/${p}`, import.meta.url)
+const pageSource = (p) => readFileSync(indiaPath(p), "utf8")
 
 test("the boundary asset is fetched by a versioned URL, because it is served immutable", () => {
   // next.config.ts freezes /india-pc.geojson for a year. That is only correct
@@ -272,6 +272,34 @@ test("no India page reads headers() except the one that is per-request anyway", 
     assert.doesNotMatch(pageSource(p), /next\/headers/,
       `${p} reads headers() and can no longer be prerendered`)
   }
-  assert.match(pageSource("projects/page.tsx"), /^export const dynamic = "force-dynamic"$/m,
+  // (tracker) is a route group: the tracker is still served at /india/projects.
+  // Its loading.tsx moved in there with it so that the Suspense boundary stops
+  // wrapping projects/[project_code]/ as well — see that segment's layout.tsx.
+  assert.match(pageSource("projects/(tracker)/page.tsx"), /^export const dynamic = "force-dynamic"$/m,
     "the tracker renders from searchParams and must stay per-request")
+})
+
+test("no loading.tsx sits above a route that has to answer with a status code", () => {
+  // THE BUG THIS FILE ALMOST SHIPPED TWICE. A loading.tsx wraps its whole
+  // subtree, not just its own page, and Next flushes the shell — status line
+  // included — before anything suspended below it runs. A loading.tsx in a
+  // segment that has dynamic object routes underneath it therefore turns every
+  // notFound() and permanentRedirect() in those routes into a silent no-op:
+  // /projects/GARBAGE123 answered 200, and a merged `ocms:` code answered 200
+  // with no Location header.
+  //
+  // So each object route's boundary must be its own, with a layout above it to
+  // do the gating. Nothing may reintroduce one at an ancestor.
+  const objectRoutes = ["c/[pc_code]", "projects/[project_code]"]
+  for (const route of objectRoutes) {
+    assert.ok(existsSync(indiaPath(`${route}/layout.tsx`)),
+      `${route} needs a layout.tsx above its loading.tsx to set a real status`)
+    // walk every ancestor segment up to app/india itself
+    const parts = route.split("/")
+    for (let i = 0; i < parts.length; i++) {
+      const ancestor = parts.slice(0, i).join("/")
+      assert.equal(existsSync(indiaPath(ancestor ? `${ancestor}/loading.tsx` : "loading.tsx")), false,
+        `app/india/${ancestor}/loading.tsx wraps ${route} and would swallow its 404`)
+    }
+  }
 })

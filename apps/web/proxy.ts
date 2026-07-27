@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { resolveSurface } from "@/lib/host-routing"
+import { mergedProjectPath } from "@/lib/india/merged-projects"
 
 /**
  * Host-based surface routing. All the logic lives in lib/host-routing.ts as
@@ -35,17 +36,40 @@ export default function proxy(req: NextRequest) {
     return s ? `?${s}` : ""
   })()
 
+  const indiaRoot = process.env.NEXT_PUBLIC_INDIA_ROOT === "1"
+
   const decision = resolveSurface({
     host: devHost || req.headers.get("host") || "",
     pathname: url.pathname,
     search,
-    indiaRoot: process.env.NEXT_PUBLIC_INDIA_ROOT === "1",
+    indiaRoot,
     allowHostOverride: process.env.VERCEL_ENV !== "production",
   })
 
   if (decision.action === "redirect") {
     return NextResponse.redirect(decision.url, decision.status)
   }
+
+  /**
+   * The 708 project URLs PR #97 collapsed, forwarded permanently.
+   *
+   * It has to happen HERE and not in the page: that route has a loading.tsx,
+   * so the page body renders inside a Suspense boundary and the 200 is already
+   * on the wire before permanentRedirect() can throw. See lib/india/
+   * merged-projects.ts for why the map is baked in rather than queried.
+   *
+   * After the surface decision, so a /india/* link on a city subdomain still
+   * goes home to the root domain first and this never invents a cross-host
+   * redirect of its own.
+   */
+  const merged = mergedProjectPath(url.pathname, indiaRoot)
+  if (merged) {
+    const target = url.clone()
+    target.pathname = merged
+    target.search = search
+    return NextResponse.redirect(target, 308)
+  }
+
   if (decision.action === "rewrite") {
     const target = url.clone()
     target.pathname = decision.path

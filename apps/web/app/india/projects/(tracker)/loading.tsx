@@ -10,6 +10,21 @@ import { SkeletonLine } from "@/components/shared/Skeleton"
  *
  * Wider than the object-page skeleton (max-w-4xl) because the tracker is, and
  * a skeleton at the wrong width reads as the page jumping when it arrives.
+ *
+ * WHY THIS LIVES IN A (tracker) ROUTE GROUP AND NOT IN projects/ ITSELF
+ * ---------------------------------------------------------------------
+ * A loading.tsx wraps its whole subtree, not just its own page. Sitting at
+ * app/india/projects/ it also wrapped app/india/projects/[project_code]/ —
+ * so the shell for a PROJECT page was flushed here, before that route's own
+ * layout could run, and every notFound() and permanentRedirect() below it
+ * arrived after 200 OK had gone out. That is what made
+ * /projects/GARBAGE123 a soft 404 and left /projects/ocms:<merged> with no
+ * Location header. Measured: with this file one directory up, the project
+ * gate returned 200 even when it threw synchronously.
+ *
+ * The route group is URL-invisible — this is still /india/projects — and
+ * scopes the boundary to the page it was written for. Nothing about the
+ * tracker's own behaviour changes: same path, same prefetch, same skeleton.
  */
 export default function Loading() {
   return (
