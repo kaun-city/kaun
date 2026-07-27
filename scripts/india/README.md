@@ -29,6 +29,17 @@ normalized name within a state. Anything unresolved is written to a review file
 as a proposed `in_pc_source_aliases` row — never guessed. Same discipline as the
 ward crosswalk's "deterministic overlap, no name matching".
 
+**States follow the same rule through `classifyState` in `lib/pc-reference.mjs`**
+— the committed `data/india/state-aliases.csv` first, then MoSPI's multi-state
+wording, then an exact match on `stateKey()`. Normalising a state name folds
+case, punctuation, `&`/`and` and *word breaks* (`MAHARASHT RA` is a printed line
+wrap, not a spelling), and nothing else. A changed, missing or extra letter is
+never tolerated: `CHHATISGARH` needs an alias row with a written reason, and
+gets one. `classifyState` also says *why* a state is NULL —
+`no_state_printed` / `not_a_state` / `multi_state` / `no_exact_state_match` —
+because "the source printed none" and "we could not read it" are different
+admissions and only the second is a bug.
+
 Each run's review files land next to the report:
 
 ```
@@ -49,6 +60,7 @@ loader, which validates and never decides:
 | Committed decision file | Loader | What it unblocks |
 |---|---|---|
 | `data/india/pc-source-aliases.csv` | `load-aliases.mjs` | a source's constituency id → `pc_code` |
+| `data/india/state-aliases.csv` | read directly by `lib/pc-reference.mjs` | a source's state label → `st_code`, or an explicit "not a state" |
 | `data/india/affidavit-review.csv` | `load-affidavit-review.mjs` | `in_mp_affidavits.needs_review`, which RLS uses to keep an uncorroborated affidavit private |
 
 Both refuse to write a row whose `reviewed_by` is blank. `affidavit-review.csv`

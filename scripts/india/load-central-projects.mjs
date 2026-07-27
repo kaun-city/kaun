@@ -66,7 +66,8 @@ import { resolve, dirname } from "path"
 import { fileURLToPath } from "url"
 import { openSink } from "./lib/sink.mjs"
 import { politeFetch, fetchToFile, CACHE_DIR } from "./lib/http.mjs"
-import { loadPcReference, loadAliases, aliasCandidate, normalizeStateName } from "./lib/pc-reference.mjs"
+import { loadPcReference, loadAliases, aliasCandidate, readStateAliases,
+         buildStateIndex, classifyState } from "./lib/pc-reference.mjs"
 import { flag, opt, banner, run } from "./lib/cli.mjs"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -152,27 +153,11 @@ export function parseArchiveReports(htmlFragment, fyear, month) {
   return out
 }
 
-/**
- * Fold a state string into an st_code, or mark the project multi-state.
- * MoSPI writes plain state names for single-state projects and things like
- * "Multi State" / "Andhra Pradesh, Telangana" otherwise. Never guessed: an
- * unrecognised single-state string becomes an alias candidate.
- */
-export function classifyState(stateRaw, statesByNorm) {
-  const raw = String(stateRaw ?? "").trim()
-  if (!raw) return { st_code: null, is_multi_state: false, unresolved: false }
-  if (/multi[\s-]*state|all india|various/i.test(raw)) {
-    return { st_code: null, is_multi_state: true, unresolved: false }
-  }
-  const direct = statesByNorm.get(normalizeStateName(raw))
-  if (direct != null) return { st_code: direct, is_multi_state: false, unresolved: false }
-  const parts = raw.split(/\s*[,;/&]\s*|\s+and\s+/i).map(s => s.trim()).filter(Boolean)
-  if (parts.length > 1) {
-    const hits = parts.map(p => statesByNorm.get(normalizeStateName(p))).filter(v => v != null)
-    if (hits.length > 1) return { st_code: null, is_multi_state: true, unresolved: false }
-  }
-  return { st_code: null, is_multi_state: false, unresolved: true }
-}
+// classifyState moved to lib/pc-reference.mjs, where the state-alias table and
+// the shared normalisers live, so the historical backfill and this monthly
+// loader cannot drift apart on what "Chhattisgarh" or "Multi State" means.
+// Re-exported because callers (and the tests) have always imported it here.
+export { classifyState } from "./lib/pc-reference.mjs"
 
 /** Fields the loader promotes to columns. Everything else lands in snapshots.raw. */
 export const KNOWN_FIELDS = new Set([
@@ -314,17 +299,10 @@ async function main() {
   /* ---- 4. transform ------------------------------------------------------ */
   const reference = await loadPcReference(sink)
   const aliases = await loadAliases(sink, ["mospi"])
-  const statesByNorm = new Map()
-  for (const r of reference?.rows ?? []) {
-    const k = normalizeStateName(r.state_name)
-    if (!statesByNorm.has(k)) statesByNorm.set(k, r.st_code)
-  }
-  // Aliases for source='mospi' map a state label to a pc_code; take its state.
-  for (const [key, pcCodeValue] of aliases) {
-    const label = key.slice("mospi:".length)
-    const row = reference?.byCode.get(pcCodeValue)
-    if (row) statesByNorm.set(normalizeStateName(label), row.st_code)
-  }
+  const stateIndex = buildStateIndex({
+    reference, pcAliases: aliases, source: "mospi",
+    stateAliases: readStateAliases(undefined, { reference }),
+  })
 
   const projects = []
   const snapshots = []
@@ -332,7 +310,7 @@ async function main() {
 
   for (const r of parsed.records) {
     if (!r.project_code) continue
-    const st = classifyState(r.state, statesByNorm)
+    const st = classifyState(r.state, stateIndex)
     if (st.unresolved && r.state) {
       stateCandidates.set(r.state, (stateCandidates.get(r.state) ?? 0) + 1)
     }

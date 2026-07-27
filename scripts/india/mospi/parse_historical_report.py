@@ -136,6 +136,39 @@ Every cost column in every parsed era is ₹ crore — the annexure says so in i
 own header, and check_units refuses a page that says otherwise rather than
 trusting the year.
 
+WHERE THE STATE COMES FROM, AND THE TWO WAYS IT USED TO BE LOST
+==============================================================
+There is no state COLUMN in any of these layouts. MoSPI prints the state inside
+the project cell, after the OCMS code, as part of a comma-separated tail:
+
+    GEVRA EXPANSION OCP (SECL) - [060100093]SECL,CHHATISGARH ,EPC
+                                             ^agency ^state    ^funding type
+
+Two things went wrong with that, and both produced a label that is not a place
+and therefore resolved to nothing:
+
+  1. THE TAIL HAS THREE FIELDS, not two, from 2016-17 onward. Joining everything
+     past the agency into the state gave "PUNJAB, EPC", "MAHARASHTRA, PPP (BOT)",
+     "TAMIL NADU, Central Sector Projects" and about ninety more. See
+     parse_project_cell.
+  2. A GROUP HEADING PRINTED BETWEEN TWO ROWS was being appended to the open
+     row's cell, gluing the next block's agency onto the state above it —
+     "TAMIL NADU Nuclear Power Corporation Of India Limited", "RAJASTHAN
+     Northern Railway". See read_run and line_pitch; the hard part is that a
+     heading and a cell that WRAPS mid-state ("…AAI,ARUNACHAL" / "PRADESH")
+     are identical by every measure except the line spacing.
+
+Two eras genuinely print no state, and NULL is the right answer there: October
+2009 and April 2010 end the cell at the code, and the post-2020 "On Schedule"
+and "Ahead of Schedule" cuts clip it PART-WAY THROUGH the code ("[N04000083"
+with no closing bracket and nothing after). Nothing in this file invents one.
+
+The label is emitted VERBATIM. Spelling variants ("CHHATISGARH"), abbreviations
+("A & N ISLANDS") and line-wrapped words ("MAHARASHT RA") are resolved by the
+loader against data/india/state-aliases.csv and the shared normaliser in
+scripts/india/lib/pc-reference.mjs, which is where the closed set of 36 states
+is known — not here.
+
 GLUED SERIAL NUMBERS
 ====================
 In several years the serial number and the first word of the project name are
@@ -437,6 +470,24 @@ def parse_project_cell(text):
 
     2010-11 and 2011-12 clip the cell after the code ("[020100041]") and carry no
     agency or state at all, so everything past the code is optional.
+
+    THE TAIL HAS THREE FIELDS, NOT TWO
+    ----------------------------------
+    MoSPI prints "<agency>,<state>,<funding or contract type>" after the code,
+    and the third field is present from 2016-17 onward:
+
+        [N02000010]NPCIL,GUJARAT , G
+        [N24000385]MoRTH,PUNJAB ,EPC
+        [N16000213]ONGC,MAHARASHTRA ,Central Sector Projects
+
+    Joining everything past the agency into the state produced "PUNJAB, EPC",
+    "MAHARASHTRA, PPP (BOT)", "TAMIL NADU, Central Sector Projects" and about
+    ninety other variants, none of which is a state and none of which resolves.
+    The state is the SECOND field; the third is a contract type this schema has
+    no column for and is dropped rather than smuggled into a place name. (No
+    state or UT in this corpus prints a comma inside its own name — every one of
+    the 152 comma-bearing labels in the committed snapshots is a state followed
+    by a funding type.)
     """
     text = re.sub(r"\s+", " ", (text or "")).strip()
     m = OCMS_RE.search(text)
@@ -450,7 +501,7 @@ def parse_project_cell(text):
         bits = [b.strip() for b in tail.split(",")]
         agency = none_if_dash(bits[0])
         if len(bits) > 1:
-            state = none_if_dash(", ".join(bits[1:]))
+            state = none_if_dash(bits[1])
     return {"project_name": none_if_dash(name), "ocms_code": m.group(1),
             "agency": agency, "state": state}
 
@@ -1072,6 +1123,48 @@ def merge_runs(runs):
 FOOTER_MIN_GAP = 18.0
 
 
+def line_pitch(lines):
+    """
+    The page's INTRA-ROW line spacing — the gap at which a wrapped cell
+    continues — or None when the page is too short to say.
+
+    This is the one thing that tells a wrapped project cell apart from a group
+    heading printed between two rows, and both look identical by every other
+    measure (same column, same left edge, same font, no serial number):
+
+        [N21000021]HSCC,UTTAR      gap 9.2   the cell wrapping mid-state
+        PRADESH                              …and it must stay with the row
+
+        [020100044]BHAVNI,TAMIL NADU
+        Nuclear Power Corporation Of  gap 12.6   a new block's agency heading
+                                                 …and it must not
+
+    The report generator sets both spacings; they are not measured against a
+    constant here but against each other, per page, so a different font size in
+    a different year changes nothing. The commonest gap on a page of a table
+    whose rows wrap is the wrap spacing, by a wide margin.
+    """
+    gaps = Counter()
+    prev = None
+    for top, _ws in lines:
+        if prev is not None:
+            g = round((top - prev) * 2) / 2
+            if 0 < g <= 30:
+                gaps[g] += 1
+        prev = top
+    # Too few lines to have a modal anything — say nothing rather than guess.
+    if sum(gaps.values()) < 6:
+        return None
+    return gaps.most_common(1)[0][0]
+
+
+# How far past the wrap spacing a line must sit before it is a new block rather
+# than a continuation. The two spacings differ by 3-4pt everywhere they were
+# measured (9.2 vs 12.6 in 2020-21, 9.1 vs 13.1 in 2023-24); half of that is
+# margin enough and still refuses to fire on a rounding wobble.
+BLOCK_GAP_MARGIN = 1.5
+
+
 def is_page_footer(words, top, prev_top):
     """
     The page number printed at the foot of the page, which is NOT data.
@@ -1099,12 +1192,16 @@ def read_run(run, warnings):
     current_sector = None
     expected = 1
     pending = None
+    pending_has_code = False
+    in_heading = False
 
     def flush():
-        nonlocal pending
+        nonlocal pending, pending_has_code, in_heading
         if pending is not None:
             records.append(finalise(pending, run["label"]))
             pending = None
+            pending_has_code = False
+            in_heading = False
 
     for page in run["pages"]:
         edges, mapping = page["edges"], page["mapping"]
@@ -1112,10 +1209,12 @@ def read_run(run, warnings):
         project_col = col_of["project"]
         sl_col = col_of.get("sl_no", 0)
 
+        pitch = line_pitch(page["lines"][page["idx"] + 1:])
         prev_top = None
         for top, ws in page["lines"][page["idx"] + 1:]:
             if is_page_footer(ws, top, prev_top):
                 continue
+            gap = None if prev_top is None else top - prev_top
             prev_top = top
             cells = bucket(ws, edges)
             if not any(v.strip() for v in cells.values()):
@@ -1142,6 +1241,8 @@ def read_run(run, warnings):
                 pending = {"sl_no": sl_no, "source_page": page["pageno"],
                            "sector": current_sector, "col_of": col_of,
                            "lines": [cells]}
+                pending_has_code = bool(OCMS_RE.search(proj_text))
+                in_heading = False
                 expected = sl_no + 1
                 continue
 
@@ -1152,6 +1253,52 @@ def read_run(run, warnings):
                 if proj_text and not others and not OCMS_RE.search(proj_text):
                     current_sector = re.sub(r"\s+", " ", proj_text).strip()
                 continue
+            # A GROUP HEADING PRINTED BETWEEN TWO PROJECTS IS NOT PART OF EITHER.
+            #
+            # These annexures head each ministry block with its sector and each
+            # sub-block with the implementing agency, and the agency heading is
+            # printed BETWEEN two numbered rows with no Total line to close the
+            # first one:
+            #
+            #     1  PROTOTYPE FAST BREEDER    09/2003  3,492.00 …
+            #        REACTOR (BHAVINI, 500 MWE) -
+            #        [020100044]BHAVNI,TAMIL NADU
+            #        Nuclear Power Corporation Of      ← heading for row 2
+            #        India Limited                     ← …wrapped
+            #     2  KAKRAPAR ATOMIC POWER     10/2009 …
+            #
+            # Appending those two lines to the open row glued the next block's
+            # agency onto the state and produced "TAMIL NADU Nuclear Power
+            # Corporation Of India Limited" — and the same shape gave "RAJASTHAN
+            # Northern Railway", "ODISHA Neyveli Lignite Corporation" and
+            # "WEST BENGAL Uttar Pradesh Jal Nigam".
+            #
+            # A heading is recognised structurally, not by how it is spelled:
+            # nothing outside the project column, no OCMS code of its own, the
+            # open row's project cell has already printed ITS code, and the line
+            # sits a BLOCK apart rather than a wrap apart (see line_pitch — the
+            # cell really does wrap mid-state, "…HSCC,UTTAR" / "PRADESH", and
+            # dropping that would truncate Uttar Pradesh to "UTTAR"). It is
+            # dropped rather than made the sector: the sector these annexures
+            # already record comes from the same headings read when no row is
+            # open, and changing which of them wins is a different repair.
+            #
+            # A heading WRAPS like anything else ("Nuclear Power Corporation
+            # Of" / "India Limited", "Metropolitan Rapid Transport" /
+            # "Projects"), and its second line is printed at the wrap spacing —
+            # so once a heading has started, its continuation lines belong to it
+            # and not to the row above. The heading ends at the next serial, or
+            # at the next line that puts anything in another column.
+            if pending_has_code and proj_text and not others \
+                    and not OCMS_RE.search(proj_text) \
+                    and (in_heading
+                         or (pitch is not None and gap is not None
+                             and gap > pitch + BLOCK_GAP_MARGIN)):
+                in_heading = True
+                continue
+            in_heading = False
+            if OCMS_RE.search(proj_text):
+                pending_has_code = True
             pending["lines"].append(cells)
     flush()
 

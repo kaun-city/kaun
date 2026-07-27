@@ -157,7 +157,7 @@ class PostgresBackend {
   }
 }
 
-class SupabaseBackend {
+export class SupabaseBackend {
   constructor({ url, serviceKey, mgmtToken }) {
     this.url = url.replace(/\/+$/, "")
     this.serviceKey = serviceKey
@@ -214,12 +214,37 @@ class SupabaseBackend {
     return Array.isArray(out) ? out.map(r => r.row_to_json ?? r) : []
   }
 
-  async selectRest(table, { columns = "*", limit = 100000, order = null } = {}) {
-    const params = new URLSearchParams({ select: columns, limit: String(limit) })
-    if (order) params.set("order", order)
-    const r = await fetch(`${this.url}/rest/v1/${table}?${params}`, { headers: this.restHeaders })
-    if (!r.ok) throw new Error(`select ${table} failed: ${r.status}`)
-    return r.json()
+  /**
+   * A whole table, in pages.
+   *
+   * PostgREST enforces its OWN row ceiling (Supabase ships db-max-rows = 1000)
+   * and does not report that it applied one: a request for limit=100000 comes
+   * back 200 OK with exactly 1000 rows and no indication that the other 5,122
+   * exist. Every loader that read a grown-up table was therefore matching
+   * against its first page — load-mospi-historical resolved identities against
+   * 615 of the 5,279 legacy OCMS codes in in_central_projects and minted new
+   * "ocms:" rows for projects that already had one.
+   *
+   * So the page size is stated rather than assumed, and pages are fetched until
+   * one comes back short. Order is pinned to a stable column so paging cannot
+   * skip or repeat a row between requests.
+   */
+  async selectRest(table, { columns = "*", limit = Infinity, order = null,
+                            pageSize = 1000 } = {}) {
+    const out = []
+    for (let offset = 0; out.length < limit; offset += pageSize) {
+      const want = Math.min(pageSize, limit - out.length)
+      const params = new URLSearchParams({ select: columns, limit: String(want) })
+      params.set("offset", String(offset))
+      // Without a total order PostgREST may return the same row on two pages.
+      params.set("order", order ?? columns.split(",")[0].trim())
+      const r = await fetch(`${this.url}/rest/v1/${table}?${params}`, { headers: this.restHeaders })
+      if (!r.ok) throw new Error(`select ${table} failed: ${r.status}`)
+      const page = await r.json()
+      out.push(...page)
+      if (page.length < want) break
+    }
+    return out
   }
 }
 
