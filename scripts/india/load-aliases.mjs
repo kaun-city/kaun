@@ -29,11 +29,11 @@ import { openSink, REPO_ROOT } from "./lib/sink.mjs"
 import { parsePcCode } from "./lib/pc-code.mjs"
 import { loadPcReference } from "./lib/pc-reference.mjs"
 
-const CSV_PATH = resolve(REPO_ROOT, "data/india/pc-source-aliases.csv")
-const METHODS = new Set(["official_lookup", "exact_normalized", "manual_reviewed"])
+export const CSV_PATH = resolve(REPO_ROOT, "data/india/pc-source-aliases.csv")
+export const METHODS = new Set(["official_lookup", "exact_normalized", "manual_reviewed"])
 
 /** Minimal CSV reader: no embedded newlines; quoted fields may hold commas. */
-function readCsv(path) {
+export function readCsv(path) {
   const [header, ...lines] = readFileSync(path, "utf8").trim().split("\n")
   const cols = header.split(",")
   return lines.map((line, i) => {
@@ -52,6 +52,23 @@ function readCsv(path) {
   })
 }
 
+/** Every row that would block a write, keyed to the reason. Pure — no I/O. */
+export function validate(rows, ref) {
+  const bad = []
+  for (const r of rows) {
+    if (!r.source || !r.source_key) bad.push({ ...r, problem: "missing source/source_key" })
+    else if (!METHODS.has(r.method)) bad.push({ ...r, problem: `bad method '${r.method}'` })
+    else if (r.method === "manual_reviewed" && !r.reviewed_by) bad.push({ ...r, problem: "manual_reviewed without reviewed_by" })
+    else {
+      try {
+        parsePcCode(r.pc_code)
+        if (!ref.byCode.has(r.pc_code)) bad.push({ ...r, problem: `pc_code ${r.pc_code} not in the 543-seat reference` })
+      } catch { bad.push({ ...r, problem: `malformed pc_code '${r.pc_code}'` }) }
+    }
+  }
+  return bad
+}
+
 async function main() {
   // banner() parses --apply itself (cli's flag() prepends the dashes — a
   // hand-rolled flag("--apply") here once matched "----apply", ran dry, and
@@ -65,18 +82,7 @@ async function main() {
 
   const ref = await loadPcReference(sink)
   if (!ref) throw new Error("no 543-seat reference available; cannot validate pc_codes")
-  const bad = []
-  for (const r of rows) {
-    if (!r.source || !r.source_key) bad.push({ ...r, problem: "missing source/source_key" })
-    else if (!METHODS.has(r.method)) bad.push({ ...r, problem: `bad method '${r.method}'` })
-    else if (r.method === "manual_reviewed" && !r.reviewed_by) bad.push({ ...r, problem: "manual_reviewed without reviewed_by" })
-    else {
-      try {
-        parsePcCode(r.pc_code)
-        if (!ref.byCode.has(r.pc_code)) bad.push({ ...r, problem: `pc_code ${r.pc_code} not in the 543-seat reference` })
-      } catch { bad.push({ ...r, problem: `malformed pc_code '${r.pc_code}'` }) }
-    }
-  }
+  const bad = validate(rows, ref)
   if (bad.length) {
     sink.review("rejected-alias-rows", bad)
     for (const b of bad) sink.warn(`${b.source}:${b.source_key} — ${b.problem}`)
