@@ -19,6 +19,7 @@ refuses to run without credentials in the environment.
 | `mospi/parse_flash_report.py` | — (parse step only) | MoSPI Table 6 PDF → JSON | called by the loader |
 | `load-aliases.mjs` | `in_pc_source_aliases` | `data/india/pc-source-aliases.csv` (human-reviewed) | when a decision is committed |
 | `load-affidavit-review.mjs` | `in_mp_affidavits` (review flag only) | `data/india/affidavit-review.csv` (human-reviewed) | when a decision is committed |
+| `merge-ocms-identities.mjs` | `in_central_projects(+_snapshots)` (deletes) | `data/india/ocms-identity-merges.csv` (human-reviewed) | one-off; re-runnable, no-op once merged |
 
 ## The rule every one of these must follow
 
@@ -62,9 +63,12 @@ loader, which validates and never decides:
 | `data/india/pc-source-aliases.csv` | `load-aliases.mjs` | a source's constituency id → `pc_code` |
 | `data/india/state-aliases.csv` | read directly by `lib/pc-reference.mjs` | a source's state label → `st_code`, or an explicit "not a state" |
 | `data/india/affidavit-review.csv` | `load-affidavit-review.mjs` | `in_mp_affidavits.needs_review`, which RLS uses to keep an uncorroborated affidavit private |
+| `data/india/ocms-identity-merges.csv` | `merge-ocms-identities.mjs` | collapsing the duplicate `ocms:` project identities a truncated read minted |
 
-Both refuse to write a row whose `reviewed_by` is blank. `affidavit-review.csv`
-is committed unsigned on purpose — filling `reviewed_by` in is the sign-off.
+All of them refuse to write a row whose `reviewed_by` is blank. Those files are
+committed unsigned on purpose — filling `reviewed_by` in is the sign-off.
+`merge-ocms-identities.mjs` is the only one that DELETES, so it also re-verifies
+every pair against the live table and refuses the whole run on any disagreement.
 
 ## Order of operations
 

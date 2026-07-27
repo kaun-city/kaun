@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { notFound, permanentRedirect } from "next/navigation"
 import { IndiaHeader } from "@/components/india/IndiaHeader"
 import { ObjectHeader, Section, Stat } from "@/components/india/ObjectHeader"
 import { ProjectTimeline } from "@/components/india/ProjectTimeline"
 import { SourcesFooter } from "@/components/india/SourcesFooter"
-import { fetchProjectDetail } from "@/lib/india/api"
+import { fetchProjectDetail, resolveMergedProjectCode } from "@/lib/india/api"
 import { indiaHref } from "@/lib/host-routing"
 import { SOURCE_MOSPI } from "@/lib/india/constants"
 import { formatCrore, formatCroreDelta, formatMonth, formatPct, formatSlip } from "@/lib/india/format"
@@ -49,7 +49,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectPage({ params }: Props) {
   const { project_code } = await params
   const detail = await fetchProjectDetail(project_code)
-  if (!detail) notFound()
+  if (!detail) {
+    // A synthetic "ocms:" code that no longer has a row was merged into the
+    // real MoSPI project_code that carries the same OCMS code. That URL was
+    // live and may have been linked, so it forwards permanently to the project
+    // it always meant rather than 404ing. See resolveMergedProjectCode.
+    const merged = await resolveMergedProjectCode(project_code)
+    if (merged) permanentRedirect(indiaHref(`/projects/${merged}`))
+    notFound()
+  }
 
   const { project, history, latest, costRevisions, scheduleRevisions, monthsSinceLastChange } = detail
   const originalCost = latest && latest.revised_cost_cr !== null && latest.cost_overrun_cr !== null
