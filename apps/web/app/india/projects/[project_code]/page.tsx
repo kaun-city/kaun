@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { notFound, permanentRedirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { IndiaHeader } from "@/components/india/IndiaHeader"
 import { ObjectHeader, Section, Stat } from "@/components/india/ObjectHeader"
 import { ProjectTimeline } from "@/components/india/ProjectTimeline"
 import { SourcesFooter } from "@/components/india/SourcesFooter"
-import { fetchProjectDetail, resolveMergedProjectCode } from "@/lib/india/api"
+import { fetchProjectDetail } from "@/lib/india/api"
+import { projectCodeFromParam } from "@/lib/india/merged-projects"
 import { indiaHref } from "@/lib/host-routing"
 import { SOURCE_MOSPI } from "@/lib/india/constants"
 import { formatCrore, formatCroreDelta, formatMonth, formatPct, formatSlip } from "@/lib/india/format"
@@ -35,7 +36,7 @@ type Props = { params: Promise<{ project_code: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { project_code } = await params
-  const detail = await fetchProjectDetail(project_code)
+  const detail = await fetchProjectDetail(projectCodeFromParam(project_code))
   if (!detail) return {}
   const { project, latest } = detail
   const over = latest?.cost_overrun_cr
@@ -48,16 +49,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { project_code } = await params
-  const detail = await fetchProjectDetail(project_code)
-  if (!detail) {
-    // A synthetic "ocms:" code that no longer has a row was merged into the
-    // real MoSPI project_code that carries the same OCMS code. That URL was
-    // live and may have been linked, so it forwards permanently to the project
-    // it always meant rather than 404ing. See resolveMergedProjectCode.
-    const merged = await resolveMergedProjectCode(project_code)
-    if (merged) permanentRedirect(indiaHref(`/projects/${merged}`))
-    notFound()
-  }
+  // Percent-encoded on the way in; layout.tsx explains why that mattered.
+  const detail = await fetchProjectDetail(projectCodeFromParam(project_code))
+  // Unreachable in practice: layout.tsx has already established that this code
+  // names a row, and it runs above the Suspense boundary this body sits in, so
+  // that is where a miss is turned into a real 404 and a merged `ocms:` code
+  // into a real 308. Neither can be done from here — the shell, status line
+  // included, is already on the wire by the time this runs. Kept for the
+  // narrowing, and for the sliver between the two reads.
+  if (!detail) notFound()
 
   const { project, history, latest, costRevisions, scheduleRevisions, monthsSinceLastChange } = detail
   const originalCost = latest && latest.revised_cost_cr !== null && latest.cost_overrun_cr !== null

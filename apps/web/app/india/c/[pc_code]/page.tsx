@@ -109,6 +109,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ConstituencyPage({ params }: Props) {
   const { pc_code } = await params
+  // layout.tsx has already rejected anything that is not one of the 543 real
+  // seats, above the Suspense boundary this body sits inside — which is the
+  // only place a notFound() can still set the status line. These two are the
+  // backstop for the case it cannot see: a real seat with no row yet (fixture
+  // mode, a half-run seeder). They stream, so they remain soft 404s.
   if (!isPcCode(pc_code)) notFound()
 
   const profile = await fetchConstituencyProfile(pc_code)
