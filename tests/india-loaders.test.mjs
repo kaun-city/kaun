@@ -36,7 +36,7 @@ import {
   peelTrailingParens, looksLikeAbbreviation, partyLabels,
 } from "../scripts/india/myneta-affidavits.mjs"
 import {
-  parseDmy, applyMinisterRule, attendancePct, parsePrsAttendance, parsePrsInt,
+  parseDmy, applyMinisterRule, attendancePct, memberForSeat, parsePrsAttendance, parsePrsInt,
   parseMpCodes, parseNameList, nameKey, MINISTER_EXCLUSION_REASON,
 } from "../scripts/india/mp-activity.mjs"
 import {
@@ -624,6 +624,55 @@ test("sitting dates and Zenodo's python-repr columns parse", () => {
   assert.deepEqual(parseMpCodes("[{'mpName': 'Shri Mani A', 'mpCode': 5814, 'mpPartCode': 1}]"), [5814])
   assert.deepEqual(parseNameList("['Shri Mani A', 'Dr. X Y']"), ["Shri Mani A", "Dr. X Y"])
   assert.deepEqual(parseNameList("[]"), [])
+})
+
+test("a by-election successor owns the seat's term row, not the member who died", () => {
+  // Nanded (27-16). PRS publishes one row per seat describing whoever holds it
+  // now; the roster holds both members. Writing the term row against the member
+  // who died would put the successor's record under a dead member's name.
+  const died = { id: 29, name: "Chavan Vasantrao Balwantrao", status: "Died" }
+  const successor = { id: 1315, name: "Chavan Ravindra Vasantrao", status: "Sitting" }
+  assert.equal(memberForSeat([died, successor])?.id, 1315)
+  assert.equal(memberForSeat([successor, died])?.id, 1315)
+})
+
+test("a seat whose only member has died or resigned still gets its term row", () => {
+  // Basirhat (19-18) and Nagaon (18-9). Their time in the House happened, PRS
+  // still publishes it, and pass 1 already writes their session rows — dropping
+  // only the term total would leave the page with sessions and no total.
+  assert.equal(memberForSeat([{ id: 154, status: "Died" }])?.id, 154)
+  assert.equal(memberForSeat([{ id: 64, status: "Resigned" }])?.id, 64)
+  assert.equal(memberForSeat([{ id: 271, status: "Sitting" }])?.id, 271)
+})
+
+test("a roster the loader cannot read one member out of goes to review", () => {
+  assert.equal(memberForSeat([]), null)
+  assert.equal(memberForSeat(undefined), null)
+  assert.equal(memberForSeat([{ id: 1, status: "Sitting" }, { id: 2, status: "Sitting" }]), null)
+  assert.equal(memberForSeat([{ id: 1, status: "Died" }, { id: 2, status: "Resigned" }]), null)
+})
+
+test("PRS's own constituency spellings do not resolve, and must not", () => {
+  // The 17 labels that cost 17 members their term row. Each one is a real seat
+  // under a different spelling — which is an alias decision for a human, never
+  // a similarity match here. What the loader owes is a loud, reviewable gap.
+  const ref = new PcReference([
+    { pc_code: "19-19", st_code: 19, pc_no: 19, state_name: "West Bengal", pc_name: "Jaynagar", pc_name_norm: "jaynagar" },
+    { pc_code: "10-31", st_code: 10, pc_no: 31, state_name: "Bihar", pc_name: "Pataliputra", pc_name_norm: "pataliputra" },
+    { pc_code: "26-2", st_code: 26, pc_no: 2, state_name: "Dadra and Nagar Haveli and Daman and Diu", pc_name: "Dadra & Nagar Haveli", pc_name_norm: "dadra nagar haveli" },
+  ], "test")
+
+  assert.equal(ref.resolve({ source: "prs", sourceKey: "West Bengal|Joynagar", stateName: "West Bengal", name: "Joynagar" }).pc_code, null)
+  assert.equal(ref.resolve({ source: "prs", sourceKey: "Bihar|Patliputra", stateName: "Bihar", name: "Patliputra" }).pc_code, null)
+  // PRS names the pre-merger UT, which is not the merged UT's name at all.
+  assert.equal(
+    ref.resolve({ source: "prs", sourceKey: "Dadra and Nagar Haveli|Dadra and Nagar Haveli", stateName: "Dadra and Nagar Haveli", name: "Dadra and Nagar Haveli" }).reason,
+    "unknown_state")
+  // The exact spelling still resolves — this is not a claim that PRS is broken.
+  assert.equal(ref.resolve({ source: "prs", sourceKey: "West Bengal|Jaynagar", stateName: "West Bengal", name: "Jaynagar" }).pc_code, "19-19")
+  // And a reviewed alias is what closes each gap.
+  const aliases = new Map([["prs:West Bengal|Joynagar", "19-19"]])
+  assert.equal(ref.resolve({ source: "prs", sourceKey: "West Bengal|Joynagar", stateName: "West Bengal", name: "Joynagar", aliases }).pc_code, "19-19")
 })
 
 test("question-author matching is exact within one system", () => {

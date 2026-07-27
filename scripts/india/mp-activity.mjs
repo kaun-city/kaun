@@ -50,6 +50,18 @@
  *
  * RAJYA SABHA is not covered: its attendance/questions endpoints were never
  * probed in recon. LS only, deliberately.
+ *
+ * THE TERM PASS DEPENDS ON THE ALIAS TABLE, AND SAYS SO WHEN IT IS SHORT.
+ * PRS publishes a row for all 544 members but spells 17 constituencies its own
+ * way — "Joynagar" for Jaynagar, "Pataliputra" for Patliputra, "Puducherry" for
+ * the 2008 order's "Pondicherry" — and names the pre-merger UT "Dadra and Nagar
+ * Haveli" for both of its seats. Under the no-fuzzy-matching rule those cannot
+ * resolve, and they must not: the fix is a reviewed row in
+ * data/india/pc-source-aliases.csv, not a looser match. What this loader owes
+ * the reader is that the gap is LOUD — every unresolved label leaves as an
+ * alias candidate for review. It used to `continue` in silence, which is how 17
+ * sitting members came to have session rows and no term total on the page for
+ * months, with nothing anywhere saying so.
  */
 import { readFileSync, existsSync } from "fs"
 import { resolve } from "path"
@@ -148,6 +160,33 @@ export function parseNameList(repr) {
  *  exact match after whitespace collapsing is safe. Nothing looser. */
 export function nameKey(s) {
   return String(s ?? "").replace(/\s+/g, " ").trim().toLowerCase()
+}
+
+/**
+ * The single roster row a PRS seat row is describing, or null when the roster
+ * cannot name one.
+ *
+ * PRS publishes one row per seat and it describes whoever holds the seat now,
+ * so the sitting member wins whenever there is one. A seat can carry two roster
+ * rows once a by-election has replaced a member mid-term — Nanded (27-16) holds
+ * both the member who died in 2024 and the member who won the seat back — and
+ * the term record belongs to the successor, not to the person it outlived.
+ *
+ * The rest of this loader writes SESSION rows for a member who died or resigned
+ * (pass 1 reads the whole roster), and PRS keeps publishing their record too.
+ * So a seat whose only row is a departed member still gets its term row: their
+ * time in the House happened, and dropping it would leave the page showing
+ * sessions with no term total for no reason the reader could see.
+ *
+ * Everything else — no roster row at all, two sitting members, two departed
+ * members — is a roster the loader has no business interpreting. It returns
+ * null and the caller sends the seat to review.
+ */
+export function memberForSeat(rosterRows = []) {
+  const sitting = rosterRows.filter(m => m.status === "Sitting")
+  if (sitting.length === 1) return sitting[0]
+  if (sitting.length === 0 && rosterRows.length === 1) return rosterRows[0]
+  return null
 }
 
 /* -------------------------------------------------------------------------- */
@@ -394,24 +433,50 @@ async function main() {
     // PRS has no mpsno. It is joined through pc_code, which in_mps already
     // carries — the same structural bridge sansad-roster uses for the minister
     // flag, not a name match.
-    const mpsWithPc = await sink.select("in_mps", { columns: "id,mpsno,pc_code,house,term_label,is_minister,status" })
-    const byPc = new Map(mpsWithPc
-      .filter(m => m.house === "LS" && m.status === "Sitting" && m.pc_code)
-      .map(m => [m.pc_code, m]))
-    const { loadPcReference, loadAliases } = await import("./lib/pc-reference.mjs")
+    const mpsWithPc = await sink.select("in_mps", { columns: "id,mpsno,name,pc_code,house,term_label,is_minister,status" })
+    const rosterByPc = new Map()
+    for (const m of mpsWithPc) {
+      if (m.house !== "LS" || m.term_label !== TERM_LABEL || !m.pc_code) continue
+      if (!rosterByPc.has(m.pc_code)) rosterByPc.set(m.pc_code, [])
+      rosterByPc.get(m.pc_code).push(m)
+    }
+    const { loadPcReference, loadAliases, aliasCandidate } = await import("./lib/pc-reference.mjs")
     const reference = await loadPcReference(sink)
     const aliases = await loadAliases(sink, ["prs"])
 
     let matched = 0
+    const aliasCandidates = []
+    const unmatchedSeats = []
     for (const r of parsed.slice(1)) {
       if (r.length <= idx.mp_house) continue
       if (!/lok/i.test(r[idx.mp_house] ?? "")) continue
+      const sourceKey = `${r[idx.state]}|${r[idx.pc_name]}`
       const res = reference?.resolve({
-        source: "prs", sourceKey: `${r[idx.state]}|${r[idx.pc_name]}`,
+        source: "prs", sourceKey,
         stateName: r[idx.state], name: r[idx.pc_name], aliases,
-      }) ?? { pc_code: null }
-      const m = res.pc_code ? byPc.get(res.pc_code) : null
-      if (!m) continue
+      }) ?? { pc_code: null, reason: "no_pc_reference" }
+      // An unresolved label is a REPORTED gap, not a skipped row. PRS spells 17
+      // seats its own way ("Joynagar" for Jaynagar, "Pataliputra" for
+      // Patliputra) and this loop used to drop them without a word, which is
+      // how 17 members ended up with session rows and no term total at all.
+      if (!res.pc_code) {
+        aliasCandidates.push(aliasCandidate({
+          source: "prs", sourceKey, sourceLabel: r[idx.pc_name],
+          stateName: r[idx.state], reason: res.reason ?? "no_exact_match",
+          extra: { prs_mp_name: r[idx.mp_name] ?? "", prs_term: r[idx.term] ?? "" },
+        }))
+        continue
+      }
+      const m = memberForSeat(rosterByPc.get(res.pc_code))
+      if (!m) {
+        unmatchedSeats.push({
+          pc_code: res.pc_code,
+          prs_state: r[idx.state], prs_pc_name: r[idx.pc_name], prs_mp_name: r[idx.mp_name],
+          roster_rows: (rosterByPc.get(res.pc_code) ?? [])
+            .map(x => `${x.id}:${x.name} [${x.status}]`).join(" | ") || "(no roster row)",
+        })
+        continue
+      }
       matched++
       termRows.push(applyMinisterRule({
         ...base(m), period_kind: "term", session_no: 0,
@@ -425,6 +490,17 @@ async function main() {
       }, m.is_minister))
     }
     sink.count("PRS term rows matched to an MP", matched)
+    if (aliasCandidates.length) {
+      sink.count("PRS labels needing a reviewed alias", aliasCandidates.length)
+      sink.warn(`${aliasCandidates.length} PRS constituency label(s) did not resolve — those seats get NO ` +
+        `period_kind='term' row until an alias is reviewed into data/india/pc-source-aliases.csv`)
+      sink.review("alias-candidates", aliasCandidates)
+    }
+    if (unmatchedSeats.length) {
+      sink.count("PRS rows whose seat has no single roster member", unmatchedSeats.length)
+      sink.warn(`${unmatchedSeats.length} PRS row(s) resolved to a seat the roster cannot name one member for`)
+      sink.review("prs-seat-without-one-member", unmatchedSeats)
+    }
   } catch (e) {
     sink.warn(`PRS MP Track unavailable (${e.message.slice(0, 120)}) — no period_kind='term' rows this run`)
   }
