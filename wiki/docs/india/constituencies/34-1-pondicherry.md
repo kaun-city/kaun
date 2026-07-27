@@ -98,9 +98,21 @@ _sansad.in spells this seat "Puducherry". The two names were matched by `alias_t
 
 ## Declared record
 
-**Affidavit not published yet.** Kaun serves a nomination affidavit only once its MyNeta↔seat join has been reviewed by a human and the source page has parsed cleanly — unreviewed rows are hidden by a database policy, not by this page. Attaching a criminal-case count to the wrong person is the failure this guards against, so the count is withheld rather than guessed.
+From the winning candidate's Election Commission nomination affidavit. **Self-declared** — Kaun
+reproduces the declaration, it does not verify it.
 
-The underlying declarations are public at [myneta.info](https://myneta.info) in the meantime.
+| Declared | Value |
+|---|---|
+| Election | LokSabha2024 |
+| Candidate as named on the affidavit | Ve Vaithilingam |
+| Pending criminal cases | none declared |
+| Total assets | ₹15.72 Cr |
+| Liabilities | — |
+| Education | Graduate — B.Com from Madurai Kamaraj University by Distance Education in 1968-1971 |
+| Profession (self-declared) | Agriculture |
+| Age at nomination | 73 |
+| Affidavit source | [myneta.info](https://myneta.info/LokSabha2024/candidate.php?candidate_id=531) |
+
 
 ---
 
@@ -113,14 +125,14 @@ average of them measures none of them.
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 20 | 4 | 20.0% | — | — | — | — |
-| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 28 | 14 | 50.0% | — | — | — | — |
-| 01/12/2025 to 19/12/2025 | 15 | 13 | 86.7% | 10 | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | 14 | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | 14 | — | — | — |
-| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 23 | 85.2% | 15 | 160 | — | — |
-| 25/11/2024 to 20/12/2024 | 20 | 15 | 75.0% | 5 | 51 | — | — |
-| 22/07/2024 to 09/08/2024 | 15 | 15 | 100.0% | 6 | 151 | — | — |
+| 01/12/2025 to 19/12/2025 | 15 | 13 | 86.7% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | — | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 23 | 85.2% | — | 160 | — | — |
+| 25/11/2024 to 20/12/2024 | 20 | 15 | 75.0% | — | 51 | — | — |
+| 22/07/2024 to 09/08/2024 | 15 | 15 | 100.0% | — | 151 | — | — |
 | 24/06/2024 to 02/07/2024 | 7 | 6 | 85.7% | — | 1 | — | — |
+| Term to date (Second Term) | — | — | 77.8% | 63 | 11 | 0 | — |
 
 _A dash is a value the source does not record. It is never a zero._
 
@@ -155,7 +167,8 @@ The 1 project in Puducherry furthest above sanctioned cost, as of the May 2026 r
 | Seat identity and boundaries (543) | [DataMeet + shijithpk 2024 supplement](https://github.com/datameet/maps/tree/master/parliamentary-constituencies) | 2008 delimitation, with the 2022 J&K and 2023 Assam orders applied. Assam, J&K and Ladakh outlines were re-georeferenced from ECI press-note PDFs and are not survey-grade. |
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
+| Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-07-26 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-07-27 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
