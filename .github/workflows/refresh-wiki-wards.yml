@@ -27,7 +27,9 @@ jobs:
 
       - name: Open PR if content changed
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # See refresh-india-wiki.yml for why this is not GITHUB_TOKEN.
+          GH_TOKEN: ${{ secrets.KAUN_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          HAVE_BOT_TOKEN: ${{ secrets.KAUN_BOT_TOKEN != '' }}
         run: |
           git config user.name "bharatnyusta"
           git config user.email "bharatnyusta@users.noreply.github.com"
@@ -51,3 +53,9 @@ jobs:
           gh pr create \
             --title "wiki: auto-refresh ward pages ($(date -u +%Y-%m-%d))" \
             --body "Scheduled refresh by \`refresh-wiki-wards\` workflow. Pulls from the kaun.city public APIs; pushes only if content actually changed. $STATS."
+
+          if [ "$HAVE_BOT_TOKEN" = "true" ]; then
+            gh pr merge "$BRANCH" --squash --delete-branch
+          else
+            echo "::notice::KAUN_BOT_TOKEN is not set - PR opened but left for a manual merge."
+          fi
