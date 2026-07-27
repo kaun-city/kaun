@@ -1,0 +1,1133 @@
+{
+  "generated_by": "load-mospi-historical",
+  "parser": "scripts/india/mospi/parse_historical_report.py",
+  "source": "MoSPI flash reports, PAIMANA archive (paimana-proj.mospi.gov.in)",
+  "reports": [
+    {
+      "report_month": "2001-04",
+      "source_pdf": "2001-02_04_FR_April_2001.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 18,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2001-10",
+      "source_pdf": "2001-02_10_FR_OCT_2001.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 17,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2002-04",
+      "source_pdf": "2002-03_04_FR_Apr_2002.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 17,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2002-10",
+      "source_pdf": "2002-03_10_FR_OCT_2002.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 22,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2003-04",
+      "source_pdf": "2003-04_04_MonthlyFR_april_2003.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 21,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2003-10",
+      "source_pdf": "2003-04_10_MonthlyFR_oct_2003.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 23,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2004-04",
+      "source_pdf": "2004-05_04_MonthlyFR_apr_2004.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 25,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2004-10",
+      "source_pdf": "2004-05_10_MonthlyFR_oct_2004.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 28,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2005-05",
+      "source_pdf": "2005-06_05_MonthlyFR_may_2005.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 24,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2005-10",
+      "source_pdf": "2005-06_10_MonthlyFR_oct_2005.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 30,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2006-04",
+      "source_pdf": "2006-07_04_MonthlyFR_apr_2006.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 30,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2006-10",
+      "source_pdf": "2006-07_10_MonthlyFR_oct_2006.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 34,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2007-04",
+      "source_pdf": "2007-08_04_MonthlyFR_april_2007.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 36,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2007-10",
+      "source_pdf": "2007-08_10_FR_OCT_2007.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 38,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2008-04",
+      "source_pdf": "2008-09_04_MonthlyFR_april_2008.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 39,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2008-10",
+      "source_pdf": "2008-09_10_MonthlyFR_oct_2008.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 40,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2009-04",
+      "source_pdf": "2009-10_04_FLR_APR_2009.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 583,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 50,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "the report states 583 ongoing projects but 0 distinct OCMS code(s) were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2009-10",
+      "source_pdf": "2009-10_10_FR_OCT_2009.pdf",
+      "era": "untitled-consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 591,
+      "extracted_count": 591,
+      "distinct_ocms_codes": 591,
+      "rows_written": 591,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 293.6,
+      "pages_used": 27,
+      "total_pages": 53,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": [
+        "no titled ongoing-project annexure; using the largest untitled run (27 page(s)), which is also the largest table in the report"
+      ]
+    },
+    {
+      "report_month": "2010-04",
+      "source_pdf": "2010-11_04_fr_Apr_2010.pdf",
+      "era": "untitled-consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 578,
+      "extracted_count": 578,
+      "distinct_ocms_codes": 578,
+      "rows_written": 578,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 355.06,
+      "pages_used": 26,
+      "total_pages": 52,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": [
+        "no titled ongoing-project annexure; using the largest untitled run (26 page(s)), which is also the largest table in the report"
+      ]
+    },
+    {
+      "report_month": "2010-10",
+      "source_pdf": "2010-11_10_FR_OCT_2010.pdf",
+      "era": "untitled-consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 559,
+      "extracted_count": 559,
+      "distinct_ocms_codes": 559,
+      "rows_written": 559,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 355.06,
+      "pages_used": 29,
+      "total_pages": 76,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": [
+        "no titled ongoing-project annexure; using the largest untitled run (29 page(s)), which is also the largest table in the report"
+      ]
+    },
+    {
+      "report_month": "2011-04",
+      "source_pdf": "2011-12_04_FR_APR_2011.pdf",
+      "era": "untitled-consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 560,
+      "extracted_count": 560,
+      "distinct_ocms_codes": 560,
+      "rows_written": 560,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 378.56,
+      "pages_used": 29,
+      "total_pages": 81,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": [
+        "no titled ongoing-project annexure; using the largest untitled run (29 page(s)), which is also the largest table in the report"
+      ]
+    },
+    {
+      "report_month": "2011-10",
+      "source_pdf": "2011-12_10_FR_OCT_2011.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 583,
+      "extracted_count": 583,
+      "distinct_ocms_codes": 583,
+      "rows_written": 583,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 424,
+      "pages_used": 31,
+      "total_pages": 137,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2012-04",
+      "source_pdf": "2012-13_04_FR_APR_2012.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 571,
+      "extracted_count": 571,
+      "distinct_ocms_codes": 571,
+      "rows_written": 571,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 469.38,
+      "pages_used": 32,
+      "total_pages": 149,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2012-10",
+      "source_pdf": "2012-13_10_FR_OCTOBER_2012.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 563,
+      "extracted_count": 563,
+      "distinct_ocms_codes": 563,
+      "rows_written": 563,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 491.19,
+      "pages_used": 30,
+      "total_pages": 181,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2013-04",
+      "source_pdf": "2013-14_04_FR_APR_2013.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 566,
+      "extracted_count": 566,
+      "distinct_ocms_codes": 566,
+      "rows_written": 566,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 511.54,
+      "pages_used": 30,
+      "total_pages": 148,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2013-10",
+      "source_pdf": "2013-14_10_FR_Oct_2013.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 739,
+      "extracted_count": 739,
+      "distinct_ocms_codes": 739,
+      "rows_written": 739,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 453,
+      "pages_used": 32,
+      "total_pages": 209,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2014-04",
+      "source_pdf": "2014-15_04_FR_APR_2014.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 727,
+      "extracted_count": 727,
+      "distinct_ocms_codes": 727,
+      "rows_written": 727,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 467.78,
+      "pages_used": 33,
+      "total_pages": 217,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2014-10",
+      "source_pdf": "2014-15_10_FR_oct_2014.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 747,
+      "extracted_count": 747,
+      "distinct_ocms_codes": 747,
+      "rows_written": 747,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 470.09,
+      "pages_used": 34,
+      "total_pages": 238,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2015-04",
+      "source_pdf": "2015-16_04_FR_APRil_2015.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 758,
+      "extracted_count": 758,
+      "distinct_ocms_codes": 758,
+      "rows_written": 758,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 480,
+      "pages_used": 35,
+      "total_pages": 265,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2015-10",
+      "source_pdf": "2015-16_10_FR_oct_2015.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 782,
+      "extracted_count": 782,
+      "distinct_ocms_codes": 782,
+      "rows_written": 782,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 447.72,
+      "pages_used": 36,
+      "total_pages": 253,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2016-04",
+      "source_pdf": "2016-17_04_FR_APr_2016.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1061,
+      "extracted_count": 1061,
+      "distinct_ocms_codes": 1061,
+      "rows_written": 1061,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 450,
+      "pages_used": 53,
+      "total_pages": 355,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2016-10",
+      "source_pdf": "2016-17_10_FR_oct_2016.pdf",
+      "era": "untitled-consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1169,
+      "extracted_count": 1169,
+      "distinct_ocms_codes": 1169,
+      "rows_written": 1169,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 485.44,
+      "pages_used": 59,
+      "total_pages": 332,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": [
+        "no titled ongoing-project annexure; using the largest untitled run (59 page(s)), which is also the largest table in the report"
+      ]
+    },
+    {
+      "report_month": "2017-04",
+      "source_pdf": "2017-18_04_FR_APril_2017.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1247,
+      "extracted_count": 1247,
+      "distinct_ocms_codes": 1247,
+      "rows_written": 1247,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 482,
+      "pages_used": 63,
+      "total_pages": 371,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2017-10",
+      "source_pdf": "2017-18_10_FR_oct_2017.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1283,
+      "extracted_count": 1283,
+      "distinct_ocms_codes": 1283,
+      "rows_written": 1283,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 479,
+      "pages_used": 66,
+      "total_pages": 367,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2018-04",
+      "source_pdf": "2018-19_04_FR_APr_2018.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1332,
+      "extracted_count": 1332,
+      "distinct_ocms_codes": 1332,
+      "rows_written": 1332,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 1,
+      "median_original_cost_cr": 477.65,
+      "pages_used": 70,
+      "total_pages": 538,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [
+        "the annexure's numbering steps backwards 1 time(s) — MoSPI renumbering, no rows lost"
+      ],
+      "warnings": [
+        "consolidated: the annexure's own numbering steps backwards 1 time(s) — MoSPI renumbering, no rows lost"
+      ]
+    },
+    {
+      "report_month": "2018-10",
+      "source_pdf": "2018-19_10_FR_oct_Report_2018.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1452,
+      "extracted_count": 1452,
+      "distinct_ocms_codes": 1452,
+      "rows_written": 1452,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 503.16,
+      "pages_used": 77,
+      "total_pages": 523,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2019-04",
+      "source_pdf": "2019-20_04_FR_APr_Report_2019.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1453,
+      "extracted_count": 1453,
+      "distinct_ocms_codes": 1453,
+      "rows_written": 1453,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 503.88,
+      "pages_used": 77,
+      "total_pages": 551,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2019-10",
+      "source_pdf": "2019-20_10_FR_oct_Report_2019.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1636,
+      "extracted_count": 1636,
+      "distinct_ocms_codes": 1636,
+      "rows_written": 1636,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 457.77,
+      "pages_used": 88,
+      "total_pages": 616,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2020-04",
+      "source_pdf": "2020-21_04_FR_APril_2020.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1682,
+      "extracted_count": 1682,
+      "distinct_ocms_codes": 1682,
+      "rows_written": 1682,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 446.77,
+      "pages_used": 90,
+      "total_pages": 598,
+      "gate": "ok",
+      "gate_failures": [],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2020-10",
+      "source_pdf": "2020-21_10_FR_oct_2020.pdf",
+      "era": "partitioned",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1666,
+      "extracted_count": 1548,
+      "distinct_ocms_codes": 1535,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 1,
+      "median_original_cost_cr": 446.77,
+      "pages_used": 106,
+      "total_pages": 590,
+      "gate": "refused",
+      "gate_failures": [
+        "the report states 1666 ongoing projects but 1535 distinct OCMS code(s) were extracted",
+        "13 duplicate OCMS code(s)"
+      ],
+      "gate_notes": [
+        "the annexure's numbering steps backwards 1 time(s) — MoSPI renumbering, no rows lost"
+      ],
+      "warnings": [
+        "on_schedule: the annexure's own numbering steps backwards 1 time(s) — MoSPI renumbering, no rows lost",
+        "13 OCMS code(s) appear more than once (e.g. ['N06000035', 'N06000044', 'N10000014', 'N16000273', 'N16000315'])"
+      ]
+    },
+    {
+      "report_month": "2021-04",
+      "source_pdf": "2021-22_04_FR_APr_2021.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1737,
+      "extracted_count": 1737,
+      "distinct_ocms_codes": 1615,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 456.32,
+      "pages_used": 93,
+      "total_pages": 732,
+      "gate": "refused",
+      "gate_failures": [
+        "the report states 1737 ongoing projects but 1615 distinct OCMS code(s) were extracted"
+      ],
+      "gate_notes": [],
+      "warnings": []
+    },
+    {
+      "report_month": "2021-10",
+      "source_pdf": "2021-22_10_FR_oct_2021.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": 1680,
+      "extracted_count": 1680,
+      "distinct_ocms_codes": 1601,
+      "rows_written": 0,
+      "serial_forward_gap": 300,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 462.3,
+      "pages_used": 93,
+      "total_pages": 716,
+      "gate": "refused",
+      "gate_failures": [
+        "the annexure's own numbering skips 300 row(s) that were not extracted (1680 row(s) extracted)",
+        "the report states 1680 ongoing projects but 1601 distinct OCMS code(s) were extracted"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "consolidated: the annexure's own numbering skips 300 row(s) that were not extracted"
+      ]
+    },
+    {
+      "report_month": "2022-04",
+      "source_pdf": "2022-23_04_FR_APr_2022.pdf",
+      "era": "consolidated",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 1547,
+      "distinct_ocms_codes": 1455,
+      "rows_written": 0,
+      "serial_forward_gap": 12,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": 483.87,
+      "pages_used": 84,
+      "total_pages": 708,
+      "gate": "refused",
+      "gate_failures": [
+        "the annexure's own numbering skips 12 row(s) that were not extracted (1547 row(s) extracted)"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "consolidated: the annexure's own numbering skips 12 row(s) that were not extracted"
+      ]
+    },
+    {
+      "report_month": "2022-10",
+      "source_pdf": "2022-23_10_FR_oct_2022.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 710,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: ['delayed', 'other', 'without_doc']",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2023-04",
+      "source_pdf": "2023-24_04_FR_APril_2023.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 758,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: ['delayed', 'other', 'without_doc']",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2023-10",
+      "source_pdf": "2023-24_10_FR_oct_2023.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 741,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: ['delayed', 'other', 'without_doc']",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2024-04",
+      "source_pdf": "2024-25_04_April_Part-II_List_of_tables.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 572,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: ['delayed', 'other', 'without_doc']",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2024-04",
+      "source_pdf": "2024-25_04_April_Part-I_Synopsis.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 5,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    },
+    {
+      "report_month": "2024-10",
+      "source_pdf": "2024-25_10_October.pdf",
+      "era": "unknown",
+      "parser_version": "flash-report-historical/v1",
+      "stated_project_count": null,
+      "extracted_count": 0,
+      "distinct_ocms_codes": 0,
+      "rows_written": 0,
+      "serial_forward_gap": 0,
+      "serial_backward_steps": 0,
+      "median_original_cost_cr": null,
+      "pages_used": 0,
+      "total_pages": 278,
+      "gate": "refused",
+      "gate_failures": [
+        "no ongoing-project annexure was identified",
+        "no rows were extracted",
+        "unit check: no original cost figures at all"
+      ],
+      "gate_notes": [],
+      "warnings": [
+        "no consolidated annexure and an incomplete partition set; annexures seen: []",
+        "no ongoing-project annexure could be identified"
+      ]
+    }
+  ]
+}
