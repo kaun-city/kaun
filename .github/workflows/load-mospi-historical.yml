@@ -1,0 +1,50 @@
+name: Load MoSPI Historical Backfill
+
+# One-shot, dispatch-only. The historical series (Oct 2009 - Apr 2020, 22
+# reports, PR #89) is parsed offline and committed as CSVs; this job only
+# runs the loader against Supabase. It needs the management token because
+# the snapshot upsert goes through the raw-SQL path, which no local
+# environment holds - the same reason the schema migrations run in CI.
+# Idempotent on (project_code, report_month): a re-run is a no-op.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run (validate + counts only) or apply (writes projects + snapshots)"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Load historical snapshots
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          set -euo pipefail
+          FLAG=""
+          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then FLAG="--apply"; fi
+          node scripts/india/load-mospi-historical.mjs $FLAG
+
+      - name: Upload run reports and review files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: india-mospi-historical-reports
+          path: .artifacts/india/
+          if-no-files-found: ignore
+          retention-days: 30
