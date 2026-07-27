@@ -178,16 +178,22 @@ export default function IndiaMapView({
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
 
-    // Guard against hot-reload leaving a stale Leaflet instance on the node.
-    const container = containerRef.current as HTMLDivElement & { _leaflet_id?: number }
-    if (container._leaflet_id) delete container._leaflet_id
+    // The map is built inside an async import, so this effect can be cleaned
+    // up before the map exists — StrictMode does exactly that in development.
+    // Each run gets its own flag; a cancelled run must never touch the
+    // container, or two maps end up initialized on the same node.
+    let cancelled = false
 
-    const link = document.createElement("link")
-    link.rel = "stylesheet"
-    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    document.head.appendChild(link)
+    const cssHref = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    if (!document.querySelector(`link[href="${cssHref}"]`)) {
+      const link = document.createElement("link")
+      link.rel = "stylesheet"
+      link.href = cssHref
+      document.head.appendChild(link)
+    }
 
     import("leaflet").then((L) => {
+      if (cancelled || !containerRef.current || mapRef.current) return
       const restored = initialViewRef.current
       const map = L.map(containerRef.current!, {
         // Coming back from a seat page: open where the visitor left off rather
@@ -241,6 +247,7 @@ export default function IndiaMapView({
       fetch(PC_GEOJSON_URL)
         .then(r => r.json())
         .then((data) => {
+          if (cancelled) return
           geojsonRef.current = L.geoJSON(data, {
             style: styleFeature,
             onEachFeature(feature, lyr) {
@@ -267,9 +274,12 @@ export default function IndiaMapView({
     })
 
     return () => {
+      cancelled = true
       resizeCleanupRef.current?.()
+      resizeCleanupRef.current = null
       mapRef.current?.remove()
       mapRef.current = null
+      geojsonRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
