@@ -44,7 +44,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
-| 027-26-000010 — Comphrensive Development of Roads and Drains of Arterial, Sub Arterial, Priority | 2025-26 | APPAJI BUILDERS | Executive Engineer Kengeri Division Raja | Rs 13.32 Cr | — | -- |
+| 027-26-000010 — Comphrensive Development of Roads and Drains of Arterial, Sub Arterial, Priority | 2025-26 | APPAJI BUILDERS | Executive Engineer Kengeri Division Raja | Rs 18.79 Cr | — | Addl. Commr. Finance |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
