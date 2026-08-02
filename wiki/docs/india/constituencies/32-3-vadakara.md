@@ -103,13 +103,15 @@ average of them measures none of them.
 
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| 20/07/2026 to 13/08/2026 | 20 | 5 | 25.0% | — | — | — | — |
+| 20/07/2026 to 13/08/2026 | 19 | 10 | 52.6% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 28 | 18 | 64.3% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 5 | 33.3% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 17 | 81.0% | — | 58 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 26 | 96.3% | — | 19 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 12 | 60.0% | — | — | — | — |
 | 22/07/2024 to 09/08/2024 | 15 | 13 | 86.7% | — | 50 | — | — |
 | 24/06/2024 to 02/07/2024 | 7 | 7 | 100.0% | — | 18 | — | — |
-| Term to date (First Term) | — | — | 72.6% | 128 | 16 | 2 | — |
+| Term to date (First Term) | — | — | 74.3% | 136 | 18 | 2 | — |
 
 _A dash is a value the source does not record. It is never a zero._
 
@@ -157,4 +159,4 @@ The 6 projects in Kerala furthest above sanctioned cost, as of the May 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-07-27 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-08-02 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
