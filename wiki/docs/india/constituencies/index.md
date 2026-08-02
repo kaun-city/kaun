@@ -1,6 +1,6 @@
 # Constituencies — India (Lok Sabha, 543)
 
-_Auto-generated on 2026-07-27 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-08-02 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
 
 Every Lok Sabha seat gets a page here: who holds it, which assembly segments and districts
 it is made of, what its MP has declared, and what Parliament records of their work. Each seat
@@ -536,7 +536,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 |---|---|---|---|---|---|---|
 | `21-1` | [Bargarh](21-1-bargarh.md) | — | Pradeep Purohit | BJP | ⚠ 8 | [open →](https://kaun.city/india/c/21-1) |
 | `21-2` | [Sundargarh](21-2-sundargarh.md) | ST | Jual Oram ·&nbsp;minister | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/21-2) |
-| `21-3` | [Sambalpur](21-3-sambalpur.md) | — | Dharmendra Pradhan ·&nbsp;minister | BJP | ⚠ 5 | [open →](https://kaun.city/india/c/21-3) |
+| `21-3` | [Sambalpur](21-3-sambalpur.md) | — | Dharmendra Pradhan | BJP | ⚠ 5 | [open →](https://kaun.city/india/c/21-3) |
 | `21-4` | [Keonjhar](21-4-keonjhar.md) | ST | Ananta Nayak | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/21-4) |
 | `21-5` | [Mayurbhanj](21-5-mayurbhanj.md) | ST | Naba Charan Majhi | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/21-5) |
 | `21-6` | [Balasore](21-6-balasore.md) | — | Pratap Chandra Sarangi | BJP | ⚠ 9 | [open →](https://kaun.city/india/c/21-6) |

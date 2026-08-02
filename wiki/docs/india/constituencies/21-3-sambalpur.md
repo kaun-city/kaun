@@ -65,7 +65,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Gender | Male |
 | Qualification | Post Graduate |
 | Profession | SOCIAL SERVICE & POLITICS |
-| Minister | yes — This MP is a minister. Ministers represent the government in debates, so we do not report their participation. They do not sign the attendance register, ask questions, or introduce private member bills. Data corresponds to the period from 24-06-2024 to 18-04-2026. |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/3999) |
 
 
@@ -98,11 +97,22 @@ reproduces the declaration, it does not verify it.
 
 ## In Parliament
 
-**Not recorded for ministers.**
+Components, not a score. Kaun publishes what Parliament records and does not compose it into a
+single ranking — attendance, questions and debates measure different things and a weighted
+average of them measures none of them.
 
-Ministers and the Speaker do not sign the attendance register, do not ask questions and do not introduce private member bills. Their metrics are recorded as **not applicable — never as zero**, because a zero here would read as absenteeism and would be false.
+| Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 20/07/2026 to 13/08/2026 | 19 | 0 | 0.0% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 28 | 0 | 0.0% | — | — | — | — |
+| 01/12/2025 to 19/12/2025 | 15 | 0 | 0.0% | — | — | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 0 | 0.0% | — | 13 | — | — |
+| 25/11/2024 to 20/12/2024 | 20 | 0 | 0.0% | — | 4 | — | — |
+| 22/07/2024 to 09/08/2024 | 15 | 0 | 0.0% | — | 96 | — | — |
+| 24/06/2024 to 02/07/2024 | 7 | 0 | 0.0% | — | — | — | — |
+| Term to date (Second Term) | — | — | 0.0% | 0 | 0 | — | — |
 
-_Recorded reason: Minister/Speaker: does not sign the attendance register, ask questions, or introduce private member bills (PRS mp_note; sansad.in signedDaysCount)._
+_A dash is a value the source does not record. It is never a zero._
 
 ---
 
@@ -148,4 +158,4 @@ The 6 projects in Odisha furthest above sanctioned cost, as of the May 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-07-27 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-08-02 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
