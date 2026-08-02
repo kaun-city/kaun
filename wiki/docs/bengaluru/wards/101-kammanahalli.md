@@ -41,7 +41,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
-| 101-26-000010 — Comprhensive Development of Arterial and sub arterial and drains and other allie | 2025-26 | LOKESH R | Executive Engineer Doddanekkundi Divisio | Rs 10.68 Cr | — | TVCC Exec. Engineer |
+| 101-26-000010 — Comprhensive Development of Arterial and sub arterial and drains and other allie | 2025-26 | LOKESH R | Executive Engineer Doddanekkundi Divisio | Rs 10.68 Cr | — | Addl. Commr. Finance |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 

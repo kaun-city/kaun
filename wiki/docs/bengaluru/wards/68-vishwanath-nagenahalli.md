@@ -42,7 +42,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=68).
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. **It is live from BBMP IFMS** (with current bill-stage status).
+
+| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
+|---|---|---|---|---:|---:|---|
+| 068-26-000001 — Improvements to Roads, Drains and Footpath Including Milling Surface of Selected | 2025-26 | K VENKATARAJU | Executive Engineer Hebbal East Zone | Rs 8.23 Cr | — | TVCC Exec. Engineer |
+
+_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
 ---
 
