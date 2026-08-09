@@ -102,15 +102,14 @@ average of them measures none of them.
 
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| 20/07/2026 to 13/08/2026 | 19 | 9 | 47.4% | — | — | — | — |
-| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 28 | 23 | 82.1% | — | — | — | — |
+| 20/07/2026 to 13/08/2026 | 19 | 14 | 73.7% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 23 | 76.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 20 | 95.2% | — | 3 | — | — |
-| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 21 | 77.8% | — | 425 | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 21 | 80.8% | — | 425 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 18 | 90.0% | — | 5 | — | — |
-| 22/07/2024 to 09/08/2024 | 15 | 9 | 60.0% | — | 220 | — | — |
-| 24/06/2024 to 02/07/2024 | 7 | 7 | 100.0% | — | — | — | — |
-| Term to date (First Term) | — | — | 84.0% | 197 | 30 | 0 | — |
+| 22/07/2024 to 09/08/2024 | 16 | 9 | 56.3% | — | 220 | — | — |
+| 24/06/2024 to 02/07/2024 | 8 | 7 | 87.5% | — | — | — | — |
+| Term to date (First Term) | — | — | 84.3% | 205 | 30 | 0 | — |
 
 _A dash is a value the source does not record. It is never a zero._
 
@@ -120,7 +119,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹4.93 Cr | ₹9.77 Cr | 33.5% | 338 | 187 | 55 | 2026-07-26 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹4.93 Cr | ₹9.77 Cr | 33.5% | 345 | 203 | 57 | 2026-08-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -158,4 +157,4 @@ The 6 projects in Jharkhand furthest above sanctioned cost, as of the May 2026 r
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-08-02 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-08-09 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
