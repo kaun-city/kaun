@@ -80,16 +80,16 @@ average of them measures none of them.
 
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| 20/07/2026 to 13/08/2026 | 19 | 10 | 52.6% | — | — | — | — |
-| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 28 | 31 | 100.0% | — | — | — | — |
+| 20/07/2026 to 13/08/2026 | 19 | 14 | 73.7% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 31 | 100.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 2 | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 2 | — | — |
-| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 24 | 88.9% | — | 38 | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 24 | 92.3% | — | 38 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | 1 | — | — |
-| 22/07/2024 to 09/08/2024 | 15 | 14 | 93.3% | — | 32 | — | — |
-| 24/06/2024 to 02/07/2024 | 7 | 2 | 28.6% | — | — | — | — |
-| Term to date (Second Term) | — | — | 94.4% | 99 | 19 | 0 | — |
+| 22/07/2024 to 09/08/2024 | 16 | 14 | 87.5% | — | 32 | — | — |
+| 24/06/2024 to 02/07/2024 | 8 | 2 | 25.0% | — | — | — | — |
+| Term to date (Second Term) | — | — | 94.6% | 99 | 19 | 0 | — |
 
 _A dash is a value the source does not record. It is never a zero._
 
@@ -99,7 +99,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹15.39 Cr | ₹3.65 Cr | ₹11.74 Cr | 23.7% | 27 | 25 | 1 | 2026-07-26 |
+| eSAKSHI (official) | ₹15.39 Cr | ₹3.93 Cr | ₹11.46 Cr | 25.6% | 28 | 26 | 2 | 2026-08-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -127,4 +127,4 @@ pending, or this state has no projects in the latest report Kaun holds.
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 
-_Auto-generated on 2026-08-02 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-08-09 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

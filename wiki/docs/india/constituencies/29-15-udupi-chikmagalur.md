@@ -99,14 +99,16 @@ average of them measures none of them.
 
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| 20/07/2026 to 13/08/2026 | 19 | 9 | 47.4% | — | — | — | — |
+| 20/07/2026 to 13/08/2026 | 19 | 14 | 73.7% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 27 | 90.0% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 27 | 90.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 18 | 85.7% | — | 1 | — | — |
-| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 27 | 22 | 81.5% | — | 278 | — | — |
+| 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 22 | 84.6% | — | 278 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 16 | 80.0% | — | — | — | — |
-| 22/07/2024 to 09/08/2024 | 15 | 14 | 93.3% | — | 88 | — | — |
-| 24/06/2024 to 02/07/2024 | 7 | 4 | 57.1% | — | 94 | — | — |
-| Term to date (First Term) | — | — | 86.1% | 206 | 17 | 0 | — |
+| 22/07/2024 to 09/08/2024 | 16 | 14 | 87.5% | — | 88 | — | — |
+| 24/06/2024 to 02/07/2024 | 8 | 4 | 50.0% | — | 94 | — | — |
+| Term to date (First Term) | — | — | 86.4% | 214 | 18 | 0 | — |
 
 _A dash is a value the source does not record. It is never a zero._
 
@@ -116,7 +118,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹3.43 Cr | ₹11.27 Cr | 23.4% | 275 | 115 | 41 | 2026-07-26 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹3.56 Cr | ₹11.14 Cr | 24.2% | 277 | 120 | 50 | 2026-08-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -154,4 +156,4 @@ The 6 projects in Karnataka furthest above sanctioned cost, as of the May 2026 r
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-08-02 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-08-09 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
