@@ -47,7 +47,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
-| 107-26-000010 — Resurfacing and improvements to drain and footpaths of Major roads in Munnekolla | 2025-26 | M RAMESH | Executive Engineer Marathalli Division Z | Rs 9.15 Cr | — | -- |
+| 107-26-000010 — Resurfacing and improvements to drain and footpaths of Major roads in Munnekolla | 2025-26 | M RAMESH | Executive Engineer Marathalli Division Z | Rs 9.15 Cr | — | EE (Acts. Supdt.) |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 

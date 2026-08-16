@@ -50,7 +50,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
-| 166-26-000006 — Comphrensive Development of Roads and Drains of Arterial, Sub Arterial,  Priorit | 2025-26 | M RAMESH | Executive Engineer Shanthinagar East Zon | Rs 17.26 Cr | — | Asst. Exec. Engineer |
+| 166-26-000006 — Comphrensive Development of Roads and Drains of Arterial, Sub Arterial,  Priorit | 2025-26 | M RAMESH | Executive Engineer Shanthinagar East Zon | Rs 17.26 Cr | — | Addl. Commr. Finance |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
