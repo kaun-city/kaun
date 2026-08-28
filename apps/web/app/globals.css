@@ -55,6 +55,10 @@ body {
   color: rgba(255, 255, 255, 0.4) !important;
 }
 
+.kaun-base-map-tiles {
+  filter: invert(1) hue-rotate(180deg) brightness(0.48) contrast(1.1) saturate(0.55);
+}
+
 /* Ward card slide-up animation (mobile only — lg+ uses static sidebar) */
 @keyframes kaun-pulse {
   0%, 100% { box-shadow: 0 0 0 4px rgba(250,204,21,0.35); }

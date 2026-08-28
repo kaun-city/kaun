@@ -4,7 +4,7 @@
  * IndiaMapView — the 543-seat national map.
  *
  * Deliberately the same shape as components/MapView.tsx: dynamically imported
- * with ssr:false because Leaflet needs `window`, CARTO dark_all basemap, CSS
+ * with ssr:false because Leaflet needs `window`, no-key OSM basemap, CSS
  * injected after mount, a styleFeature that reads a ref so Leaflet's
  * resetStyle stays valid across layer changes. Anyone who has read the ward
  * map can read this.
@@ -19,6 +19,7 @@
 import { useEffect, useRef, useState, type MutableRefObject } from "react"
 import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON, PathOptions } from "leaflet"
 import type { Feature } from "geojson"
+import { BASE_TILE_OPTIONS, BASE_TILE_URL } from "@/lib/base-map"
 import { colorFor } from "@/lib/map-layers"
 import { INDIA_CENTER, INDIA_MAX_ZOOM, INDIA_MIN_ZOOM, INDIA_ZOOM, PC_GEOJSON_URL } from "@/lib/india/constants"
 import { NO_DATA_FILL, NO_DATA_STROKE } from "@/lib/india/viz"
@@ -238,10 +239,9 @@ export default function IndiaMapView({
       }
       L.control.zoom({ position: "topright" }).addTo(map)
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a> · boundaries: DataMeet + shijithpk',
-        maxZoom: 19,
-        subdomains: "abcd",
+      L.tileLayer(BASE_TILE_URL, {
+        ...BASE_TILE_OPTIONS,
+        attribution: `${BASE_TILE_OPTIONS.attribution} · boundaries: DataMeet + shijithpk`,
       }).addTo(map)
 
       fetch(PC_GEOJSON_URL)

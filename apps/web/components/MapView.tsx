@@ -17,6 +17,7 @@ import type { Feature } from "geojson"
 import type { PinResult } from "@/lib/types"
 import { pinLookup } from "@/lib/api"
 import { bengaluru, type CityConfig } from "@/lib/cities"
+import { BASE_TILE_OPTIONS, BASE_TILE_URL } from "@/lib/base-map"
 import { colorFor } from "@/lib/map-layers"
 
 /** Per-ward values + quantile breaks + ramp for choropleth painting */
@@ -316,16 +317,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       // Move zoom controls to bottom-right so they don't overlap the wordmark
       L.control.zoom({ position: "topright" }).addTo(map)
 
-      // CartoDB dark tiles  free, no API key, dark theme
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-          maxZoom: 19,
-          subdomains: "abcd",
-        }
-      ).addTo(map)
+      L.tileLayer(BASE_TILE_URL, BASE_TILE_OPTIONS).addTo(map)
 
       // Load ward GeoJSON overlay (per-city)
       fetch(city.geojsonUrl)
