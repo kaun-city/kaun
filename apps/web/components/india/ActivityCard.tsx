@@ -70,7 +70,7 @@ export function ActivityCard({
         </p>
         <p className="text-white/35 text-[11px] leading-snug">
           Parliament is sitting now ({view.sitting.session_label ?? "current session"}) and the
-          attendance register for it is still open. Kaun shows a session's figures once it has
+          attendance register for it is still open. Kaun shows a session&apos;s figures once it has
           ended — a part-signed register is not an attendance record.
         </p>
       </div>

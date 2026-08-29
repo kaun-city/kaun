@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og"
 
-export const runtime = "edge"
 export const alt = "KAUN? - Bengaluru Civic Accountability"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
@@ -35,11 +34,13 @@ export default function Image() {
 
         {/* Main headline */}
         <div style={{ display: "flex", flexDirection: "column", flex: 1, justifyContent: "center", gap: "20px" }}>
-          <div style={{ color: "white", fontSize: "68px", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-2px" }}>
-            Who is accountable<br />for your ward?
+          <div style={{ display: "flex", flexDirection: "column", color: "white", fontSize: "68px", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-2px" }}>
+            <span>Who is accountable</span>
+            <span>for your ward?</span>
           </div>
-          <div style={{ color: "rgba(255,255,255,0.45)", fontSize: "28px", fontWeight: 400, lineHeight: 1.4 }}>
-            MLAs, spending, infrastructure and grievances —<br />ward-level civic data for Bengaluru.
+          <div style={{ display: "flex", flexDirection: "column", color: "rgba(255,255,255,0.45)", fontSize: "28px", fontWeight: 400, lineHeight: 1.4 }}>
+            <span>MLAs, spending, infrastructure and grievances —</span>
+            <span>ward-level civic data for Bengaluru.</span>
           </div>
         </div>
 

@@ -6,6 +6,7 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://kaun.city"),
   title: "KAUN? — Know Who's Responsible",
   description: "Pin a place on the map. Find your elected rep, ward spending, RTI generator and more — civic accountability for India.",
   openGraph: {

@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import { allCities } from "@/lib/cities"
+import { deriveOverallHealth } from "@/lib/health-status"
 
 export const runtime = "nodejs"
 export const maxDuration = 15
@@ -62,6 +63,11 @@ interface CityCoverage {
 interface HealthResult {
   status: "healthy" | "degraded" | "down"
   timestamp: string
+  build: {
+    sha: string
+    ref: string
+    built_at: string
+  }
   supabase: "connected" | "error"
   tables: TableCheck[]
   cities: CityCoverage[]
@@ -87,7 +93,6 @@ interface HealthResult {
   recent_community_facts: RecentFact[]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function checkTable(
   supabase: any,
   table: string,
@@ -135,6 +140,11 @@ export async function GET() {
   const result: HealthResult = {
     status: "healthy",
     timestamp: new Date().toISOString(),
+    build: {
+      sha: process.env.NEXT_PUBLIC_KAUN_BUILD_SHA ?? "local",
+      ref: process.env.NEXT_PUBLIC_KAUN_BUILD_REF ?? "local",
+      built_at: process.env.NEXT_PUBLIC_KAUN_BUILD_TIME ?? "unknown",
+    },
     supabase: "error",
     tables: [],
     cities: [],
@@ -314,8 +324,13 @@ export async function GET() {
     // Overall status
     const errors = tableChecks.filter(t => t.status === "error")
     const coreEmpty = ["wards", "elected_reps"].some(t => find(t)?.status !== "ok")
-    if (errors.length > 0 || coreEmpty) result.status = "degraded"
-    if (result.supabase !== "connected") result.status = "down"
+    const stalePipelines = result.crons.some(cron => cron.status === "stale")
+    result.status = deriveOverallHealth({
+      supabaseConnected: result.supabase === "connected",
+      hasTableErrors: errors.length > 0,
+      coreDataHealthy: !coreEmpty,
+      hasStalePipelines: stalePipelines,
+    })
 
   } catch {
     result.status = "down"

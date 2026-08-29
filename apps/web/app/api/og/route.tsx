@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og"
 
-export const runtime = "edge"
-
 const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 

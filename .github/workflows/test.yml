@@ -10,19 +10,40 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v5
         with:
-          node-version: '22'
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/web/package-lock.json
+
+      - name: Install test dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Run unit tests
         run: npm test
 
-      - name: Type check (apps/web)
+      - name: Install web dependencies
         working-directory: apps/web
-        run: |
-          npm install --no-audit --no-fund
-          npm run typecheck
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint web app
+        working-directory: apps/web
+        run: npm run lint
+
+      - name: Type check web app
+        working-directory: apps/web
+        run: npm run typecheck
+
+      - name: Build web app
+        working-directory: apps/web
+        run: npm run build
+
+      - name: Audit production dependencies
+        working-directory: apps/web
+        run: npm audit --omit=dev --audit-level=high
