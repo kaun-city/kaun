@@ -109,9 +109,15 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
   })()
 
   return (
-    <div className="absolute top-12 left-4 right-16 md:right-auto md:max-w-[380px] z-[900] pointer-events-auto">
+    <div className="absolute top-[4.25rem] sm:top-12 left-4 right-16 md:right-auto md:max-w-[380px] z-[900] pointer-events-auto">
       <div
         onClick={handleTap}
+        onKeyDown={e => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            handleTap()
+          }
+        }}
         role="button"
         tabIndex={0}
         className={`w-full text-left rounded-xl backdrop-blur-xl px-4 py-2.5 shadow-lg border transition-all duration-300 cursor-pointer ${sev.bg}`}
@@ -130,7 +136,7 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
           </div>
           <button
             onClick={e => { e.stopPropagation(); setDismissed(true) }}
-            className="text-white/20 hover:text-white/50 text-xs mt-0.5 shrink-0"
+            className="w-11 h-11 -mr-2 -mt-1 flex items-center justify-center text-white/20 hover:text-white/50 text-xs shrink-0"
             aria-label="Dismiss"
           >
             &times;

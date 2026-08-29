@@ -58,7 +58,7 @@ export function SurfaceSwitcher({
         ${className}`}
     >
       {links.map(link => {
-        const cls = "px-1.5 sm:px-2 py-1 text-[10px] sm:text-[11px] leading-none whitespace-nowrap transition-colors"
+        const cls = "min-h-11 sm:min-h-0 px-2 py-1 text-[10px] sm:text-[11px] leading-none whitespace-nowrap transition-colors flex items-center"
         if (link.id === current) {
           return (
             <span key={link.id} aria-current="page" className={`${cls} bg-[#FF9933]/10 text-[#FF9933] font-medium`}>

@@ -8,6 +8,7 @@
 
 import type { BudgetSummary, CommunityFact, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "./types"
 import { rpc, query, insert } from "./supabase"
+import { wardQueryScope } from "./ward-query-scope"
 
 /**
  * Pin lookup  reverse geocode a lat/lng to a ward.
@@ -58,6 +59,51 @@ export async function pinLookup(lat: number, lng: number): Promise<PinResult | n
     gba_zone: data.gba_zone ?? null,
     gba_zone_name: data.gba_zone_name ?? null,
     gba_population: data.gba_population ?? null,
+  }
+}
+
+/** Resolve a known ward identity without reverse-geocoding an approximate point. */
+export async function fetchWardByNumber(
+  wardNo: number,
+  cityId = "bengaluru",
+  location?: { lat: number; lng: number },
+): Promise<PinResult | null> {
+  const rows = await query<{
+    ward_no: number
+    ward_name: string
+    assembly_constituency: string | null
+    zone: string | null
+  }>("wards", {
+    ward_no: `eq.${wardNo}`,
+    city_id: `eq.${cityId}`,
+  }, {
+    select: "ward_no,ward_name,assembly_constituency,zone",
+    limit: 1,
+  })
+
+  const ward = rows[0]
+  if (!ward) return null
+
+  return {
+    found: true,
+    city_id: cityId,
+    ward_no: ward.ward_no,
+    ward_name: ward.ward_name,
+    assembly_constituency: ward.assembly_constituency ?? "",
+    zone: ward.zone ?? "",
+    agencies: [],
+    lat: location?.lat,
+    lng: location?.lng,
+    gba_ward_no: null,
+    gba_ward_name: null,
+    gba_ward_name_kn: null,
+    gba_corporation: null,
+    gba_corporation_id: null,
+    gba_ac: null,
+    gba_ac_no: null,
+    gba_zone: null,
+    gba_zone_name: null,
+    gba_population: null,
   }
 }
 
@@ -413,8 +459,7 @@ export async function fetchWardContractors(wardNo: number, cityId = "bengaluru")
  */
 export async function fetchWardPotholes(wardNo: number, cityId = "bengaluru"): Promise<import('./types').WardPotholes | null> {
   const rows = await query<import('./types').WardPotholes>('ward_potholes', {
-    'ward_no': `eq.${wardNo}`,
-    'city_id': `eq.${cityId}`,
+    ...wardQueryScope('ward_potholes', wardNo, cityId),
     'select': 'ward_no,ward_name,complaints,data_year',
     'limit': '1',
   })
@@ -462,8 +507,7 @@ export async function fetchMlaLadFunds(assemblyConstituency: string): Promise<im
  */
 export async function fetchWardInfraStats(wardNo: number, cityId = "bengaluru"): Promise<import('./types').WardInfraStats | null> {
   const rows = await query<import('./types').WardInfraStats>('ward_infra_stats', {
-    'ward_no': `eq.${wardNo}`,
-    'city_id': `eq.${cityId}`,
+    ...wardQueryScope('ward_infra_stats', wardNo, cityId),
     'select': 'ward_no,ward_name,signal_count,bus_stop_count,daily_trips',
     'limit': '1',
   })
@@ -528,8 +572,7 @@ export async function fetchCityPulseFacts(cityId = "bengaluru"): Promise<{ categ
  */
 export async function fetchWardReportCount(wardNo: number, cityId = "bengaluru"): Promise<number> {
   const rows = await query<{ id: number }>('ward_reports', {
-    'ward_no': `eq.${wardNo}`,
-    'city_id': `eq.${cityId}`,
+    ...wardQueryScope('ward_reports', wardNo, cityId),
     'status': 'eq.approved',
     'reported_at': `gte.${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()}`,
     'select': 'id',
@@ -551,8 +594,7 @@ export interface CivicSignal {
 export async function fetchWardSignals(wardNo: number, cityId = "bengaluru"): Promise<CivicSignal[]> {
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
   return query<CivicSignal>('civic_signals', {
-    'ward_no': `eq.${wardNo}`,
-    'city_id': `eq.${cityId}`,
+    ...wardQueryScope('civic_signals', wardNo, cityId),
     'signal_at': `gte.${since}`,
     'select': 'id,source,url,author,title,issue_type,upvotes,signal_at',
     'order': 'signal_at.desc',
@@ -588,8 +630,7 @@ export async function fetchWardWaterQuality(wardNo: number, cityId = "bengaluru"
 
 export async function fetchWardSpend(wardNo: number, cityId = "bengaluru"): Promise<import('./types').WardSpendCategory | null> {
   const rows = await query<import('./types').WardSpendCategory>('ward_spend_category', {
-    'ward_no': `eq.${wardNo}`,
-    'city_id': `eq.${cityId}`,
+    ...wardQueryScope('ward_spend_category', wardNo, cityId),
     'select': 'ward_no,ward_name,buildings_facilities,drainage,roads_and_drains,roads_and_infrastructure,streetlighting,waste_management,water_and_sanitation,grand_total,period',
     'limit': '1',
   })

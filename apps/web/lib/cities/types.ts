@@ -5,7 +5,8 @@ export interface CityFeatures {
   /**
    * All ward-facing fetches in lib/api.ts accept cityId and filter by it.
    * The underlying Supabase tables need a city_id column for the filter to
-   * return rows — existing Bengaluru tables already have it; new city
+   * return rows. A small set of legacy Bengaluru-only tables is explicitly
+   * handled in ward-query-scope.ts until those schemas are migrated; new city
    * seeders must populate the column.
    *
    * RPCs (ward_stats_by_ac, property_tax_by_ac) pass p_city_id only for

@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useState, useEffect, useCallback } from "react"
 
 interface TableCheck {
@@ -28,6 +29,11 @@ interface CityCoverage {
 interface HealthData {
   status: "healthy" | "degraded" | "down"
   timestamp: string
+  build: {
+    sha: string
+    ref: string
+    built_at: string
+  }
   supabase: "connected" | "error"
   tables: TableCheck[]
   cities: CityCoverage[]
@@ -55,7 +61,9 @@ interface HealthData {
 
 function timeAgo(dateStr: string | null): string {
   if (!dateStr) return "never"
-  const diff = Date.now() - new Date(dateStr).getTime()
+  const timestamp = new Date(dateStr).getTime()
+  if (Number.isNaN(timestamp)) return "unknown"
+  const diff = Date.now() - timestamp
   const mins = Math.floor(diff / 60000)
   if (mins < 1) return "just now"
   if (mins < 60) return `${mins}m ago`
@@ -141,9 +149,14 @@ export default function StatusPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">
-              <a href="/" className="hover:text-[#FF9933] transition-colors">KAUN<span className="text-[#FF9933]">?</span></a>
+              <Link href="/" className="hover:text-[#FF9933] transition-colors">KAUN<span className="text-[#FF9933]">?</span></Link>
               <span className="text-white/30 font-normal ml-3 text-lg">System Status</span>
             </h1>
+            {data && (
+              <p className="mt-1 text-[10px] text-white/25 font-mono">
+                build {data.build.sha.slice(0, 7)} &middot; {data.build.ref} &middot; {timeAgo(data.build.built_at)}
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-3">
             {data && (

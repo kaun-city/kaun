@@ -19,8 +19,21 @@ import type { NextConfig } from "next"
  * `source` matches the pathname only, so the versioned URLs are covered.
  */
 const IMMUTABLE_ASSETS = ["/india-pc.geojson", "/bengaluru-ward-crosswalk.json"]
+const BUILD_SHA = process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? "local"
+const BUILD_REF = process.env.VERCEL_GIT_COMMIT_REF ?? process.env.GITHUB_REF_NAME ?? "local"
+const BUILD_TIME = new Date().toISOString()
 
 const nextConfig: NextConfig = {
+  agentRules: false,
+  poweredByHeader: false,
+  turbopack: {
+    root: process.cwd(),
+  },
+  env: {
+    NEXT_PUBLIC_KAUN_BUILD_SHA: BUILD_SHA,
+    NEXT_PUBLIC_KAUN_BUILD_REF: BUILD_REF,
+    NEXT_PUBLIC_KAUN_BUILD_TIME: BUILD_TIME,
+  },
   async headers() {
     return [
       {

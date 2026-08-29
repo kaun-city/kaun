@@ -45,12 +45,18 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
         <div className="mb-2 w-64 rounded-xl bg-[#0A0A0A]/95 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden">
           <div className="px-3 py-2 border-b border-white/5 flex items-center justify-between">
             <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">Paint the city by</p>
-            <button onClick={() => setOpen(false)} className="text-white/30 hover:text-white/60 text-sm leading-none">&times;</button>
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close layers"
+              className="w-11 h-11 -my-2 -mr-2 flex items-center justify-center text-white/30 hover:text-white/60 text-sm leading-none"
+            >
+              &times;
+            </button>
           </div>
 
           <button
             onClick={() => { onSelect(null); setOpen(false) }}
-            className={`w-full text-left px-3 py-2 text-xs transition-colors hover:bg-white/5
+            className={`w-full min-h-11 text-left px-3 py-2 text-xs transition-colors hover:bg-white/5
               ${activeId === null ? "text-[#FF9933]" : "text-white/60"}`}
           >
             None — plain map
@@ -60,7 +66,7 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
             <button
               key={layer.id}
               onClick={() => { onSelect(layer.id); setOpen(false) }}
-              className={`w-full text-left px-3 py-2 transition-colors hover:bg-white/5 border-t border-white/5
+              className={`w-full min-h-11 text-left px-3 py-2 transition-colors hover:bg-white/5 border-t border-white/5
                 ${layer.id === activeId ? "text-[#FF9933]" : "text-white/70"}`}
             >
               <span className="block text-xs font-medium">{layer.label}</span>
@@ -78,7 +84,7 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
             <button
               onClick={() => onSelect(null)}
               aria-label="Clear layer"
-              className="text-white/30 hover:text-white/60 text-sm leading-none shrink-0"
+              className="w-11 h-11 -my-2 -mr-2 flex items-center justify-center text-white/30 hover:text-white/60 text-sm leading-none shrink-0"
             >
               &times;
             </button>
@@ -108,7 +114,7 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
 
       <button
         onClick={() => setOpen(o => !o)}
-        className={`flex items-center gap-2 px-4 py-2.5 rounded-full
+        className={`flex min-h-11 items-center gap-2 px-4 py-2.5 rounded-full
           bg-[#111] border text-sm font-medium shadow-lg transition-all duration-150
           ${active
             ? "border-[#FF9933]/50 text-[#FF9933]"

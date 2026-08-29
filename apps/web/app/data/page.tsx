@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+
 const API_BASE = "https://kaun.city/api/data"
 
 const ENDPOINTS = [
@@ -93,7 +95,7 @@ export default function DataCatalog() {
 
         <div className="mb-8">
           <h1 className="text-2xl font-bold tracking-tight">
-            <a href="/" className="hover:text-[#FF9933] transition-colors">KAUN<span className="text-[#FF9933]">?</span></a>
+            <Link href="/" className="hover:text-[#FF9933] transition-colors">KAUN<span className="text-[#FF9933]">?</span></Link>
             <span className="text-white/30 font-normal ml-3 text-lg">Open Data</span>
           </h1>
           <p className="text-white/50 text-sm mt-2 max-w-2xl leading-relaxed">

@@ -4,7 +4,7 @@ import dynamic from "next/dynamic"
 import { useCallback, useState, useRef, useEffect, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
 import type { PinResult } from "@/lib/types"
-import { pinLookup } from "@/lib/api"
+import { fetchWardByNumber, pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
 import { CitySwitcher } from "@/components/CitySwitcher"
@@ -114,6 +114,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
   const [reportLng, setReportLng]       = useState<number | null>(null)
   const [reportRefresh, setReportRefresh] = useState(0)
   const [wardFinderOpen, setWardFinderOpen] = useState(false)
+  const [actionsOpen, setActionsOpen] = useState(false)
   const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
   const deepLinkHandled = useRef(false)
 
@@ -122,6 +123,16 @@ export default function HomePage({ host = "" }: { host?: string }) {
   const [searchQuery, setSearchQuery]   = useState("")
   const [wardOptions, setWardOptions]   = useState<WardOption[]>([])
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const actionsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!actionsOpen) return
+    const closeActions = (event: PointerEvent) => {
+      if (!actionsRef.current?.contains(event.target as Node)) setActionsOpen(false)
+    }
+    document.addEventListener("pointerdown", closeActions)
+    return () => document.removeEventListener("pointerdown", closeActions)
+  }, [actionsOpen])
 
   // Choropleth layer state — shareable via ?layer= URL param
   const [activeLayer, setActiveLayer] = useState<string | null>(
@@ -213,7 +224,16 @@ export default function HomePage({ host = "" }: { host?: string }) {
     setPinLoading(true)
     setShowCard(true)
     setOutOfBounds(false)
-    const result = await pinLookup(ward.lat, ward.lng)
+    const result = await fetchWardByNumber(ward.ward_no, activeCity.id, {
+      lat: ward.lat,
+      lng: ward.lng,
+    }) ?? await pinLookup(ward.lat, ward.lng)
+    if (!result?.found) {
+      setShowCard(false)
+      setOutOfBounds(true)
+      setPinLoading(false)
+      return
+    }
     setPinResult(result)
     setPinLoading(false)
   }
@@ -255,33 +275,22 @@ export default function HomePage({ host = "" }: { host?: string }) {
         })
         .catch(() => {})
     } else if (wardParam) {
-      // Direct ward deep link — fetch ward row and open card without reverse geocoding
-      const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      fetch(
-        `${SUPABASE_URL}/rest/v1/wards?ward_no=eq.${wardParam}&city_id=eq.${activeCity.id}&select=ward_no,ward_name,assembly_constituency,zone&limit=1`,
-        { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
-      )
-        .then(r => r.json())
-        .then((rows) => {
-          const ward = Array.isArray(rows) ? rows[0] : null
+      // Direct ward deep link — fetch ward row and open card without reverse geocoding.
+      const wardNo = Number.parseInt(wardParam, 10)
+      if (Number.isFinite(wardNo)) {
+        fetchWardByNumber(wardNo, activeCity.id, {
+          lat: activeCity.center[0],
+          lng: activeCity.center[1],
+        }).then((ward) => {
           if (!ward) return
           setOutOfBounds(false)
           setShowCard(true)
-          setPinResult({
-            ward_no: ward.ward_no,
-            ward_name: ward.ward_name,
-            assembly_constituency: ward.assembly_constituency ?? "",
-            zone: ward.zone ?? "",
-            city_id: activeCity.id,
-            found: true,
-            lat: activeCity.center[0],
-            lng: activeCity.center[1],
-          } as PinResult)
+          setPinResult(ward)
         })
         .catch(() => {})
+      }
     }
-  }, [searchParams])
+  }, [activeCity.center, activeCity.id, searchParams])
 
   const handlePin = useCallback((result: PinResult | null, lat: number, lng: number) => {
     if (result === null && !pinLoading) {
@@ -360,44 +369,57 @@ export default function HomePage({ host = "" }: { host?: string }) {
       <div className="relative flex-1 min-w-0 h-full transition-all duration-300">
 
         {/* Wordmark + Search */}
-        <div className="absolute top-4 left-4 right-16 z-[900] select-none flex items-center gap-3">
-          <span className="text-white font-bold text-xl tracking-tight pointer-events-none shrink-0">
-            KAUN<span className="text-[#FF9933]">?</span>
-          </span>
-          <a
-            href="/how-it-works"
-            className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white/60 hover:text-white text-xs font-bold shrink-0"
-            title="How it works & data sources"
-          >
-            i
-          </a>
+        <div className="absolute top-4 left-4 right-16 z-[900] select-none flex items-center gap-2 md:gap-3">
+          {!searchOpen && (
+            <>
+              <span className="text-white font-bold text-xl tracking-tight pointer-events-none shrink-0">
+                KAUN<span className="text-[#FF9933]">?</span>
+              </span>
+              <a
+                href="/how-it-works"
+                className="flex items-center justify-center w-11 h-11 md:w-6 md:h-6 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white/60 hover:text-white text-xs font-bold shrink-0"
+                aria-label="How Kaun works and where its data comes from"
+                title="How it works & data sources"
+              >
+                i
+              </a>
 
-          {/* Which Kaun am I on? Compact enough to leave the map alone. */}
-          <SurfaceSwitcher current="city" host={host} variant="overlay" />
-
-          <CitySwitcher activeCityId={activeCity.id} />
+              <SurfaceSwitcher current="city" host={host} variant="overlay" />
+              <CitySwitcher activeCityId={activeCity.id} />
+            </>
+          )}
 
           {/* Ward search */}
-          <div className="relative ml-auto z-[1000]" style={{ pointerEvents: "auto" }}>
+          <div className={`relative z-[1000] ${searchOpen ? "w-full" : "ml-auto"}`} style={{ pointerEvents: "auto" }}>
             {searchOpen ? (
-              <div className="flex items-center">
+              <div className="flex items-center w-full">
                 <input
                   ref={searchInputRef}
                   type="text"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Escape") {
+                      setSearchOpen(false)
+                      setSearchQuery("")
+                    }
+                  }}
                   onBlur={() => setTimeout(() => { setSearchOpen(false); setSearchQuery("") }, 200)}
                   placeholder="Search ward..."
                   autoFocus
-                  className="w-48 md:w-56 bg-black/80 backdrop-blur-xl border border-white/20 rounded-lg px-3 py-1.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#FF9933]/40"
+                  className="w-full md:w-56 h-11 md:h-8 bg-black/80 backdrop-blur-xl border border-white/20 rounded-lg px-3 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#FF9933]/40"
                 />
                 {searchResults.length > 0 && (
                   <div className="absolute top-full mt-1 left-0 right-0 bg-[#111] border border-white/10 rounded-lg overflow-hidden shadow-xl max-h-60 overflow-y-auto z-[1000]">
                     {searchResults.map(w => (
                       <button
                         key={w.ward_no}
-                        onMouseDown={() => handleSearchSelect(w)}
-                        className="w-full text-left px-3 py-2 hover:bg-white/10 transition-colors flex items-center justify-between"
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={e => {
+                          e.stopPropagation()
+                          void handleSearchSelect(w)
+                        }}
+                        className="w-full min-h-11 text-left px-3 py-2 hover:bg-white/10 transition-colors flex items-center justify-between"
                       >
                         <span className="text-white/80 text-xs">{w.ward_name}</span>
                         <span className="text-white/20 text-[10px] font-mono">#{w.ward_no}</span>
@@ -409,7 +431,8 @@ export default function HomePage({ host = "" }: { host?: string }) {
             ) : (
               <button
                 onClick={() => setSearchOpen(true)}
-                className="flex items-center justify-center w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                className="flex items-center justify-center w-11 h-11 md:w-7 md:h-7 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                aria-label="Search wards"
                 title="Search wards"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5" strokeLinecap="round">
@@ -422,10 +445,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
         </div>
 
         {/* City Pulse — accountability headlines before pin drop */}
-        {!showCard && !outOfBounds && <CityPulse cityId={activeCity.id} />}
+        {!showCard && !outOfBounds && !searchOpen && <CityPulse cityId={activeCity.id} />}
 
         {/* Corporator vacancy counter — Bengaluru's most brutal stat */}
-        {!showCard && !outOfBounds && <CorporatorVacancy cityId={activeCity.id} />}
+        {!showCard && !outOfBounds && !searchOpen && <CorporatorVacancy cityId={activeCity.id} />}
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
@@ -437,7 +460,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
                 onClick={handleFindMyWard}
                 disabled={geoLoading}
                 className="
-                  flex items-center gap-1.5 px-4 py-2 rounded-full
+                  flex items-center gap-1.5 min-h-11 px-4 py-2 rounded-full
                   bg-[#FF9933]/15 hover:bg-[#FF9933]/25 active:scale-95
                   border border-[#FF9933]/40
                   text-[#FF9933] font-medium text-xs tracking-wide
@@ -470,36 +493,70 @@ export default function HomePage({ host = "" }: { host?: string }) {
 
         {/* Floating action buttons */}
         {!reportPickMode && (
-          <div className="absolute bottom-16 right-4 z-[900] flex flex-col gap-2 items-end">
-            {activeCity.id === "bengaluru" && (
+          <div className="absolute bottom-16 right-4 z-[900] items-end">
+            <div className="hidden sm:flex flex-col gap-2 items-end">
+              {activeCity.id === "bengaluru" && (
+                <button
+                  onClick={() => setWardFinderOpen(true)}
+                  className="
+                    flex items-center gap-2 min-h-11 px-4 py-2.5 rounded-full
+                    bg-[#111] border border-white/15 hover:border-white/30
+                    text-white/70 hover:text-white text-sm font-medium
+                    shadow-lg transition-all duration-150
+                  "
+                >
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M8 1.5v13M1.5 8h13" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
+                  </svg>
+                  New ward?
+                </button>
+              )}
               <button
-                onClick={() => setWardFinderOpen(true)}
+                onClick={() => setReportPickMode(true)}
                 className="
-                  flex items-center gap-2 px-4 py-2.5 rounded-full
+                  flex items-center gap-2 min-h-11 px-4 py-2.5 rounded-full
                   bg-[#111] border border-white/15 hover:border-white/30
                   text-white/70 hover:text-white text-sm font-medium
                   shadow-lg transition-all duration-150
                 "
               >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M8 1.5v13M1.5 8h13" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
-                  <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
-                </svg>
-                New ward?
+                <span className="text-[#FF9933] text-base font-bold">+</span>
+                Report
               </button>
-            )}
-            <button
-              onClick={() => setReportPickMode(true)}
-              className="
-                flex items-center gap-2 px-4 py-2.5 rounded-full
-                bg-[#111] border border-white/15 hover:border-white/30
-                text-white/70 hover:text-white text-sm font-medium
-                shadow-lg transition-all duration-150
-              "
-            >
-              <span className="text-[#FF9933] text-base font-bold">+</span>
-              Report
-            </button>
+            </div>
+
+            <div ref={actionsRef} className="relative sm:hidden">
+              {actionsOpen && (
+                <div role="menu" className="absolute bottom-14 right-0 w-44 overflow-hidden rounded-lg bg-[#111]/95 backdrop-blur-md border border-white/15 shadow-2xl">
+                  {activeCity.id === "bengaluru" && (
+                    <button
+                      role="menuitem"
+                      onClick={() => { setActionsOpen(false); setWardFinderOpen(true) }}
+                      className="w-full min-h-11 px-3 text-left text-sm text-white/70 hover:bg-white/10"
+                    >
+                      New ward crosswalk
+                    </button>
+                  )}
+                  <button
+                    role="menuitem"
+                    onClick={() => { setActionsOpen(false); setReportPickMode(true) }}
+                    className="w-full min-h-11 px-3 text-left text-sm text-white/70 hover:bg-white/10 border-t border-white/10"
+                  >
+                    Report an issue
+                  </button>
+                </div>
+              )}
+              <button
+                onClick={() => setActionsOpen(open => !open)}
+                aria-label="More map actions"
+                aria-haspopup="menu"
+                aria-expanded={actionsOpen}
+                className="w-11 h-11 flex items-center justify-center rounded-full bg-[#111] border border-white/15 text-white/70 shadow-lg"
+              >
+                <span aria-hidden="true" className="text-xl leading-none -mt-2">...</span>
+              </button>
+            </div>
           </div>
         )}
 
@@ -518,7 +575,8 @@ export default function HomePage({ host = "" }: { host?: string }) {
             Tap on the map where the issue is
             <button
               onClick={() => setReportPickMode(false)}
-              className="ml-1 text-black/50 hover:text-black font-bold text-base leading-none"
+              aria-label="Cancel report location selection"
+              className="ml-1 w-11 h-11 flex items-center justify-center text-black/50 hover:text-black font-bold text-base leading-none"
             >x</button>
           </div>
         )}

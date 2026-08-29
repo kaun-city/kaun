@@ -198,15 +198,14 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
         <IndiaHeader variant="overlay" />
 
         {/* Search — seat name, seat code, or MP name. Phones stack it above the
-            state filter (below the wrapped two-line header) and keep clear of
-            the zoom control pinned to the right edge; sm+ puts them side by
-            side. z sits above the filter so the results list can drop over it. */}
-        <div className="absolute top-[4.5rem] sm:top-16 left-4 right-14 z-[910] sm:right-auto sm:w-[min(22rem,calc(100vw-2rem))]">
+            state filter below the wrapped header; sm+ puts them side by side.
+            z sits above the filter so the results list can drop over it. */}
+        <div className="absolute top-[4.5rem] sm:top-16 left-4 right-4 z-[910] sm:right-auto sm:w-[min(22rem,calc(100vw-2rem))]">
           <input
             value={q}
             onChange={e => setQ(e.target.value)}
             placeholder="Search a constituency or MP…"
-            className="w-full bg-black/80 backdrop-blur-xl border border-white/15 rounded-lg px-3 py-2
+            className="w-full min-h-11 bg-black/80 backdrop-blur-xl border border-white/15 rounded-lg px-3 py-2
               text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#FF9933]/40"
           />
           {results.length > 0 && (
@@ -216,13 +215,15 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                 return (
                   <button
                     key={f.pc_code}
-                    onMouseDown={() => {
+                    onMouseDown={e => e.preventDefault()}
+                    onClick={e => {
+                      e.stopPropagation()
                       setQ("")
                       setSelected(f)
                       setStateFilter(f.st_code)
                       focusRef.current?.focus(f.pc_code)
                     }}
-                    className="w-full text-left px-3 py-2 hover:bg-white/10 transition-colors"
+                    className="w-full min-h-11 text-left px-3 py-2 hover:bg-white/10 transition-colors"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-white/85 text-xs">{f.pc_name}</span>
@@ -239,11 +240,12 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
         </div>
 
         {/* State filter — below the search on phones, beside it from sm up */}
-        <div className="absolute top-[7.5rem] right-14 z-[900] sm:top-16 sm:right-4">
+        <div className="absolute top-[7.5rem] right-4 z-[900] sm:top-16 sm:right-4">
           <select
             value={stateFilter ?? ""}
             onChange={e => setStateFilter(e.target.value === "" ? null : Number(e.target.value))}
-            className="bg-black/80 backdrop-blur-xl border border-white/15 rounded-lg px-2.5 py-2
+            aria-label="Filter constituencies by state"
+            className="min-h-11 bg-black/80 backdrop-blur-xl border border-white/15 rounded-lg px-2.5 py-2
               text-xs text-white/80 focus:outline-none focus:border-[#FF9933]/40 max-w-[13rem]"
           >
             <option value="">All India · {features.length || LOK_SABHA_SEATS} seats</option>
@@ -285,11 +287,11 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
           <div className="pointer-events-auto w-full
             md:absolute md:bottom-4 md:left-4 md:z-[900] md:w-[min(20rem,calc(100vw-2rem))]
             bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl p-3">
-            <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">Paint the map</p>
-            <div className="flex flex-wrap gap-1.5">
+            <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">Color by</p>
+            <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:gap-1.5">
               <button
                 onClick={() => setLayerId(null)}
-                className={`text-[11px] px-2 py-1 rounded border transition-colors ${
+                className={`min-h-11 md:min-h-0 text-[11px] px-2 py-1 rounded border transition-colors ${
                   layerId === null
                     ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
                     : "border-white/10 text-white/40 hover:text-white/70"}`}
@@ -300,7 +302,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                 <button
                   key={l.id}
                   onClick={() => setLayerId(l.id)}
-                  className={`text-[11px] px-2 py-1 rounded border transition-colors ${
+                  className={`min-h-11 md:min-h-0 text-[11px] px-2 py-1 rounded border transition-colors ${
                     layerId === l.id
                       ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
                       : "border-white/10 text-white/40 hover:text-white/70"}`}
