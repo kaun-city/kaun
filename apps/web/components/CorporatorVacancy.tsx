@@ -46,15 +46,15 @@ export function CorporatorVacancy({ cityId }: Props) {
   if (cityId !== "bengaluru") return null
 
   return (
-    <div className="absolute bottom-44 sm:bottom-36 left-1/2 -translate-x-1/2 z-[900] pointer-events-auto">
+    <div className="absolute bottom-40 sm:bottom-36 left-1/2 -translate-x-1/2 z-[900] pointer-events-auto">
       <div className="
-        flex items-center gap-3 px-5 py-3 rounded-2xl
+        flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl
         bg-[#111]/90 backdrop-blur-md border border-red-500/20
         shadow-xl shadow-red-500/5
-        w-[min(420px,90vw)]
+        w-[min(360px,92vw)] sm:w-[min(420px,90vw)]
       ">
-        <div className="shrink-0 flex flex-col items-center justify-center w-16 h-14 rounded-xl bg-red-500/10">
-          <span className="text-red-400 text-xl font-bold leading-none tabular-nums">
+        <div className="shrink-0 flex flex-col items-center justify-center w-14 h-11 sm:w-16 sm:h-14 rounded-lg sm:rounded-xl bg-red-500/10">
+          <span className="text-red-400 text-sm sm:text-xl font-bold leading-none tabular-nums">
             {formatNumber(days)}
           </span>
           <span className="text-red-400/60 text-[9px] uppercase tracking-wider mt-0.5">days</span>
@@ -63,7 +63,10 @@ export function CorporatorVacancy({ cityId }: Props) {
           <p className="text-white/80 text-xs font-semibold leading-snug">
             No elected corporator in your ward
           </p>
-          <p className="text-white/40 text-[10px] leading-snug mt-0.5">
+          <p className="sm:hidden text-white/35 text-[10px] leading-snug mt-0.5">
+            Council dissolved Sept 2020
+          </p>
+          <p className="hidden sm:block text-white/40 text-[10px] leading-snug mt-0.5">
             BBMP&apos;s last elected council dissolved Sept 2020. All 243 wards are run by unelected administrators.
           </p>
         </div>

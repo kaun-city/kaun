@@ -285,7 +285,7 @@ export default function IndiaMapView({
   }, [])
 
   return (
-    <div className="relative w-full h-full">
+    <div className="india-map relative w-full h-full">
       {loading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-[#FF9933] text-sm tracking-widest uppercase">
           Loading 543 constituencies...

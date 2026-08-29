@@ -82,7 +82,7 @@ export function AskKaunBar({ wardContext }: Props) {
           <button
             onClick={collapse}
             aria-label="Close chat"
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/15 text-white/30 hover:text-white/60 transition-colors"
+            className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/15 text-white/30 hover:text-white/60 transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M2 4.5L7 9.5L12 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -129,7 +129,7 @@ export function AskKaunBar({ wardContext }: Props) {
             <button
               key={s}
               onClick={() => ask(s)}
-              className="shrink-0 text-[11px] text-white/40 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3 py-1.5 transition-colors whitespace-nowrap"
+              className="shrink-0 min-h-11 text-[11px] text-white/40 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3 py-1.5 transition-colors whitespace-nowrap"
             >
               {s}
             </button>
@@ -145,7 +145,7 @@ export function AskKaunBar({ wardContext }: Props) {
       )}
 
       {/* Input bar */}
-      <div className="flex items-center gap-2 px-4 py-3">
+      <div className="flex items-center gap-2 px-4 py-2">
         <span className="text-[#FF9933] font-bold text-sm shrink-0">Ask</span>
         <input
           ref={inputRef}
@@ -154,13 +154,14 @@ export function AskKaunBar({ wardContext }: Props) {
           onKeyDown={e => e.key === "Enter" && ask(input)}
           onFocus={() => setExpanded(true)}
           placeholder={`Ask anything about ${wardContext.ward_name}...`}
-          className="flex-1 bg-transparent text-sm text-white placeholder-white/20 focus:outline-none"
+          className="flex-1 min-h-11 bg-transparent text-sm text-white placeholder-white/20 focus:outline-none"
           disabled={loading}
         />
         <button
           onClick={() => ask(input)}
           disabled={!input.trim() || loading}
-          className="shrink-0 w-8 h-8 rounded-full bg-[#FF9933] disabled:bg-white/10 flex items-center justify-center transition-colors"
+          aria-label="Ask Kaun"
+          className="shrink-0 w-11 h-11 rounded-full bg-[#FF9933] disabled:bg-white/10 flex items-center justify-center transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M12 7L2 2l2 5-2 5 10-5z" fill={input.trim() && !loading ? "#000" : "#666"} />

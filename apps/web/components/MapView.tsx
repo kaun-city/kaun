@@ -127,7 +127,6 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   useEffect(() => {
     choroplethRef.current = choropleth
     geojsonRef.current?.setStyle(styleFeature)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [choropleth, loading])
 
   // Expose panTo for geolocation button
@@ -298,6 +297,9 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
+    let active = true
+    const controller = new AbortController()
+    setLoading(true)
 
     // Guard against hot-reload leaving a stale Leaflet instance on the DOM node
     const container = containerRef.current as HTMLDivElement & { _leaflet_id?: number }
@@ -306,7 +308,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
     }
 
     import("leaflet").then((L) => {
-      const map = L.map(containerRef.current!, {
+      if (!active || !containerRef.current) return
+      const map = L.map(containerRef.current, {
         center: city.center,
         zoom: city.zoom,
         zoomControl: false,
@@ -320,9 +323,10 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       L.tileLayer(BASE_TILE_URL, BASE_TILE_OPTIONS).addTo(map)
 
       // Load ward GeoJSON overlay (per-city)
-      fetch(city.geojsonUrl)
+      fetch(city.geojsonUrl, { signal: controller.signal })
         .then((r) => r.json())
         .then((data) => {
+          if (!active) return
           geojsonRef.current = L.geoJSON(data, {
             style: styleFeature,
             onEachFeature(feature, layer) {
@@ -398,7 +402,9 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
 
           setLoading(false)
         })
-        .catch(() => setLoading(false)) // show map even if GeoJSON fails
+        .catch(error => {
+          if (active && error instanceof Error && error.name !== "AbortError") setLoading(false)
+        }) // show map even if GeoJSON fails
 
       // Custom pin icon
       const pinIcon = L.divIcon({
@@ -440,10 +446,14 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
     })
 
     return () => {
+      active = false
+      controller.abort()
       mapRef.current?.remove()
       mapRef.current = null
+      geojsonRef.current = null
+      labelLayerRef.current = null
     }
-  }, []) // empty  map initialises once, onPin updates via ref
+  }, [city.center, city.geojsonUrl, city.zoom])
 
   return (
     <div className={`relative w-full h-full${reportPickMode ? " [&_.leaflet-container]:cursor-crosshair" : ""}`}>

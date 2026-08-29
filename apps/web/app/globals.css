@@ -46,6 +46,15 @@ body {
     top: 48px !important;
     right: 4px !important;
   }
+  .india-map .leaflet-top.leaflet-right {
+    top: 172px !important;
+  }
+  .leaflet-control-zoom a {
+    width: 44px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+    font-size: 20px !important;
+  }
 }
 .leaflet-control-attribution {
   background: rgba(0, 0, 0, 0.6) !important;

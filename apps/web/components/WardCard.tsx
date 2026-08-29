@@ -11,7 +11,6 @@ import { ReachTab } from "@/components/tabs/ReachTab"
 import { AskKaunBar } from "@/components/shared/AskKaunBar"
 import { WardHeadline } from "@/components/WardHeadline"
 import { WardGrade } from "@/components/WardGrade"
-import type { AskKaunRequest } from "@/app/api/ask-kaun/route"
 import { getCity } from "@/lib/cities"
 
 interface Props {
@@ -201,7 +200,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
             <button
               key={t.id}
               onClick={() => ward.setTab(t.id)}
-              className={`flex-1 py-3 lg:py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors
+              className={`flex-1 min-h-11 py-3 lg:py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors
                 ${ward.tab === t.id
                   ? "text-[#FF9933] border-b-2 border-[#FF9933]"
                   : "text-white/30 hover:text-white/60 active:text-white/60"
