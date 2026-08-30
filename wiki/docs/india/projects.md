@@ -1,6 +1,6 @@
 # Central projects — cost overruns and stalled work
 
-_Auto-generated on 2026-08-23 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Latest MoSPI report held: **May 2026**. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-08-30 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Latest MoSPI report held: **May 2026**. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
 
 MoSPI's Flash Report tracks every central-sector project of **₹150 crore or more** — what it was
 sanctioned at, what it now costs, when it was meant to finish and when it now will. MoSPI
