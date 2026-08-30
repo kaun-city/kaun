@@ -62,7 +62,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 | 580358 — 003-23-000004Improvements to roads, drains and other developmental works at Aksh | 2024-25 | K VENKATARAJU | — | Rs 8.46 Cr | Rs 8.09 Cr | paid (legacy) |
 | 420197 — 003-21-000046Comprehensive Development of Roads and Drains at Deo marvel layout | 2024-25 | P.DHAMODARA RAJU | — | Rs 8.23 Cr | Rs 7.76 Cr | paid (legacy) |
 | 560848 — 003-23-000003PACKAGE No-03 Providing grill fencing and other developmental works | 2024-25 | GOPI REDDY | — | Rs 8.15 Cr | Rs 7.80 Cr | paid (legacy) |
-| 003-26-000007 — Improvements and Asphalting to selected Arterial, Sub Arterial  and other Major | 2025-26 | K VENKATARAJU | Executive Engineer Yelhanka Zone | Rs 8.08 Cr | — | TVCC Exec. Engineer |
+| 003-26-000007 — Improvements and Asphalting to selected Arterial, Sub Arterial  and other Major | 2025-26 | K VENKATARAJU | Executive Engineer Yelhanka Zone | Rs 8.08 Cr | — | Addl. Commr. Finance |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
