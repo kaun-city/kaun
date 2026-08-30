@@ -35,12 +35,11 @@ No contractor from the city-wide top 100 shows work orders in this ward. The [ka
 
 ## Notable work orders in this ward
 
-2 work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. **Both are live from BBMP IFMS** (with current bill-stage status).
+1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. **It is live from BBMP IFMS** (with current bill-stage status).
 
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
 | 202-24-000007 — Reconstruction of Concrete road and RCC Drain at Marthas Hospital road Uttarahal | 2023-24 | RAJENDRA H B | Executive Engineer Bangalore South Divis | Rs 13.43 Cr | — | 000179 / 13-Jan-2026 RTGS |
-| 202-26-000012 — Improvements to existing asphalted road by resurfacing with proper camber, shoul | 2025-26 | LOKESH R | Executive Engineer Bangalore South Divis | Rs 12.92 Cr | — | Addl. Commr. Finance |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 

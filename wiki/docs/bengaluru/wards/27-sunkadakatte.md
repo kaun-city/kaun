@@ -40,13 +40,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 ## Notable work orders in this ward
 
-1 work order from the city-wide top 200 (by sanctioned amount) is recorded against this ward. **It is live from BBMP IFMS** (with current bill-stage status).
-
-| Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
-|---|---|---|---|---:|---:|---|
-| 027-26-000010 — Comphrensive Development of Roads and Drains of Arterial, Sub Arterial, Priority | 2025-26 | APPAJI BUILDERS | Executive Engineer Kengeri Division Raja | Rs 18.79 Cr | — | Addl. Commr. Finance |
-
-_**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
+No work orders from the city-wide top 200 (by sanctioned amount) are recorded against this ward. This does not mean no work has been ordered — smaller contracts are still visible on the [kaun.city interactive view](https://kaun.city/?ward=27).
 
 ---
 
