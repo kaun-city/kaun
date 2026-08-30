@@ -1,6 +1,6 @@
 # Constituencies — India (Lok Sabha, 543)
 
-_Auto-generated on 2026-08-23 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-08-30 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
 
 Every Lok Sabha seat gets a page here: who holds it, which assembly segments and districts
 it is made of, what its MP has declared, and what Parliament records of their work. Each seat
@@ -665,7 +665,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `33-33` | [Theni](33-33-theni.md) | — | Thanga Tamilselvan | DMK | ⚠ 17 | [open →](https://kaun.city/india/c/33-33) |
 | `33-34` | [Virudhunagar](33-34-virudhunagar.md) | — | Manickam Tagore B | INC | ⚠ 1 | [open →](https://kaun.city/india/c/33-34) |
 | `33-35` | [Ramanathapuram](33-35-ramanathapuram.md) | — | Navaskani K | IUML | ⚠ 1 | [open →](https://kaun.city/india/c/33-35) |
-| `33-36` | [Thoothukkudi](33-36-thoothukkudi.md) | — | Kanimozhi Karunanidhi | DMK | ⚠ 2 | [open →](https://kaun.city/india/c/33-36) |
+| `33-36` | [Thoothukkudi](33-36-thoothukkudi.md) | — | Kanimozhi Rajathi Karunanidhi | DMK | ⚠ 2 | [open →](https://kaun.city/india/c/33-36) |
 | `33-37` | [Tenkasi](33-37-tenkasi.md) | SC | Rani Srikumar | DMK | none declared | [open →](https://kaun.city/india/c/33-37) |
 | `33-38` | [Tirunelveli](33-38-tirunelveli.md) | — | Robert Bruce C | INC | ⚠ 1 | [open →](https://kaun.city/india/c/33-38) |
 | `33-39` | [Kanniyakumari](33-39-kanniyakumari.md) | — | Vijayakumar Alias Vijay Vasanth | INC | ⚠ 8 | [open →](https://kaun.city/india/c/33-39) |
