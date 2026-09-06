@@ -47,7 +47,7 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 | Work order | FY | Contractor | Division | Sanctioned | Net paid | Bill stage |
 |---|---|---|---|---:|---:|---|
 | 068-25-000001 — (Package-02 Consists of 10 Works Ward No 65, 66, 67 and 68) Comprehensive Develo | 2024-25 | RAM AND COMPANY | Executive Engineer Hebbal East Zone | Rs 9.82 Cr | — | TVCC Exec. Engineer |
-| 068-26-000001 — Improvements to Roads, Drains and Footpath Including Milling Surface of Selected | 2025-26 | K VENKATARAJU | Executive Engineer Hebbal East Zone | Rs 8.23 Cr | — | TVCC Exec. Engineer |
+| 068-26-000001 — Improvements to Roads, Drains and Footpath Including Milling Surface of Selected | 2025-26 | K VENKATARAJU | Executive Engineer Hebbal East Zone | Rs 8.23 Cr | — | Addl. Commr. Finance |
 
 _**Bill stage** shows where an IFMS-sourced work order currently sits in the BBMP approval chain (13 internal levels). Opencity-mirrored rows are historical and marked *paid (legacy)*._
 
