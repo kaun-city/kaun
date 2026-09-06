@@ -62,7 +62,7 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Term | LS18 |
 | Status | Sitting |
 | Terms served | 1 |
-| Age | 55 |
+| Age | 56 |
 | Gender | Male |
 | Qualification | Inter/Higher Secondary |
 | Profession | Agriculturist; POLITICIAN |
@@ -100,6 +100,7 @@ average of them measures none of them.
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 10 | 52.6% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 28 | 93.3% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 28 | 93.3% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 13 | 86.7% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | — | — | — |
@@ -156,4 +157,4 @@ The 6 projects in Madhya Pradesh furthest above sanctioned cost, as of the May 2
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-08-30 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-06 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
