@@ -1,6 +1,6 @@
-# Ward 3 — Someshwara Ward
+# Historical BBMP Ward 3 — Someshwara Ward
 
-_Part of **Yelahanka** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Yelahanka** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 3 on kaun.city →](https://kaun.city/?ward=3)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

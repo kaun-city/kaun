@@ -1,6 +1,6 @@
-# Ward 165 — Chamrajapet
+# Historical BBMP Ward 165 — Chamrajapet
 
-_Part of **Chamrajpet** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Chamrajpet** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 165 on kaun.city →](https://kaun.city/?ward=165)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

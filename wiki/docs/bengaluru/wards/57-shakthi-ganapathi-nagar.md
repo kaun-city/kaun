@@ -1,6 +1,6 @@
-# Ward 57 — Shakthi Ganapathi Nagar
+# Historical BBMP Ward 57 — Shakthi Ganapathi Nagar
 
-_Part of **Mahalakshmi Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahalakshmi Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 57 on kaun.city →](https://kaun.city/?ward=57)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

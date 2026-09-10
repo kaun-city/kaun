@@ -1,6 +1,6 @@
-# Ward 54 — Jai Maruthinagara
+# Historical BBMP Ward 54 — Jai Maruthinagara
 
-_Part of **Mahalakshmi Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahalakshmi Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 54 on kaun.city →](https://kaun.city/?ward=54)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

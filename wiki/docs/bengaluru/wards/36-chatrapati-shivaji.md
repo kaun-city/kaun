@@ -1,6 +1,6 @@
-# Ward 36 — Chatrapati Shivaji
+# Historical BBMP Ward 36 — Chatrapati Shivaji
 
-_Part of **Rajarajeswari Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Rajarajeswari Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 36 on kaun.city →](https://kaun.city/?ward=36)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

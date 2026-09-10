@@ -1,6 +1,6 @@
-# Ward 12 — Kodigehalli
+# Historical BBMP Ward 12 — Kodigehalli
 
-_Part of **Byatarayanapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Byatarayanapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 12 on kaun.city →](https://kaun.city/?ward=12)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 60 — Aramane Nagara
+# Historical BBMP Ward 60 — Aramane Nagara
 
-_Part of **Malleshwaram** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Malleshwaram** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 60 on kaun.city →](https://kaun.city/?ward=60)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 113 — Munnekollala
+# Historical BBMP Ward 113 — Munnekollala
 
-_Part of **Mahadevapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahadevapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 113 on kaun.city →](https://kaun.city/?ward=113)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

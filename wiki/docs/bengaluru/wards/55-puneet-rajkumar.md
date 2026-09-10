@@ -1,6 +1,6 @@
-# Ward 55 — Puneet Rajkumar
+# Historical BBMP Ward 55 — Puneet Rajkumar
 
-_Part of **Mahalakshmi Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahalakshmi Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 55 on kaun.city →](https://kaun.city/?ward=55)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

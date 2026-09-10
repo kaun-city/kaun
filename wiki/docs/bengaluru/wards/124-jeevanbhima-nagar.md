@@ -1,6 +1,6 @@
-# Ward 124 — Jeevanbhima Nagar
+# Historical BBMP Ward 124 — Jeevanbhima Nagar
 
-_Part of **C V Raman Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **C V Raman Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 124 on kaun.city →](https://kaun.city/?ward=124)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

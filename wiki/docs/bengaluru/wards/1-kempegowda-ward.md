@@ -1,6 +1,6 @@
-# Ward 1 — Kempegowda Ward
+# Historical BBMP Ward 1 — Kempegowda Ward
 
-_Part of **Yelahanka** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Yelahanka** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 1 on kaun.city →](https://kaun.city/?ward=1)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

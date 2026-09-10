@@ -1,6 +1,6 @@
-# Ward 98 — Kacharkanahalli
+# Historical BBMP Ward 98 — Kacharkanahalli
 
-_Part of **Sarvajnanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Sarvajnanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 98 on kaun.city →](https://kaun.city/?ward=98)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

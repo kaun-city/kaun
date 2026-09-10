@@ -1,6 +1,6 @@
-# Ward 89 — Devasandra
+# Historical BBMP Ward 89 — Devasandra
 
-_Part of **K R Puram** assembly constituency · BBMP 243-ward delimitation_
+_Part of **K R Puram** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 89 on kaun.city →](https://kaun.city/?ward=89)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

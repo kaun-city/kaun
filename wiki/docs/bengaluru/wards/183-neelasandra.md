@@ -1,6 +1,6 @@
-# Ward 183 — Neelasandra
+# Historical BBMP Ward 183 — Neelasandra
 
-_Part of **Shanti Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Shanti Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 183 on kaun.city →](https://kaun.city/?ward=183)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

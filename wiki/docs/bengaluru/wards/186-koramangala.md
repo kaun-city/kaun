@@ -1,6 +1,6 @@
-# Ward 186 — Koramangala
+# Historical BBMP Ward 186 — Koramangala
 
-_Part of **BTM Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **BTM Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 186 on kaun.city →](https://kaun.city/?ward=186)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 219 — Vasanthpura
+# Historical BBMP Ward 219 — Vasanthpura
 
-_Part of **Bangalore South** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Bangalore South** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 219 on kaun.city →](https://kaun.city/?ward=219)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

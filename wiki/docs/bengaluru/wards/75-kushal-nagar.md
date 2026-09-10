@@ -1,6 +1,6 @@
-# Ward 75 — Kushal Nagar
+# Historical BBMP Ward 75 — Kushal Nagar
 
-_Part of **Sarvajnanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Sarvajnanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 75 on kaun.city →](https://kaun.city/?ward=75)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
 # Bengaluru
 
-Civic data for Bengaluru — BBMP/GBA, 243 wards, and the contractors, findings, and sources that make the city's public money visible.
+Civic data for Bengaluru — 369 current GBA wards, the historical BBMP ward layers, and the contractors, findings, and sources that make the city's public money visible.
 
 ## What's documented
 
@@ -9,12 +9,12 @@ Civic data for Bengaluru — BBMP/GBA, 243 wards, and the contractors, findings,
 | [Contractors](contractors/index.md) | Contractor profiles with aliases, blacklist flags, ward footprint | Starting with KRIDL |
 | [Findings](findings/index.md) | Verified civic scandals and systemic issues with evidence | 2 documented |
 | [Data Sources](sources/bbmp-ifms.md) | BBMP IFMS, KPPP, opencity.in — the upstream portals | 3 documented |
-| [Wards](wards/index.md) | All 243 BBMP wards with MLA, constituency, and kaun.city links | 243 wards listed |
+| [Wards](wards/index.md) | Current GBA ward identities plus explicitly separated historical BBMP ward data | 369 current + 243 historical |
 | [Ward Crosswalk](ward-crosswalk.md) | First public BBMP-Final-2023 (225) ↔ KGIS/DataMeet (243) ward correspondence — deterministic, versioned, correctable | 225 wards mapped |
 | [Work Orders (city-wide)](work-orders.md) | Live BBMP work orders with contractor, division, sanctioned amount, and current bill-stage approval status | 200 top-value, mixed IFMS + opencity |
 | [RTI Responses](rti-responses/_template.md) | RTI filings and responses archive | Template ready |
 
-On [kaun.city](https://kaun.city) itself, the Bengaluru experience includes: 243 ward map, 1,305 contractor profiles (entity-resolved), elected reps with criminal cases and attendance, ward-level spending 2018-23, Sakala rankings, and citizen reports.
+On [kaun.city](https://kaun.city) itself, the Bengaluru experience includes the current 369-ward map, 1,305 contractor profiles (entity-resolved), elected reps with criminal cases and attendance, historical ward-level spending, Sakala rankings, and citizen reports.
 
 ## Featured findings
 
@@ -41,10 +41,10 @@ For pan-India data sources (TCPD, MyNeta, India Geodata, LGD), see [Pan-India So
 
 Bengaluru's civic administration has been restructured:
 
-- **BBMP (Bruhat Bengaluru Mahanagara Palike)** — 243 wards. Under administrator rule since Sept 2020 (no elected corporators).
+- **Historical BBMP data layer** — 243 wards used by many older civic datasets. It is retained for evidence and historical joins, not presented as the current ward structure.
 - **GBA (Greater Bengaluru Authority)** — 2025 restructuring splits BBMP into 5 corporations (Central, East, North, South, West) with 369 total wards. Elections pending.
 
-The commons documents both. Most historical data uses BBMP 243-ward delimitation; new data will align to GBA structure as it rolls out.
+The commons documents both. Current pages use the GBA structure; historical datasets remain labeled with their original BBMP delimitation until an evidenced crosswalk is available.
 
 ## How to contribute to Bengaluru content
 

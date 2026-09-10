@@ -1,6 +1,6 @@
-# Ward 31 — Doddagollarahatti
+# Historical BBMP Ward 31 — Doddagollarahatti
 
-_Part of **Yeshvanthapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Yeshvanthapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 31 on kaun.city →](https://kaun.city/?ward=31)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

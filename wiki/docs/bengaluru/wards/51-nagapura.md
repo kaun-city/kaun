@@ -1,6 +1,6 @@
-# Ward 51 — Nagapura
+# Historical BBMP Ward 51 — Nagapura
 
-_Part of **Mahalakshmi Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahalakshmi Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 51 on kaun.city →](https://kaun.city/?ward=51)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

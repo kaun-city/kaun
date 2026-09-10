@@ -1,6 +1,6 @@
-# Ward 149 — Kaveripura
+# Historical BBMP Ward 149 — Kaveripura
 
-_Part of **Govindaraja Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Govindaraja Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 149 on kaun.city →](https://kaun.city/?ward=149)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 130 — Bharathi Nagar
+# Historical BBMP Ward 130 — Bharathi Nagar
 
-_Part of **Shivajinagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Shivajinagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 130 on kaun.city →](https://kaun.city/?ward=130)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

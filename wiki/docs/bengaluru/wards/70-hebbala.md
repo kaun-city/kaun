@@ -1,6 +1,6 @@
-# Ward 70 — Hebbala
+# Historical BBMP Ward 70 — Hebbala
 
-_Part of **Hebbal** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Hebbal** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 70 on kaun.city →](https://kaun.city/?ward=70)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

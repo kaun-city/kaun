@@ -1,6 +1,6 @@
-# Ward 86 — K R Puram
+# Historical BBMP Ward 86 — K R Puram
 
-_Part of **K R Puram** assembly constituency · BBMP 243-ward delimitation_
+_Part of **K R Puram** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 86 on kaun.city →](https://kaun.city/?ward=86)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 48 — Jnana Bharathi
+# Historical BBMP Ward 48 — Jnana Bharathi
 
-_Part of **Rajarajeswari Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Rajarajeswari Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 48 on kaun.city →](https://kaun.city/?ward=48)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

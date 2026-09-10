@@ -1,6 +1,6 @@
-# Ward 68 — Vishwanath Nagenahalli
+# Historical BBMP Ward 68 — Vishwanath Nagenahalli
 
-_Part of **Hebbal** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Hebbal** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 68 on kaun.city →](https://kaun.city/?ward=68)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

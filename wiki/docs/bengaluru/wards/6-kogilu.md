@@ -1,6 +1,6 @@
-# Ward 6 — Kogilu
+# Historical BBMP Ward 6 — Kogilu
 
-_Part of **Byatarayanapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Byatarayanapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 6 on kaun.city →](https://kaun.city/?ward=6)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

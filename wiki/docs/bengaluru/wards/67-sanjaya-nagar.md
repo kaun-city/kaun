@@ -1,6 +1,6 @@
-# Ward 67 — Sanjaya Nagar
+# Historical BBMP Ward 67 — Sanjaya Nagar
 
-_Part of **Hebbal** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Hebbal** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 67 on kaun.city →](https://kaun.city/?ward=67)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

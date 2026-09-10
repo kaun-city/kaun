@@ -1,6 +1,6 @@
-# Ward 156 — Kempapura Agrahara
+# Historical BBMP Ward 156 — Kempapura Agrahara
 
-_Part of **Vijayanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Vijayanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 156 on kaun.city →](https://kaun.city/?ward=156)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

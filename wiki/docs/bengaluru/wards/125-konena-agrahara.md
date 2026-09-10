@@ -1,6 +1,6 @@
-# Ward 125 — Konena Agrahara
+# Historical BBMP Ward 125 — Konena Agrahara
 
-_Part of **C V Raman Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **C V Raman Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 125 on kaun.city →](https://kaun.city/?ward=125)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

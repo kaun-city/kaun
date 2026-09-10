@@ -1,6 +1,6 @@
-# Ward 42 — Lakshmi Devi Nagar
+# Historical BBMP Ward 42 — Lakshmi Devi Nagar
 
-_Part of **Rajarajeswari Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Rajarajeswari Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 42 on kaun.city →](https://kaun.city/?ward=42)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

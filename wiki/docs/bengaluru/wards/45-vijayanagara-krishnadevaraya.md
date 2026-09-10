@@ -1,6 +1,6 @@
-# Ward 45 — Vijayanagara Krishnadevaraya
+# Historical BBMP Ward 45 — Vijayanagara Krishnadevaraya
 
-_Part of **Rajarajeswari Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Rajarajeswari Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 45 on kaun.city →](https://kaun.city/?ward=45)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

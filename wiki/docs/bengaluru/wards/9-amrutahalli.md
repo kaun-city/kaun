@@ -1,6 +1,6 @@
-# Ward 9 — Amrutahalli
+# Historical BBMP Ward 9 — Amrutahalli
 
-_Part of **Byatarayanapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Byatarayanapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 9 on kaun.city →](https://kaun.city/?ward=9)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 172 — Dharmaraya Swamy Temple Ward
+# Historical BBMP Ward 172 — Dharmaraya Swamy Temple Ward
 
-_Part of **Chickpet** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Chickpet** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 172 on kaun.city →](https://kaun.city/?ward=172)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

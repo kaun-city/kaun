@@ -1,6 +1,6 @@
-# Ward 123 — Jalakanteshwara Nagara
+# Historical BBMP Ward 123 — Jalakanteshwara Nagara
 
-_Part of **C V Raman Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **C V Raman Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 123 on kaun.city →](https://kaun.city/?ward=123)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

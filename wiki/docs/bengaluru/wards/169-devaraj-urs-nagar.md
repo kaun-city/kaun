@@ -1,6 +1,6 @@
-# Ward 169 — Devaraj Urs Nagar
+# Historical BBMP Ward 169 — Devaraj Urs Nagar
 
-_Part of **Chamrajpet** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Chamrajpet** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 169 on kaun.city →](https://kaun.city/?ward=169)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

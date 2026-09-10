@@ -1,6 +1,6 @@
-# Ward 99 — HRBR Layout
+# Historical BBMP Ward 99 — HRBR Layout
 
-_Part of **Sarvajnanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Sarvajnanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 99 on kaun.city →](https://kaun.city/?ward=99)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

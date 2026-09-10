@@ -10,7 +10,9 @@ All endpoints cache for 1 hour (`Cache-Control: public, max-age=3600`). All retu
 
 ### `GET /api/data/wards`
 
-All Bengaluru wards with ward-level detail on request.
+Historical Bengaluru 243-ward records with ward-level detail on request. This endpoint remains stable for existing consumers; its ward number is not a current GBA identity.
+
+The current 369-ward GBA boundary and its corporation-aware identifiers are available as GeoJSON at [`/bengaluru-gba-369.geojson`](https://kaun.city/bengaluru-gba-369.geojson). A current ward is identified by the pair `corporation_id` + `ward_no`, because ward numbers restart in each corporation.
 
 | Parameter | Description |
 |---|---|
@@ -84,6 +86,8 @@ All endpoints return JSON in this shape:
   "license": "Public data, MIT licensed platform"
 }
 ```
+
+The example above is the historical `/api/data/wards` response. It is intentionally not relabeled as current GBA data.
 
 For ward-specific endpoints (`?ward=X`), the response includes nested objects per data category (infrastructure, spending, work_orders, etc.).
 

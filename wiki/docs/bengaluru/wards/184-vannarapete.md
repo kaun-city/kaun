@@ -1,6 +1,6 @@
-# Ward 184 — Vannarapete
+# Historical BBMP Ward 184 — Vannarapete
 
-_Part of **Shanti Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Shanti Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 184 on kaun.city →](https://kaun.city/?ward=184)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

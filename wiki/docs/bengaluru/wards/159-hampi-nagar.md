@@ -1,6 +1,6 @@
-# Ward 159 — Hampi Nagar
+# Historical BBMP Ward 159 — Hampi Nagar
 
-_Part of **Vijayanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Vijayanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 159 on kaun.city →](https://kaun.city/?ward=159)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

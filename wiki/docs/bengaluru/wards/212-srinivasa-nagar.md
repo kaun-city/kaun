@@ -1,6 +1,6 @@
-# Ward 212 — Srinivasa Nagar
+# Historical BBMP Ward 212 — Srinivasa Nagar
 
-_Part of **Basavanagudi** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Basavanagudi** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 212 on kaun.city →](https://kaun.city/?ward=212)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 157 — Vijayanagar
+# Historical BBMP Ward 157 — Vijayanagar
 
-_Part of **Vijayanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Vijayanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 157 on kaun.city →](https://kaun.city/?ward=157)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

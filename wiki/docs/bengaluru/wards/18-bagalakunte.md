@@ -1,6 +1,6 @@
-# Ward 18 — Bagalakunte
+# Historical BBMP Ward 18 — Bagalakunte
 
-_Part of **Dasarahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Dasarahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 18 on kaun.city →](https://kaun.city/?ward=18)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

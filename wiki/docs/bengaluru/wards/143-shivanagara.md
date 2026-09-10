@@ -1,6 +1,6 @@
-# Ward 143 — Shivanagara
+# Historical BBMP Ward 143 — Shivanagara
 
-_Part of **Rajajinagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Rajajinagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 143 on kaun.city →](https://kaun.city/?ward=143)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

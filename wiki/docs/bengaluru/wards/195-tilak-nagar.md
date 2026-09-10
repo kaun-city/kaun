@@ -1,6 +1,6 @@
-# Ward 195 — Tilak Nagar
+# Historical BBMP Ward 195 — Tilak Nagar
 
-_Part of **Jayanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Jayanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 195 on kaun.city →](https://kaun.city/?ward=195)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

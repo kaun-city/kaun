@@ -1,6 +1,6 @@
-# Ward 129 — Sampangiram Nagar
+# Historical BBMP Ward 129 — Sampangiram Nagar
 
-_Part of **Shivajinagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Shivajinagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 129 on kaun.city →](https://kaun.city/?ward=129)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

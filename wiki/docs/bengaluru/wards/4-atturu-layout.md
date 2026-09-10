@@ -1,6 +1,6 @@
-# Ward 4 — Atturu Layout
+# Historical BBMP Ward 4 — Atturu Layout
 
-_Part of **Yelahanka** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Yelahanka** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 4 on kaun.city →](https://kaun.city/?ward=4)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

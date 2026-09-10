@@ -1,6 +1,6 @@
-# Ward 218 — Subramanyapura
+# Historical BBMP Ward 218 — Subramanyapura
 
-_Part of **Bangalore South** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Bangalore South** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 218 on kaun.city →](https://kaun.city/?ward=218)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

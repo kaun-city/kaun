@@ -1,6 +1,6 @@
-# Ward 238 — Arakere
+# Historical BBMP Ward 238 — Arakere
 
-_Part of **Bommanahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Bommanahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 238 on kaun.city →](https://kaun.city/?ward=238)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

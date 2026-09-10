@@ -1,6 +1,6 @@
-# Ward 234 — Hongasandra
+# Historical BBMP Ward 234 — Hongasandra
 
-_Part of **Bommanahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Bommanahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 234 on kaun.city →](https://kaun.city/?ward=234)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

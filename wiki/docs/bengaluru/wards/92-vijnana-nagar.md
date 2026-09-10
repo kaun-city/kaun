@@ -1,6 +1,6 @@
-# Ward 92 — Vijnana Nagar
+# Historical BBMP Ward 92 — Vijnana Nagar
 
-_Part of **K R Puram** assembly constituency · BBMP 243-ward delimitation_
+_Part of **K R Puram** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 92 on kaun.city →](https://kaun.city/?ward=92)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

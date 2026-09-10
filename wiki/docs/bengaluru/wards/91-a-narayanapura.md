@@ -1,6 +1,6 @@
-# Ward 91 — A Narayanapura
+# Historical BBMP Ward 91 — A Narayanapura
 
-_Part of **K R Puram** assembly constituency · BBMP 243-ward delimitation_
+_Part of **K R Puram** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 91 on kaun.city →](https://kaun.city/?ward=91)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

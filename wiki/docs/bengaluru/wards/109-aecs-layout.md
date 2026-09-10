@@ -1,6 +1,6 @@
-# Ward 109 — AECS Layout
+# Historical BBMP Ward 109 — AECS Layout
 
-_Part of **Mahadevapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahadevapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 109 on kaun.city →](https://kaun.city/?ward=109)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

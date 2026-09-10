@@ -1,6 +1,6 @@
-# Ward 128 — Vasanth Nagar
+# Historical BBMP Ward 128 — Vasanth Nagar
 
-_Part of **Shivajinagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Shivajinagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 128 on kaun.city →](https://kaun.city/?ward=128)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

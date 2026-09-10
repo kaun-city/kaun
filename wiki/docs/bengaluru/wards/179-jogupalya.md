@@ -1,6 +1,6 @@
-# Ward 179 — Jogupalya
+# Historical BBMP Ward 179 — Jogupalya
 
-_Part of **Shanti Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Shanti Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 179 on kaun.city →](https://kaun.city/?ward=179)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

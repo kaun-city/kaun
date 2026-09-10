@@ -1,6 +1,6 @@
-# Ward 192 — BTM Layout
+# Historical BBMP Ward 192 — BTM Layout
 
-_Part of **BTM Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **BTM Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 192 on kaun.city →](https://kaun.city/?ward=192)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

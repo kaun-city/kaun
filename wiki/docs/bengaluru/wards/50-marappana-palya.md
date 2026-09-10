@@ -1,6 +1,6 @@
-# Ward 50 — Marappana Palya
+# Historical BBMP Ward 50 — Marappana Palya
 
-_Part of **Mahalakshmi Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahalakshmi Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 50 on kaun.city →](https://kaun.city/?ward=50)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

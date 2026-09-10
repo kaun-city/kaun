@@ -1,6 +1,6 @@
-# Ward 213 — Srinagar
+# Historical BBMP Ward 213 — Srinagar
 
-_Part of **Basavanagudi** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Basavanagudi** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 213 on kaun.city →](https://kaun.city/?ward=213)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

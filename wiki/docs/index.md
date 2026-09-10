@@ -14,7 +14,7 @@ This is the shared data layer underneath [kaun.city](https://kaun.city) and othe
 
 ## Cities covered
 
-- **[Bengaluru](bengaluru/index.md)** — Live. 243 wards, 1,305 contractor profiles, verified findings documented, BBMP/KPPP/IFMS sources integrated.
+- **[Bengaluru](bengaluru/index.md)** — Live. 369 current GBA wards, 243 historical BBMP ward profiles, 1,305 contractor profiles, verified findings, and BBMP/KPPP/IFMS sources.
 - **Hyderabad** — In development. 150 GHMC wards, elected reps seeded.
 - **Pune, Chennai, Mumbai, Delhi** — On the roadmap. Data sourcing in progress.
 

@@ -1,6 +1,6 @@
-# Ward 95 — Nagavara
+# Historical BBMP Ward 95 — Nagavara
 
-_Part of **Sarvajnanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Sarvajnanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 95 on kaun.city →](https://kaun.city/?ward=95)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

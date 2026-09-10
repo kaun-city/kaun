@@ -1,6 +1,6 @@
-# Ward 122 — New Thippasandra
+# Historical BBMP Ward 122 — New Thippasandra
 
-_Part of **C V Raman Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **C V Raman Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 122 on kaun.city →](https://kaun.city/?ward=122)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

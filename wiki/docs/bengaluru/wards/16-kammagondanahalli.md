@@ -1,6 +1,6 @@
-# Ward 16 — Kammagondanahalli
+# Historical BBMP Ward 16 — Kammagondanahalli
 
-_Part of **Dasarahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Dasarahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 16 on kaun.city →](https://kaun.city/?ward=16)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 90 — Mahadevapura
+# Historical BBMP Ward 90 — Mahadevapura
 
-_Part of **K R Puram** assembly constituency · BBMP 243-ward delimitation_
+_Part of **K R Puram** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 90 on kaun.city →](https://kaun.city/?ward=90)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 
