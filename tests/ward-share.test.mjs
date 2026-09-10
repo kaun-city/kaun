@@ -23,6 +23,6 @@ test("a current ward share opens its own map pin and has ward-first metadata", a
   assert.match(page, /gba_wards\?gba_corporation_id/)
   assert.match(page, /Bengaluru \$\{ward\.gba_corporation\}/)
   assert.match(og, /gba_wards\?gba_corporation_id/)
-  assert.match(og, /Explore your ward's civic data/)
+  assert.match(og, /Explore your ward(?:'|&apos;)s civic data/)
   assert.doesNotMatch(og, /rep_report_cards/)
 })

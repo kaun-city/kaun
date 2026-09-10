@@ -96,7 +96,7 @@ export async function GET(req: Request) {
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "20px" }}>
-            Explore your ward's civic data
+            Explore your ward&apos;s civic data
           </span>
           <span style={{ color: "rgba(255,255,255,0.55)", fontSize: "22px", fontWeight: 700 }}>
             kaun.city

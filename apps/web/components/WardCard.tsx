@@ -75,7 +75,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }
-  }, [result, ward])
+  }, [result])
   const cardRef = useRef<HTMLDivElement>(null)
   // Shift card above keyboard when inputs are focused on iOS
   useKeyboardAware(cardRef, !loading && !!result?.found)
