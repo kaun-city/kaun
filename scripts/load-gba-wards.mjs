@@ -9,6 +9,7 @@ import { readFile } from "node:fs/promises"
 const APPLY = process.argv.includes("--apply")
 const PROJECT_ID = "xgygxfyfsvccqqmtboeu"
 const DATA_URL = new URL("../apps/web/public/bengaluru-gba-369.geojson", import.meta.url)
+const PIN_LOOKUP_SQL_URL = new URL("../supabase/migrations/20260910_gba_independent_pin_lookup.sql", import.meta.url)
 const TOKEN = process.env.SUPABASE_MANAGEMENT_TOKEN
 
 const sqlText = value => value == null ? "NULL" : `'${String(value).replaceAll("'", "''")}'`
@@ -102,7 +103,11 @@ function upsertSql(features, collection) {
 }
 
 async function main() {
-  const collection = JSON.parse(await readFile(DATA_URL, "utf8"))
+  const [dataText, pinLookupSql] = await Promise.all([
+    readFile(DATA_URL, "utf8"),
+    readFile(PIN_LOOKUP_SQL_URL, "utf8"),
+  ])
+  const collection = JSON.parse(dataText)
   const keys = new Set(collection.features.map(f => `${f.properties.corporation_id}:${f.properties.ward_no}`))
   const corporations = [...new Set(collection.features.map(f => f.properties.corporation))].sort()
   if (collection.features.length !== 369 || keys.size !== 369 || corporations.length !== 5) {
@@ -121,6 +126,8 @@ async function main() {
     await query(upsertSql(collection.features.slice(i, i + 20), collection))
     console.log(`Loaded ${Math.min(i + 20, collection.features.length)}/${collection.features.length}`)
   }
+  await query(pinLookupSql)
+  console.log("Updated pin_lookup for independent legacy and GBA boundary matching")
   const result = await query("SELECT count(*)::int AS wards, count(DISTINCT gba_corporation_id)::int AS corporations FROM gba_wards;")
   console.log("Post-state:", JSON.stringify(result))
 }
