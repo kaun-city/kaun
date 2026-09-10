@@ -33,6 +33,10 @@ CREATE TABLE IF NOT EXISTS gba_wards (
   geom geometry(MultiPolygon, 4326) NOT NULL,
   PRIMARY KEY (gba_corporation_id, gba_ward_no)
 );
+-- CREATE TABLE IF NOT EXISTS does not reconcile a partially-created table.
+-- Keep this explicit so reruns can repair the rollout state safely.
+ALTER TABLE gba_wards
+  ADD COLUMN IF NOT EXISTS geom geometry(MultiPolygon, 4326);
 CREATE INDEX IF NOT EXISTS gba_wards_geom_idx ON gba_wards USING gist (geom);
 ALTER TABLE gba_wards ENABLE ROW LEVEL SECURITY;
 GRANT SELECT ON gba_wards TO anon, authenticated, service_role;
