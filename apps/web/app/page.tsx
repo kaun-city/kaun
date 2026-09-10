@@ -81,18 +81,44 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   }
 
   if (wardNo) {
-    // Dynamic OG for ward shares
+    // Historic ward links predate the GBA boundaries. Keep them working, but
+    // name the historical system so an old number is never presented as a
+    // current GBA ward number.
+    const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    if (SUPABASE_URL && SUPABASE_ANON) {
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/wards?ward_no=eq.${encodeURIComponent(wardNo)}&city_id=eq.bengaluru&select=ward_name,assembly_constituency&limit=1`,
+          { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` }, next: { revalidate: 3600 } },
+        )
+        const rows = await res.json()
+        const ward = Array.isArray(rows) ? rows[0] : null
+        if (ward) {
+          const title = `${ward.ward_name} — Historic BBMP Ward ${wardNo}`
+          const description = `${ward.assembly_constituency ? `${ward.assembly_constituency} · ` : ""}Historic BBMP ward data for Bengaluru on Kaun.`
+          const image = `https://bengaluru.kaun.city/api/og?ward_no=${encodeURIComponent(wardNo)}`
+          return {
+            title: `${title} | KAUN?`,
+            description,
+            openGraph: { title, description, images: [{ url: image, width: 1200, height: 630 }], type: "website" },
+            twitter: { card: "summary_large_image", title, description, images: [image] },
+          }
+        }
+      } catch { /* fall through to a clear historical fallback */ }
+    }
     return {
-      title: `Ward ${wardNo} | KAUN?`,
+      title: `Historic BBMP Ward ${wardNo} | KAUN?`,
       openGraph: {
-        title: `Ward ${wardNo} — Who is accountable?`,
-        description: "Find your elected rep, ward spending, and what you can do about it.",
+        title: `Historic BBMP Ward ${wardNo}`,
+        description: "Historic Bengaluru ward data on Kaun.",
         images: [{ url: `https://bengaluru.kaun.city/api/og?ward_no=${wardNo}`, width: 1200, height: 630 }],
         type: "website",
       },
       twitter: {
         card: "summary_large_image",
-        title: `Ward ${wardNo} — Who is accountable?`,
+        title: `Historic BBMP Ward ${wardNo}`,
+        description: "Historic Bengaluru ward data on Kaun.",
         images: [`https://bengaluru.kaun.city/api/og?ward_no=${wardNo}`],
       },
     }

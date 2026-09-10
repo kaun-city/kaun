@@ -103,10 +103,11 @@ export const CITY_UI_PATHS = ["/how-it-works", "/data", "/admin"] as const
 
 /**
  * Query parameters that make a bare "/" a city deep link. `?ward=` and
- * `?report=` are the two that went viral and are shared in screenshots and
- * WhatsApp forwards; `?city=` and `?layer=` are the switcher and choropleth.
+ * `?report=` are the legacy shared forms; a current GBA ward needs both its
+ * corporation and its ward number because the numbers restart in each
+ * corporation. `?city=` and `?layer=` are the switcher and choropleth.
  */
-export const CITY_UI_PARAMS = ["ward", "report", "city", "layer"] as const
+export const CITY_UI_PARAMS = ["ward", "report", "city", "layer", "gba_corporation", "gba_ward"] as const
 
 /** Root-domain paths the India surface owns once the cutover happens. */
 const NATIONAL_ROOT_PREFIXES = ["/c/", "/projects"] as const

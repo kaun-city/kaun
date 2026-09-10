@@ -31,7 +31,7 @@ export async function GET(req: Request) {
   const wardName = currentWard?.gba_ward_name ?? legacyWard?.ward_name ?? "Bengaluru"
   const wardLabel = currentWard
     ? `Bengaluru ${currentWard.gba_corporation} · Ward ${gbaWardNo}`
-    : legacyWard ? `Bengaluru · Ward ${wardNo}` : "Ward-level civic data"
+    : legacyWard ? `Historic BBMP ward ${wardNo} · Bengaluru` : "Ward-level civic data"
   const constituency = currentWard?.gba_ac ?? legacyWard?.assembly_constituency ?? ""
   const population = currentWard?.gba_population != null
     ? Number(currentWard.gba_population).toLocaleString("en-IN")
