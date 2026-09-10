@@ -344,7 +344,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
       setShowCard(true)
       setOutOfBounds(false)
     } else {
-      if (!result) {
+      if (!result?.found) {
         setPinLoading(false)
         setShowCard(false)
         setOutOfBounds(true)
@@ -391,7 +391,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
         setOutOfBounds(false)
         setGeoLoading(false)
         const result = await pinLookup(lat, lng)
-        if (!result) {
+        if (!result?.found) {
           setPinLoading(false)
           setShowCard(false)
           setOutOfBounds(true)

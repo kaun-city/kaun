@@ -14,7 +14,7 @@ import { wardQueryScope } from "./ward-query-scope"
  * Pin lookup  reverse geocode a lat/lng to a ward.
  */
 export async function pinLookup(lat: number, lng: number): Promise<PinResult | null> {
-  const data = await rpc<{
+  let data: {
     found: boolean
     // BBMP legacy
     city_id?: string
@@ -33,7 +33,19 @@ export async function pinLookup(lat: number, lng: number): Promise<PinResult | n
     gba_zone?: string | null
     gba_zone_name?: string | null
     gba_population?: number | null
-  }>("pin_lookup", { lat, lng })
+  } | null = null
+
+  try {
+    const response = await fetch("/api/pin-lookup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lat, lng }),
+    })
+    if (!response.ok) return null
+    data = await response.json()
+  } catch {
+    return null
+  }
 
   if (!data || !data.found) {
     return { found: false } as PinResult
