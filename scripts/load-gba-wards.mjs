@@ -14,6 +14,24 @@ const TOKEN = process.env.SUPABASE_MANAGEMENT_TOKEN
 const sqlText = value => value == null ? "NULL" : `'${String(value).replaceAll("'", "''")}'`
 const sqlNumber = value => Number.isFinite(value) ? String(value) : "NULL"
 
+const RECONCILE_LEGACY_SQL = `
+DO $$
+BEGIN
+  IF to_regclass('public.gba_wards') IS NOT NULL
+     AND NOT EXISTS (
+       SELECT 1 FROM information_schema.columns
+       WHERE table_schema = 'public'
+         AND table_name = 'gba_wards'
+         AND column_name = 'gba_corporation_id'
+     ) THEN
+    IF to_regclass('public.gba_wards_legacy_20260910') IS NOT NULL THEN
+      RAISE EXCEPTION 'Both incompatible gba_wards and gba_wards_legacy_20260910 exist; refusing to overwrite either';
+    END IF;
+    ALTER TABLE public.gba_wards RENAME TO gba_wards_legacy_20260910;
+  END IF;
+END $$;
+`.trim()
+
 const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS gba_wards (
   gba_corporation_id integer NOT NULL,
@@ -97,6 +115,7 @@ async function main() {
   }
   if (!TOKEN) throw new Error("SUPABASE_MANAGEMENT_TOKEN is required for --apply")
 
+  await query(RECONCILE_LEGACY_SQL)
   await query(SCHEMA_SQL)
   for (let i = 0; i < collection.features.length; i += 20) {
     await query(upsertSql(collection.features.slice(i, i + 20), collection))
