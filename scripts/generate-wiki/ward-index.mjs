@@ -25,6 +25,46 @@ async function fetchJson(path) {
   return res.json()
 }
 
+async function postJson(path, body) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error(`${path} → ${res.status}`)
+  return res.json()
+}
+
+async function mapConcurrent(items, concurrency, fn) {
+  const results = new Array(items.length)
+  let next = 0
+  await Promise.all(Array.from({ length: concurrency }, async () => {
+    while (next < items.length) {
+      const index = next++
+      results[index] = await fn(items[index], index)
+    }
+  }))
+  return results
+}
+
+function constituencyKey(value) {
+  const key = String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "")
+    .replace(/sarvajnanagar/g, "sarvagnanagar")
+  const aliases = {
+    chamrajapet: "chamarajpet",
+    chamrajpet: "chamarajpet",
+    gandhinagara: "gandhinagar",
+    govindrajnagar: "govindarajanagar",
+    krpura: "krpuram",
+    padmanabanagar: "padmanabhanagar",
+    shanthinagar: "shantinagar",
+    yeshwanthapura: "yeshvanthapura",
+  }
+  return aliases[key] ?? key
+}
+
 function slugify(s) {
   return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
 }
@@ -134,7 +174,7 @@ function renderIndex(currentWards, legacyWards, mlaByConstituency) {
   return lines.join("\n")
 }
 
-function renderCurrentWardPage(w, mla) {
+function renderCurrentWardPage(w, mla, legacyWard, contractorsHere, workOrdersHere) {
   const lines = []
   lines.push(`# ${w.ward_name} — Bengaluru ${w.corporation}, Ward ${w.ward_no}`)
   lines.push("")
@@ -159,11 +199,29 @@ function renderCurrentWardPage(w, mla) {
   lines.push("")
   lines.push(mla
     ? `The MLA mapped by the published assembly-constituency field is **${fmtMla(mla)}**.`
-    : `No MLA record exactly matched \`${w.assembly_constituency ?? "—"}\` in the current dataset.`)
+    : `No MLA record matched \`${w.assembly_constituency ?? "—"}\` in the current dataset.`)
   lines.push("")
-  lines.push("## Historical-data availability")
+  lines.push("## Historical data near this ward's published centre")
   lines.push("")
-  lines.push("Most spending, contractor, grievance, and infrastructure datasets are keyed to the former BBMP ward systems. This page does not attach those records by ward number because current GBA numbers restart in each corporation and are not equivalent to historical ward numbers. Use the interactive map for any location-based historical overlap that Kaun can establish.")
+  if (!legacyWard) {
+    lines.push("Kaun could not resolve the published ward-centre point to the historical BBMP 243-ward layer. Historical spending and contractor records therefore remain unassigned here.")
+  } else {
+    lines.push(`The published centre point for this current ward falls inside **historical BBMP Ward ${legacyWard.ward_no} — ${legacyWard.ward_name}**. This is a location-based proxy, not a claim that the two ward boundaries are equivalent. [Open the historical ward page →](${wardFilename(legacyWard)})`)
+    lines.push("")
+    lines.push(`- **Top-100 contractors recorded in the historical ward:** ${contractorsHere.length}`)
+    lines.push(`- **City-wide top-200 work orders recorded in the historical ward:** ${workOrdersHere.length}`)
+    if (workOrdersHere.length) {
+      lines.push("")
+      lines.push("| Work order | FY | Contractor | Sanctioned |")
+      lines.push("|---|---|---|---:|")
+      for (const wo of workOrdersHere.slice(0, 5)) {
+        const desc = (wo.description ?? "").replace(/<[^>]+>/g, "").substring(0, 70).trim()
+        lines.push(`| ${wo.work_order_id} — ${desc} | ${wo.fy ?? "—"} | ${wo.contractor_name ?? "—"} | ${fmtRupeesPaise(wo.sanctioned_amount)} |`)
+      }
+    }
+    lines.push("")
+    lines.push("For grievances, amenities, infrastructure, and the complete historical record, use the linked historical page or the interactive map.")
+  }
   lines.push("")
   lines.push(`_Auto-generated on ${TODAY} from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru ${w.corporation}, Ward ${w.ward_no}**._`)
   lines.push("")
@@ -423,8 +481,15 @@ async function main() {
   const mlaByConstituency = new Map()
   for (const r of reps) {
     if (r.role !== "MLA") continue
-    mlaByConstituency.set(r.constituency, r)
+    mlaByConstituency.set(constituencyKey(r.constituency), r)
   }
+
+  const legacyWardByNo = new Map(legacyWards.map(w => [w.ward_no, w]))
+  console.log("  resolving current ward centres against the historical BBMP layer...")
+  const centreLookups = await mapConcurrent(currentWards, 12, w => postJson("/api/pin-lookup", {
+    lat: Number(w.center_lat),
+    lng: Number(w.center_lng),
+  }))
 
   const contractorsByWard = new Map()
   for (const c of contractors) {
@@ -455,22 +520,30 @@ async function main() {
     if (name.endsWith(".md")) unlinkSync(join(WARDS_DIR, name))
   }
 
-  const indexMd = renderIndex(currentWards, legacyWards, mlaByConstituency)
+  const indexMd = renderIndex(currentWards, legacyWards, {
+    get: value => mlaByConstituency.get(constituencyKey(value)),
+  })
   writeFileSync(INDEX_PATH, indexMd)
   console.log(`  wrote ${INDEX_PATH}`)
 
   let pageCount = 0
   let wardsWithContractors = 0
   let wardsWithWorkOrders = 0
-  for (const w of currentWards) {
-    const mla = mlaByConstituency.get(w.assembly_constituency)
-    const md = renderCurrentWardPage(w, mla)
+  let currentWardsWithHistoricalData = 0
+  for (const [index, w] of currentWards.entries()) {
+    const mla = mlaByConstituency.get(constituencyKey(w.assembly_constituency))
+    const lookup = centreLookups[index]
+    const legacyWard = lookup?.found ? legacyWardByNo.get(Number(lookup.ward_no)) : null
+    const contractorsHere = legacyWard ? (contractorsByWard.get(legacyWard.ward_no) ?? []) : []
+    const workOrdersHere = legacyWard ? (workOrdersByWard.get(legacyWard.ward_no) ?? []).slice(0, 10) : []
+    if (legacyWard) currentWardsWithHistoricalData++
+    const md = renderCurrentWardPage(w, mla, legacyWard, contractorsHere, workOrdersHere)
     writeFileSync(join(WARDS_DIR, currentWardFilename(w)), md)
     pageCount++
   }
 
   for (const w of legacyWards) {
-    const mla = mlaByConstituency.get(w.assembly_constituency)
+    const mla = mlaByConstituency.get(constituencyKey(w.assembly_constituency))
     const contractorsHere = contractorsByWard.get(w.ward_no) ?? []
     const workOrdersHere = (workOrdersByWard.get(w.ward_no) ?? []).slice(0, 10)
     if (contractorsHere.length) wardsWithContractors++
@@ -481,6 +554,7 @@ async function main() {
   }
 
   console.log(`  wrote ${pageCount} per-ward pages (${currentWards.length} current + ${legacyWards.length} historical)`)
+  console.log(`    ${currentWardsWithHistoricalData} current wards have a centre-point historical proxy`)
   console.log(`    ${wardsWithContractors} wards have contractors from top-100 list`)
   console.log(`    ${wardsWithWorkOrders} wards have work orders from top-200 list`)
 

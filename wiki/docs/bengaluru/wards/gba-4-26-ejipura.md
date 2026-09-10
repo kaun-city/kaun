@@ -19,10 +19,20 @@ _Current GBA 369-ward delimitation · **B.T.M Layout** assembly constituency_
 
 ## Elected representative
 
-No MLA record exactly matched `B.T.M Layout` in the current dataset.
+The MLA mapped by the published assembly-constituency field is **Ramalinga Reddy (INC) ⚠ 4 cases**.
 
-## Historical-data availability
+## Historical data near this ward's published centre
 
-Most spending, contractor, grievance, and infrastructure datasets are keyed to the former BBMP ward systems. This page does not attach those records by ward number because current GBA numbers restart in each corporation and are not equivalent to historical ward numbers. Use the interactive map for any location-based historical overlap that Kaun can establish.
+The published centre point for this current ward falls inside **historical BBMP Ward 185 — Ejipura**. This is a location-based proxy, not a claim that the two ward boundaries are equivalent. [Open the historical ward page →](185-ejipura.md)
+
+- **Top-100 contractors recorded in the historical ward:** 3
+- **City-wide top-200 work orders recorded in the historical ward:** 2
+
+| Work order | FY | Contractor | Sanctioned |
+|---|---|---|---:|
+| 567314 — 185-23-000001Comprehensive Development of roads, drains and other alli | 2024-25 | RAJENDRA H B | Rs 8.89 Cr |
+| 567311 — 185-23-000001Comprehensive Development of roads, drains and other alli | 2024-25 | RAJENDRA H B | Rs 8.48 Cr |
+
+For grievances, amenities, infrastructure, and the complete historical record, use the linked historical page or the interactive map.
 
 _Auto-generated on 2026-09-10 from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru South, Ward 26**._

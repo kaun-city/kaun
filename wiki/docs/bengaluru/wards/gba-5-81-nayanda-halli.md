@@ -19,10 +19,19 @@ _Current GBA 369-ward delimitation · **Govindraj Nagar** assembly constituency_
 
 ## Elected representative
 
-No MLA record exactly matched `Govindraj Nagar` in the current dataset.
+The MLA mapped by the published assembly-constituency field is **Priya Krishna (INC) ⚠ 1 case**.
 
-## Historical-data availability
+## Historical data near this ward's published centre
 
-Most spending, contractor, grievance, and infrastructure datasets are keyed to the former BBMP ward systems. This page does not attach those records by ward number because current GBA numbers restart in each corporation and are not equivalent to historical ward numbers. Use the interactive map for any location-based historical overlap that Kaun can establish.
+The published centre point for this current ward falls inside **historical BBMP Ward 155 — Nayandahalli**. This is a location-based proxy, not a claim that the two ward boundaries are equivalent. [Open the historical ward page →](155-nayandahalli.md)
+
+- **Top-100 contractors recorded in the historical ward:** 2
+- **City-wide top-200 work orders recorded in the historical ward:** 1
+
+| Work order | FY | Contractor | Sanctioned |
+|---|---|---|---:|
+| 580148 — 155-23-000007Construction of Multi Specialty Hospital at Pantharapalya | 2024-25 | — | Rs 17.39 Cr |
+
+For grievances, amenities, infrastructure, and the complete historical record, use the linked historical page or the interactive map.
 
 _Auto-generated on 2026-09-10 from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru West, Ward 81**._
