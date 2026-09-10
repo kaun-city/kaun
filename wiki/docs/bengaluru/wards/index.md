@@ -394,7 +394,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### B.T.M Layout
 
-**MLA:** _vacant / not mapped_ · **Wards:** 14
+**MLA:** Ramalinga Reddy (INC) ⚠ 4 cases · **Wards:** 14
 
 - [Bengaluru South · Ward 17 — N.S Palya](gba-4-17-n-s-palya.md)
 - [Bengaluru South · Ward 18 — Viswamanava Kuvempu Ward](gba-4-18-viswamanava-kuvempu-ward.md)
@@ -496,7 +496,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### C.V. Raman Nagar
 
-**MLA:** _vacant / not mapped_ · **Wards:** 13
+**MLA:** S Raghu (BJP) · **Wards:** 13
 
 - [Bengaluru Central · Ward 9 — Hoysala Nagara Central](gba-1-9-hoysala-nagara-central.md)
 - [Bengaluru Central · Ward 10 — Cox Town](gba-1-10-cox-town.md)
@@ -514,7 +514,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### Chamrajapet
 
-**MLA:** _vacant / not mapped_ · **Wards:** 10
+**MLA:** B Z Zameer Ahmed Khan (INC) ⚠ 5 cases · **Wards:** 10
 
 - [Bengaluru Central · Ward 44 — Chamarajpet](gba-1-44-chamarajpet.md)
 - [Bengaluru Central · Ward 45 — K.R Market](gba-1-45-k-r-market.md)
@@ -569,7 +569,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### Gandhinagara
 
-**MLA:** _vacant / not mapped_ · **Wards:** 10
+**MLA:** Dinesh Gundu Rao (INC) · **Wards:** 10
 
 - [Bengaluru Central · Ward 54 — Binnypete](gba-1-54-binnypete.md)
 - [Bengaluru Central · Ward 55 — Bhuvaneshwari Nagar](gba-1-55-bhuvaneshwari-nagar.md)
@@ -584,7 +584,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### Govindraj Nagar
 
-**MLA:** _vacant / not mapped_ · **Wards:** 13
+**MLA:** Priya Krishna (INC) ⚠ 1 case · **Wards:** 13
 
 - [Bengaluru West · Ward 69 — Agrahara Dasarahalli](gba-5-69-agrahara-dasarahalli.md)
 - [Bengaluru West · Ward 70 — Dr Rajkumar Ward](gba-5-70-dr-rajkumar-ward.md)
@@ -633,7 +633,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### K.R. Pura
 
-**MLA:** _vacant / not mapped_ · **Wards:** 27
+**MLA:** B A Basavaraja (BJP) ⚠ 3 cases · **Wards:** 27
 
 - [Bengaluru East · Ward 1 — K Narayanapura](gba-3-1-k-narayanapura.md)
 - [Bengaluru East · Ward 2 — Horamavu](gba-3-2-horamavu.md)
@@ -726,7 +726,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### Padmanabanagar
 
-**MLA:** _vacant / not mapped_ · **Wards:** 14
+**MLA:** R Ashoka (BJP) ⚠ 1 case · **Wards:** 14
 
 - [Bengaluru South · Ward 1 — Padmanabhanagara](gba-4-1-padmanabhanagara.md)
 - [Bengaluru South · Ward 2 — Kadirenahalli](gba-4-2-kadirenahalli.md)
@@ -777,7 +777,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### Rajarajeshwarinagar
 
-**MLA:** _vacant / not mapped_ · **Wards:** 19
+**MLA:** Munirathna (BJP) ⚠ 8 cases · **Wards:** 19
 
 - [Bengaluru West · Ward 22 — Bangarappa Nagara](gba-5-22-bangarappa-nagara.md)
 - [Bengaluru West · Ward 23 — Rajarajeshwari Nagara](gba-5-23-rajarajeshwari-nagara.md)
@@ -801,7 +801,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### Sarvagnanagar
 
-**MLA:** _vacant / not mapped_ · **Wards:** 16
+**MLA:** K J George (INC) · **Wards:** 16
 
 - [Bengaluru North · Ward 22 — Nagavara](gba-2-22-nagavara.md)
 - [Bengaluru North · Ward 23 — Hennur](gba-2-23-hennur.md)
@@ -822,7 +822,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### Shanthinagar
 
-**MLA:** _vacant / not mapped_ · **Wards:** 10
+**MLA:** N A Haris (INC) ⚠ 1 case · **Wards:** 10
 
 - [Bengaluru Central · Ward 22 — Domluru](gba-1-22-domluru.md)
 - [Bengaluru Central · Ward 23 — Jogpalya](gba-1-23-jogpalya.md)
@@ -880,7 +880,7 @@ Ward numbers restart inside each corporation, so the corporation and ward number
 
 ### Yeshwanthapura
 
-**MLA:** _vacant / not mapped_ · **Wards:** 12
+**MLA:** S T Somashekar (IND) ⚠ 1 case · **Wards:** 12
 
 - [Bengaluru West · Ward 11 — Dodda Bidarakallu](gba-5-11-dodda-bidarakallu.md)
 - [Bengaluru West · Ward 12 — Andrahalli](gba-5-12-andrahalli.md)

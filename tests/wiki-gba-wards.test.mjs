@@ -24,7 +24,7 @@ test("wiki generator publishes all current GBA ward identities", async () => {
   assert.match(generator, /currentWards\.length !== 369/)
 })
 
-test("wiki keeps current and historical ward systems separate", async () => {
+test("wiki labels the current-to-historical centre-point proxy honestly", async () => {
   const [generator, apiDocs] = await Promise.all([
     readFile(new URL("scripts/generate-wiki/ward-index.mjs", repo), "utf8"),
     readFile(new URL("wiki/docs/about/api.md", repo), "utf8"),
@@ -32,7 +32,9 @@ test("wiki keeps current and historical ward systems separate", async () => {
 
   assert.match(generator, /Current GBA wards \(369\)/)
   assert.match(generator, /Historical BBMP ward layer \(243\)/)
-  assert.match(generator, /does not attach those records by ward number/)
+  assert.match(generator, /location-based proxy, not a claim that the two ward boundaries are equivalent/)
+  assert.match(generator, /postJson\("\/api\/pin-lookup"/)
+  assert.match(generator, /constituencyKey/)
   assert.match(apiDocs, /endpoint remains stable for existing consumers/)
   assert.match(apiDocs, /`corporation_id` \+ `ward_no`/)
 })
@@ -51,4 +53,21 @@ test("generated ward index links to 369 current and 243 historical pages", async
   assert.equal(historicalPages.length, 243)
   assert.equal(new Set(localLinks).size, 612)
   for (const link of localLinks) assert.ok(names.includes(link), `missing ward page: ${link}`)
+})
+
+test("all current ward pages include an MLA and an honest historical-data result", async () => {
+  const wardsDir = new URL("wiki/docs/bengaluru/wards/", repo)
+  const names = (await readdir(wardsDir)).filter(name => /^gba-\d+-\d+-.+\.md$/.test(name))
+  let proxies = 0
+  let unresolved = 0
+
+  for (const name of names) {
+    const page = await readFile(new URL(name, wardsDir), "utf8")
+    assert.doesNotMatch(page, /No MLA record matched/, `${name} has no MLA`)
+    if (page.includes("location-based proxy")) proxies++
+    if (page.includes("could not resolve the published ward-centre point")) unresolved++
+  }
+
+  assert.equal(proxies, 368)
+  assert.equal(unresolved, 1)
 })

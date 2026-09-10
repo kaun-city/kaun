@@ -21,8 +21,8 @@ _Current GBA 369-ward delimitation · **Mahadevapura** assembly constituency_
 
 The MLA mapped by the published assembly-constituency field is **Manjula S (BJP)**.
 
-## Historical-data availability
+## Historical data near this ward's published centre
 
-Most spending, contractor, grievance, and infrastructure datasets are keyed to the former BBMP ward systems. This page does not attach those records by ward number because current GBA numbers restart in each corporation and are not equivalent to historical ward numbers. Use the interactive map for any location-based historical overlap that Kaun can establish.
+Kaun could not resolve the published ward-centre point to the historical BBMP 243-ward layer. Historical spending and contractor records therefore remain unassigned here.
 
 _Auto-generated on 2026-09-10 from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru East, Ward 28**._
