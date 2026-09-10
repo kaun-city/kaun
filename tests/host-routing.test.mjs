@@ -124,6 +124,17 @@ test("every viral city deep link 308s to the city subdomain, query intact", () =
   }
 })
 
+test("a current GBA share keeps its corporation-qualified ward identity through the cutover", () => {
+  const d = ctx({
+    host: "kaun.city",
+    pathname: "/",
+    search: "?gba_corporation=1&gba_ward=25",
+    indiaRoot: true,
+  })
+  assert.equal(d.action, "redirect")
+  assert.equal(d.url, "https://bengaluru.kaun.city/?gba_corporation=1&gba_ward=25")
+})
+
 test("a bare root with no city params is the India map, not a redirect", () => {
   assert.equal(ctx({ host: "kaun.city", pathname: "/", indiaRoot: true }).action, "rewrite")
 })

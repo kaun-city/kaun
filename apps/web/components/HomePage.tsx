@@ -284,13 +284,16 @@ export default function HomePage({ host = "" }: { host?: string }) {
     setPinLoading(false)
   }
 
-  // Handle ?ward=X or ?report=X deep links
+  // Handle ?gba_corporation=X&gba_ward=Y, ?ward=X, or ?report=X deep links.
+  // GBA ward numbers restart in each corporation, so both fields are needed.
   useEffect(() => {
     if (deepLinkHandled.current) return
     deepLinkHandled.current = true
 
     const wardParam   = searchParams.get("ward")
     const reportParam = searchParams.get("report")
+    const gbaCorporationParam = Number.parseInt(searchParams.get("gba_corporation") ?? "", 10)
+    const gbaWardParam = Number.parseInt(searchParams.get("gba_ward") ?? "", 10)
 
     if (reportParam) {
       // Fetch report location and pan to it
@@ -320,6 +323,34 @@ export default function HomePage({ host = "" }: { host?: string }) {
           }
         })
         .catch(() => {})
+    } else if (Number.isInteger(gbaCorporationParam) && Number.isInteger(gbaWardParam)) {
+      // The static boundary layer holds the published centre for each current
+      // ward. Resolve that point through the server-backed lookup so a shared
+      // GBA link works even when the visitor cannot reach Supabase directly.
+      fetch(activeCity.geojsonUrl)
+        .then(r => r.json())
+        .then(async (collection) => {
+          const feature = collection.features?.find((f: { properties?: Record<string, unknown> }) =>
+            Number(f.properties?.corporation_id) === gbaCorporationParam &&
+            Number(f.properties?.ward_no) === gbaWardParam
+          )
+          const lat = Number(feature?.properties?.center_lat)
+          const lng = Number(feature?.properties?.center_lng)
+          if (!Number.isFinite(lat) || !Number.isFinite(lng)) return
+          mapViewRef.current?.panTo(lat, lng)
+          setPinLoading(true)
+          setShowCard(true)
+          const result = await pinLookup(lat, lng)
+          if (!result?.found) {
+            setPinLoading(false)
+            setShowCard(false)
+            setOutOfBounds(true)
+            return
+          }
+          setPinResult({ ...result, lat, lng })
+          setPinLoading(false)
+        })
+        .catch(() => {})
     } else if (wardParam) {
       // Direct ward deep link — fetch ward row and open card without reverse geocoding.
       const wardNo = Number.parseInt(wardParam, 10)
@@ -336,7 +367,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
         .catch(() => {})
       }
     }
-  }, [activeCity.center, activeCity.id, searchParams])
+  }, [activeCity.center, activeCity.geojsonUrl, activeCity.id, searchParams])
 
   const handlePin = useCallback((result: PinResult | null, lat: number, lng: number) => {
     if (result === null && !pinLoading) {

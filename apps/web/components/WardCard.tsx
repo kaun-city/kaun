@@ -28,26 +28,25 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "reach",   label: "Reach" },
 ]
 
-function buildShareText(result: PinResult, ward: ReturnType<typeof useWardData>): string {
-  const mla    = ward.profile?.elected_reps?.find(r => r.role === "MLA")
-  const report = ward.reportCard
-  const lines: string[] = []
+function buildShareText(result: PinResult): string {
+  const cityName = getCity(result.city_id).name
+  const currentWard = result.gba_ward_name && result.gba_corporation
+  const wardName = result.gba_ward_name ?? result.ward_name ?? "Ward"
+  const wardNumber = result.gba_ward_no ?? result.ward_no
+  const lines = [wardName]
 
-  // Lead with the most accountability-worthy stat
-  if (report?.lad_utilization_pct !== null && report?.lad_utilization_pct !== undefined && Number(report.lad_utilization_pct) === 0) {
-    lines.push(`${mla?.name ?? "The MLA"} (${mla?.party ?? ""}) has utilized 0% of allocated development funds in ${result.ward_name}.`)
-  } else if (report?.criminal_cases && report.criminal_cases >= 3) {
-    lines.push(`${mla?.name ?? "The MLA"} (${mla?.party ?? ""}) representing ${result.ward_name} has ${report.criminal_cases} criminal cases on record.`)
-  } else if (report?.attendance_pct != null && report.attendance_pct < 60) {
-    lines.push(`${mla?.name ?? "The MLA"} representing ${result.ward_name} attends only ${report.attendance_pct}% of assembly sessions.`)
-  } else if (mla?.name) {
-    lines.push(`${mla.name} (${mla.party ?? ""}) represents ${result.ward_name} — Ward ${result.ward_no}, ${result.assembly_constituency}.`)
+  if (currentWard) {
+    lines.push(`${cityName} ${result.gba_corporation} · Ward ${wardNumber}`)
   } else {
-    const cityName = getCity(result.city_id).name
-    lines.push(`Ward ${result.ward_no} — ${result.ward_name}, ${cityName}.`)
+    lines.push(`${cityName} · Ward ${wardNumber}`)
   }
-
-  lines.push(`Find out who is accountable for your ward: kaun.city`)
+  if (result.gba_ac ?? result.assembly_constituency) {
+    lines.push(`Assembly constituency: ${result.gba_ac ?? result.assembly_constituency}`)
+  }
+  if (result.gba_population != null) {
+    lines.push(`Population: ${result.gba_population.toLocaleString("en-IN")}`)
+  }
+  lines.push("Explore this ward on Kaun")
   return lines.join("\n")
 }
 
@@ -57,11 +56,14 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
   const handleShare = useCallback(async () => {
     if (!result?.found) return
-    const text = buildShareText(result, ward)
+    const text = buildShareText(result)
+    const currentWard = result.gba_corporation_id != null && result.gba_ward_no != null
     const cityParam = result.city_id && result.city_id !== "bengaluru" ? `&city=${result.city_id}` : ""
-    const url = result.ward_no
-      ? `https://kaun.city?ward=${result.ward_no}${cityParam}`
-      : "https://kaun.city"
+    const url = currentWard
+      ? `https://bengaluru.kaun.city?gba_corporation=${result.gba_corporation_id}&gba_ward=${result.gba_ward_no}`
+      : result.ward_no
+        ? `https://bengaluru.kaun.city?ward=${result.ward_no}${cityParam}`
+        : "https://bengaluru.kaun.city"
     if (navigator.share) {
       try {
         await navigator.share({ text, url })
@@ -73,7 +75,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }
-  }, [result, ward])
+  }, [result])
   const cardRef = useRef<HTMLDivElement>(null)
   // Shift card above keyboard when inputs are focused on iOS
   useKeyboardAware(cardRef, !loading && !!result?.found)

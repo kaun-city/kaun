@@ -19,32 +19,23 @@ async function fetchJson(path: string) {
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const wardNo = parseInt(searchParams.get("ward_no") ?? "0", 10)
+  const corporationId = parseInt(searchParams.get("gba_corporation") ?? "0", 10)
+  const gbaWardNo = parseInt(searchParams.get("gba_ward") ?? "0", 10)
 
-  const ward = wardNo
-    ? await fetchJson(`wards?ward_no=eq.${wardNo}&select=ward_name,assembly_constituency&limit=1`)
+  const currentWard = corporationId > 0 && gbaWardNo > 0
+    ? await fetchJson(`gba_wards?gba_corporation_id=eq.${corporationId}&gba_ward_no=eq.${gbaWardNo}&select=gba_ward_name,gba_corporation,gba_ac,gba_population&limit=1`)
     : null
-
-  const report = ward?.assembly_constituency
-    ? await fetchJson(
-        `rep_report_cards?constituency=eq.${encodeURIComponent(ward.assembly_constituency)}&role=eq.MLA&select=attendance_pct,lad_utilization_pct,criminal_cases&limit=1`
-      )
+  const legacyWard = !currentWard && wardNo
+    ? await fetchJson(`wards?ward_no=eq.${wardNo}&select=ward_name,assembly_constituency,zone&limit=1`)
     : null
-
-  let stat = ""
-  let statLabel = ""
-  if (report?.lad_utilization_pct !== null && report?.lad_utilization_pct !== undefined && Number(report.lad_utilization_pct) === 0) {
-    stat = "0%"; statLabel = "development funds utilized"
-  } else if (report?.criminal_cases != null && Number(report.criminal_cases) >= 3) {
-    stat = String(report.criminal_cases)
-    statLabel = Number(report.criminal_cases) > 1 ? "criminal cases on record" : "criminal case on record"
-  } else if (report?.attendance_pct != null && Number(report.attendance_pct) < 65) {
-    stat = `${report.attendance_pct}%`; statLabel = "assembly attendance"
-  } else if (report?.lad_utilization_pct != null) {
-    stat = `${report.lad_utilization_pct}%`; statLabel = "LAD funds utilized"
-  }
-
-  const wardName    = ward?.ward_name ?? "Bengaluru"
-  const constituency = ward?.assembly_constituency ?? ""
+  const wardName = currentWard?.gba_ward_name ?? legacyWard?.ward_name ?? "Bengaluru"
+  const wardLabel = currentWard
+    ? `Bengaluru ${currentWard.gba_corporation} · Ward ${gbaWardNo}`
+    : legacyWard ? `Historic BBMP ward ${wardNo} · Bengaluru` : "Ward-level civic data"
+  const constituency = currentWard?.gba_ac ?? legacyWard?.assembly_constituency ?? ""
+  const population = currentWard?.gba_population != null
+    ? Number(currentWard.gba_population).toLocaleString("en-IN")
+    : ""
 
   return new ImageResponse(
     (
@@ -69,15 +60,18 @@ export async function GET(req: Request) {
           <span style={{ color: "white", fontSize: "76px", fontWeight: 800, letterSpacing: "-2px" }}>
             {wardName}
           </span>
+          <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "24px", marginTop: "10px" }}>
+            {wardLabel}
+          </span>
           {constituency ? (
             <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "24px", marginTop: "10px" }}>
-              Ward {wardNo} - {constituency} - Bengaluru
+              Assembly constituency · {constituency}
             </span>
           ) : null}
         </div>
 
-        {/* Accountability stat box */}
-        {stat ? (
+        {/* The share starts with the place. Political performance belongs on the page. */}
+        {population ? (
           <div style={{
             display: "flex",
             alignItems: "center",
@@ -87,11 +81,11 @@ export async function GET(req: Request) {
             borderRadius: "16px",
             padding: "28px 40px",
           }}>
-            <span style={{ color: "#FF9933", fontSize: "72px", fontWeight: 900, marginRight: "24px" }}>
-              {stat}
+            <span style={{ color: "#FF9933", fontSize: "44px", fontWeight: 900, marginRight: "20px" }}>
+              {population}
             </span>
-            <span style={{ color: "rgba(255,255,255,0.65)", fontSize: "28px", fontWeight: 400 }}>
-              {statLabel}
+            <span style={{ color: "rgba(255,255,255,0.65)", fontSize: "24px", fontWeight: 400 }}>
+              people in this ward
             </span>
           </div>
         ) : null}
@@ -102,7 +96,7 @@ export async function GET(req: Request) {
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "20px" }}>
-            Find out who is accountable for your ward
+            Explore your ward&apos;s civic data
           </span>
           <span style={{ color: "rgba(255,255,255,0.55)", fontSize: "22px", fontWeight: 700 }}>
             kaun.city
