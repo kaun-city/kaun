@@ -86,7 +86,7 @@ export function WhoTab({
     <div className="px-5 py-4 space-y-4 pb-safe-content">
 
 
-      {/* Governance alert — skip the "No elected corporator" noise (applies to all 243 wards) */}
+      {/* Governance alert — skip the "No elected corporator" noise (applies citywide) */}
       {profile?.governance_alert && profile.governance_alert.title !== "No elected corporator" && (
         <div className="flex gap-2.5 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
           <span className="text-yellow-400 text-base mt-0.5">!</span>

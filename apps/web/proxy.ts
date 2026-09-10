@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { resolveSurface } from "@/lib/host-routing"
+import { indiaRootEnabled, resolveSurface } from "@/lib/host-routing"
 import { mergedProjectPath } from "@/lib/india/merged-projects"
 
 /**
@@ -10,8 +10,7 @@ import { mergedProjectPath } from "@/lib/india/merged-projects"
  * Named proxy.ts, not middleware.ts: Next 16 renamed the convention and warns
  * on every build about the old name.
  *
- *   kaun.city            national India layer  (only once NEXT_PUBLIC_INDIA_ROOT=1;
- *                                               until then, unchanged Bengaluru)
+ *   kaun.city            Bengaluru while indiaRootEnabled() is temporarily off
  *   bengaluru.kaun.city  the existing city UI
  *
  * The matcher below already excludes /api, /_next and static files, and
@@ -36,7 +35,7 @@ export default function proxy(req: NextRequest) {
     return s ? `?${s}` : ""
   })()
 
-  const indiaRoot = process.env.NEXT_PUBLIC_INDIA_ROOT === "1"
+  const indiaRoot = indiaRootEnabled()
 
   const decision = resolveSurface({
     host: devHost || req.headers.get("host") || "",

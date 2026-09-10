@@ -89,7 +89,20 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
   )
 }
 
-interface WardOption { ward_no: number; ward_name: string; lat: number; lng: number }
+interface WardOption {
+  ward_no: number
+  ward_name: string
+  ward_name_kn?: string
+  corporation?: string
+  corporation_id?: number
+  assembly_constituency?: string
+  assembly_no?: number
+  zone?: string
+  zone_name?: string
+  population?: number
+  lat: number
+  lng: number
+}
 
 /**
  * @param host  Request Host header, threaded down from app/page.tsx so the
@@ -203,9 +216,24 @@ export default function HomePage({ host = "" }: { host?: string }) {
           if (!coords || coords.length === 0) continue
           let sLat = 0, sLng = 0
           for (const [lng, lat] of coords) { sLat += lat; sLng += lng }
-          opts.push({ ward_no: no, ward_name: name.replace(/ Ward$/i, ""), lat: sLat / coords.length, lng: sLng / coords.length })
+          opts.push({
+            ward_no: no,
+            ward_name: name.replace(/ Ward$/i, ""),
+            ward_name_kn: f.properties?.ward_name_kn,
+            corporation: f.properties?.corporation,
+            corporation_id: parseInt(f.properties?.corporation_id, 10) || undefined,
+            assembly_constituency: f.properties?.assembly_constituency,
+            assembly_no: Number(f.properties?.assembly_no) || undefined,
+            zone: f.properties?.zone,
+            zone_name: f.properties?.zone_name,
+            population: Number(f.properties?.population) || undefined,
+            lat: Number(f.properties?.center_lat) || sLat / coords.length,
+            lng: Number(f.properties?.center_lng) || sLng / coords.length,
+          })
         }
-        setWardOptions(opts.sort((a, b) => a.ward_no - b.ward_no))
+        setWardOptions(opts.sort((a, b) =>
+          (a.corporation_id ?? 0) - (b.corporation_id ?? 0) || a.ward_no - b.ward_no
+        ))
       })
       .catch(() => {})
   }, [activeCity.geojsonUrl])
@@ -213,7 +241,8 @@ export default function HomePage({ host = "" }: { host?: string }) {
   const searchResults = searchQuery.length >= 2
     ? wardOptions.filter(w =>
         w.ward_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        String(w.ward_no) === searchQuery.trim()
+        String(w.ward_no) === searchQuery.trim() ||
+        (w.corporation?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
       ).slice(0, 8)
     : []
 
@@ -224,15 +253,32 @@ export default function HomePage({ host = "" }: { host?: string }) {
     setPinLoading(true)
     setShowCard(true)
     setOutOfBounds(false)
-    const result = await fetchWardByNumber(ward.ward_no, activeCity.id, {
-      lat: ward.lat,
-      lng: ward.lng,
-    }) ?? await pinLookup(ward.lat, ward.lng)
+    // Current GBA ward numbers restart within each corporation, while most
+    // historical datasets still use the old 243-ward BBMP keys. Location is
+    // therefore authoritative; never join the two systems on ward_no alone.
+    let result = await pinLookup(ward.lat, ward.lng)
+    if (!result?.found && !ward.corporation) {
+      result = await fetchWardByNumber(ward.ward_no, activeCity.id, { lat: ward.lat, lng: ward.lng })
+    }
     if (!result?.found) {
       setShowCard(false)
       setOutOfBounds(true)
       setPinLoading(false)
       return
+    }
+    if (ward.corporation) {
+      Object.assign(result, {
+        gba_ward_no: ward.ward_no,
+        gba_ward_name: ward.ward_name,
+        gba_ward_name_kn: ward.ward_name_kn ?? null,
+        gba_corporation: ward.corporation,
+        gba_corporation_id: ward.corporation_id ?? null,
+        gba_ac: ward.assembly_constituency ?? null,
+        gba_ac_no: ward.assembly_no ?? null,
+        gba_zone: ward.zone ?? null,
+        gba_zone_name: ward.zone_name ?? null,
+        gba_population: ward.population ?? null,
+      })
     }
     setPinResult(result)
     setPinLoading(false)
@@ -413,7 +459,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
                   <div className="absolute top-full mt-1 left-0 right-0 bg-[#111] border border-white/10 rounded-lg overflow-hidden shadow-xl max-h-60 overflow-y-auto z-[1000]">
                     {searchResults.map(w => (
                       <button
-                        key={w.ward_no}
+                        key={`${w.corporation_id ?? "legacy"}:${w.ward_no}`}
                         onMouseDown={e => e.preventDefault()}
                         onClick={e => {
                           e.stopPropagation()
@@ -422,7 +468,9 @@ export default function HomePage({ host = "" }: { host?: string }) {
                         className="w-full min-h-11 text-left px-3 py-2 hover:bg-white/10 transition-colors flex items-center justify-between"
                       >
                         <span className="text-white/80 text-xs">{w.ward_name}</span>
-                        <span className="text-white/20 text-[10px] font-mono">#{w.ward_no}</span>
+                        <span className="text-white/25 text-[10px] text-right">
+                          {w.corporation ? `${w.corporation} · ` : ""}#{w.ward_no}
+                        </span>
                       </button>
                     ))}
                   </div>

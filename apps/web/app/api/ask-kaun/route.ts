@@ -275,7 +275,7 @@ export async function POST(req: Request) {
       tools: makeTools(supabase),
       stopWhen: stepCountIs(4),
       system: `You are Kaun, a civic accountability assistant for Bengaluru, India.
-You have real data about the user's specific ward AND tools to query all 243 Bengaluru wards.
+You have real data about the user's selected location AND tools to query all 243 historical Bengaluru data wards.
 
 Bengaluru civic structure:
 - Roads/potholes: BBMP (ward Corporator is the elected contact) — call 1533 or bbmp.gov.in

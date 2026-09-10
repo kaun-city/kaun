@@ -7,13 +7,16 @@ export const bengaluru: CityConfig = {
   country: "India",
   center: [12.9716, 77.5946],
   zoom: 11,
-  geojsonUrl:
-    "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson",
+  geojsonUrl: "/bengaluru-gba-369.geojson",
+  wardBoundarySource: {
+    label: "GBA wards: OpenCity (Dec 2025)",
+    url: "https://data.opencity.in/dataset/gba-wards-delimitation-2025",
+  },
   subreddit: "bangalore",
   budgetYear: "2025-26",
   sakalaNote: "Bengaluru Urban ranks 31st of 32 districts statewide",
   tone: "accountability",
-  wardCount: 243,
+  wardCount: 369,
   localAgency: {
     short: "GBA",
     full: "Greater Bengaluru Authority",

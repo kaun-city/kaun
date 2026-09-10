@@ -2,7 +2,7 @@
  * lib/kml.mjs — minimal KML → GeoJSON parser used by ward-boundary seeders.
  *
  * Handles the subset of KML produced by OpenCity / GVMC / BBMP exports:
- *   - <Placemark> with <name>, <ExtendedData> (Data name="WARD_NO")
+ *   - <Placemark> with <name>, <ExtendedData> using Data or SimpleData
  *   - <Polygon> with <outerBoundaryIs> + optional <innerBoundaryIs> (holes)
  *   - <MultiGeometry> wrapping multiple <Polygon> blocks
  *   - <coordinates> as "lng,lat[,alt] lng,lat[,alt] ..."
@@ -45,13 +45,30 @@ export function extractAll(block, tag) {
   return out
 }
 
+/** Extract ExtendedData values from both common KML encodings. */
+export function extractProperties(block) {
+  const properties = {}
+  const dataRe = /<Data\s+[^>]*name=["']([^"']+)["'][^>]*>[\s\S]*?<value[^>]*>([\s\S]*?)<\/value>[\s\S]*?<\/Data>/gi
+  const simpleDataRe = /<SimpleData\s+[^>]*name=["']([^"']+)["'][^>]*>([\s\S]*?)<\/SimpleData>/gi
+
+  for (const re of [dataRe, simpleDataRe]) {
+    let m
+    while ((m = re.exec(block)) !== null) {
+      properties[decodeXmlEntities(m[1]).trim()] = decodeXmlEntities(m[2]).trim()
+    }
+  }
+  return properties
+}
+
 export function parsePlacemark(block) {
-  const rawName = extractFirst(block, "name") || ""
+  const extended = extractProperties(block)
+  const rawName = extractFirst(block, "name") || extended.Ward_Name || extended.ward_name || ""
   const name = decodeXmlEntities(rawName.replace(/<!\[CDATA\[(.*?)\]\]>/, "$1")).trim()
 
   const ward_no = (() => {
-    const m = /<Data\s+name="WARD_NO"[^>]*>\s*<value>([^<]+)<\/value>/i.exec(block)
-    return m ? parseInt(m[1], 10) : null
+    const raw = extended.WARD_NO ?? extended.ward_no ?? extended.ward_id
+    const parsed = parseInt(raw, 10)
+    return Number.isFinite(parsed) ? parsed : null
   })()
 
   const polygons = []
@@ -81,7 +98,7 @@ export function parsePlacemark(block) {
 
   return {
     type: "Feature",
-    properties: { name, ward_no },
+    properties: { ...extended, name, ward_no },
     geometry,
   }
 }

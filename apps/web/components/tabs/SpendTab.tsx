@@ -39,8 +39,8 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
   const freshnessLabel = liveCount > 0 ? "live + 2024-25" : "2024-25"
 
   // Which BBMP-225 ward(s) these works are originally recorded under. BBMP/
-  // IFMS number wards on the 2023 Final (225) delimitation; the map renders
-  // the 243-ward set, so works are reconciled across by spatial overlap.
+  // IFMS numbers wards on the 2023 Final (225) delimitation; historical facts
+  // use the 243-ward set, so works are reconciled across by spatial overlap.
   // Surfacing the source ward(s) makes any name mismatch legible, not a bug.
   const sourceWards = [...new Set(
     workOrders.map(w => (w.source_ward_name || "").trim()).filter(Boolean)

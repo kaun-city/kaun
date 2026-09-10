@@ -102,20 +102,22 @@ export default function HowItWorksPage() {
 
         <Section title="Ward delimitations & the Kaun crosswalk">
           <p>
-            Bengaluru has been redrawn four times in a decade: the 2015 <strong>198</strong>-ward map,
-            BBMP&apos;s 2023 <strong>Final 225</strong>-ward delimitation, the KGIS/DataMeet <strong>243</strong>-ward
-            set, and the proposed Greater Bengaluru Authority <strong>369</strong>-ward structure (elections pending).
+            Bengaluru has been redrawn repeatedly: the 2015 <strong>198</strong>-ward map,
+            BBMP&apos;s 2023 <strong>225</strong>-ward delimitation, the KGIS/DataMeet <strong>243</strong>-ward
+            set used by many historical datasets, and the final Greater Bengaluru Authority
+            <strong> 369</strong>-ward delimitation across five city corporations. Kaun renders the final
+            December 2025 GBA boundary and ward-name update.
           </p>
           <p>
             This matters because BBMP and IFMS tag every work order, payment and tender with the
-            <strong> 225</strong>-ward number, while the map you see here renders the <strong>243</strong>-ward
-            set. They are different boundary sets — so civic spending has to be translated between them,
-            or it shows under the wrong ward.
+            <strong> 225</strong>-ward or <strong>243</strong>-ward systems, while current GBA ward numbers restart
+            inside each corporation. Kaun resolves a selected place spatially and keeps the source ward key
+            with each historical fact; it does not join old and new records just because their numbers match.
           </p>
           <div className="rounded-lg bg-white/5 border border-white/10 p-4">
             <p className="text-white/70 font-medium mb-1">The Kaun Ward Crosswalk</p>
             <p>
-              No government or civic source publishes a mapping between these two schemes. So we built one —
+              No government or civic source publishes a mapping between the historical 225 and 243 schemes. So we built one —
               deterministically, by <strong>spatial polygon overlap</strong> of BBMP&apos;s official 225-ward
               boundaries against the 243-ward boundaries (no name guessing). It is versioned, every row cites
               its source, and it is open to public correction. Of 225 wards: 123 map cleanly 1:1, 83 have a
@@ -179,7 +181,7 @@ export default function HowItWorksPage() {
             <p className="text-white/70 font-medium">What&apos;s NOT included (and why)</p>
             <ul className="list-disc list-inside space-y-1 text-white/40 text-sm">
               <li>Road or drainage quality — reliable ward-level delivery data is not publicly available</li>
-              <li>Corporator performance — not yet available for all 243 wards</li>
+              <li>Corporator performance — not yet available for all current GBA wards</li>
               <li>Pothole complaint counts — reflects reporting behaviour, not actual road condition</li>
               <li>Grievance resolution time — BBMP does not publish ward-level resolution metrics</li>
               <li>Any AI-generated or inferred data — we do not use AI to fill gaps</li>

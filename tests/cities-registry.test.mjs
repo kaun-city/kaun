@@ -23,8 +23,20 @@ const allCities = () => Object.values(REGISTRY)
 test("bengaluru config has the expected core fields", () => {
   assert.equal(bengaluru.id, "bengaluru")
   assert.equal(bengaluru.tone, "accountability")
-  assert.equal(bengaluru.wardCount, 243)
+  assert.equal(bengaluru.wardCount, 369)
+  assert.equal(bengaluru.geojsonUrl, "/bengaluru-gba-369.geojson")
   assert.equal(bengaluru.state, "Karnataka")
+})
+
+test("Bengaluru's current boundary asset has 369 unique corporation/ward pairs", () => {
+  const asset = JSON.parse(
+    readFileSync(new URL("../apps/web/public/bengaluru-gba-369.geojson", import.meta.url), "utf8"))
+  const keys = new Set(asset.features.map(f => `${f.properties.corporation_id}:${f.properties.ward_no}`))
+  const corporations = new Set(asset.features.map(f => f.properties.corporation))
+  assert.equal(asset.features.length, 369)
+  assert.equal(keys.size, 369)
+  assert.equal(corporations.size, 5)
+  assert.ok(asset.features.every(f => f.properties.boundary_system === "gba-369-2025"))
 })
 
 test("getCity falls back to bengaluru for unknown ids", () => {

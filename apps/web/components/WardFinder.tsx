@@ -93,9 +93,9 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
         <div className="px-5 pt-5 pb-3 border-b border-white/10 shrink-0">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h2 className="text-white font-semibold text-base">Find your new ward</h2>
+              <h2 className="text-white font-semibold text-base">Historical ward crosswalk</h2>
               <p className="text-white/40 text-xs mt-0.5">
-                GBA 225 wards ↔ current 243 wards — search by name, number, or constituency
+                BBMP 225 ↔ KGIS/DataMeet 243 — for tracing older civic records
               </p>
             </div>
             <button onClick={onClose} className="text-white/40 hover:text-white/80 text-xl leading-none w-8 h-8 flex items-center justify-center shrink-0">&times;</button>
@@ -129,9 +129,9 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
                       {r.bbmp225_name_ka && <span className="text-white/30 text-[10px]">{r.bbmp225_name_ka}</span>}
                     </div>
                     <div className="flex items-center gap-3 mt-1 text-[10px]">
-                      <span className="text-[#FF9933]/70">GBA #{r.bbmp225_no}</span>
+                      <span className="text-[#FF9933]/70">BBMP 225 #{r.bbmp225_no}</span>
                       <span className="text-white/20">&rarr;</span>
-                      <span className="text-white/50">Current #{r.datameet243_no} {r.datameet243_name}</span>
+                      <span className="text-white/50">Historical 243 #{r.datameet243_no} {r.datameet243_name}</span>
                     </div>
                     <div className="flex items-center gap-3 mt-0.5 text-[10px] text-white/30">
                       <span>{r.assembly_constituency}</span>
@@ -152,7 +152,7 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
         <div className="px-5 py-3 border-t border-white/5 shrink-0">
           <p className="text-white/15 text-[10px] leading-snug">
             Source: BBMP 2023 Final 225-ward KML ↔ DataMeet 243-ward GeoJSON, spatial overlap method.
-            Confidence is the area fraction of the GBA ward that falls within the mapped current ward.
+            Confidence is the area fraction of the 225 ward that falls within the mapped 243 ward.
           </p>
         </div>
       </div>

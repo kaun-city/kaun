@@ -12,6 +12,7 @@ import {
   parseCoords,
   extractFirst,
   extractAll,
+  extractProperties,
   parsePlacemark,
   kmlToGeoJSON,
   resolveWardNo,
@@ -44,6 +45,32 @@ test("extractFirst pulls the first matching tag's text", () => {
 test("extractAll yields every match in document order", () => {
   const xml = "<r><Polygon>A</Polygon><Polygon>B</Polygon></r>"
   assert.deepEqual(extractAll(xml, "Polygon"), ["A", "B"])
+})
+
+test("extractProperties supports Data and SimpleData fields", () => {
+  const xml = `<ExtendedData>
+    <Data name="WARD_NO"><value>12</value></Data>
+    <SchemaData><SimpleData name="ward_name">Shivajinagar &amp; East</SimpleData></SchemaData>
+  </ExtendedData>`
+  assert.deepEqual(extractProperties(xml), {
+    WARD_NO: "12",
+    ward_name: "Shivajinagar & East",
+  })
+})
+
+test("parsePlacemark reads the final GBA SimpleData schema", () => {
+  const pm = `
+    <ExtendedData><SchemaData>
+      <SimpleData name="Corporation">Central</SimpleData>
+      <SimpleData name="ward_id">147</SimpleData>
+      <SimpleData name="ward_name">Vasanth Nagar</SimpleData>
+      <SimpleData name="Ward_Name">147 - Vasanth Nagar</SimpleData>
+    </SchemaData></ExtendedData>
+    <Polygon><outerBoundaryIs><coordinates>77.1,12.1 77.2,12.1 77.2,12.2 77.1,12.1</coordinates></outerBoundaryIs></Polygon>`
+  const f = parsePlacemark(pm)
+  assert.equal(f.properties.ward_no, 147)
+  assert.equal(f.properties.name, "147 - Vasanth Nagar")
+  assert.equal(f.properties.Corporation, "Central")
 })
 
 test("parsePlacemark builds a Polygon Feature with name + ward_no", () => {

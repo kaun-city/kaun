@@ -1,0 +1,32 @@
+name: Load Current GBA Wards
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Validate only, or apply the 369 current GBA wards to Supabase?"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - name: Load GBA wards (${{ github.event.inputs.mode }})
+        env:
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
+            node scripts/load-gba-wards.mjs --apply
+          else
+            node scripts/load-gba-wards.mjs
+          fi

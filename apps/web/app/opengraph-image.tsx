@@ -46,7 +46,7 @@ export default function Image() {
 
         {/* Stat chips */}
         <div style={{ display: "flex", gap: "16px", marginBottom: "40px" }}>
-          {["243 wards", "MLAs tracked", "RTI generator", "Ask Kaun"].map((label) => (
+          {["369 current wards", "MLAs tracked", "RTI generator", "Ask Kaun"].map((label) => (
             <div key={label} style={{
               display: "flex",
               padding: "10px 20px",

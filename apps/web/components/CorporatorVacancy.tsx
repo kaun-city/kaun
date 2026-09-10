@@ -67,7 +67,7 @@ export function CorporatorVacancy({ cityId }: Props) {
             Council dissolved Sept 2020
           </p>
           <p className="hidden sm:block text-white/40 text-[10px] leading-snug mt-0.5">
-            BBMP&apos;s last elected council dissolved Sept 2020. All 243 wards are run by unelected administrators.
+            BBMP&apos;s last elected council dissolved Sept 2020. Bengaluru&apos;s ward areas are run by unelected administrators.
           </p>
         </div>
       </div>

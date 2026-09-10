@@ -6,9 +6,9 @@
   "state": "Karnataka",
   "language_primary": "kn",
   "language_secondary": "en",
-  "ward_count": 243,
-  "ward_boundary_source": "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson",
-  "ward_boundary_license": "CC BY-SA 2.5 IN",
+  "ward_count": 369,
+  "ward_boundary_source": "https://data.opencity.in/dataset/gba-wards-delimitation-2025/resource/9013d656-8051-4e2d-9648-46efd0d86d3d",
+  "ward_boundary_license": "Public Domain",
 
   "agencies": {
     "roads_local": {
@@ -88,5 +88,5 @@
     "notes": "Karnataka state govt bodies. Fee via IPO/DD/Court fee stamp. No online portal for state-level RTI."
   },
 
-  "data_notes": "BBMP dissolved Sept 2025, replaced by Greater Bengaluru Authority (GBA) + 5 city corporations. Ward boundaries (243 wards, 2022 delimitation) remain valid. Officer directory not publicly available — requires RTI or manual compilation."
+  "data_notes": "Current map: final 369 GBA wards across five city corporations, including December 2025 ward-name updates. Historical ward-level records remain keyed to the earlier 243-ward BBMP system and are resolved by location; they must not be joined by ward number alone. Officer directory not publicly available — requires RTI or manual compilation."
 }

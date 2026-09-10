@@ -76,7 +76,8 @@ const DATA_SOURCES = [
   { name: "Contractor Profiles", records: "1,305", period: "2024-25", source: "Entity-resolved from work orders", url: null },
   { name: "Elected Representatives", records: "28 ACs", period: "2023 election", source: "MyNeta / EC affidavits", url: "https://myneta.info" },
   { name: "Rep Report Cards", records: "28 MLAs", period: "2018-23 term", source: "CIVIC Bengaluru via opencity.in", url: "https://opencity.in" },
-  { name: "Ward Boundaries", records: "243 wards", period: "2022 delimitation", source: "datameet", url: "https://github.com/datameet" },
+  { name: "Current Ward Boundaries", records: "369 wards / 5 corporations", period: "Final, Dec 2025", source: "OpenCity (GBA delimitation)", url: "https://data.opencity.in/dataset/gba-wards-delimitation-2025" },
+  { name: "Historical Data Boundaries", records: "243 wards", period: "2022 delimitation", source: "DataMeet", url: "https://github.com/datameet" },
   { name: "Ward Crosswalk (225↔243)", records: "225 wards", period: "v2023f-2026.05", source: "Kaun-derived (opencity KML + datameet)", url: "https://data.kaun.city/bengaluru/ward-crosswalk/" },
   { name: "Traffic Signals", records: "Per ward", period: "2026", source: "OpenStreetMap Overpass API", url: "https://openstreetmap.org" },
   { name: "Bus Stops + Routes", records: "Per ward", period: "2026", source: "BMTC via opencity.in", url: "https://data.opencity.in" },
@@ -163,8 +164,8 @@ export default function DataCatalog() {
             <p className="text-white/80 text-sm font-medium">Kaun Ward Crosswalk — BBMP-Final-2023 (225) ↔ KGIS/DataMeet (243)</p>
             <p className="text-white/50 text-sm leading-relaxed mt-1">
               The first public correspondence between BBMP&apos;s 225-ward delimitation (used for work
-              orders, payments, tenders) and the 243-ward set the map renders. Derived deterministically
-              by spatial polygon overlap. Versioned, sourced, open to correction.
+              orders, payments and tenders) and the historical 243-ward data layer. The public map now
+              renders the final 369 GBA wards; this crosswalk remains the documented bridge for older records.
             </p>
             <div className="flex flex-wrap gap-2 mt-3">
               <a href="https://data.kaun.city/bengaluru/ward-crosswalk/bbmp2023_225_to_datameet_243.csv" target="_blank" rel="noopener noreferrer" className="text-[10px] px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-mono transition-colors">CSV</a>

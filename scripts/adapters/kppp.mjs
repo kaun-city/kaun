@@ -1,12 +1,20 @@
 #!/usr/bin/env node
 // kppp.mjs — Incrementally scrape KPPP tenders across multiple BBMP-area agencies.
-// Usage: node scripts/adapters/kppp.mjs [--full] [--dry-run]
+// Usage: node scripts/adapters/kppp.mjs [--full] [--dry-run] [--since=YYYY-MM-DD] [--max-pages=N]
 // Env:   SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_MANAGEMENT_TOKEN
 
-import { dbQuery, upsertRows } from "../lib/db.mjs"
+import { fileURLToPath } from "node:url"
+
+let database
+async function getDatabase() {
+  database ??= import("../lib/db.mjs")
+  return database
+}
 
 const FULL = process.argv.includes("--full")
 const DRY_RUN = process.argv.includes("--dry-run")
+const SINCE_ARG = process.argv.find(arg => arg.startsWith("--since="))?.slice(8)
+const MAX_PAGES = parseInt(process.argv.find(arg => arg.startsWith("--max-pages="))?.slice(12) ?? "0", 10)
 const KPPP_BASE = "https://kppp.karnataka.gov.in/supplier-registration-service/v1/api"
 const HEADERS = {
   "Content-Type": "application/json",
@@ -16,14 +24,32 @@ const HEADERS = {
   "Referer": "https://kppp.karnataka.gov.in/",
 }
 
-const AGENCIES = ["BBMP", "BWSSB", "BDA", "BESCOM"]
+// KPPP's `title` search is a loose full-text match and silently mixes
+// departments. Department IDs are exact and were verified against KPPP on
+// 2026-09-10, so use them as the stable discovery boundary.
+export const AGENCIES = [
+  { id: 12603, name: "Bengaluru Central City Corporation" },
+  { id: 12607, name: "Bengaluru East City Corporation" },
+  { id: 12610, name: "Bengaluru North City Corporation" },
+  { id: 12608, name: "Bengaluru South City Corporation" },
+  { id: 12609, name: "Bengaluru West City Corporation" },
+  { id: 5117, name: "Bengaluru Water Supply And Sewerage Board" },
+  { id: 1566, name: "Bengaluru Development Authority" },
+  { id: 3779, name: "Bangalore Electricity Supply Company Limited" },
+  { id: 3583, name: "Bangalore Metropolitan Transport Corporation" },
+  { id: 7914, name: "Bengaluru Solid Waste Management Limited" },
+  { id: 7234, name: "Bangalore Metro Rail Corporation Limited" },
+]
 const CATEGORIES = [
   { path: "portal-service/works/search-eproc-tenders",    category: "WORKS" },
   { path: "portal-service/search-eproc-tenders",          category: "GOODS" },
   { path: "portal-service/services/search-eproc-tenders", category: "SERVICES" },
 ]
 
-const WARD_PATTERN = /ward\s*no\.?\s*(\d+)/i
+// Tender titles often state the legacy BBMP ward first and then a "New Ward".
+// Existing historical tables are keyed to that legacy system, so retain the
+// first explicit Ward No/Ward Nos reference until a reviewed crosswalk exists.
+const WARD_PATTERN = /wards?\s*nos?\.?\s*(\d+)/i
 
 function parseDate(s) {
   if (!s) return null
@@ -44,7 +70,7 @@ async function fetchPage(path, body, page) {
 }
 
 async function scrapeCategory(path, category, agency, sinceDate) {
-  const body = { category, status: "ALL", title: agency }
+  const body = { category, status: "ALL", deptId: agency.id }
   let page = 0, all = [], total = 999
 
   while (all.length < total) {
@@ -63,21 +89,22 @@ async function scrapeCategory(path, category, agency, sinceDate) {
       all.push(...data)
     }
     page++
+    if (MAX_PAGES > 0 && page >= MAX_PAGES) break
     await new Promise(r => setTimeout(r, 300))
   }
 
   return all
 }
 
-function toRow(t, agency) {
+export function toRow(t, agency) {
   const wardMatch = WARD_PATTERN.exec(t.title ?? "")
   return {
     city_id: "bengaluru",
     kppp_id: t.tenderNumber ?? t.id?.toString(),
-    agency,
+    agency: agency.name,
     ward_no: wardMatch ? parseInt(wardMatch[1], 10) : null,
     title: (t.title ?? "").substring(0, 500),
-    department: (t.deptName ?? agency).substring(0, 200),
+    department: (t.deptName ?? agency.name).substring(0, 200),
     value_lakh: t.ecv ? Math.round(t.ecv / 1000) / 100 : null,
     status: t.status ?? "UNKNOWN",
     issued_date: parseDate(t.publishedDate),
@@ -89,6 +116,7 @@ function toRow(t, agency) {
 async function ensureAgencyColumn() {
   if (DRY_RUN) return
   try {
+    const { dbQuery } = await getDatabase()
     await dbQuery("ALTER TABLE tenders ADD COLUMN IF NOT EXISTS agency text;")
   } catch (e) {
     console.warn("Could not ensure agency column (continuing):", e.message)
@@ -98,13 +126,14 @@ async function ensureAgencyColumn() {
 async function main() {
   const startedAt = new Date().toISOString()
   console.log(`[${startedAt}] KPPP refresh started (${FULL ? "full" : "incremental"}${DRY_RUN ? ", dry-run" : ""})`)
-  console.log(`  Agencies: ${AGENCIES.join(", ")}`)
+  console.log(`  Agencies: ${AGENCIES.map(a => a.name).join(", ")}`)
 
   await ensureAgencyColumn()
 
-  let sinceDate = "2020-01-01"
+  let sinceDate = SINCE_ARG || "2020-01-01"
   if (!FULL && !DRY_RUN) {
     try {
+      const { dbQuery } = await getDatabase()
       const rows = await dbQuery("SELECT MAX(issued_date)::text as last FROM tenders WHERE city_id='bengaluru';")
       if (rows[0]?.last) sinceDate = rows[0].last
     } catch (e) {
@@ -119,31 +148,32 @@ async function main() {
   const perAgency = {}
 
   for (const agency of AGENCIES) {
-    perAgency[agency] = { fetched: 0, kept: 0 }
+    perAgency[agency.name] = { fetched: 0, kept: 0 }
     for (const { path, category } of CATEGORIES) {
       try {
         const tenders = await scrapeCategory(path, category, agency, sinceDate)
-        perAgency[agency].fetched += tenders.length
+        perAgency[agency.name].fetched += tenders.length
 
         for (const t of tenders) {
           const row = toRow(t, agency)
           if (!row.kppp_id) continue
           if (!byId.has(row.kppp_id)) {
             byId.set(row.kppp_id, row)
-            perAgency[agency].kept++
+            perAgency[agency.name].kept++
           }
         }
-        console.log(`  ${agency}/${category}: ${tenders.length} fetched`)
+        console.log(`  ${agency.name}/${category}: ${tenders.length} fetched`)
       } catch (e) {
-        console.error(`  ${agency}/${category} FAILED:`, e.message)
+        console.error(`  ${agency.name}/${category} FAILED:`, e.message)
       }
     }
   }
 
   const rows = Array.from(byId.values())
   console.log(`  Unique tenders to upsert: ${rows.length}`)
-  for (const a of AGENCIES) {
-    console.log(`    ${a}: ${perAgency[a].kept} unique (${perAgency[a].fetched} fetched across categories)`)
+  for (const agency of AGENCIES) {
+    const counts = perAgency[agency.name]
+    console.log(`    ${agency.name}: ${counts.kept} unique (${counts.fetched} fetched across categories)`)
   }
 
   if (DRY_RUN) {
@@ -153,10 +183,13 @@ async function main() {
   }
 
   for (let i = 0; i < rows.length; i += 200) {
+    const { upsertRows } = await getDatabase()
     await upsertRows("tenders", rows.slice(i, i + 200), "kppp_id")
   }
 
   console.log(`[${new Date().toISOString()}] Done. Upserted ${rows.length} tenders across ${AGENCIES.length} agencies.`)
 }
 
-main().catch(e => { console.error("Fatal:", e); process.exit(1) })
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch(e => { console.error("Fatal:", e); process.exit(1) })
+}

@@ -4,7 +4,7 @@
 
 Civic accountability for Indian cities — drop a pin anywhere in Bengaluru and instantly see your elected representative, who gets the contracts, how public money is spent, and what you can do about it.
 
-**[kaun.city](https://kaun.city)** — live for Bengaluru (243 wards). Open source. City-agnostic architecture.
+**[kaun.city](https://kaun.city)** — live for Bengaluru (369 current GBA wards across five corporations). Open source. City-agnostic architecture.
 
 **[data.kaun.city](https://data.kaun.city)** — the civic data commons that powers kaun.city. Every source, methodology, and dataset used by the platform is documented here with citations, so anyone (journalists, researchers, citizens, other civic tech builders) can verify, reuse, or challenge the data.
 
@@ -29,7 +29,7 @@ Civic accountability for Indian cities — drop a pin anywhere in Bengaluru and 
 | **Citizen** | Demographics, infrastructure (road length, streetlights, schools, police/fire stations, clinics). Traffic signals + bus stops vs city average. Neighbourhood amenities (hospitals, pharmacies, ATMs, public toilets, EV charging, metro stations — from OSM). Water body health (pH, BOD, DO, coliform — from KSPCB). Road crashes. Air quality. Pothole complaints. Civic reports. Reddit community buzz. |
 | **Reach** | Civic agency helplines (GBA, BWSSB, BESCOM, BTP, BDA). Local offices (BESCOM division, police station, SRO). RTI draft generator for 5 civic issues. Service delivery performance (Sakala). Grievance trends. |
 
-**Ask Kaun** — AI assistant (GPT-4o with tool use) that can answer questions about any of the 243 wards. Compare wards, find who has the worst attendance, look up contractors, check if someone is blacklisted.
+**Ask Kaun** — AI assistant (GPT-4o with tool use) for Bengaluru civic records. Compare historical ward data, find who has the worst attendance, look up contractors, and check if someone is blacklisted.
 
 ---
 
@@ -49,11 +49,12 @@ All data is sourced from public records and open datasets.
 
 | Dataset | Source |
 |---|---|
-| Ward boundaries (243 wards, PostGIS) | [datameet](https://github.com/datameet/Municipal_Spatial_Data/tree/master/Bangalore) |
+| Current GBA ward boundaries (369 wards, five corporations) | [OpenCity](https://data.opencity.in/dataset/gba-wards-delimitation-2025) |
+| Historical 243-ward boundary used for legacy record joins | [DataMeet](https://github.com/datameet/Municipal_Spatial_Data/tree/master/Bangalore) |
 | MLA affidavits (criminal cases, assets) | Election Commission via [MyNeta](https://www.myneta.info) |
 | MLA performance (attendance, LAD, questions) | CIVIC Bengaluru via [opencity.in](https://opencity.in) |
 | BBMP budget, work orders, grievances | [opencity.in](https://opencity.in) / BBMP |
-| Tenders across BBMP, BWSSB, BDA, BESCOM | [KPPP](https://kppp.karnataka.gov.in) (Karnataka Public Procurement Portal) |
+| Tenders across five GBA corporations, BWSSB, BDA, BESCOM, BMTC, BSWML and BMRCL | [KPPP](https://kppp.karnataka.gov.in) (Karnataka Public Procurement Portal) |
 | Ward amenities (hospitals, ATMs, toilets, etc.) | [OpenStreetMap](https://www.openstreetmap.org) via Overpass API |
 | Water body quality (pH, BOD, DO, coliform) | KSPCB / CPCB |
 | Traffic signals | OpenStreetMap via Overpass API |
@@ -90,7 +91,7 @@ Each government portal has one adapter. Every adapter writes to Supabase in a no
 ```
 scripts/
 ├── adapters/                    # One file per portal
-│   ├── kppp.mjs                 # KPPP tenders (BBMP, BWSSB, BDA, BESCOM)
+│   ├── kppp.mjs                 # KPPP tenders (five city corporations + major Bengaluru agencies)
 │   └── ifms.mjs                 # BBMP IFMS work orders (contractor, division, dates, payment status)
 ├── lib/
 │   └── db.mjs                   # Shared Supabase helpers
@@ -114,7 +115,7 @@ scripts/
 |---|---|---|---|
 | Daily 02:00 UTC | `/api/ingest-signals` | Vercel cron | RSS + Twitter-via-Google-News civic signal ingestion |
 | Daily 06:00 UTC | `refresh-pulse` | GitHub Actions | Civic news classification for City Pulse ticker |
-| Sundays 01:00 UTC | `refresh-kppp` | GitHub Actions | KPPP tenders across BBMP / BWSSB / BDA / BESCOM |
+| Sundays 01:00 UTC | `refresh-kppp` | GitHub Actions | KPPP tenders across five city corporations + major Bengaluru agencies |
 | Sundays 02:00 UTC | `refresh-ifms` | GitHub Actions | BBMP IFMS work orders — contractor code, division, budget head, dates, payment status |
 | Sundays 03:00 UTC | `refresh-wiki-wards` | GitHub Actions | Regenerate per-ward wiki pages from the freshly refreshed data |
 | 2nd of month | `refresh-grievances` | GitHub Actions | BBMP grievance counts |

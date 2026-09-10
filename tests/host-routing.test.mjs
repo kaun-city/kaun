@@ -17,7 +17,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-  resolveSurface, cityFromHost, rootDomain, cityUrl, indiaHref, surfaceLinks,
+  resolveSurface, cityFromHost, rootDomain, cityUrl, indiaHref, surfaceLinks, indiaRootEnabled,
   CITY_UI_PATHS, CITY_UI_PARAMS, LEGACY_CITY_ID, LEGACY_CITY_LABEL, DATA_SURFACE_URL,
   PRODUCTION_ROOT_DOMAIN,
 } from "../apps/web/lib/host-routing.ts"
@@ -27,6 +27,11 @@ const ctx = (over) => resolveSurface({ ...base, ...over })
 
 const HOSTS = ["kaun.city", "www.kaun.city", "bengaluru.kaun.city", "localhost:3000", "bengaluru.localhost:3000"]
 const MODES = [false, true]
+
+test("the temporary public default is Bengaluru", () => {
+  assert.equal(indiaRootEnabled(), false)
+  assert.equal(indiaHref("/"), "/india")
+})
 
 // ---------------------------------------------------------------------------
 // 1. the hard constraint

@@ -56,6 +56,8 @@ export interface CityConfig {
   zoom: number
   /** Ward boundary GeoJSON URL */
   geojsonUrl: string
+  /** Human-readable source shown in the map attribution control. */
+  wardBoundarySource?: { label: string; url: string }
   /** Reddit community (subreddit name without r/) */
   subreddit: string
   /** Budget financial year shown in Expenses tab */

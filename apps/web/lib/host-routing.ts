@@ -12,18 +12,20 @@
  * is for kaun.city to become NATIONAL and each city to move to its own
  * subdomain (bengaluru.kaun.city, hyderabad.kaun.city, …).
  *
- * THE CUTOVER IS A SINGLE ENV VAR, AND IT IS OFF BY DEFAULT.
- * ---------------------------------------------------------
+ * THE CUTOVER MECHANISM IS A SINGLE ENV VAR.
+ * -------------------------------------------
  * With NEXT_PUBLIC_INDIA_ROOT unset (or "0") this module changes NOTHING that a
  * visitor to kaun.city can see. The root keeps serving Bengaluru exactly as it
  * does today; the India surface is reachable at kaun.city/india/* and nowhere
  * else. So merging this PR is safe before any DNS record exists.
  *
- * Setting NEXT_PUBLIC_INDIA_ROOT=1 flips the root to the India layer and starts
+ * Ordinarily, setting NEXT_PUBLIC_INDIA_ROOT=1 flips the root to the India layer and starts
  * permanently redirecting the city UI's entry URLs to bengaluru.kaun.city.
  * Bharat flips it AFTER the subdomain resolves — see the PR body's rollout
  * section. Flipping it early would 308 real traffic at a host that does not
  * exist yet, which is why the order matters and why the flag exists at all.
+ * indiaRootEnabled() currently pins the public default back to Bengaluru while
+ * the GBA ward update is being validated.
  *
  * WHAT THIS MODULE MUST NEVER TOUCH
  * ---------------------------------
@@ -52,6 +54,16 @@ export const LEGACY_CITY_ID = "bengaluru"
 
 /** How that city is written in the UI. */
 export const LEGACY_CITY_LABEL = "Bengaluru"
+
+/**
+ * Temporary public-surface decision: keep kaun.city on Bengaluru while the
+ * current GBA ward migration settles. This intentionally overrides the old
+ * production cutover flag; replace the return value with the old env check to
+ * restore India-root control after the validation period.
+ */
+export function indiaRootEnabled(): boolean {
+  return false
+}
 
 /**
  * The open-data wiki. A separate MkDocs deploy on its own host, so it is the one
@@ -266,7 +278,7 @@ export function resolveSurface(ctx: HostContext): SurfaceDecision {
  * the cutover /c/29-25 works too via the rewrite above — so flipping the flag
  * can never produce a dead internal link, in either direction.
  */
-export function indiaHref(path: string, indiaRoot = process.env.NEXT_PUBLIC_INDIA_ROOT === "1"): string {
+export function indiaHref(path: string, indiaRoot = indiaRootEnabled()): string {
   const p = path.startsWith("/") ? path : `/${path}`
   if (indiaRoot) return p === "/" ? "/" : p
   return p === "/" ? "/india" : `/india${p}`
@@ -313,7 +325,7 @@ export interface SurfaceLink {
  */
 export function surfaceLinks(
   host: string,
-  indiaRoot = process.env.NEXT_PUBLIC_INDIA_ROOT === "1",
+  indiaRoot = indiaRootEnabled(),
 ): SurfaceLink[] {
   const onCityHost = cityFromHost(host) !== null
   // Post-cutover the national layer is the root; before it, it is /india.
