@@ -43,8 +43,10 @@ export async function pinLookup(lat: number, lng: number): Promise<PinResult | n
     found: true,
     // BBMP legacy (all existing tabs continue to work)
     city_id: data.city_id ?? "bengaluru",
-    ward_no: data.ward_no ?? 0,
-    ward_name: data.ward_name ?? "",
+    // A current GBA ward can legitimately have no historical 243-ward join.
+    // Preserve that gap instead of manufacturing ward 0 / an empty identity.
+    ward_no: data.ward_no ?? null,
+    ward_name: data.ward_name ?? null,
     zone: data.zone ?? null,
     assembly_constituency: data.assembly_constituency ?? null,
     agencies: [],
