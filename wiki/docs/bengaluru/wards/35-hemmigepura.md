@@ -1,6 +1,6 @@
-# Ward 35 — Hemmigepura
+# Historical BBMP Ward 35 — Hemmigepura
 
-_Part of **Yeshvanthapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Yeshvanthapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 35 on kaun.city →](https://kaun.city/?ward=35)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

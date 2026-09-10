@@ -1,6 +1,6 @@
-# Ward 116 — Doddakanahalli
+# Historical BBMP Ward 116 — Doddakanahalli
 
-_Part of **Mahadevapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahadevapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 116 on kaun.city →](https://kaun.city/?ward=116)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

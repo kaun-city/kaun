@@ -1,6 +1,6 @@
-# Ward 137 — Cottonpete
+# Historical BBMP Ward 137 — Cottonpete
 
-_Part of **Gandhi Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Gandhi Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 137 on kaun.city →](https://kaun.city/?ward=137)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

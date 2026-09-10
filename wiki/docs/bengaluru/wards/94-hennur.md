@@ -1,6 +1,6 @@
-# Ward 94 — Hennur
+# Historical BBMP Ward 94 — Hennur
 
-_Part of **Sarvajnanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Sarvajnanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 94 on kaun.city →](https://kaun.city/?ward=94)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

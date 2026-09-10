@@ -1,6 +1,6 @@
-# Ward 5 — Yelahanka Satellite Town
+# Historical BBMP Ward 5 — Yelahanka Satellite Town
 
-_Part of **Yelahanka** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Yelahanka** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 5 on kaun.city →](https://kaun.city/?ward=5)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

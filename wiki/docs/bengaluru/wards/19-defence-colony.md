@@ -1,6 +1,6 @@
-# Ward 19 — Defence Colony
+# Historical BBMP Ward 19 — Defence Colony
 
-_Part of **Dasarahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Dasarahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 19 on kaun.city →](https://kaun.city/?ward=19)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 193 — N S Palya
+# Historical BBMP Ward 193 — N S Palya
 
-_Part of **BTM Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **BTM Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 193 on kaun.city →](https://kaun.city/?ward=193)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 243 — Kudlu
+# Historical BBMP Ward 243 — Kudlu
 
-_Part of **Bommanahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Bommanahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 243 on kaun.city →](https://kaun.city/?ward=243)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

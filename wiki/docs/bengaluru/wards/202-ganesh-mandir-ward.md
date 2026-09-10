@@ -1,6 +1,6 @@
-# Ward 202 — Ganesh Mandir ward
+# Historical BBMP Ward 202 — Ganesh Mandir ward
 
-_Part of **Padmanabhanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Padmanabhanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 202 on kaun.city →](https://kaun.city/?ward=202)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

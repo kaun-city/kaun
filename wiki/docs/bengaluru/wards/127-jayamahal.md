@@ -1,6 +1,6 @@
-# Ward 127 — Jayamahal
+# Historical BBMP Ward 127 — Jayamahal
 
-_Part of **Shivajinagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Shivajinagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 127 on kaun.city →](https://kaun.city/?ward=127)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

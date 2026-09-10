@@ -1,6 +1,6 @@
-# Ward 139 — Dayananda Nagar
+# Historical BBMP Ward 139 — Dayananda Nagar
 
-_Part of **Rajajinagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Rajajinagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 139 on kaun.city →](https://kaun.city/?ward=139)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

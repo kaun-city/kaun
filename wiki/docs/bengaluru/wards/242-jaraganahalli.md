@@ -1,6 +1,6 @@
-# Ward 242 — Jaraganahalli
+# Historical BBMP Ward 242 — Jaraganahalli
 
-_Part of **Bommanahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Bommanahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 242 on kaun.city →](https://kaun.city/?ward=242)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

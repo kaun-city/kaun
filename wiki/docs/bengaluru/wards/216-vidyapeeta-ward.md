@@ -1,6 +1,6 @@
-# Ward 216 — Vidyapeeta ward
+# Historical BBMP Ward 216 — Vidyapeeta ward
 
-_Part of **Basavanagudi** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Basavanagudi** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 216 on kaun.city →](https://kaun.city/?ward=216)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

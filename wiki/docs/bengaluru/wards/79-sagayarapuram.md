@@ -1,6 +1,6 @@
-# Ward 79 — Sagayarapuram
+# Historical BBMP Ward 79 — Sagayarapuram
 
-_Part of **Pulakeshinagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Pulakeshinagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 79 on kaun.city →](https://kaun.city/?ward=79)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 102 — Lingarajapura
+# Historical BBMP Ward 102 — Lingarajapura
 
-_Part of **Sarvajnanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Sarvajnanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 102 on kaun.city →](https://kaun.city/?ward=102)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

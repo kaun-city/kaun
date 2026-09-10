@@ -1,6 +1,6 @@
-# Ward 214 — Girinagar
+# Historical BBMP Ward 214 — Girinagar
 
-_Part of **Basavanagudi** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Basavanagudi** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 214 on kaun.city →](https://kaun.city/?ward=214)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

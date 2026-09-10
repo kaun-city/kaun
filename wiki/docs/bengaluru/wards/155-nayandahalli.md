@@ -1,6 +1,6 @@
-# Ward 155 — Nayandahalli
+# Historical BBMP Ward 155 — Nayandahalli
 
-_Part of **Govindaraja Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Govindaraja Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 155 on kaun.city →](https://kaun.city/?ward=155)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

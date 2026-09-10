@@ -1,6 +1,6 @@
-# Ward 237 — Bilekhalli
+# Historical BBMP Ward 237 — Bilekhalli
 
-_Part of **Bommanahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Bommanahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 237 on kaun.city →](https://kaun.city/?ward=237)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

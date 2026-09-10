@@ -1,6 +1,6 @@
-# Ward 88 — Basavanapura
+# Historical BBMP Ward 88 — Basavanapura
 
-_Part of **K R Puram** assembly constituency · BBMP 243-ward delimitation_
+_Part of **K R Puram** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 88 on kaun.city →](https://kaun.city/?ward=88)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

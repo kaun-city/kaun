@@ -1,6 +1,6 @@
-# Ward 103 — Maruthi Seva Nagar
+# Historical BBMP Ward 103 — Maruthi Seva Nagar
 
-_Part of **Sarvajnanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Sarvajnanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 103 on kaun.city →](https://kaun.city/?ward=103)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

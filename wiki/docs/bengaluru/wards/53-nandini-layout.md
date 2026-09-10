@@ -1,6 +1,6 @@
-# Ward 53 — Nandini Layout
+# Historical BBMP Ward 53 — Nandini Layout
 
-_Part of **Mahalakshmi Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahalakshmi Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 53 on kaun.city →](https://kaun.city/?ward=53)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

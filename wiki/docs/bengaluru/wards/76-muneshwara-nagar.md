@@ -1,6 +1,6 @@
-# Ward 76 — Muneshwara Nagar
+# Historical BBMP Ward 76 — Muneshwara Nagar
 
-_Part of **Pulakeshinagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Pulakeshinagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 76 on kaun.city →](https://kaun.city/?ward=76)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

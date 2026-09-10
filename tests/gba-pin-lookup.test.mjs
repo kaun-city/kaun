@@ -20,7 +20,9 @@ test("pin lookup accepts either the legacy or current GBA boundary", async () =>
 test("GBA-only matches keep legacy ward identity empty", async () => {
   const sql = await readFile(migrationUrl, "utf8")
   const api = await readFile(apiUrl, "utf8")
-  const gbaOnlyBranch = sql.slice(sql.indexOf("ELSE\n    -- Keep the historical identity empty"))
+  const branchStart = sql.search(/ELSE\r?\n    -- Keep the historical identity empty/)
+  assert.notEqual(branchStart, -1)
+  const gbaOnlyBranch = sql.slice(branchStart)
 
   assert.match(gbaOnlyBranch, /'found', true/)
   assert.match(gbaOnlyBranch, /'city_id', 'bengaluru'/)

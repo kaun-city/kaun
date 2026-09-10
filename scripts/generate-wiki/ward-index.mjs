@@ -2,18 +2,21 @@
 // ward-index.mjs — Generate the Bengaluru ward section of the wiki.
 // Usage: node scripts/generate-wiki/ward-index.mjs
 //
-// Pulls ward list, elected reps, top contractors, and top work orders from
-// kaun.city public APIs and writes:
-//   wiki/docs/bengaluru/wards/index.md            (all 243 wards, one page)
-//   wiki/docs/bengaluru/wards/<num>-<slug>.md     (one per ward, 243 files)
+// Reads the checked-in current GBA boundary and pulls historical ward data,
+// elected reps, top contractors, and top work orders from kaun.city APIs.
+// It writes both systems without pretending they share ward identities:
+//   wiki/docs/bengaluru/wards/index.md
+//   wiki/docs/bengaluru/wards/gba-<corp>-<num>-<slug>.md (369 current wards)
+//   wiki/docs/bengaluru/wards/<num>-<slug>.md            (243 historical wards)
 
-import { writeFileSync, mkdirSync, readdirSync, unlinkSync } from "node:fs"
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync } from "node:fs"
 import { join } from "node:path"
 
 const API_BASE = process.env.KAUN_API_BASE ?? "https://kaun.city"
 const WARDS_DIR = "wiki/docs/bengaluru/wards"
 const INDEX_PATH = `${WARDS_DIR}/index.md`
 const CITY_WORK_ORDERS_PATH = "wiki/docs/bengaluru/work-orders.md"
+const CURRENT_WARDS_PATH = "apps/web/public/bengaluru-gba-369.geojson"
 const TODAY = new Date().toISOString().slice(0, 10)
 
 async function fetchJson(path) {
@@ -28,6 +31,14 @@ function slugify(s) {
 
 function wardFilename(w) {
   return `${w.ward_no}-${slugify(w.ward_name)}.md`
+}
+
+function currentWardFilename(w) {
+  return `gba-${w.corporation_id}-${w.ward_no}-${slugify(w.ward_name)}.md`
+}
+
+function currentWardUrl(w) {
+  return `https://bengaluru.kaun.city/?gba_corporation=${w.corporation_id}&gba_ward=${w.ward_no}`
 }
 
 function fmtMla(rep) {
@@ -52,9 +63,9 @@ function fmtRupeesPaise(paise) {
   return `Rs ${paise.toLocaleString("en-IN")}`
 }
 
-function renderIndex(wards, mlaByConstituency) {
+function renderIndex(currentWards, legacyWards, mlaByConstituency) {
   const byConstituency = new Map()
-  for (const w of wards) {
+  for (const w of currentWards) {
     const ac = w.assembly_constituency ?? "Unassigned"
     if (!byConstituency.has(ac)) byConstituency.set(ac, [])
     byConstituency.get(ac).push(w)
@@ -62,25 +73,25 @@ function renderIndex(wards, mlaByConstituency) {
   for (const arr of byConstituency.values()) arr.sort((a, b) => a.ward_no - b.ward_no)
 
   const lines = []
-  lines.push("# Wards — Bengaluru (BBMP, 243)")
+  lines.push("# Wards — Bengaluru")
   lines.push("")
   lines.push(`_Auto-generated from [kaun.city](https://kaun.city) public APIs on ${TODAY}. Each ward links to its own page in this wiki, and also to the interactive kaun.city view._`)
   lines.push("")
-  lines.push("Bengaluru has been under administrator rule since September 2020, so corporator seats are vacant. The MLA listed is the state-assembly representative whose constituency the ward falls under. A ⚠ marker means the MLA has declared pending criminal cases in their nomination affidavit (source: [MyNeta](https://myneta.info)).")
+  lines.push("The current published structure has **369 wards across five GBA city corporations**. Historical civic datasets remain keyed to the former 243-ward BBMP layer; Kaun keeps those records separate unless an evidenced spatial crosswalk exists. Bengaluru has been under administrator rule since September 2020, so corporator seats are vacant. A ⚠ marker means the MLA has declared pending criminal cases in their nomination affidavit (source: [MyNeta](https://myneta.info)).")
   lines.push("")
   lines.push("---")
   lines.push("")
-  lines.push("## All 243 wards")
+  lines.push("## Current GBA wards (369)")
   lines.push("")
-  lines.push("| Ward # | Ward name | Assembly constituency | MLA | Wiki page | Interactive |")
-  lines.push("|---:|---|---|---|---|---|")
+  lines.push("Ward numbers restart inside each corporation, so the corporation and ward number together form the current identity.")
+  lines.push("")
+  lines.push("| Corporation | Ward # | Ward name | Assembly constituency | Population | Wiki page | Interactive |")
+  lines.push("|---|---:|---|---|---:|---|---|")
 
-  const sorted = [...wards].sort((a, b) => a.ward_no - b.ward_no)
+  const sorted = [...currentWards].sort((a, b) => a.corporation_id - b.corporation_id || a.ward_no - b.ward_no)
   for (const w of sorted) {
-    const mla = mlaByConstituency.get(w.assembly_constituency)
-    const wikiUrl = wardFilename(w)
-    const liveUrl = `https://kaun.city/?ward=${w.ward_no}`
-    lines.push(`| ${w.ward_no} | [${w.ward_name}](${wikiUrl}) | ${w.assembly_constituency ?? "—"} | ${fmtMla(mla)} | [Deep page](${wikiUrl}) | [Open →](${liveUrl}) |`)
+    const wikiUrl = currentWardFilename(w)
+    lines.push(`| Bengaluru ${w.corporation} | ${w.ward_no} | [${w.ward_name}](${wikiUrl}) | ${w.assembly_constituency ?? "—"} | ${w.population?.toLocaleString("en-IN") ?? "—"} | [Deep page](${wikiUrl}) | [Open →](${currentWardUrl(w)}) |`)
   }
 
   lines.push("")
@@ -98,26 +109,72 @@ function renderIndex(wards, mlaByConstituency) {
     lines.push(`**MLA:** ${fmtMla(mla)} · **Wards:** ${wardsInAc.length}`)
     lines.push("")
     for (const w of wardsInAc) {
-      lines.push(`- [Ward ${w.ward_no} — ${w.ward_name}](${wardFilename(w)})`)
+      lines.push(`- [Bengaluru ${w.corporation} · Ward ${w.ward_no} — ${w.ward_name}](${currentWardFilename(w)})`)
     }
     lines.push("")
   }
 
   lines.push("---")
   lines.push("")
+  lines.push("## Historical BBMP ward layer (243)")
+  lines.push("")
+  lines.push("These pages preserve access to historical ward-keyed spending, infrastructure, complaint, and contractor records. Their ward numbers are **not current GBA ward identifiers**.")
+  lines.push("")
+  lines.push("| Historical ward # | Ward name | Assembly constituency | Page |")
+  lines.push("|---:|---|---|---|")
+  for (const w of [...legacyWards].sort((a, b) => a.ward_no - b.ward_no)) {
+    lines.push(`| ${w.ward_no} | ${w.ward_name} | ${w.assembly_constituency ?? "—"} | [Historical data →](${wardFilename(w)}) |`)
+  }
+  lines.push("")
   lines.push("## Missing or out of date?")
   lines.push("")
-  lines.push("This page is generated from the live Supabase-backed APIs at `kaun.city/api/data/*`. If a ward name, MLA, or assembly constituency looks wrong, it's wrong at the source — please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the ward number and what's incorrect. GBA's 2025 restructuring into 369 wards across 5 corporations will be added as those lists are officially published.")
+  lines.push("Current ward identity is generated from Kaun's checked-in final GBA boundary dataset. Historical records come from the live Supabase-backed APIs at `kaun.city/api/data/*`. Please [open an issue](https://github.com/kaun-city/kaun/issues/new) with both the corporation and ward number for a current-boundary correction.")
   lines.push("")
 
   return lines.join("\n")
 }
 
+function renderCurrentWardPage(w, mla) {
+  const lines = []
+  lines.push(`# ${w.ward_name} — Bengaluru ${w.corporation}, Ward ${w.ward_no}`)
+  lines.push("")
+  lines.push(`_Current GBA 369-ward delimitation · **${w.assembly_constituency ?? "—"}** assembly constituency_`)
+  lines.push("")
+  lines.push(`**[Open this ward on kaun.city →](${currentWardUrl(w)})**`)
+  lines.push("")
+  lines.push("## Current ward identity")
+  lines.push("")
+  lines.push("| Field | Value |")
+  lines.push("|---|---|")
+  lines.push(`| City corporation | Bengaluru ${w.corporation} |`)
+  lines.push(`| Ward number | ${w.ward_no} |`)
+  lines.push(`| Ward name (Kannada) | ${w.ward_name_kn ?? "—"} |`)
+  lines.push(`| Assembly constituency | ${w.assembly_constituency ?? "—"}${w.assembly_no ? ` (${w.assembly_no})` : ""} |`)
+  lines.push(`| Zone | ${w.zone_name ?? w.zone ?? "—"} |`)
+  lines.push(`| Division | ${w.division ?? "—"} |`)
+  lines.push(`| Subdivision | ${w.subdivision ?? "—"} |`)
+  lines.push(`| Population | ${w.population?.toLocaleString("en-IN") ?? "—"} |`)
+  lines.push("")
+  lines.push("## Elected representative")
+  lines.push("")
+  lines.push(mla
+    ? `The MLA mapped by the published assembly-constituency field is **${fmtMla(mla)}**.`
+    : `No MLA record exactly matched \`${w.assembly_constituency ?? "—"}\` in the current dataset.`)
+  lines.push("")
+  lines.push("## Historical-data availability")
+  lines.push("")
+  lines.push("Most spending, contractor, grievance, and infrastructure datasets are keyed to the former BBMP ward systems. This page does not attach those records by ward number because current GBA numbers restart in each corporation and are not equivalent to historical ward numbers. Use the interactive map for any location-based historical overlap that Kaun can establish.")
+  lines.push("")
+  lines.push(`_Auto-generated on ${TODAY} from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru ${w.corporation}, Ward ${w.ward_no}**._`)
+  lines.push("")
+  return lines.join("\n")
+}
+
 function renderWardPage(w, mla, contractorsHere, workOrdersHere) {
   const lines = []
-  lines.push(`# Ward ${w.ward_no} — ${w.ward_name}`)
+  lines.push(`# Historical BBMP Ward ${w.ward_no} — ${w.ward_name}`)
   lines.push("")
-  lines.push(`_Part of **${w.assembly_constituency ?? "—"}** assembly constituency · BBMP 243-ward delimitation_`)
+  lines.push(`_Part of **${w.assembly_constituency ?? "—"}** assembly constituency · historical BBMP 243-ward delimitation_`)
   lines.push("")
   lines.push(`**[Open Ward ${w.ward_no} on kaun.city →](https://kaun.city/?ward=${w.ward_no})** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.`)
   lines.push("")
@@ -351,14 +408,17 @@ function renderCityWorkOrders(workOrders, wardsByNo) {
 
 async function main() {
   console.log(`Fetching from ${API_BASE}...`)
-  const [{ data: wards }, { data: reps }, { data: contractors }, spending] = await Promise.all([
+  const currentCollection = JSON.parse(readFileSync(CURRENT_WARDS_PATH, "utf8"))
+  const currentWards = currentCollection.features.map(feature => feature.properties)
+  const [{ data: legacyWards }, { data: reps }, { data: contractors }, spending] = await Promise.all([
     fetchJson("/api/data/wards"),
     fetchJson("/api/data/reps"),
     fetchJson("/api/data/contractors"),
     fetchJson("/api/data/spending"),
   ])
   const workOrders = spending.work_orders ?? []
-  console.log(`  wards: ${wards.length}, reps: ${reps.length}, contractors: ${contractors.length}, work orders: ${workOrders.length}`)
+  if (currentWards.length !== 369) throw new Error(`Expected 369 current GBA wards, got ${currentWards.length}`)
+  console.log(`  current wards: ${currentWards.length}, historical wards: ${legacyWards.length}, reps: ${reps.length}, contractors: ${contractors.length}, work orders: ${workOrders.length}`)
 
   const mlaByConstituency = new Map()
   for (const r of reps) {
@@ -395,14 +455,21 @@ async function main() {
     if (name.endsWith(".md")) unlinkSync(join(WARDS_DIR, name))
   }
 
-  const indexMd = renderIndex(wards, mlaByConstituency)
+  const indexMd = renderIndex(currentWards, legacyWards, mlaByConstituency)
   writeFileSync(INDEX_PATH, indexMd)
   console.log(`  wrote ${INDEX_PATH}`)
 
   let pageCount = 0
   let wardsWithContractors = 0
   let wardsWithWorkOrders = 0
-  for (const w of wards) {
+  for (const w of currentWards) {
+    const mla = mlaByConstituency.get(w.assembly_constituency)
+    const md = renderCurrentWardPage(w, mla)
+    writeFileSync(join(WARDS_DIR, currentWardFilename(w)), md)
+    pageCount++
+  }
+
+  for (const w of legacyWards) {
     const mla = mlaByConstituency.get(w.assembly_constituency)
     const contractorsHere = contractorsByWard.get(w.ward_no) ?? []
     const workOrdersHere = (workOrdersByWard.get(w.ward_no) ?? []).slice(0, 10)
@@ -413,11 +480,11 @@ async function main() {
     pageCount++
   }
 
-  console.log(`  wrote ${pageCount} per-ward pages`)
+  console.log(`  wrote ${pageCount} per-ward pages (${currentWards.length} current + ${legacyWards.length} historical)`)
   console.log(`    ${wardsWithContractors} wards have contractors from top-100 list`)
   console.log(`    ${wardsWithWorkOrders} wards have work orders from top-200 list`)
 
-  const wardsByNo = new Map(wards.map(w => [w.ward_no, w]))
+  const wardsByNo = new Map(legacyWards.map(w => [w.ward_no, w]))
   const cityMd = renderCityWorkOrders(workOrders, wardsByNo)
   writeFileSync(CITY_WORK_ORDERS_PATH, cityMd)
   console.log(`  wrote ${CITY_WORK_ORDERS_PATH} (${workOrders.length} work orders)`)

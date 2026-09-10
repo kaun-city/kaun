@@ -1,6 +1,6 @@
-# Ward 118 — Lal Bahadur Nagar
+# Historical BBMP Ward 118 — Lal Bahadur Nagar
 
-_Part of **C V Raman Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **C V Raman Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 118 on kaun.city →](https://kaun.city/?ward=118)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

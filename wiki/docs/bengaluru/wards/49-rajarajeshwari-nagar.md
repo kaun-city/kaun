@@ -1,6 +1,6 @@
-# Ward 49 — Rajarajeshwari Nagar
+# Historical BBMP Ward 49 — Rajarajeshwari Nagar
 
-_Part of **Rajarajeswari Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Rajarajeswari Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 49 on kaun.city →](https://kaun.city/?ward=49)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

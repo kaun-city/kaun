@@ -1,6 +1,6 @@
-# Ward 177 — Hombegowda Nagara
+# Historical BBMP Ward 177 — Hombegowda Nagara
 
-_Part of **Chickpet** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Chickpet** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 177 on kaun.city →](https://kaun.city/?ward=177)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

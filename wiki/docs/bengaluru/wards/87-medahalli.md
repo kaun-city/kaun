@@ -1,6 +1,6 @@
-# Ward 87 — Medahalli
+# Historical BBMP Ward 87 — Medahalli
 
-_Part of **K R Puram** assembly constituency · BBMP 243-ward delimitation_
+_Part of **K R Puram** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 87 on kaun.city →](https://kaun.city/?ward=87)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

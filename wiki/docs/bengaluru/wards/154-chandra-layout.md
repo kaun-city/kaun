@@ -1,6 +1,6 @@
-# Ward 154 — Chandra Layout
+# Historical BBMP Ward 154 — Chandra Layout
 
-_Part of **Govindaraja Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Govindaraja Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 154 on kaun.city →](https://kaun.city/?ward=154)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

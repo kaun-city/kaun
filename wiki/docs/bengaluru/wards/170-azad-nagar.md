@@ -1,6 +1,6 @@
-# Ward 170 — Azad Nagar
+# Historical BBMP Ward 170 — Azad Nagar
 
-_Part of **Chamrajpet** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Chamrajpet** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 170 on kaun.city →](https://kaun.city/?ward=170)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

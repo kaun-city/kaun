@@ -1,6 +1,6 @@
-# Ward 207 — Kamakya Nagar
+# Historical BBMP Ward 207 — Kamakya Nagar
 
-_Part of **Padmanabhanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Padmanabhanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 207 on kaun.city →](https://kaun.city/?ward=207)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

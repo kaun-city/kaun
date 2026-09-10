@@ -1,6 +1,6 @@
-# Ward 185 — Ejipura
+# Historical BBMP Ward 185 — Ejipura
 
-_Part of **BTM Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **BTM Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 185 on kaun.city →](https://kaun.city/?ward=185)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 146 — Dr. Raj Kumar Ward
+# Historical BBMP Ward 146 — Dr. Raj Kumar Ward
 
-_Part of **Govindaraja Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Govindaraja Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 146 on kaun.city →](https://kaun.city/?ward=146)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 161 — Attiguppe
+# Historical BBMP Ward 161 — Attiguppe
 
-_Part of **Vijayanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Vijayanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 161 on kaun.city →](https://kaun.city/?ward=161)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

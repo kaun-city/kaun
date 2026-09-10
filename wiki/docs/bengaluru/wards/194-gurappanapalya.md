@@ -1,6 +1,6 @@
-# Ward 194 — Gurappanapalya
+# Historical BBMP Ward 194 — Gurappanapalya
 
-_Part of **Jayanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Jayanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 194 on kaun.city →](https://kaun.city/?ward=194)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

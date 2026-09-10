@@ -1,6 +1,6 @@
-# Ward 115 — Bellanduru
+# Historical BBMP Ward 115 — Bellanduru
 
-_Part of **Mahadevapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahadevapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 115 on kaun.city →](https://kaun.city/?ward=115)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 187 — Adugodi
+# Historical BBMP Ward 187 — Adugodi
 
-_Part of **BTM Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **BTM Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 187 on kaun.city →](https://kaun.city/?ward=187)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

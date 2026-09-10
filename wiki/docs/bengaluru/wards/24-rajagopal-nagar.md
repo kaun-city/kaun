@@ -1,6 +1,6 @@
-# Ward 24 — Rajagopal Nagar
+# Historical BBMP Ward 24 — Rajagopal Nagar
 
-_Part of **Dasarahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Dasarahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 24 on kaun.city →](https://kaun.city/?ward=24)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

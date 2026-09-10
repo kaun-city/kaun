@@ -1,6 +1,6 @@
-# Ward 163 — Veerabhadranagar
+# Historical BBMP Ward 163 — Veerabhadranagar
 
-_Part of **Vijayanagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Vijayanagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 163 on kaun.city →](https://kaun.city/?ward=163)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

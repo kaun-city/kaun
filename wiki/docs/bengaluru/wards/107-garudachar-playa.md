@@ -1,6 +1,6 @@
-# Ward 107 — Garudachar Playa
+# Historical BBMP Ward 107 — Garudachar Playa
 
-_Part of **Mahadevapura** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Mahadevapura** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 107 on kaun.city →](https://kaun.city/?ward=107)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

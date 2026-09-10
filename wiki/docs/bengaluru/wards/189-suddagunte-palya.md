@@ -1,6 +1,6 @@
-# Ward 189 — Suddagunte Palya
+# Historical BBMP Ward 189 — Suddagunte Palya
 
-_Part of **BTM Layout** assembly constituency · BBMP 243-ward delimitation_
+_Part of **BTM Layout** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 189 on kaun.city →](https://kaun.city/?ward=189)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 215 — Katriguppe
+# Historical BBMP Ward 215 — Katriguppe
 
-_Part of **Basavanagudi** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Basavanagudi** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 215 on kaun.city →](https://kaun.city/?ward=215)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

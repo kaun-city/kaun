@@ -1,6 +1,6 @@
-# Ward 62 — Subramanya Nagar
+# Historical BBMP Ward 62 — Subramanya Nagar
 
-_Part of **Malleshwaram** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Malleshwaram** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 62 on kaun.city →](https://kaun.city/?ward=62)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

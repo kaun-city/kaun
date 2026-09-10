@@ -1,6 +1,6 @@
-# Ward 66 — Radhakrishna Temple Ward
+# Historical BBMP Ward 66 — Radhakrishna Temple Ward
 
-_Part of **Hebbal** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Hebbal** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 66 on kaun.city →](https://kaun.city/?ward=66)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

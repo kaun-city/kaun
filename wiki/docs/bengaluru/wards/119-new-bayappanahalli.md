@@ -1,6 +1,6 @@
-# Ward 119 — New Bayappanahalli
+# Historical BBMP Ward 119 — New Bayappanahalli
 
-_Part of **C V Raman Nagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **C V Raman Nagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 119 on kaun.city →](https://kaun.city/?ward=119)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

@@ -1,6 +1,6 @@
-# Ward 226 — Kalena Agrahara
+# Historical BBMP Ward 226 — Kalena Agrahara
 
-_Part of **Bangalore South** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Bangalore South** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 226 on kaun.city →](https://kaun.city/?ward=226)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

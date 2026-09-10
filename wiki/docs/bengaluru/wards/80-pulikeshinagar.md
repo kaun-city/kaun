@@ -1,6 +1,6 @@
-# Ward 80 — Pulikeshinagar
+# Historical BBMP Ward 80 — Pulikeshinagar
 
-_Part of **Pulakeshinagar** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Pulakeshinagar** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 80 on kaun.city →](https://kaun.city/?ward=80)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 

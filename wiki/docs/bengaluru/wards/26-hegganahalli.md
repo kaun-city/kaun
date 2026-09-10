@@ -1,6 +1,6 @@
-# Ward 26 — Hegganahalli
+# Historical BBMP Ward 26 — Hegganahalli
 
-_Part of **Dasarahalli** assembly constituency · BBMP 243-ward delimitation_
+_Part of **Dasarahalli** assembly constituency · historical BBMP 243-ward delimitation_
 
 **[Open Ward 26 on kaun.city →](https://kaun.city/?ward=26)** for the full interactive view — spending, amenities, water and air quality, grievance data, contractor profiles, and the Ward Grade (A–F) composite score.
 
