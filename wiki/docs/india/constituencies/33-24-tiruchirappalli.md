@@ -100,6 +100,7 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 19 | 100.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 16 | 53.3% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 18 | 85.7% | — | 56 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 22 | 84.6% | — | 395 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | 221 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 14 | 87.5% | — | 150 | — | — |
@@ -114,7 +115,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹5.65 Cr | ₹9.05 Cr | 38.5% | 78 | 61 | 44 | 2026-08-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹6.67 Cr | ₹8.03 Cr | 45.4% | 80 | 66 | 45 | 2026-09-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -152,4 +153,4 @@ The 6 projects in Tamil Nadu furthest above sanctioned cost, as of the May 2026 
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-06 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

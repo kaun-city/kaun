@@ -86,6 +86,7 @@ average of them measures none of them.
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 19 | 100.0% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 31 | 100.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 18 | 85.7% | — | 10 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 25 | 96.2% | — | 227 | — | — |
@@ -102,7 +103,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹17.84 Cr | ₹2.75 Cr | ₹15.08 Cr | 15.4% | 111 | 89 | 29 | 2026-08-06 |
+| eSAKSHI (official) | ₹17.84 Cr | ₹3.16 Cr | ₹14.67 Cr | 17.7% | 114 | 94 | 31 | 2026-09-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -130,4 +131,4 @@ pending, or this state has no projects in the latest report Kaun holds.
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 
-_Auto-generated on 2026-09-06 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

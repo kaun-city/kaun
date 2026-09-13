@@ -120,7 +120,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹20.19 Cr | ₹6.12 Cr | ₹14.07 Cr | 30.3% | 157 | 141 | 42 | 2026-08-06 |
+| eSAKSHI (official) | ₹20.19 Cr | ₹6.22 Cr | ₹13.97 Cr | 30.8% | 155 | 155 | 42 | 2026-09-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -158,4 +158,4 @@ The 6 projects in Andhra Pradesh furthest above sanctioned cost, as of the May 2
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-06 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
