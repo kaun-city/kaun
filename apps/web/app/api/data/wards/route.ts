@@ -44,8 +44,8 @@ export async function GET(req: Request) {
     const [ward, infra, busStops, potholes, crashes, air, spend, workOrders] = await Promise.all([
       supabase.from("wards").select("ward_no, ward_name, assembly_constituency, zone").eq("ward_no", wn).eq("city_id", "bengaluru").single(),
       supabase.from("ward_infra_stats").select("signal_count").eq("ward_no", wn).single(),
-      // Bus figures come from ward_bus_stops (one row per physical stop), not
-      // ward_infra_stats, whose bus columns counted duplicate stop rows.
+      // Bus figures come only from ward_bus_stops, never ward_infra_stats' bus
+      // columns (see lib/ward-data-quality.ts).
       supabase.from("ward_bus_stops").select("stop_count, total_trips").eq("ward_no", wn).maybeSingle(),
       bbmp198WardNos.length
         ? supabase.from("ward_potholes").select("ward_no, complaints, data_year").in("ward_no", bbmp198WardNos)

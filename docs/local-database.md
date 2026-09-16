@@ -29,8 +29,8 @@ not on the command line.
 Some migrations rewrite production rows instead of only changing schema. Until
 production runs one of these, a newly synced seed still has the old rows. They
 are listed in `seedReplayedMigrations` in `scripts/local-db/shared.mjs`. The
-seed load relaxes what each one adds, loads the seed, and replays the migration
-in the same transaction. A local reset then ends in the migrated shape whether
+seed load relaxes what each one adds (or puts back a table it replaces with a
+view), loads the seed, and replays the migration in the same transaction. A local reset then ends in the migrated shape whether
 the seed was synced before or after production ran the migration. So far the
 only such migration is `20260917_bmtc_stops_dedup.sql`; see
 [bmtc-stops.md](bmtc-stops.md).

@@ -29,6 +29,9 @@
 -- 4. ward_infra_stats aggregates signals and stops in independent subqueries.
 -- 5. public.refresh_ward_infra_stats() lets the service role refresh it.
 -- 6. Assertions raise, and so roll back the whole file, if the result is wrong.
+-- 7. ward_bus_stops, a static table with no loader, becomes a view over
+--    ward_infra_stats once the assertions have checked the collapse against
+--    it, so refreshing ward_infra_stats is all a later reload needs.
 --
 -- Transactions and replay
 -- -----------------------
@@ -219,8 +222,20 @@ COMMENT ON COLUMN public.bmtc_stops.trips IS
 
 -- ward_infra_stats ------------------------------------------------------------
 
--- Nothing else in the public schema depends on this view (checked against the
--- 20260505 baseline); DROP without CASCADE fails loudly if that changes.
+-- On a replay over a migrated database, ward_bus_stops is the view this file
+-- creates at the end, and it depends on ward_infra_stats. Drop that view here;
+-- the ward_bus_stops section recreates it. A ward_bus_stops table is left alone.
+DO $ward_bus_stops_unview$
+BEGIN
+  IF (SELECT relkind FROM pg_catalog.pg_class WHERE oid = to_regclass('public.ward_bus_stops')) = 'v' THEN
+    DROP VIEW public.ward_bus_stops;
+  END IF;
+END
+$ward_bus_stops_unview$;
+
+-- Apart from that view, nothing in the public schema depends on this one
+-- (checked against the 20260505 baseline); DROP without CASCADE fails loudly
+-- if that changes.
 DROP MATERIALIZED VIEW IF EXISTS public.ward_infra_stats;
 
 -- Signals and stops are counted in separate per-ward subqueries, so neither
@@ -354,5 +369,93 @@ BEGIN
   END IF;
 END
 $bmtc_verify$;
+
+-- ward_bus_stops --------------------------------------------------------------
+
+-- ward_bus_stops (ward_no, stop_count, total_trips) was a static table with no
+-- loader. The app, /api/data/wards, /api/export and Ask Kaun read it, but a
+-- reload of bmtc_stops refreshes only ward_infra_stats, so the two would drift.
+-- Having served as the check on the collapse above, the table is replaced by a
+-- view over ward_infra_stats with the same columns and types. As in the table,
+-- a ward without a stop has no row. The table is renamed, not dropped, until
+-- the view has been compared with it row for row.
+DO $ward_bus_stops_swap$
+DECLARE
+  kind "char" := (SELECT relkind FROM pg_catalog.pg_class WHERE oid = to_regclass('public.ward_bus_stops'));
+BEGIN
+  IF to_regclass('public.ward_bus_stops_static') IS NOT NULL THEN
+    RAISE EXCEPTION 'ward_bus_stops swap: public.ward_bus_stops_static already exists; inspect it before re-running';
+  END IF;
+  IF kind = 'r' THEN
+    ALTER TABLE public.ward_bus_stops RENAME TO ward_bus_stops_static;
+  ELSIF kind IS NOT NULL THEN
+    RAISE EXCEPTION 'ward_bus_stops swap: expected a table, found relkind %', kind;
+  END IF;
+END
+$ward_bus_stops_swap$;
+
+CREATE OR REPLACE VIEW public.ward_bus_stops
+WITH (security_invoker = true) AS
+SELECT ward_no,
+       bus_stop_count::integer AS stop_count,
+       daily_trips AS total_trips
+FROM public.ward_infra_stats
+WHERE bus_stop_count > 0;
+
+ALTER VIEW public.ward_bus_stops OWNER TO postgres;
+
+-- Read-only for every API role. The table granted ALL and relied on RLS to
+-- keep writes out; the view reads ward_infra_stats as the caller.
+REVOKE ALL ON public.ward_bus_stops FROM anon, authenticated, service_role;
+GRANT SELECT ON public.ward_bus_stops TO anon, authenticated, service_role;
+
+COMMENT ON VIEW public.ward_bus_stops IS
+  'Physical BMTC stops and their summed daily trips for each DataMeet-243 ward with at least one stop: ward_infra_stats.bus_stop_count and daily_trips. Refresh with public.refresh_ward_infra_stats().';
+
+DO $ward_bus_stops_verify$
+DECLARE
+  columns text;
+  problem text;
+BEGIN
+  -- The public shape of the table: same columns, same types, same order.
+  SELECT string_agg(format('%s %s', attname, format_type(atttypid, atttypmod)), ', ' ORDER BY attnum)
+    INTO columns
+  FROM pg_catalog.pg_attribute
+  WHERE attrelid = 'public.ward_bus_stops'::regclass
+    AND attnum > 0
+    AND NOT attisdropped;
+  IF columns IS DISTINCT FROM 'ward_no integer, stop_count integer, total_trips bigint' THEN
+    RAISE EXCEPTION 'ward_bus_stops view columns differ from the table: %', columns;
+  END IF;
+
+  -- A replay over a migrated database has no table to compare.
+  IF to_regclass('public.ward_bus_stops_static') IS NULL THEN
+    RETURN;
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM public.ward_bus_stops_static) THEN
+    SELECT string_agg(
+             format('ward %s: table %s stops / %s trips, view %s / %s',
+                    coalesce(t.ward_no, v.ward_no),
+                    coalesce(t.stop_count::text, 'no row'), coalesce(t.total_trips::text, 'no row'),
+                    coalesce(v.stop_count::text, 'no row'), coalesce(v.total_trips::text, 'no row')),
+             '; ' ORDER BY coalesce(t.ward_no, v.ward_no))
+      INTO problem
+    FROM public.ward_bus_stops_static t
+    FULL JOIN public.ward_bus_stops v ON v.ward_no = t.ward_no
+    WHERE t.ward_no IS NULL
+       OR v.ward_no IS NULL
+       OR t.stop_count IS DISTINCT FROM v.stop_count
+       OR t.total_trips IS DISTINCT FROM v.total_trips;
+    IF problem IS NOT NULL THEN
+      RAISE EXCEPTION 'ward_bus_stops view would change published figures: %', left(problem, 2000);
+    END IF;
+  ELSE
+    RAISE NOTICE 'ward_bus_stops was an empty table (fresh local replay); nothing to compare';
+  END IF;
+
+  DROP TABLE public.ward_bus_stops_static;
+END
+$ward_bus_stops_verify$;
 
 NOTIFY pgrst, 'reload schema';

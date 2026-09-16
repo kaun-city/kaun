@@ -17,11 +17,19 @@ Migration `20260917_bmtc_stops_dedup.sql` fixes the data:
 | `bmtc_stop_booths` | New, public-read table. It has one row per distinct `(stop_id, boothcode)` (39,687 rows), with the booth's constituency. |
 | `ward_infra_stats` | Signals and stops are counted in separate per-ward subqueries. A stop with NULL trips counts as a stop and adds no trips, which is how `ward_bus_stops` was built. Bus figures now equal `ward_bus_stops` for all 237 wards it lists. |
 | `refresh_ward_infra_stats()` | Refreshes the view. Only the service role can run it. |
+| `ward_bus_stops` | Was a static table with no loader. It is now a view over `ward_infra_stats` with the same columns and types (`ward_no integer`, `stop_count integer`, `total_trips bigint`). It has one row per ward with at least one stop (237 wards), as the table did. `anon`, `authenticated` and `service_role` can only read it. The app, `/api/data/wards`, `/api/export` and Ask Kaun read bus figures only from here. |
 
 The migration checks its inputs first. It stops if a stop's rows disagree on
 trips or routes, or if a constituency label doesn't match its booth code. After
 the rewrite, it stops if any stop is still duplicated or if the view disagrees
 with `ward_bus_stops`. Any of these errors rolls back the whole migration.
+
+Only after those checks does `ward_bus_stops` change. The migration renames the
+table, creates the view, and compares the two row for row. It drops the table
+only if the view serves every row the table did, with the same figures, and no
+others. Otherwise it stops, and the whole migration rolls back. The public
+figures therefore stay the same when the table is swapped for the view, and a
+later reload changes the two together.
 
 Two file titles were stored as constituency names:
 
@@ -50,8 +58,11 @@ Run these steps in order. The first two never write to production.
 
    The script sends the migration as `BEGIN; <migration>; <block that always
    raises>`. Nothing can commit. The counts after the migration come back in
-   the final error. For a few seconds the run locks `bmtc_stops` and
-   `ward_infra_stats`, so reads of the view wait.
+   the final error. The script copies the published `ward_bus_stops` rows
+   first. The counts include `ward_bus_stops_relkind` (`v` once the table is
+   a view) and `wards_disagreeing` (rows the view serves differently from
+   that copy). For a few seconds the run locks `bmtc_stops`,
+   `ward_infra_stats` and `ward_bus_stops`, so reads of them wait.
 3. **Apply** through the documented migration path in
    [local-database.md](local-database.md#production-rollout-pr-129):
    `migration repair` for versions that are already live, then
@@ -59,7 +70,7 @@ Run these steps in order. The first two never write to production.
    `20260917`. Then run `db push`. The Supabase CLI runs each migration file
    as one transaction.
 4. **Verify**: run the plan again. It should report `already one row per stop`
-   and show the live `ward_infra_stats` matching `ward_bus_stops`.
+   and show the live `ward_bus_stops` matching `ward_infra_stats`.
 
 On macOS or Linux, use `export SUPABASE_ACCESS_TOKEN=...` and
 `unset SUPABASE_ACCESS_TOKEN` instead of the PowerShell lines.
@@ -70,21 +81,27 @@ On macOS or Linux, use `export SUPABASE_ACCESS_TOKEN=...` and
 production-derived seed. A seed synced before production ran this migration
 still holds the 42,529 duplicate rows, which would break the new unique index.
 
-Because of that, the migration is listed in `seedReplayedMigrations` in
-`scripts/local-db/shared.mjs`. The seed load does three things in one
-transaction:
+Such a seed also holds `ward_bus_stops` rows, and those rows can't be copied
+into the view the migration leaves behind. Because of that, the migration is
+listed in `seedReplayedMigrations` in `scripts/local-db/shared.mjs`. The seed
+load does three things in one transaction:
 
-1. Drops `bmtc_stops_physical_key`.
+1. Drops `bmtc_stops_physical_key`. It also drops the `ward_bus_stops` view and
+   puts back an empty table with the baseline's columns.
 2. Loads the seed.
 3. Runs `RESET ALL` and replays the migration.
 
-With an old seed, the replay collapses the duplicates, checks the result
-against `ward_bus_stops`, and recreates the index. That makes a local reset a
-full rehearsal against real data. With a seed synced after production migrated,
-the replay changes nothing and skips the `ward_bus_stops` check. The replay
-also refreshes `ward_infra_stats`, which data-only seeds never populate.
-`tests/local-db.test.mjs` checks this ordering. It also checks that a replayed
-migration has no transaction control and only drops indexes it recreates.
+With an old seed, the replay collapses the duplicates and checks the result
+against the seed's `ward_bus_stops` rows. It then recreates the index and swaps
+the table for the view, checked row for row. That makes a local reset a full
+rehearsal against real data. With a seed synced after production migrated, the
+dump has no `ward_bus_stops` rows, because a view has no data. The replay
+changes no stops, skips both `ward_bus_stops` checks, and recreates the view.
+The replay also refreshes `ward_infra_stats`, which data-only seeds never
+populate. `tests/local-db.test.mjs` checks this ordering. It also checks that
+a replayed migration has no transaction control. Its `beforeSeed` may only
+drop indexes the replay recreates, or put back the table that a view from the
+replay replaces.
 
 ## Reloading from the source
 
@@ -101,6 +118,6 @@ migration has no transaction control and only drops indexes it recreates.
   links and deletes stale ones, then calls `refresh_ward_infra_stats()`. If the
   source dropped any stops, add `--prune` to delete them.
 
-`ward_bus_stops` is a static table, and the ingest does not rebuild it. After a
-reload that changes stops, `ward_infra_stats` and `ward_bus_stops` will
-legitimately differ.
+`ward_bus_stops` is a view over `ward_infra_stats`, so that refresh updates
+every surface that shows bus figures: the ward sheet, `/api/data/wards`,
+`/api/export` and Ask Kaun. No other step is needed.

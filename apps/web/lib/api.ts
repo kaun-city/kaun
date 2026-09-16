@@ -587,7 +587,8 @@ export async function fetchWardInfraStats(wardNo: number, cityId = "bengaluru"):
 }
 
 /**
- * Fetch BMTC bus stop count and daily trips for a ward (ward_bus_stops table).
+ * Fetch BMTC bus stop count and daily trips for a ward (ward_bus_stops; no row
+ * means no stop). See lib/ward-data-quality.ts.
  */
 export async function fetchWardBusStats(wardNo: number): Promise<import('./types').WardBusStats | null> {
   const rows = await query<import('./types').WardBusStats>('ward_bus_stops', {

@@ -12,19 +12,22 @@
  *   traffic_signals, ward_bus_stops and ward_infra_stats with the public anon
  *   key, and applies the migration's rules in JavaScript (scripts/bmtc/bmtc-stops.mjs):
  *   rows before and after, rows to delete, booth links to preserve, constituency
- *   labels normalised or nulled, per-ward ward_infra_stats before -> after, and
- *   the after-state checked against ward_bus_stops. Exits 1 if the migration's
- *   prechecks would refuse the data or its after-state would not match
- *   ward_bus_stops. Once production is migrated, the same command is the
- *   verification step: it reports the table as collapsed and checks the live view.
+ *   labels normalised or nulled, per-ward ward_infra_stats before -> after, the
+ *   after-state checked against ward_bus_stops, and the rows the ward_bus_stops
+ *   view that replaces that table would serve. Exits 1 if the migration's
+ *   prechecks would refuse the data, its after-state would not match
+ *   ward_bus_stops, or the view would change a published row. Once production
+ *   is migrated, the same command is the verification step: it reports the
+ *   table as collapsed and checks ward_bus_stops against the live view.
  *
  * REHEARSE (--rehearse)
  *   Sends the migration to the Supabase Management API
  *   (POST https://api.supabase.com/v1/projects/<ref>/database/query) as
  *     BEGIN; <migration>; DO <block that always raises with the counts>; ROLLBACK;
  *   The last block raises unconditionally, so the transaction can only roll
- *   back; the counts come back in that error. It holds locks on bmtc_stops and
- *   ward_infra_stats for the few seconds it runs, so reads of the view wait.
+ *   back; the counts come back in that error. It holds locks on bmtc_stops,
+ *   ward_infra_stats and ward_bus_stops for the few seconds it runs, so reads
+ *   of them wait.
  *
  * APPLYING FOR REAL
  *   Not here. Production takes the migration through the documented path
@@ -42,8 +45,10 @@ import {
   buildRehearsalSql,
   collapseStops,
   compareWithWardBusStops,
+  diffWardBusStops,
   legacyRowProblem,
   parseRehearsalResult,
+  wardBusStopsView,
   wardInfraStats,
 } from "./bmtc-stops.mjs"
 import { formatCount as n, projectRef, readAll, supabaseUrl } from "./io.mjs"
@@ -162,9 +167,16 @@ async function plan() {
   for (const m of mismatches.slice(0, 10)) console.log(`    ward ${m.ward_no}: expected ${JSON.stringify(m.expected)}, computed ${JSON.stringify(m.actual && { stops: m.actual.bus_stop_count, trips: m.actual.daily_trips })}`)
   if (mismatches.length) ok = false
 
+  // The migration then replaces the table with a view over ward_infra_stats and
+  // refuses if the view would serve any row differently.
+  const viewChanges = diffWardBusStops(wardBusStops, wardBusStopsView(after))
+  line("ward_bus_stops rows the view would change", n(viewChanges.length))
+  for (const d of viewChanges.slice(0, 10)) console.log(`    ward ${d.ward_no}: table ${JSON.stringify(d.table)}, view ${JSON.stringify(d.view)}`)
+  if (viewChanges.length) ok = false
+
   if (alreadyCollapsed && beforeRows) {
-    const live = compareWithWardBusStops(new Map(beforeRows.map(row => [row.ward_no, { ...row, bus_stop_count: Number(row.bus_stop_count), daily_trips: Number(row.daily_trips) }])), wardBusStops)
-    line("live ward_infra_stats matching ward_bus_stops", `${live.length ? "NO" : "yes"} (${n(live.length)} wards differ)`)
+    const live = diffWardBusStops(wardBusStops, wardBusStopsView(new Map(beforeRows.map(row => [row.ward_no, row]))))
+    line("live ward_bus_stops matching ward_infra_stats", `${live.length ? "NO" : "yes"} (${n(live.length)} wards differ)`)
     if (live.length) ok = false
   }
 
@@ -208,7 +220,9 @@ async function rehearse() {
     result.stop_rows !== result.physical_stops && "stop rows != physical stops",
     result.rows_with_boothcode !== 0 && "rows still carry a boothcode",
     result.stops_without_links !== 0 && "stops without booth links",
-    result.wards_disagreeing !== 0 && "wards disagree with ward_bus_stops",
+    result.ward_bus_stops_relkind !== "v" && "ward_bus_stops is not a view",
+    result.ward_bus_stops_static_left !== false && "the replaced ward_bus_stops table was left behind",
+    result.wards_disagreeing !== 0 && "ward_bus_stops would serve rows differently from the table",
     Number(result.bus_stop_count) !== Number(result.ward_bus_stops_stop_count) && "bus_stop_count total != ward_bus_stops",
     Number(result.daily_trips) !== Number(result.ward_bus_stops_total_trips) && "daily_trips total != ward_bus_stops",
   ].filter(Boolean)

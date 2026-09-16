@@ -33,14 +33,21 @@ export const migrationSeededTables = [
 // Migrations that rewrite production rows, not only schema. Until production
 // has run one, a freshly synced seed still holds the old rows, and those can
 // violate what the migration adds: 20260917 adds a unique index that the
-// 42,529 pre-dedup bmtc_stops rows break. So the seed load runs each
-// `beforeSeed` statement, loads the seed, then replays the migration, all in
-// the seed's single transaction. A replayed migration must be a no-op on rows
-// it has already rewritten and must not contain BEGIN/COMMIT.
+// 42,529 pre-dedup bmtc_stops rows break, and turns ward_bus_stops into a view
+// the seed's ward_bus_stops rows cannot be copied into. So the seed load runs
+// each `beforeSeed` statement, loads the seed, then replays the migration, all
+// in the seed's single transaction. beforeSeed may only drop an index the
+// replay recreates, or put back the table a replayed view replaces (with the
+// baseline's columns). A replayed migration must be a no-op on rows it has
+// already rewritten and must not contain BEGIN/COMMIT.
 export const seedReplayedMigrations = [
   {
     file: "20260917_bmtc_stops_dedup.sql",
-    beforeSeed: "DROP INDEX IF EXISTS public.bmtc_stops_physical_key;",
+    beforeSeed: [
+      "DROP INDEX IF EXISTS public.bmtc_stops_physical_key;",
+      "DROP VIEW IF EXISTS public.ward_bus_stops;",
+      "CREATE TABLE IF NOT EXISTS public.ward_bus_stops (ward_no integer NOT NULL PRIMARY KEY, stop_count integer, total_trips bigint);",
+    ].join(" "),
   },
 ]
 

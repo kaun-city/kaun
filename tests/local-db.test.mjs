@@ -33,6 +33,14 @@ const afterBaseline = migrationFiles.filter(name => name > baselineName)
 const stripSqlComments = sql => sql.replace(/--.*$/gm, "").trim()
 const qualified = name => (name.includes(".") ? name : `public.${name}`).replaceAll('"', "")
 
+// [name, type] per column, from a column list or the baseline's CREATE TABLE.
+const columnTypes = list => list.split(",").map(column => column.trim().replaceAll('"', "").split(/\s+/).slice(0, 2))
+const baselineTableColumns = name => {
+  const body = migrations.get(baselineName).match(new RegExp(`CREATE TABLE IF NOT EXISTS "public"\\."${name}" \\(([\\s\\S]*?)\\n\\);`))?.[1]
+  assert.ok(body, `the baseline creates public.${name}`)
+  return columnTypes(body)
+}
+
 const createdTables = new Set([...migrations.values()].flatMap(sql =>
   [...sql.matchAll(/^CREATE TABLE IF NOT EXISTS ([\w."]+)/gm)].map(match => qualified(match[1]))))
 const migrationInsertTargets = new Set([...migrations.values()].flatMap(sql =>
@@ -101,13 +109,28 @@ test("seeds synced before a data-rewriting migration still load and end up migra
       /^\s*(?:BEGIN|COMMIT|END|ROLLBACK)\b/im,
       `${file} has no transaction control`,
     )
-    // beforeSeed may only drop indexes the replay recreates.
-    const dropped = [...beforeSeed.matchAll(/DROP INDEX IF EXISTS ([\w.]+);/g)].map(match => match[1])
-    assert.ok(dropped.length > 0)
-    assert.equal(beforeSeed.replace(/DROP INDEX IF EXISTS [\w.]+;/g, "").trim(), "", "beforeSeed only drops indexes")
-    for (const index of dropped) {
-      const name = index.replace(/^public\./, "")
-      assert.match(stripSqlComments(sql), new RegExp(`CREATE UNIQUE INDEX IF NOT EXISTS ${name}\\b`), `${file} recreates ${name}`)
+    // beforeSeed may only drop indexes the replay recreates, or drop a view the
+    // replay recreates and put back, with the baseline's columns, the table
+    // that view replaced (an older seed still holds that table's rows).
+    const code = stripSqlComments(sql)
+    const statements = beforeSeed.split(";").map(statement => statement.trim()).filter(Boolean)
+    assert.ok(statements.length > 0)
+    for (let at = 0; at < statements.length; at += 1) {
+      const index = statements[at].match(/^DROP INDEX IF EXISTS public\.(\w+)$/)
+      const view = statements[at].match(/^DROP VIEW IF EXISTS public\.(\w+)$/)
+      if (index) {
+        assert.match(code, new RegExp(`CREATE UNIQUE INDEX IF NOT EXISTS ${index[1]}\\b`), `${file} recreates ${index[1]}`)
+      } else if (view) {
+        const name = view[1]
+        assert.match(code, new RegExp(`CREATE OR REPLACE VIEW public\\.${name}\\b`), `${file} recreates the ${name} view`)
+        assert.match(code, new RegExp(`ALTER TABLE public\\.${name} RENAME TO`), `${file} replaces a ${name} table`)
+        const table = statements[at + 1]?.match(new RegExp(`^CREATE TABLE IF NOT EXISTS public\\.${name} \\((.*)\\)$`))
+        assert.ok(table, `the ${name} table is put back right after its view is dropped`)
+        assert.deepEqual(columnTypes(table[1]), baselineTableColumns(name), `${name} is put back with the baseline's columns`)
+        at += 1
+      } else {
+        assert.fail(`${file} beforeSeed may not run: ${statements[at]}`)
+      }
     }
   }
 

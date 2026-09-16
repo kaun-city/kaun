@@ -109,8 +109,8 @@ export async function GET(req: Request) {
 
       const [infraRes, busStopsRes, potholesRes, crashesRes, airRes, workOrderRes] = await Promise.all([
         supabase.from("ward_infra_stats").select("ward_no, signal_count").order("ward_no"),
-        // Bus figures come from ward_bus_stops (one row per physical stop),
-        // never ward_infra_stats, whose bus columns counted duplicate rows.
+        // Bus figures come only from ward_bus_stops, never ward_infra_stats'
+        // bus columns (see lib/ward-data-quality.ts).
         supabase.from("ward_bus_stops").select("ward_no, stop_count, total_trips"),
         supabase.from("ward_potholes").select("ward_no, complaints, data_year").order("ward_no"),
         supabase.from("ward_road_crashes").select("ward_no, crashes_2024, fatal_2024, crashes_2025, fatal_2025").order("ward_no"),

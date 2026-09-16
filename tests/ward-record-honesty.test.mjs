@@ -177,8 +177,13 @@ test("bus stops appear once, from the deduplicated source, with honest trip word
 })
 
 test("public API, CSV export and Ask Kaun take bus figures from ward_bus_stops only", () => {
-  // ward_infra_stats' bus columns counted duplicate bmtc_stops rows; the BNP
-  // partner pipeline reads the API and export, so they must not use them.
+  // Until migration 20260917 runs, ward_infra_stats' bus columns count
+  // duplicate bmtc_stops rows; the BNP partner pipeline reads the API and
+  // export, so they must not use them. The migration makes ward_bus_stops a
+  // view over the fixed ward_infra_stats, so one read path stays right before
+  // and after it, and a BMTC reload cannot leave these surfaces stale.
+  const migration = readFileSync(new URL("../supabase/migrations/20260917_bmtc_stops_dedup.sql", import.meta.url), "utf8")
+  assert.match(migration, /CREATE OR REPLACE VIEW public\.ward_bus_stops\b[\s\S]*?FROM public\.ward_infra_stats\b/)
   const routes = {
     wards: read("app/api/data/wards/route.ts"),
     export: read("app/api/export/route.ts"),

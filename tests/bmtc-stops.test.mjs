@@ -1,6 +1,7 @@
 /**
  * BMTC stops: collapsing booth-stop pairs into physical stops, the 20260917
- * dedup migration, and the plan/ingest scripts' safety gates.
+ * dedup migration (including ward_bus_stops becoming a view over
+ * ward_infra_stats), and the plan/ingest scripts' safety gates.
  *
  * Run: node --test --experimental-strip-types tests/bmtc-stops.test.mjs
  */
@@ -19,12 +20,14 @@ import {
   compareAllStopsFile,
   compareWithWardBusStops,
   diffStops,
+  diffWardBusStops,
   legacyRowProblem,
   parseCsv,
   parseRehearsalResult,
   parseStopsCsv,
   physicalKey,
   pointWithin,
+  wardBusStopsView,
   wardInfraStats,
 } from "../scripts/bmtc/bmtc-stops.mjs"
 import { DEFAULT_ANON_KEY, DEFAULT_SUPABASE_URL } from "../scripts/bmtc/io.mjs"
@@ -238,6 +241,23 @@ test("ward stats count physical stops once, NULL trips as a stop with no trips, 
   ]), [])
   const mismatches = compareWithWardBusStops(stats, [{ ward_no: 1, stop_count: 2, total_trips: 100 }])
   assert.deepEqual(mismatches.map(m => m.ward_no), [1, 2], "ward 2 has stops but no ward_bus_stops row")
+
+  // The ward_bus_stops view: wards with a stop only, like the table it replaces.
+  const view = wardBusStopsView(stats)
+  assert.deepEqual(view, [
+    { ward_no: 1, stop_count: 3, total_trips: 100 },
+    { ward_no: 2, stop_count: 1, total_trips: 7 },
+  ])
+  const table = [{ ward_no: 2, stop_count: 1, total_trips: "7" }, { ward_no: 1, stop_count: 3, total_trips: 100 }]
+  assert.deepEqual(diffWardBusStops(table, view), [])
+
+  // The swap refuses what the dedup assertion tolerates: a 0-stop table row the view would drop.
+  const zeroRow = [...table, { ward_no: 3, stop_count: 0, total_trips: 0 }]
+  assert.deepEqual(compareWithWardBusStops(stats, zeroRow), [])
+  assert.deepEqual(diffWardBusStops(zeroRow, view), [{ ward_no: 3, table: { stop_count: 0, total_trips: 0 }, view: null }])
+  assert.deepEqual(diffWardBusStops(table.slice(0, 1), view).map(d => [d.ward_no, d.table]), [[1, null]])
+  assert.deepEqual(diffWardBusStops([{ ward_no: 1, stop_count: 3, total_trips: 101 }, table[0]], view).map(d => d.ward_no), [1])
+  assert.deepEqual(diffWardBusStops([{ ward_no: 1, stop_count: 3, total_trips: null }, table[0]], [{ ...view[0], total_trips: 0 }, view[1]]).map(d => d.ward_no), [1], "NULL is not 0")
 })
 
 // ---------------------------------------------------------------------------
@@ -372,6 +392,48 @@ test("migration: replay-safe and free of transaction control", () => {
   assert.doesNotThrow(() => buildRehearsalSql(migration))
 })
 
+test("migration: ward_bus_stops becomes a read-only view over ward_infra_stats with the table's columns", () => {
+  const view = code.match(/CREATE OR REPLACE VIEW public\.ward_bus_stops\s+WITH \(security_invoker = true\) AS([\s\S]*?);/)?.[1] ?? ""
+  assert.ok(view, "ward_bus_stops is a security-invoker view")
+  assert.match(view, /^\s*SELECT ward_no,\s+bus_stop_count::integer AS stop_count,\s+daily_trips AS total_trips\s+FROM public\.ward_infra_stats\s+WHERE bus_stop_count > 0\s*$/)
+
+  // Same public columns and types as the baseline table, and the migration
+  // raises unless the created view has exactly those.
+  const baseline = read("supabase/migrations/20260505_remote_schema.sql")
+  const table = baseline.match(/CREATE TABLE IF NOT EXISTS "public"\."ward_bus_stops" \(([\s\S]*?)\n\);/)[1]
+  const columns = table.split(",").map(column => column.trim().replaceAll('"', "").split(/\s+/).slice(0, 2).join(" ")).join(", ")
+  assert.equal(columns, "ward_no integer, stop_count integer, total_trips bigint")
+  assert.match(code, new RegExp(`IF columns IS DISTINCT FROM '${columns}' THEN\\s+RAISE EXCEPTION`))
+
+  assert.match(code, /REVOKE ALL ON public\.ward_bus_stops FROM anon, authenticated, service_role;\s*GRANT SELECT ON public\.ward_bus_stops TO anon, authenticated, service_role;/)
+  assert.doesNotMatch(code, /GRANT (?:ALL|INSERT|UPDATE|DELETE|TRUNCATE)[^;]*ON (?:TABLE )?public\.ward_bus_stops\b/)
+})
+
+test("migration: the ward_bus_stops table checks the collapse, then is dropped only after the view matches it row for row", () => {
+  const dedupCheck = code.indexOf("DO $bmtc_verify$")
+  const rename = code.indexOf("ALTER TABLE public.ward_bus_stops RENAME TO ward_bus_stops_static;")
+  const create = code.indexOf("CREATE OR REPLACE VIEW public.ward_bus_stops")
+  const compare = code.search(/FROM public\.ward_bus_stops_static t\s+FULL JOIN public\.ward_bus_stops v ON v\.ward_no = t\.ward_no/)
+  const refuse = code.indexOf("RAISE EXCEPTION 'ward_bus_stops view would change published figures")
+  const drop = code.indexOf("DROP TABLE public.ward_bus_stops_static;")
+  assert.ok(dedupCheck > 0 && dedupCheck < rename, "the dedup assertion reads the static table")
+  assert.ok(rename < create && create < compare && compare < refuse && refuse < drop)
+  assert.equal((code.match(/DROP TABLE/g) ?? []).length, 1, "only the renamed, compared table is dropped")
+
+  const compareBlock = code.slice(compare, refuse)
+  for (const condition of ["t.ward_no IS NULL", "v.ward_no IS NULL", "t.stop_count IS DISTINCT FROM v.stop_count", "t.total_trips IS DISTINCT FROM v.total_trips"]) {
+    assert.ok(compareBlock.includes(condition), condition)
+  }
+  assert.match(code, /IF to_regclass\('public\.ward_bus_stops_static'\) IS NOT NULL THEN\s+RAISE EXCEPTION/, "a leftover static table is never overwritten")
+  assert.match(code, /IF EXISTS \(SELECT 1 FROM public\.ward_bus_stops_static\) THEN/, "an empty local table has nothing to compare")
+})
+
+test("migration: a replay over a migrated database drops the dependent view before rebuilding ward_infra_stats", () => {
+  const unview = code.search(/= 'v' THEN\s+DROP VIEW public\.ward_bus_stops;/)
+  assert.ok(unview > 0 && unview < code.indexOf("DROP MATERIALIZED VIEW IF EXISTS public.ward_infra_stats;"))
+  assert.doesNotMatch(code, /DROP MATERIALIZED VIEW[^;]*CASCADE/)
+})
+
 test("migration and scripts pin the same constituency names", () => {
   const values = code.match(/CREATE TEMP TABLE bmtc_dedup_ac_names[\s\S]*?;/)[0]
   const pinned = Object.fromEntries([...values.matchAll(/\((\d+), '([^']+)'\)/g)].map(m => [m[1], m[2]]))
@@ -385,6 +447,14 @@ test("migration and scripts pin the same constituency names", () => {
 test("rehearsal SQL can only roll back and its counts are recoverable from the error", () => {
   const sql = buildRehearsalSql(migration)
   assert.match(sql, /^BEGIN;\n/)
+  // Published rows are copied before the migration swaps the table for a view,
+  // and the counts compare the view with that copy.
+  assert.match(sql, /^BEGIN;\n\nCREATE TEMP TABLE kaun_rehearsal_published ON COMMIT DROP AS\nSELECT ward_no, stop_count, total_trips FROM public\.ward_bus_stops;\n/)
+  assert.ok(sql.indexOf("CREATE TEMP TABLE kaun_rehearsal_published") < sql.indexOf(migration))
+  const counts = sql.slice(sql.indexOf("DO $kaun_rehearsal$"))
+  assert.match(counts, /'ward_bus_stops_stop_count', \(SELECT sum\(stop_count\) FROM pg_temp\.kaun_rehearsal_published\)/)
+  assert.match(counts, /'ward_bus_stops_relkind'/)
+  assert.match(counts, /FROM pg_temp\.kaun_rehearsal_published b\s+FULL JOIN public\.ward_bus_stops v/)
   assert.match(sql, /RAISE EXCEPTION 'KAUN_REHEARSAL_RESULT %', result::text;\nEND\n\$kaun_rehearsal\$;\n\nROLLBACK;\n$/)
   assert.doesNotMatch(sql.replace(/\$([A-Za-z_]*)\$[\s\S]*?\$\1\$/g, ""), /^\s*COMMIT\b/im)
   for (const bad of ["COMMIT;", "select 1;\ncommit;", "END;", "SAVEPOINT a;", "START TRANSACTION;"]) {
@@ -418,6 +488,8 @@ test("writes are gated behind explicit flags and credentials", () => {
   assert.match(plan, /if \(!token\) throw new Error\("--rehearse needs SUPABASE_ACCESS_TOKEN/)
   assert.equal((plan.match(/api\.supabase\.com/g) ?? []).length, 2, "one documented and one real Management API call")
   assert.ok(plan.indexOf("buildRehearsalSql(") < plan.indexOf("database/query`"), "only rehearsal SQL is sent")
+  assert.match(plan, /diffWardBusStops\(wardBusStops, wardBusStopsView\(after\)\)/, "the plan mirrors the view swap check")
+  assert.match(plan, /result\.ward_bus_stops_relkind !== "v"/, "a rehearsal that leaves a table fails")
 
   assert.match(ingest, /if \(applying && !serviceKey\) throw new Error\("--apply needs SUPABASE_SERVICE_ROLE_KEY"\)/)
   assert.match(ingest, /if \(!applying\) return\n/)
@@ -426,6 +498,12 @@ test("writes are gated behind explicit flags and credentials", () => {
   assert.match(ingest, /if \(diff\.removed\.length && !prune\)/)
   assert.ok(ingest.indexOf("if (diff.removed.length && !prune)") < ingest.indexOf('restWrite("POST"'), "the prune guard runs before any write")
   assert.match(ingest, /if \(!currentState\.collapsedInDb\)/)
+
+  // collapsedInDb means the migration ran, so ward_bus_stops is the view and
+  // refreshing ward_infra_stats is the only step that keeps it current.
+  assert.match(ingest, /restWrite\("POST", "rpc\/refresh_ward_infra_stats"/)
+  assert.doesNotMatch(ingest, /restWrite\([^)]*ward_bus_stops/)
+  assert.doesNotMatch(read("docs/bmtc-stops.md"), /ingest does not rebuild it|legitimately differ/)
 })
 
 test("importing the CLIs does not run them", async () => {

@@ -451,6 +451,38 @@ export function compareWithWardBusStops(stats, wardBusStops) {
   return mismatches
 }
 
+/**
+ * Rows of the ward_bus_stops view the migration creates over ward_infra_stats:
+ * one per ward with at least one stop, ordered by ward.
+ */
+export function wardBusStopsView(stats) {
+  return [...stats.values()]
+    .filter(s => Number(s.bus_stop_count) > 0)
+    .sort((a, b) => a.ward_no - b.ward_no)
+    .map(s => ({ ward_no: s.ward_no, stop_count: Number(s.bus_stop_count), total_trips: Number(s.daily_trips) }))
+}
+
+/**
+ * Mirror of the migration's ward_bus_stops check: the view must serve exactly
+ * the table's rows, so wards on either side only and differing figures are
+ * all returned. NULL is a value, as with IS DISTINCT FROM.
+ */
+export function diffWardBusStops(tableRows, viewRows) {
+  const value = v => (v === null || v === undefined ? null : Number(v))
+  const figures = row => row && { stop_count: value(row.stop_count), total_trips: value(row.total_trips) }
+  const table = new Map(tableRows.map(row => [row.ward_no, figures(row)]))
+  const view = new Map(viewRows.map(row => [row.ward_no, figures(row)]))
+  const differences = []
+  for (const ward_no of [...new Set([...table.keys(), ...view.keys()])].sort((a, b) => a - b)) {
+    const t = table.get(ward_no) ?? null
+    const v = view.get(ward_no) ?? null
+    if (!t || !v || t.stop_count !== v.stop_count || t.total_trips !== v.total_trips) {
+      differences.push({ ward_no, table: t, view: v })
+    }
+  }
+  return differences
+}
+
 // ---------------------------------------------------------------------------
 // diff (ingest dry run)
 // ---------------------------------------------------------------------------
@@ -495,8 +527,10 @@ export const REHEARSAL_MARKER = "KAUN_REHEARSAL_RESULT"
 /**
  * Wrap a migration so it runs inside an explicit transaction that can only end
  * in an error: the final DO block always raises, carrying the post-migration
- * counts as JSON, so nothing can commit. Refuses SQL with its own transaction
- * control, which could commit part of the rehearsal.
+ * counts as JSON, so nothing can commit. The ward_bus_stops rows published
+ * before the migration are copied first, because the migration replaces that
+ * table with a view and the counts compare the two. Refuses SQL with its own
+ * transaction control, which could commit part of the rehearsal.
  */
 export function buildRehearsalSql(migrationSql) {
   const code = migrationSql
@@ -507,6 +541,9 @@ export function buildRehearsalSql(migrationSql) {
     throw new Error("migration contains transaction control; refusing to rehearse it")
   }
   return `BEGIN;
+
+CREATE TEMP TABLE kaun_rehearsal_published ON COMMIT DROP AS
+SELECT ward_no, stop_count, total_trips FROM public.ward_bus_stops;
 
 ${migrationSql}
 
@@ -528,12 +565,15 @@ BEGIN
     'bus_stop_count', (SELECT sum(bus_stop_count) FROM public.ward_infra_stats),
     'daily_trips', (SELECT sum(daily_trips) FROM public.ward_infra_stats),
     'signal_count', (SELECT sum(signal_count) FROM public.ward_infra_stats),
-    'ward_bus_stops_stop_count', (SELECT sum(stop_count) FROM public.ward_bus_stops),
-    'ward_bus_stops_total_trips', (SELECT sum(total_trips) FROM public.ward_bus_stops),
+    'ward_bus_stops_stop_count', (SELECT sum(stop_count) FROM pg_temp.kaun_rehearsal_published),
+    'ward_bus_stops_total_trips', (SELECT sum(total_trips) FROM pg_temp.kaun_rehearsal_published),
+    'ward_bus_stops_relkind', (SELECT relkind::text FROM pg_catalog.pg_class WHERE oid = to_regclass('public.ward_bus_stops')),
+    'ward_bus_stops_static_left', (to_regclass('public.ward_bus_stops_static') IS NOT NULL),
     'wards_disagreeing', (
-      SELECT count(*) FROM public.ward_bus_stops b
-      LEFT JOIN public.ward_infra_stats w ON w.ward_no = b.ward_no
-      WHERE w.ward_no IS NULL OR w.bus_stop_count <> b.stop_count OR w.daily_trips <> b.total_trips)
+      SELECT count(*) FROM pg_temp.kaun_rehearsal_published b
+      FULL JOIN public.ward_bus_stops v ON v.ward_no = b.ward_no
+      WHERE b.ward_no IS NULL OR v.ward_no IS NULL
+         OR v.stop_count IS DISTINCT FROM b.stop_count OR v.total_trips IS DISTINCT FROM b.total_trips)
   ) INTO result;
   RAISE EXCEPTION '${REHEARSAL_MARKER} %', result::text;
 END

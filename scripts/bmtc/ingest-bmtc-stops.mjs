@@ -33,6 +33,8 @@
  *     upsert new booth links, then delete links the source no longer lists
  *     with --prune, delete stops the source no longer lists (links cascade)
  *     refresh ward_infra_stats via public.refresh_ward_infra_stats()
+ *   The same migration made ward_bus_stops (what the app, API, export and Ask
+ *   Kaun read) a view over ward_infra_stats, so the refresh updates it too.
  *   Without --prune, stops missing from the source stop the apply before any write.
  */
 
@@ -176,7 +178,7 @@ async function apply(desired, current, diff, key) {
   }
 
   await restWrite("POST", "rpc/refresh_ward_infra_stats", { key, url, body: {} })
-  line("ward_infra_stats", "refreshed")
+  line("ward_infra_stats (and the ward_bus_stops view)", "refreshed")
 
   const after = await loadCurrent(key)
   const recheck = diffStops(desired, after.current)
