@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import { BackLink, PageHeader } from "@/components/shared/PageHeader"
 
 const API_BASE = "https://kaun.city/api/data"
 
@@ -97,13 +97,12 @@ const TEXT_LINK = "text-accent underline decoration-accent/40 underline-offset-2
 export default function DataCatalog() {
   return (
     <div className="signal-page fixed inset-0 overflow-y-auto bg-paper-canvas text-ink">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <PageHeader surface="city" back={<BackLink href="/" label="Map" ariaLabel="Back to the map" />} width="4xl" />
 
-        <div className="signal-page-header border-b-2 border-ink pb-4 mb-10">
-          <h1 className="text-2xl font-bold tracking-tight text-ink">
-            <Link href="/" className="hover:text-ink/75 transition-colors">KAUN<span className="text-accent">?</span></Link>
-            <span className="text-ink/70 font-normal ml-3 text-lg">Open data</span>
-          </h1>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+
+        <div className="mb-10">
+          <h1 className="text-2xl font-bold tracking-tight text-ink">Open data</h1>
           <p className="text-ink/75 text-sm mt-2 max-w-2xl leading-relaxed">
             Public APIs for Bengaluru civic data. Free, open, CORS-enabled. Built for civic tools,
             journalism, research, and public interest. All data from public records.

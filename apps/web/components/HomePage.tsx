@@ -8,12 +8,12 @@ import { fetchWardByNumber, pinLookup } from "@/lib/api"
 import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
 import { CitySwitcher } from "@/components/CitySwitcher"
-import { LayerControl } from "@/components/LayerControl"
 import { OLD_WARD_NUMBERS_LABEL, WardFinder, coveringCurrentWards, type CoveringWard } from "@/components/WardFinder"
 import ReportSheet from "@/components/shared/ReportSheet"
-import { SurfaceSwitcher } from "@/components/shared/SurfaceSwitcher"
+import { MapLayerPicker, type PickerLegend } from "@/components/shared/MapLayerPicker"
+import { PageHeader } from "@/components/shared/PageHeader"
 import { getCity } from "@/lib/cities"
-import { getLayer } from "@/lib/map-layers"
+import { MAP_LAYERS, getLayer } from "@/lib/map-layers"
 import type { ChoroplethData } from "@/components/MapView"
 import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
 import { GBA_CROSSWALK_URL, MATERIAL_OVERLAP, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact, type GbaCrosswalkRow } from "@/lib/gba-crosswalk"
@@ -358,18 +358,20 @@ export default function HomePage({ host = "" }: { host?: string }) {
     return { values: layerValues.values, breaks: layerValues.breaks, ramp: meta.ramp }
   }, [activeLayer, layerValues])
 
-  const layerLegend = useMemo(() => {
-    if (!layerValues) return null
+  // The legend keys every ward the layer leaves unpainted, so the total is
+  // the city's ward count (never fewer than the wards that have a value).
+  const layerLegend = useMemo((): PickerLegend | null => {
+    const meta = getLayer(activeLayer)
+    if (!meta || !layerValues) return null
     const nums = Object.values(layerValues.values)
-    if (nums.length === 0) return { breaks: [], min: 0, max: 0, wardCount: 0, totalWards: activeCity.wardCount ?? 0 }
     return {
-      breaks: layerValues.breaks,
-      min: Math.min(...nums),
-      max: Math.max(...nums),
-      wardCount: nums.length,
-      totalWards: Math.max(activeCity.wardCount ?? 0, nums.length),
+      ramp: meta.ramp,
+      min: nums.length ? Math.min(...nums) : 0,
+      max: nums.length ? Math.max(...nums) : 0,
+      painted: nums.length,
+      total: Math.max(activeCity.wardCount ?? 0, nums.length),
     }
-  }, [layerValues, activeCity.wardCount])
+  }, [activeLayer, layerValues, activeCity.wardCount])
 
   // Ward centroids for search (and names for "Old ward numbers"), loaded the
   // first time either is opened rather than on every visit.
@@ -734,35 +736,15 @@ export default function HomePage({ host = "" }: { host?: string }) {
 
       <div className="relative flex-1 min-w-0 h-full transition-all duration-300">
 
-        {/* Wordmark + Search. Leaflet's controls sit at z-index 1000 in this
-            same stacking context, so the header stays above them (1010), and
-            above the phone ward sheet (1050) while search is open, so its
-            results are never drawn under a map control. Dialogs sit higher. */}
-        <div className={`signal-map-header absolute top-3.5 left-3.5 right-3.5 select-none flex items-center gap-2 ${searchOpen ? "z-[1060]" : "z-[1010]"}`}>
-          {!searchOpen && (
-            <>
-              <span className="signal-wordmark bg-paper border-b-2 border-ink/55 px-[0.7rem] py-[0.45rem] leading-none text-ink font-bold text-base tracking-tight pointer-events-none shrink-0">
-                KAUN<span className="text-accent">?</span>
-              </span>
-              <a
-                href="/how-it-works"
-                className="signal-map-control flex items-center justify-center w-11 h-11 sm:w-9 sm:h-9 bg-paper border border-ink/55 text-ink hover:bg-paper-muted text-xs font-bold shrink-0"
-                aria-label="How Kaun works and where its data comes from"
-                title="How it works & data sources"
-              >
-                i
-              </a>
-
-              <SurfaceSwitcher current="city" host={host} variant="overlay" />
-              <div className="hidden sm:block">
-                <CitySwitcher activeCityId={activeCity.id} />
-              </div>
-            </>
-          )}
-
-          {/* Ward search */}
-          <div className={`relative z-[1000] ${searchOpen ? "w-full" : "ml-auto"}`} style={{ pointerEvents: "auto" }}>
-            {searchOpen ? (
+        {/* The shared page header, floating over the map. Leaflet's controls sit
+            at z-index 1000 in this same stacking context, so the header stays
+            above them (1010), and above the phone ward sheet (1050) while
+            search is open, so its results are never drawn under a map control.
+            Dialogs sit higher. Search replaces the header row while it is open:
+            on a phone the input needs the whole width. */}
+        <div className={`city-map-header absolute top-3.5 left-3.5 right-3.5 pointer-events-none ${searchOpen ? "z-[1060]" : "z-[1010]"}`}>
+          {searchOpen ? (
+            <div className="relative z-[1000] w-full pointer-events-auto">
               <div className="flex items-center w-full md:w-auto">
                 <input
                   ref={searchInputRef}
@@ -873,20 +855,41 @@ export default function HomePage({ host = "" }: { host?: string }) {
                   </div>
                 )}
               </div>
-            ) : (
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="signal-map-control flex items-center justify-center w-11 h-11 md:w-9 md:h-9 bg-paper border border-ink/55 text-ink hover:bg-paper-muted transition-colors"
-                aria-label={hasProjects ? "Search wards and projects" : "Search wards"}
-                title={hasProjects ? "Search wards and projects" : "Search wards"}
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="text-ink/70" aria-hidden="true">
-                  <circle cx="10.5" cy="10.5" r="7" />
-                  <line x1="15.5" y1="15.5" x2="21" y2="21" />
-                </svg>
-              </button>
-            )}
-          </div>
+            </div>
+          ) : (
+            <PageHeader
+              surface="city"
+              variant="overlay"
+              host={host}
+              context={activeCity.name}
+              actions={
+                <>
+                  <div className="hidden sm:block">
+                    <CitySwitcher activeCityId={activeCity.id} />
+                  </div>
+                  <a
+                    href="/how-it-works"
+                    className="flex items-center justify-center w-11 h-11 bg-paper border border-ink/55 text-ink hover:bg-paper-muted font-mono text-xs font-bold shrink-0"
+                    aria-label="How Kaun works and where its data comes from"
+                    title="How it works & data sources"
+                  >
+                    i
+                  </a>
+                  <button
+                    onClick={() => setSearchOpen(true)}
+                    className="flex items-center justify-center w-11 h-11 bg-paper border border-ink/55 text-ink hover:bg-paper-muted transition-colors"
+                    aria-label={hasProjects ? "Search wards and projects" : "Search wards"}
+                    title={hasProjects ? "Search wards and projects" : "Search wards"}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="text-ink/70" aria-hidden="true">
+                      <circle cx="10.5" cy="10.5" r="7" />
+                      <line x1="15.5" y1="15.5" x2="21" y2="21" />
+                    </svg>
+                  </button>
+                </>
+              }
+            />
+          )}
         </div>
 
         {/* City Pulse — accountability headlines before pin drop */}
@@ -1049,13 +1052,25 @@ export default function HomePage({ host = "" }: { host?: string }) {
           }}
         />
 
-        {/* Choropleth layer switcher — hidden while picking a report spot */}
+        {/* Layer picker — the same control as the India map's, bottom-left.
+            Hidden while picking a report spot. It stops short of the phone
+            "…" button on the right, and on phones HomePage publishes the ward
+            sheet's measured height as --ward-sheet-h on the map root, so a
+            folded sheet (10rem is its usual height) never covers it: it rises
+            above the sheet and its height cap shrinks to match. */}
         {!reportPickMode && (
-          <LayerControl
+          <MapLayerPicker
+            id="city-layer-panel"
+            layers={MAP_LAYERS}
             activeId={activeLayer}
             onSelect={setActiveLayer}
             legend={layerLegend}
             loading={layerLoading}
+            noun={{ one: "ward", other: "wards" }}
+            noDataSwatch="fill"
+            className="absolute bottom-4 left-4 z-[900] w-[min(20rem,calc(100vw-5.5rem))] max-h-[calc(100%-7rem)]
+              max-lg:[.signal-map:has(.ward-sheet[data-sheet=collapsed])_&]:bottom-[calc(var(--ward-sheet-h,10rem)+0.75rem)]
+              max-lg:[.signal-map:has(.ward-sheet[data-sheet=collapsed])_&]:max-h-[calc(100%-var(--ward-sheet-h,10rem)-7.75rem)]"
           />
         )}
       </div>

@@ -144,7 +144,7 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
   const position = `${(index % facts.length) + 1}/${facts.length}`
 
   return (
-    <div className="absolute top-[4.25rem] sm:top-14 left-3.5 right-16 md:right-auto md:max-w-[420px] z-[900] pointer-events-auto">
+    <div className="absolute top-[4.25rem] left-3.5 right-16 md:right-auto md:max-w-[420px] z-[900] pointer-events-auto">
       <div
         onClick={handleTap}
         onKeyDown={e => {

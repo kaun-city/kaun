@@ -19,7 +19,8 @@ import { decodeMapState, encodeMapState } from "@/lib/india/map-url-state"
 import { markMapSeen, readMapView, saveMapView, type MapView } from "@/lib/india/map-view-store"
 import { indiaHref } from "@/lib/host-routing"
 import { LOK_SABHA_SEATS } from "@/lib/india/constants"
-import { IndiaHeader } from "./IndiaHeader"
+import { PageHeader, indiaSectionNav } from "@/components/shared/PageHeader"
+import { MapLayerPicker, type PickerLegend } from "@/components/shared/MapLayerPicker"
 import type { PcFeatureProps } from "./IndiaMapView"
 
 const IndiaMapView = dynamic(() => import("./IndiaMapView"), { ssr: false })
@@ -53,11 +54,6 @@ function layerValuesFor(layerId: IndiaLayerId): Promise<Record<string, number>> 
   return p
 }
 
-/** Below Tailwind's md breakpoint the bottom rail is a stacked column. */
-function isNarrowViewport(): boolean {
-  return typeof window !== "undefined" && !window.matchMedia("(min-width: 768px)").matches
-}
-
 export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   const [features, setFeatures] = useState<PcFeatureProps[]>([])
   const [selected, setSelected] = useState<PcFeatureProps | null>(null)
@@ -66,12 +62,6 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   const [values, setValues] = useState<Record<string, number> | null>(null)
   const [layerLoading, setLayerLoading] = useState(false)
   const [q, setQ] = useState("")
-  /**
-   * The layer panel folds to one line so a phone keeps its map. Phones start
-   * folded and fold again after a pick; from md up it starts open, where it
-   * sits in a corner and costs nothing.
-   */
-  const [panelOpen, setPanelOpen] = useState(false)
   const focusRef = useRef<{ focus: (pcCode: string) => void } | null>(null)
 
   /**
@@ -107,19 +97,8 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
 
   const layer = getIndiaLayer(layerId)
 
-  useEffect(() => {
-    if (!isNarrowViewport()) setPanelOpen(true)
-  }, [])
-
-  const selectSeat = useCallback((feature: PcFeatureProps | null) => {
-    setSelected(feature)
-    if (feature && isNarrowViewport()) setPanelOpen(false)
-  }, [])
-
-  const chooseLayer = useCallback((id: IndiaLayerId | null) => {
-    setLayerId(id)
-    if (isNarrowViewport()) setPanelOpen(false)
-  }, [])
+  const selectSeat = useCallback((feature: PcFeatureProps | null) => setSelected(feature), [])
+  const chooseLayer = useCallback((id: string | null) => setLayerId(getIndiaLayer(id)?.id ?? null), [])
   const mpBySeat = useMemo(() => new Map(mps.map(m => [m.pc_code, m])), [mps])
 
   /**
@@ -224,8 +203,17 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
     }).slice(0, 8)
   }, [q, features, mpBySeat])
 
-  const painted = values ? Object.keys(values).length : 0
-  const legendNums = values ? Object.values(values) : []
+  const legend = useMemo((): PickerLegend | null => {
+    if (!layer || !values) return null
+    const nums = Object.values(values)
+    return {
+      ramp: rampFor(layer),
+      min: nums.length ? Math.min(...nums) : 0,
+      max: nums.length ? Math.max(...nums) : 0,
+      painted: nums.length,
+      total: features.length || LOK_SABHA_SEATS,
+    }
+  }, [layer, values, features.length])
 
   return (
     <main className="signal-map flex flex-col h-full bg-paper-canvas overflow-hidden">
@@ -246,7 +234,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
             z-[1010] puts the stack, and the search results that drop out of
             it, above Leaflet's controls (z-1000) and above the bottom rail. */}
         <div className="absolute top-4 inset-x-4 z-[1010] flex flex-col items-start gap-2 pointer-events-none">
-          <IndiaHeader variant="overlay" current="map" />
+          <PageHeader surface="india" variant="overlay" nav={indiaSectionNav("map")} />
 
           <div className="flex w-full flex-col items-start gap-2 sm:flex-row">
             {/* Search — seat name, seat code, or MP name. */}
@@ -332,8 +320,8 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
             the map underneath still pans; the panels re-enable pointers.
             `pb-11` clears Leaflet's attribution bar, which is two lines tall at
             phone widths.
-            z-[1005] sits above Leaflet's controls (z-1000): with "Color by"
-            open the rail is tall enough to reach the zoom buttons, and the zoom
+            z-[1005] sits above Leaflet's controls (z-1000): with the layer
+            picker open the rail is tall enough to reach the zoom buttons, and the zoom
             control used to sit on top of the preview's close button. The rail
             also stops at top-56, below the top stack, and the layer panel's
             body scrolls inside what is left — so however tall the panels get,
@@ -345,112 +333,19 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
         <div className="absolute inset-x-0 top-56 bottom-0 z-[1005] flex flex-col-reverse gap-2 p-4 pb-11
           pointer-events-none md:contents">
 
-          {/* Layer switcher + legend. Folded, it is one line naming the
-              layer plus the colour key, so the map stays readable; the full
-              legend (description, missing-seat count, source) is one tap away. */}
-          <div className="pointer-events-auto w-full min-h-0 flex flex-col
-            md:absolute md:bottom-4 md:left-4 md:z-[900] md:w-[min(20rem,calc(100vw-2rem))]
-            bg-paper border border-ink/55">
-            <button
-              type="button"
-              onClick={() => setPanelOpen(open => !open)}
-              aria-expanded={panelOpen}
-              aria-controls="india-layer-panel"
-              className="flex w-full min-h-11 shrink-0 items-center justify-between gap-3 px-3 py-1.5 text-left
-                hover:bg-ink/5 transition-colors
-                focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
-            >
-              <span className="min-w-0">
-                <span className="block text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Color by</span>
-                <span className="block truncate font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-ink">
-                  {layer ? layer.label : "None"}
-                </span>
-              </span>
-              <span className="flex shrink-0 items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">
-                {panelOpen ? "Hide" : "Show"}
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className={panelOpen ? "" : "rotate-180"}>
-                  <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-            </button>
-
-            {!panelOpen && layer && (
-              <div className="flex items-center gap-2 px-3 pb-2.5 font-mono text-[11px] tabular-nums text-ink/70">
-                <span>{legendNums.length ? formatValue(Math.min(...legendNums), layer.format) : "—"}</span>
-                <span className="flex flex-1 items-center gap-px" aria-hidden="true">
-                  {rampFor(layer).map((c, i) => (
-                    <span key={i} className="h-2 flex-1" style={{ backgroundColor: c }} />
-                  ))}
-                </span>
-                <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
-              </div>
-            )}
-            {!panelOpen && layer && !layerLoading && (features.length || LOK_SABHA_SEATS) - painted > 0 && (
-              <p className="flex items-center gap-1.5 px-3 pb-2.5 -mt-1 text-[11px] text-ink/70">
-                <span aria-hidden="true" className="w-2.5 h-2.5 shrink-0 border border-dashed border-ink/60" />
-                {(features.length || LOK_SABHA_SEATS) - painted} seats have no value — not zero
-              </p>
-            )}
-
-            {panelOpen && (
-              <div id="india-layer-panel" className="min-h-0 overflow-y-auto border-t border-ink/15 p-3">
-                <div className="grid grid-cols-2 gap-1.5 md:flex md:flex-wrap">
-                  <button
-                    onClick={() => chooseLayer(null)}
-                    aria-pressed={layerId === null}
-                    className={`min-h-11 md:min-h-8 px-2 py-1 border font-mono text-[11px] uppercase tracking-[0.06em] leading-tight
-                      transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
-                      layerId === null
-                        ? "border-ink bg-ink text-paper"
-                        : "border-ink/20 text-ink/60 hover:text-ink hover:bg-ink/5"}`}
-                  >
-                    None
-                  </button>
-                  {INDIA_LAYERS.map(l => (
-                    <button
-                      key={l.id}
-                      onClick={() => chooseLayer(l.id)}
-                      aria-pressed={layerId === l.id}
-                      className={`min-h-11 md:min-h-8 px-2 py-1 border font-mono text-[11px] uppercase tracking-[0.06em] leading-tight
-                        transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
-                        layerId === l.id
-                          ? "border-ink bg-ink text-paper"
-                          : "border-ink/20 text-ink/60 hover:text-ink hover:bg-ink/5"}`}
-                    >
-                      {l.label}
-                    </button>
-                  ))}
-                </div>
-
-                {layer && (
-                  <div className="mt-2.5 space-y-1.5">
-                    <p className="text-ink/75 text-xs leading-snug">{layer.description}</p>
-                    <div className="flex items-center gap-px">
-                      {rampFor(layer).map((c, i) => (
-                        <span key={i} className="h-2 flex-1" style={{ backgroundColor: c }} />
-                      ))}
-                    </div>
-                    <div className="flex items-center justify-between text-ink/70 text-[11px] font-mono tabular-nums">
-                      <span>{legendNums.length ? formatValue(Math.min(...legendNums), layer.format) : "—"}</span>
-                      <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-ink/60 text-xs">
-                      <span aria-hidden="true" className="w-2.5 h-2.5 shrink-0 border border-dashed border-ink/60" />
-                      <span>
-                        {layerLoading
-                          ? "loading…"
-                          : `no value for ${(features.length || LOK_SABHA_SEATS) - painted} of ${features.length || LOK_SABHA_SEATS} seats`}
-                      </span>
-                    </div>
-                    {layer.absentNote && (
-                      <p className="text-ink/60 text-xs leading-snug">{layer.absentNote}</p>
-                    )}
-                    <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">Source: {layer.source}</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          {/* Layer picker — the same control as the city map's. Folded, it
+              is one line plus the colour key, so the map stays readable. */}
+          <MapLayerPicker
+            id="india-layer-panel"
+            layers={INDIA_LAYERS}
+            activeId={layerId}
+            onSelect={chooseLayer}
+            legend={legend}
+            loading={layerLoading}
+            noun={{ one: "seat", other: "seats" }}
+            noDataSwatch="dashed"
+            className="w-full md:absolute md:bottom-4 md:left-4 md:z-[900] md:max-h-[calc(100%-15rem)] md:w-[min(20rem,calc(100vw-2rem))]"
+          />
 
           {/* Seat preview — a doorway to the seat's own page, never a substitute */}
           {selected && (

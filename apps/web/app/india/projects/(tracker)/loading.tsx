@@ -1,4 +1,4 @@
-import { IndiaHeader } from "@/components/india/IndiaHeader"
+import { PageHeader, indiaSectionNav } from "@/components/shared/PageHeader"
 import { SkeletonLine } from "@/components/shared/Skeleton"
 
 /**
@@ -29,10 +29,10 @@ import { SkeletonLine } from "@/components/shared/Skeleton"
 export default function Loading() {
   return (
     <div className="signal-page h-full overflow-y-auto" aria-busy="true" aria-label="Loading">
-      <div className="max-w-4xl mx-auto px-5 py-6">
-        <IndiaHeader current="projects" />
+      <PageHeader surface="india" nav={indiaSectionNav("projects")} width="4xl" />
 
-        <div className="mt-6" aria-hidden="true">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+        <div aria-hidden="true">
           <SkeletonLine className="h-2.5 w-56" />
           <SkeletonLine className="h-7 w-72 mt-2" />
           <SkeletonLine className="h-3 w-full max-w-2xl mt-3" />

@@ -84,7 +84,6 @@ body {
 
 .signal-page-header {
   border-bottom: 2px solid var(--signal-ink);
-  padding-bottom: 1rem;
 }
 
 :is(h1, h2, h3) {
@@ -144,10 +143,11 @@ body {
 }
 
 /* City map: the zoom buttons sit below the header strip at every width, never
- * on it. The strip is top-3.5 (14px) plus a 44px row on phones and at sm, 36px
- * from md, so it ends by 58px; 52px + Leaflet's 10px control margin puts the
- * buttons at 62px. On phones the ticker below stops 64px from the right edge
- * (right-16), clear of the buttons' 60px. */
+ * on it. The strip is top-3.5 (14px) plus a 46px row at every width (44px
+ * targets inside the switcher's 1px border), so it ends at 60px; 52px +
+ * Leaflet's 10px control margin puts the buttons at 62px. On
+ * phones the ticker below stops 64px from the right edge (right-16), clear of
+ * the buttons' 60px. */
 .city-map .leaflet-top.leaflet-right {
   top: 52px !important;
 }
@@ -189,17 +189,10 @@ body {
   color: var(--signal-ink);
 }
 
-.signal-wordmark,
 .signal-map-control {
   background: var(--signal-paper);
   border: 1px solid var(--signal-line);
   color: var(--signal-ink);
-}
-
-.signal-wordmark {
-  border-width: 0 0 2px;
-  padding: 0.45rem 0.7rem;
-  line-height: 1;
 }
 
 .signal-primary-action {

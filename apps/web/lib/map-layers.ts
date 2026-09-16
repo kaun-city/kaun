@@ -3,7 +3,7 @@ import { BBMP_198_RECORDS_ATTRIBUTABLE } from "./ward-data-quality.ts"
  * Map layers — the "paint the city" choropleth registry.
  *
  * Pure data + pure functions only: this module is imported by both the
- * /api/map-layers route (server) and MapView/LayerControl (client), and by
+ * /api/map-layers route (server) and MapView/MapLayerPicker (client), and by
  * the node:test suite via --experimental-strip-types. Keep it free of React,
  * Leaflet, and Supabase imports.
  */

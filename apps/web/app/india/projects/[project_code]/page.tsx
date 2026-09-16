@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { IndiaHeader } from "@/components/india/IndiaHeader"
+import { BackLink, PageHeader, indiaSectionNav } from "@/components/shared/PageHeader"
 import { ObjectHeader, Section, Stat } from "@/components/india/ObjectHeader"
 import { ProjectTimeline } from "@/components/india/ProjectTimeline"
 import { SourcesFooter } from "@/components/india/SourcesFooter"
@@ -66,10 +66,15 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <div className="signal-page h-full overflow-y-auto">
-      <div className="max-w-3xl mx-auto px-5 py-6">
-        <IndiaHeader current="project" />
+      <PageHeader
+        surface="india"
+        nav={indiaSectionNav("project")}
+        back={<BackLink href={indiaHref("/projects")} label="Projects" ariaLabel="Back to project overruns" />}
+        width="3xl"
+      />
 
-        <div className="mt-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+        <div>
           <ObjectHeader
             eyebrow={[project.ministry, project.sector].filter(Boolean).join(" · ") || "Central project"}
             title={project.project_name}

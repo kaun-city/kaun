@@ -1,4 +1,4 @@
-import { IndiaHeader } from "./IndiaHeader"
+import { BackLink, PageHeader, indiaSectionNav } from "@/components/shared/PageHeader"
 import { BackToMap } from "./BackToMap"
 import { SkeletonLine } from "@/components/shared/Skeleton"
 import { indiaHref } from "@/lib/host-routing"
@@ -25,24 +25,27 @@ export function ObjectPageSkeleton({
 }: {
   sections?: number
   /**
-   * Render the "Map" control in the skeleton too. On for seats, because a
-   * seat page HAS one: leaving it out would make the real page push everything
-   * down by a chip's height the moment it arrived, which is the jump this
-   * component exists to avoid. It also means a slow first render can be
-   * abandoned rather than waited out. Project pages have no such control, so
-   * they pass nothing.
+   * Seats get the "Map" back control, projects the "Projects" one — the same
+   * back link the real page renders, so the header does not change under the
+   * reader when the page arrives, and a slow first render can be abandoned
+   * rather than waited out.
    */
   backToMap?: boolean
 }) {
   return (
     <div className="signal-page h-full overflow-y-auto" aria-busy="true" aria-label="Loading">
-      <div className="max-w-3xl mx-auto px-5 py-6">
-        {/* Live, not a grey bar: it is the one thing here that works. */}
-        {backToMap && <BackToMap href={indiaHref("/")} />}
+      {/* Live, not grey bars: the header is the one thing here that works. */}
+      <PageHeader
+        surface="india"
+        nav={indiaSectionNav(backToMap ? "seat" : "project")}
+        back={backToMap
+          ? <BackToMap href={indiaHref("/")} />
+          : <BackLink href={indiaHref("/projects")} label="Projects" ariaLabel="Back to project overruns" />}
+        width="3xl"
+      />
 
-        <IndiaHeader current={backToMap ? "seat" : "project"} />
-
-        <div className="mt-6" aria-hidden="true">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+        <div aria-hidden="true">
           {/* identity block: eyebrow, title, subtitle, chips — matched to
               ObjectHeader's own rhythm so the real page settles into this
               rather than replacing it */}
