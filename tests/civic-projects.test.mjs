@@ -39,3 +39,13 @@ test("every published record reference resolves to a web source", () => {
     }
   }
 })
+
+test("projects are findable from map search by name, road, agency or ward", async () => {
+  const { searchCivicProjects } = await import("../apps/web/lib/civic-projects.ts")
+  for (const query of ["varthur", "Gunjur", "SH-35", "krdcl", "varthur corridor"]) {
+    assert.deepEqual(searchCivicProjects(query, "bengaluru").map(project => project.slug), ["varthur-gunjur-road"], query)
+  }
+  assert.deepEqual(searchCivicProjects("koramangala", "bengaluru"), [])
+  assert.deepEqual(searchCivicProjects("varthur", "visakhapatnam"), [])
+  assert.deepEqual(searchCivicProjects("v", "bengaluru"), [])
+})

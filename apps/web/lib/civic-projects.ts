@@ -316,6 +316,27 @@ export function getCivicProjectsForPin(result: PinResult | null): CivicProject[]
   )
 }
 
+function searchText(project: CivicProject): string {
+  return [
+    project.title, project.shortTitle, project.routeName, project.road,
+    project.ownerAgency, project.ownerAgencyShort, project.projectType,
+    ...project.affectedWardNames, ...project.affectedWardLabels,
+  ].join(" ").toLowerCase()
+}
+
+/**
+ * Projects whose name, road, agency or affected wards contain every word of
+ * the query (2+ characters). Used by map search so a record is findable
+ * without first opening one of its wards.
+ */
+export function searchCivicProjects(query: string, cityId: string): CivicProject[] {
+  const words = query.toLowerCase().split(/[^a-z0-9]+/).filter(word => word.length >= 2)
+  if (!words.length) return []
+  return CIVIC_PROJECTS.filter(project =>
+    project.cityId === cityId && words.every(word => searchText(project).includes(word)),
+  )
+}
+
 export function sourceMap(project: CivicProject): Map<string, CivicProjectSource> {
   return new Map(project.sources.map(source => [source.id, source]))
 }

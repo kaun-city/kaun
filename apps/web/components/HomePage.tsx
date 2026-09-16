@@ -19,6 +19,8 @@ import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWar
 import { GBA_CROSSWALK_URL, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact } from "@/lib/gba-crosswalk"
 import { publicSupabaseConfig } from "@/lib/supabase-config"
 import { CorporatorVacancy } from "@/components/CorporatorVacancy"
+import Link from "next/link"
+import { CIVIC_PROJECTS, searchCivicProjects } from "@/lib/civic-projects"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -253,6 +255,9 @@ export default function HomePage({ host = "" }: { host?: string }) {
         (w.corporation?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
       ).slice(0, 8)
     : []
+
+  const projectResults = searchQuery.length >= 2 ? searchCivicProjects(searchQuery, activeCity.id) : []
+  const hasProjects = CIVIC_PROJECTS.some(project => project.cityId === activeCity.id)
 
   const handleSearchSelect = async (ward: WardOption) => {
     setSearchOpen(false)
@@ -527,12 +532,23 @@ export default function HomePage({ host = "" }: { host?: string }) {
                     }
                   }}
                   onBlur={() => setTimeout(() => { setSearchOpen(false); setSearchQuery("") }, 200)}
-                  placeholder="Search ward..."
+                  placeholder={hasProjects ? "Search a ward or project..." : "Search ward..."}
                   autoFocus
                   className="w-full md:w-64 h-11 bg-paper-bright border border-ink/55 px-3 text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:border-ink"
                 />
-                {searchResults.length > 0 && (
-                  <div className="absolute top-full mt-1 left-0 right-0 bg-paper border border-ink/55 overflow-hidden max-h-60 overflow-y-auto z-[1000]">
+                {(searchResults.length > 0 || projectResults.length > 0) && (
+                  <div className="absolute top-full mt-1 left-0 right-0 bg-paper border border-ink/55 overflow-hidden max-h-72 overflow-y-auto z-[1000]">
+                    {projectResults.map(project => (
+                      <Link
+                        key={project.slug}
+                        href={`/${project.cityId}/projects/${project.slug}`}
+                        onMouseDown={e => e.preventDefault()}
+                        className="flex w-full min-h-11 flex-col justify-center px-3 py-2 text-left hover:bg-ink/5 border-b border-ink/10 bg-paper-muted transition-colors"
+                      >
+                        <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/60">Project record · {project.status}</span>
+                        <span className="text-sm font-semibold text-ink">{project.shortTitle}</span>
+                      </Link>
+                    ))}
                     {searchResults.map(w => (
                       <button
                         key={`${w.corporation_id ?? "legacy"}:${w.ward_no}`}
@@ -556,8 +572,8 @@ export default function HomePage({ host = "" }: { host?: string }) {
               <button
                 onClick={() => setSearchOpen(true)}
                 className="signal-map-control flex items-center justify-center w-11 h-11 md:w-9 md:h-9 bg-paper border border-ink/55 text-ink hover:bg-paper-muted transition-colors"
-                aria-label="Search wards"
-                title="Search wards"
+                aria-label={hasProjects ? "Search wards and projects" : "Search wards"}
+                title={hasProjects ? "Search wards and projects" : "Search wards"}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="text-ink/70" aria-hidden="true">
                   <circle cx="10.5" cy="10.5" r="7" />
@@ -630,6 +646,14 @@ export default function HomePage({ host = "" }: { host?: string }) {
                   New ward?
                 </button>
               )}
+              {hasProjects && (
+                <Link
+                  href={`/${activeCity.id}/projects`}
+                  className="flex items-center gap-2 min-h-11 px-4 bg-paper border border-ink/55 hover:bg-paper-muted font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-ink transition-colors duration-150"
+                >
+                  Project records
+                </Link>
+              )}
               <button
                 onClick={() => setReportPickMode(true)}
                 className="flex items-center gap-2 min-h-11 px-4 bg-paper border border-ink/55 hover:bg-paper-muted font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-ink transition-colors duration-150"
@@ -650,6 +674,16 @@ export default function HomePage({ host = "" }: { host?: string }) {
                     >
                       New ward crosswalk
                     </button>
+                  )}
+                  {hasProjects && (
+                    <Link
+                      role="menuitem"
+                      href={`/${activeCity.id}/projects`}
+                      onClick={() => setActionsOpen(false)}
+                      className="flex w-full min-h-11 items-center px-3 text-left text-sm text-ink hover:bg-ink/5 border-t border-ink/15"
+                    >
+                      Project records
+                    </Link>
                   )}
                   <button
                     role="menuitem"
