@@ -10,7 +10,7 @@ const ENDPOINTS = [
     path: "/api/data/wards",
     description: "The 243 historical Bengaluru wards (2022 KGIS/DataMeet delimitation) with assembly constituency and zone mapping. These are not the current 369 GBA wards, and the ward numbers differ.",
     params: [
-      { name: "ward", description: "Historical 243-ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality)" },
+      { name: "ward", description: "Historical 243-ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality). Spending and potholes are recorded on BBMP's 198-ward map and allocated to the 243 ward by area overlap; each carries an estimate object naming its source wards." },
     ],
     examples: [
       { label: "All wards", url: `${API_BASE}/wards` },
@@ -50,7 +50,7 @@ const ENDPOINTS = [
     path: "/api/data/spending",
     description: "BBMP budget, work orders, ward-level spending by category, and property tax collections.",
     params: [
-      { name: "ward", description: "Ward number for ward-specific data" },
+      { name: "ward", description: "Historical 243-ward number for ward-specific data (ward-spending is an area-overlap estimate from BBMP's 198-ward records)" },
       { name: "type", description: "budget, work-orders, ward-spending, property-tax, or all" },
     ],
     examples: [
@@ -61,9 +61,9 @@ const ENDPOINTS = [
   {
     name: "CSV Export",
     path: "/api/export",
-    description: "Full ward-level dataset as downloadable CSV. Demographics, infrastructure, spending by category, potholes, crashes, air quality, work order counts. Source attribution footer included.",
+    description: "Full ward-level dataset as downloadable CSV, one row per historical 243 ward. Demographics, infrastructure, spending by category, potholes, crashes, air quality, work order counts. Spending and potholes are allocated from BBMP's 198-ward records by area overlap. Source attribution footer included.",
     params: [
-      { name: "type", description: "all, ward-spending, or ward-demographics" },
+      { name: "type", description: "all, ward-spending, ward-spending-bbmp198 (the unallocated source table, with its own 198-ward numbers), or ward-demographics" },
     ],
     examples: [
       { label: "Full dataset (CSV)", url: "https://kaun.city/api/export?type=all" },

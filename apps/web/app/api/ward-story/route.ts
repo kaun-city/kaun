@@ -3,6 +3,7 @@ import { generateText } from "ai"
 import { createClient } from "@supabase/supabase-js"
 import { createHash } from "crypto"
 import { enforceRateLimit, makeAiLimiter } from "@/lib/ratelimit"
+import { describeFormerWardCommittees, type FormerWardCommittee } from "@/lib/bbmp198-crosswalk"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
@@ -19,7 +20,8 @@ export interface WardStoryRequest {
   mla_lad_utilization_pct?: number | null
   mla_criminal_cases?: number | null
   mla_net_worth_growth_pct?: number | null
-  committee_meetings?: number | null
+  /** Former BBMP-198 ward committees covering the ward; counts stay per committee. */
+  former_ward_committees?: FormerWardCommittee[]
   // CITIZEN
   signal_count?: number | null
   bus_stop_count?: number | null
@@ -45,8 +47,9 @@ function buildPrompt(d: WardStoryRequest): string {
     if (d.mla_net_worth_growth_pct != null) lines.push(`  - Net worth growth since election: ${d.mla_net_worth_growth_pct}%`)
   }
 
-  if (d.committee_meetings != null) {
-    lines.push(`Ward committee meetings recorded (2020-2022): ${d.committee_meetings}`)
+  const committees = describeFormerWardCommittees(d.former_ward_committees)
+  if (committees.length) {
+    lines.push(`Ward committee meetings (per committee; never add them up): ${committees.join("; ")}`)
   }
 
   if (d.signal_count != null) {
@@ -56,10 +59,10 @@ function buildPrompt(d: WardStoryRequest): string {
     lines.push(`Bus stops in ward: ${d.bus_stop_count}${d.city_avg_stops != null ? ` (city average: ${d.city_avg_stops})` : ""}`)
   }
   if (d.pothole_complaints != null) {
-    lines.push(`Pothole complaints logged: ${d.pothole_complaints}`)
+    lines.push(`Pothole complaints, Fix My Street 2022 (estimated from BBMP 198-ward records by map overlap): ${Math.round(d.pothole_complaints)}`)
   }
   if (d.ward_spend_total_lakh != null) {
-    lines.push(`BBMP ward spend: ₹${d.ward_spend_total_lakh.toLocaleString("en-IN")} lakh (2018-2023)`)
+    lines.push(`BBMP ward works spend 2018-2023 (estimated from BBMP 198-ward records by map overlap): ₹${Math.round(d.ward_spend_total_lakh).toLocaleString("en-IN")} lakh`)
     if (d.ward_spend_roads_pct != null) lines.push(`  - Roads & infrastructure share: ${d.ward_spend_roads_pct.toFixed(1)}%`)
   }
 

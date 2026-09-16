@@ -5,7 +5,8 @@ import type { ContractorProfile, RepReportCard, WardCommitteeMeetings, WardInfra
 
 interface Props {
   reportCard: RepReportCard | null
-  committeeMeetings: WardCommitteeMeetings | null
+  /** Former BBMP-198 ward committees covering this ward, largest overlap first. */
+  committeeMeetings: WardCommitteeMeetings[]
   infraStats: WardInfraStats | null
   potholes: WardPotholes | null
   wardContractors: ContractorProfile[]
@@ -39,10 +40,14 @@ function availableEvidence(props: Props): EvidenceItem[] {
     value: String(reportCard.criminal_cases),
     note: "Candidate election affidavit",
   })
-  if (committeeMeetings) items.push({
+  // One committee's own count, never a sum across committees.
+  const [largestCommittee] = committeeMeetings
+  if (largestCommittee) items.push({
     label: "Ward committee meetings",
-    value: String(committeeMeetings.meetings_count),
-    note: `Recorded ${committeeMeetings.period}`,
+    value: String(largestCommittee.meetings_count),
+    note: committeeMeetings.length === 1
+      ? `${largestCommittee.ward_name} committee · ${largestCommittee.period}`
+      : `${largestCommittee.ward_name}, largest of ${committeeMeetings.length} committees · ${largestCommittee.period}`,
   })
   if (infraStats?.signal_count != null) items.push({
     label: "Traffic signals",
@@ -52,7 +57,7 @@ function availableEvidence(props: Props): EvidenceItem[] {
   if (potholes) items.push({
     label: "Pothole reports",
     value: potholes.complaints.toLocaleString("en-IN"),
-    note: potholes.data_year,
+    note: `Estimated · Fix My Street ${potholes.data_year}`,
   })
   if (wardContractors.length > 0) {
     const flagged = wardContractors.filter(contractor => contractor.blacklist_flags.length > 0).length

@@ -66,7 +66,7 @@ const ALL_MAP_LAYERS: MapLayerMeta[] = [
   {
     id: "potholes",
     label: "Pothole complaints",
-    description: "Estimated from historical ward overlaps · Fix My Street (2022)",
+    description: "Estimated from BBMP's 198-ward records by map overlap · Fix My Street (2022)",
     source: "BBMP Fix My Street",
     format: "count",
     unit: "Pothole complaints per ward, estimated",
@@ -84,7 +84,7 @@ const ALL_MAP_LAYERS: MapLayerMeta[] = [
   {
     id: "ward_spend",
     label: "Ward works spend",
-    description: "Historical ward spend allocated by geographic overlap",
+    description: "BBMP 198-ward spend (2018-23) allocated by map overlap",
     source: "BBMP work orders via OpenCity",
     format: "inr_lakh",
     unit: "Works spend per ward, estimated",

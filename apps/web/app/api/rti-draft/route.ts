@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
 import { enforceRateLimit, makeAiLimiter } from "@/lib/ratelimit"
+import { describeFormerWardCommittees, type FormerWardCommittee } from "@/lib/bbmp198-crosswalk"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
@@ -24,7 +25,9 @@ export interface RTIDraftRequest {
   mla_party?: string
   lad_utilization_pct?: number | null
   lad_total_lakh?: number | null
-  committee_meetings?: number | null
+  /** Former BBMP-198 ward committees covering the ward, each with its own count. */
+  former_ward_committees?: FormerWardCommittee[]
+  /** Estimated for the ward from BBMP 198-ward records by map overlap. */
   pothole_complaints?: number | null
   ward_spend_total_lakh?: number | null
   ward_spend_roads_pct?: number | null
@@ -71,12 +74,12 @@ function buildContext(d: RTIDraftRequest): string {
       if (d.lad_total_lakh != null) lines.push(`Total LAD allocation: Rs ${d.lad_total_lakh} lakh`)
       break
     case "committee_meetings":
-      if (d.committee_meetings != null)
-        lines.push(`Ward committee meetings recorded 2020-2022: ${d.committee_meetings}`)
+      for (const committee of describeFormerWardCommittees(d.former_ward_committees))
+        lines.push(`Former ${committee}`)
       break
     case "pothole_complaints":
-      if (d.pothole_complaints != null)
-        lines.push(`Pothole complaints logged: ${d.pothole_complaints}`)
+      if (d.pothole_complaints != null && Number.isFinite(Number(d.pothole_complaints)))
+        lines.push(`Pothole complaints, Fix My Street 2022 (Kaun's estimate for this ward from BBMP 198-ward records; request the exact figure): ${Math.round(Number(d.pothole_complaints))}`)
       break
     case "ward_spend":
       if (d.ward_spend_total_lakh != null)

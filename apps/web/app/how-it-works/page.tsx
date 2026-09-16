@@ -127,6 +127,14 @@ export default function HowItWorksPage() {
               overlap and record the full split).
             </p>
             <p className="mt-2">
+              Ward spending (2018-23), pothole complaints (2022) and ward committee meetings (2020-22) were
+              recorded on the older <strong>198</strong>-ward map, whose numbers name different places again
+              (198 #25 is Horamavu; 243 #25 is Rajeshwari Nagar). A second crosswalk, built the same way, carries
+              them: spend and complaint totals are allocated by the share of each 198 ward inside a ward, and a
+              ward committee&apos;s meeting count is never split or added up; each committee is named under the
+              wards it materially covers.
+            </p>
+            <p className="mt-2">
               Full methodology, the dataset (CSV/JSON), and how to report an error:{" "}
               <a href="https://data.kaun.city/bengaluru/ward-crosswalk/" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">data.kaun.city/bengaluru/ward-crosswalk</a>.
             </p>

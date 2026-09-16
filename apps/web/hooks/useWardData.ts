@@ -10,15 +10,16 @@ import type {
 import {
   fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchElectedReps,
   fetchMlaLadFunds, fetchPropertyTax, fetchRepReportCard, fetchSakalaPerformance,
-  fetchTradeLicenses, fetchWardAirQuality, fetchWardAmenities, fetchWardBusStats, fetchWardCommitteeMeetings, fetchWardContractors, fetchWardGrievances, fetchWardInfraStats,
-  fetchWardPotholes, fetchWardProfile, fetchWardReportCount, fetchWardRoadCrashes, fetchWardSignals, fetchWardSpend, fetchWardStats,
-  fetchWardUnknowns, fetchWardWaterQuality, fetchWorkOrders, lookupLocalOffices, voteFact,
+  fetchTradeLicenses, fetchWardAirQuality, fetchWardAmenities, fetchWardBusStats, fetchWardCommitteeMeetingsByBbmp198, fetchWardContractors, fetchWardGrievances, fetchWardInfraStats,
+  fetchWardPotholesByBbmp198, fetchWardProfile, fetchWardReportCount, fetchWardRoadCrashes, fetchWardSignals, fetchWardSpendByBbmp198, fetchWardStats,
+  fetchWardUnknowns, fetchWardWaterQuality, fetchWorkOrders, loadBbmp198Crosswalk, lookupLocalOffices, voteFact,
 } from "@/lib/api"
 import { getCity } from "@/lib/cities"
 import { BBMP_198_RECORDS_ATTRIBUTABLE } from "@/lib/ward-data-quality"
 import type { CityConfig } from "@/lib/cities"
 import { getVoterToken, groupOfficerFacts } from "@/lib/ward-utils"
 import { attributableHistoricalWards, type HistoricalWardRef } from "@/lib/gba-crosswalk"
+import { allocateBbmp198, attributableBbmp198WardsForHistoricalWards, bbmp198AllocationWeights } from "@/lib/bbmp198-crosswalk"
 import { preferredElectedReps } from "@/lib/current-ward"
 
 export type WardUnknowns = {
@@ -85,7 +86,8 @@ export function useWardData(result: PinResult | null) {
   const [extraFacts, setExtraFacts] = useState<CommunityFact[]>([])
   const [unknowns, setUnknowns] = useState<WardUnknowns | null>(null)
   const [showAddFor, setShowAddFor] = useState<ShowAddFor | null>(null)
-  const [committeeMeetings, setCommitteeMeetings] = useState<WardCommitteeMeetings | null>(null)
+  /** Former BBMP-198 ward committees that materially overlap this ward, largest overlap first. Never summed. */
+  const [committeeMeetings, setCommitteeMeetings] = useState<WardCommitteeMeetings[]>([])
   const [reportCard, setReportCard] = useState<RepReportCard | null>(null)
   const [ladFunds, setLadFunds] = useState<MlaLadFunds[]>([])
   const [corpContacts, setCorpContacts] = useState<GbaContact[]>([])
@@ -145,7 +147,7 @@ export function useWardData(result: PinResult | null) {
     setExtraFacts([])
     setUnknowns(null)
     setShowAddFor(null)
-    setCommitteeMeetings(null)
+    setCommitteeMeetings([])
     setReportCard(null)
     setLadFunds([])
     setCorpContacts([])
@@ -217,10 +219,15 @@ export function useWardData(result: PinResult | null) {
   useEffect(() => {
     let active = true
 
-    if (wardNo && city.features.wardCommitteeMeetings && BBMP_198_RECORDS_ATTRIBUTABLE) {
-      void fetchWardCommitteeMeetings(wardNo).then(value => {
+    if (historicalWards.length && city.features.wardCommitteeMeetings && BBMP_198_RECORDS_ATTRIBUTABLE) {
+      // A committee's meeting count belongs to that committee: name each
+      // materially overlapping former 198-ward committee, never split or sum.
+      void loadBbmp198Crosswalk().then(async index => {
+        const committees = index ? attributableBbmp198WardsForHistoricalWards(historicalWards, index) : []
+        const rows = await fetchWardCommitteeMeetingsByBbmp198(committees.map(committee => committee.ward_no))
         if (!active) return
-        setCommitteeMeetings(value)
+        const order = new Map(committees.map((committee, position) => [committee.ward_no, position]))
+        setCommitteeMeetings(rows.sort((a, b) => (order.get(a.ward_no) ?? 0) - (order.get(b.ward_no) ?? 0)))
         setCommitteeSettled(true)
       })
     } else {
@@ -242,7 +249,7 @@ export function useWardData(result: PinResult | null) {
     }
 
     return () => { active = false }
-  }, [wardIdentity, wardNo, assemblyConstituency, city.features.wardCommitteeMeetings, city.features.mlaLadFunds, city.features.repReportCards])
+  }, [wardIdentity, historicalWards, assemblyConstituency, city.features.wardCommitteeMeetings, city.features.mlaLadFunds, city.features.repReportCards])
 
   // ── Local offices + corporation contacts ─────────────────
   useEffect(() => {
@@ -290,14 +297,17 @@ export function useWardData(result: PinResult | null) {
     if (!historicalWards.length || !city.features.wardSpend || !BBMP_198_RECORDS_ATTRIBUTABLE) {
       setWardSpendSettled(true)
     } else {
-      void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardSpend(ref.ward_no, cityId) }))).then(results => {
+      // Spend is recorded on the 198-ward map: allocate each 198 ward's total
+      // by legacy_share (current -> 243) x bbmp198_share (243 -> 198).
+      void loadBbmp198Crosswalk().then(async index => {
+        const weights = index ? bbmp198AllocationWeights(historicalWards, index) : new Map<number, number>()
+        const rows = await fetchWardSpendByBbmp198(weights.keys())
         if (!active) return
         setWardSpendSettled(true)
-        const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardSpendCategory } => !!row.value)
         if (!rows.length) return setWardSpend(null)
         const fields: Array<keyof WardSpendCategory> = ["buildings_facilities", "drainage", "roads_and_drains", "roads_and_infrastructure", "streetlighting", "waste_management", "water_and_sanitation", "grand_total"]
-        const estimate = { ward_no: 0, ward_name: currentWardName, period: rows[0].value.period } as WardSpendCategory
-        for (const field of fields) Object.assign(estimate, { [field]: weightedNumber(rows, value => Number(value[field])) })
+        const estimate = { ward_no: 0, ward_name: currentWardName, period: rows[0].period } as WardSpendCategory
+        for (const field of fields) Object.assign(estimate, { [field]: allocateBbmp198(weights, rows, row => Number(row[field])) ?? 0 })
         setWardSpend(estimate)
       })
     }
@@ -392,10 +402,13 @@ export function useWardData(result: PinResult | null) {
       if (active) setSignals(uniqueBy(values.flat(), row => row.id))
     })
     if (city.features.wardPotholes && BBMP_198_RECORDS_ATTRIBUTABLE) {
-      void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardPotholes(ref.ward_no, cityId) }))).then(results => {
+      // Complaints are counted on the 198-ward map: allocate like spend.
+      void loadBbmp198Crosswalk().then(async index => {
+        const weights = index ? bbmp198AllocationWeights(historicalWards, index) : new Map<number, number>()
+        const rows = await fetchWardPotholesByBbmp198(weights.keys())
         if (!active) return
-        const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardPotholes } => !!row.value)
-        if (rows.length) setPotholes({ ward_no: 0, ward_name: currentWardName, complaints: Math.round(weightedNumber(rows, v => v.complaints)), data_year: rows[0].value.data_year })
+        const complaints = allocateBbmp198(weights, rows, row => row.complaints)
+        if (complaints != null) setPotholes({ ward_no: 0, ward_name: currentWardName, complaints: Math.round(complaints), data_year: rows[0].data_year })
         setPotholesSettled(true)
       })
     } else {

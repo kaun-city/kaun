@@ -169,7 +169,7 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
                 <p className={`text-lg text-ink ${FIGURE}`}>{potholes.complaints.toLocaleString("en-IN")}</p>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <p className={SOURCE}>Fix My Street 2022</p>
+                <p className={SOURCE}>Fix My Street {potholes.data_year} · estimated from BBMP&apos;s 198-ward map</p>
                 {potholes.complaints > 0 && (
                   <button
                     type="button"

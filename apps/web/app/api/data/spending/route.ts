@@ -1,4 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
+import { bbmp198AllocationWeights, estimateDatameet243FromBbmp198 } from "@/lib/bbmp198-crosswalk"
+import { BBMP198_INDEX, bbmp198EstimateProvenance } from "@/lib/bbmp198-server"
 
 export const runtime = "nodejs"
 
@@ -81,12 +83,25 @@ export async function GET(req: Request) {
   }
 
   if ((type === "ward-spending" || type === "all") && wardNo) {
-    const { data } = await supabase
-      .from("ward_spend_category")
-      .select("*")
-      .eq("ward_no", parseInt(wardNo))
-      .single()
-    result.ward_spending = data
+    // ward_spend_category carries BBMP-198 numbers. `ward` is a DataMeet-243
+    // number, so the figure is allocated from the overlapping 198 wards.
+    const wn = parseInt(wardNo)
+    const fields = ["buildings_facilities", "drainage", "others", "roads_and_drains", "roads_and_infrastructure", "streetlighting", "surveillance", "waste_management", "water_and_sanitation", "grand_total"] as const
+    const bbmp198WardNos = [...bbmp198AllocationWeights([{ ward_no: wn, legacy_share: 1 }], BBMP198_INDEX).keys()]
+    const { data } = bbmp198WardNos.length
+      ? await supabase.from("ward_spend_category").select(`ward_no, period, ${fields.join(", ")}`).in("ward_no", bbmp198WardNos)
+      : { data: [] }
+    const rows = (data ?? []) as unknown as Array<{ ward_no: number; period: string | null } & Record<(typeof fields)[number], number | null>>
+    const estimate = estimateDatameet243FromBbmp198(BBMP198_INDEX, wn, rows, fields)
+    result.ward_spending = estimate
+      ? {
+          ward_no: wn,
+          ward_name: BBMP198_INDEX.get(wn)?.datameet243_name ?? null,
+          ...estimate.values,
+          period: rows[0]?.period ?? null,
+          estimate: bbmp198EstimateProvenance(estimate),
+        }
+      : null
   }
 
   if ((type === "property-tax" || type === "all") && wardNo) {

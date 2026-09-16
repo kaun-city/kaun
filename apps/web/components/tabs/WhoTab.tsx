@@ -58,7 +58,8 @@ interface Props {
   profile: WardProfile | null
   profileLoading: boolean
   electedReps: ElectedRep[]
-  committeeMeetings: WardCommitteeMeetings | null
+  /** Former BBMP-198 ward committees covering this ward, largest overlap first. */
+  committeeMeetings: WardCommitteeMeetings[]
   reportCard: RepReportCard | null
   ladFunds: MlaLadFunds[]
   corpContacts: GbaContact[]
@@ -224,32 +225,50 @@ export function WhoTab({
           The 2020-22 dataset counts meetings held; it states no window or
           target, so there is no honest "of N possible" and no grade beyond
           the zero. */}
-      {committeeMeetings ? (() => {
-        const count = committeeMeetings.meetings_count
-        const period = committeeMeetings.period || "2020-22"
+      {committeeMeetings.length > 0 ? (() => {
+        const period = committeeMeetings[0].period || "2020-22"
+        const multiple = committeeMeetings.length > 1
         return (
           <HistoricalSection label={period}>
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <p className={EYEBROW}>Ward Committee</p>
-              {count === 0 && (
+              <p className={EYEBROW}>{multiple ? "Ward Committees" : "Ward Committee"}</p>
+              {committeeMeetings.every(committee => committee.meetings_count === 0) && (
                 <span className="inline-flex items-center border border-danger/35 bg-danger/[0.07] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none text-danger">No meetings recorded</span>
               )}
             </div>
-            <div className="flex items-baseline gap-3">
-              <p className="font-mono text-2xl font-semibold tabular-nums text-ink">{count}</p>
-              <p className="text-ink/80 text-xs">meeting{count === 1 ? "" : "s"} recorded, {period}</p>
-            </div>
+            {/* Committees of BBMP's 198-ward map. A count belongs to its
+                committee, so each is named and none are added together. */}
+            {committeeMeetings.map(committee => (
+              <div key={committee.ward_no} className="flex items-baseline gap-3">
+                <p className="font-mono text-2xl font-semibold tabular-nums text-ink">{committee.meetings_count}</p>
+                <p className="text-ink/80 text-xs">
+                  meeting{committee.meetings_count === 1 ? "" : "s"} recorded by the {committee.ward_name} committee, {committee.period || period}
+                </p>
+              </div>
+            ))}
+            {multiple && (
+              <p className="text-ink/70 text-xs">This area was split across these former wards, each with its own committee.</p>
+            )}
             <div className="flex items-center justify-between gap-3">
               <p className="text-ink/70 text-xs">Ward committees are meant to meet every month</p>
               <button
-                onClick={() => setRtiRequest({ ...rtiBase(), issue_type: "committee_meetings" })}
+                onClick={() => setRtiRequest({
+                  ...rtiBase(),
+                  issue_type: "committee_meetings",
+                  former_ward_committees: committeeMeetings.map(committee => ({
+                    ward_name: committee.ward_name,
+                    bbmp198_ward_no: committee.ward_no,
+                    meetings_count: committee.meetings_count,
+                    period: committee.period,
+                  })),
+                })}
                 className={`inline-flex min-h-11 shrink-0 items-center text-xs transition-colors ${TEXT_LINK}`}
               >
                 Request minutes (RTI)
               </button>
             </div>
-            <p className={PROVENANCE}>BBMP via opencity.in · {period}</p>
+            <p className={PROVENANCE}>BBMP via opencity.in · 198-ward map · {period}</p>
           </div>
           </HistoricalSection>
         )

@@ -319,7 +319,7 @@ export function SpendTab({
               )
             })}
           </div>
-          <Provenance label="2018-23" source="BBMP" />
+          <Provenance label="2018-23" source="BBMP 198-ward records, estimated by map overlap" />
         </section>
       ) : !wardSpendAttributable ? (
         <section className={SECTION}>

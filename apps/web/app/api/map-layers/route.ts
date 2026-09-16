@@ -3,6 +3,8 @@ import { MAP_LAYERS, getLayer, quantileBreaks } from "@/lib/map-layers"
 import { publicSupabaseConfig } from "@/lib/supabase-config"
 import gbaCrosswalkJson from "@/public/bengaluru-gba-369-to-datameet-243.json"
 import sourceCrosswalkJson from "@/public/bengaluru-ward-crosswalk.json"
+import { bbmp198ValuesToDatameet243 } from "@/lib/bbmp198-crosswalk"
+import { BBMP198_INDEX } from "@/lib/bbmp198-server"
 import { constituencyKey } from "@/lib/bengaluru-constituencies"
 import { flaggedContractorCountsByCurrentWard, type CurrentWardRecordRow, type LegacySourceWardRow } from "@/lib/gba-crosswalk"
 
@@ -22,6 +24,11 @@ export function OPTIONS() {
 type Values = Record<string, number>
 
 type GbaCrosswalkRow = (typeof gbaCrosswalkJson.rows)[number]
+
+/** 198-ward totals -> DataMeet-243 (bbmp198_share) -> current GBA wards (legacy_share). */
+function currentizeBbmp198Values(bbmp198Values: Values): Values {
+  return currentizeLegacyValues(bbmp198ValuesToDatameet243(bbmp198Values, BBMP198_INDEX))
+}
 
 function currentizeLegacyValues(legacyValues: Values): Values {
   const values: Values = {}
@@ -86,7 +93,8 @@ async function layerValues(supabase: SupabaseClient, layerId: string, cityId: st
       const { data } = await query
       const values: Values = {}
       for (const r of data ?? []) if (r.complaints != null) values[r.ward_no] = r.complaints
-      return cityId === "bengaluru" ? currentizeLegacyValues(values) : values
+      // ward_potholes is keyed on BBMP's 198-ward map, never a 243 number.
+      return cityId === "bengaluru" ? currentizeBbmp198Values(values) : values
     }
 
     case "ward_spend": {
@@ -96,7 +104,8 @@ async function layerValues(supabase: SupabaseClient, layerId: string, cityId: st
       const values: Values = {}
       // Stored values are rupees; the public layer contract is INR lakh.
       for (const r of data ?? []) if (r.grand_total != null) values[r.ward_no] = Number(r.grand_total) / 100_000
-      return cityId === "bengaluru" ? currentizeLegacyValues(values) : values
+      // ward_spend_category is keyed on BBMP's 198-ward map, never a 243 number.
+      return cityId === "bengaluru" ? currentizeBbmp198Values(values) : values
     }
 
     case "flagged_contractors": {

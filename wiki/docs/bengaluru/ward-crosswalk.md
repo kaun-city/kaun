@@ -13,7 +13,7 @@ Bengaluru has had **four** ward delimitations in a decade:
 
 | Scheme | Wards | Where it shows up |
 |---|---|---|
-| 2015 (old) | 198 | KGIS `BBMP_Ward` layer; historical records |
+| 2010 (old) | 198 | KGIS `BBMP_Ward` layer; **ward spend 2018–23, Fix My Street potholes 2022, ward committee meetings 2020–22** ([crosswalk below](#bbmp-198-datameet-243)) |
 | 2023 *Final* | **225** | **BBMP/IFMS work orders, payments, KPPP tenders** |
 | KGIS/DataMeet | **243** | **kaun.city map, `wards` table, this wiki** |
 | GBA (proposed) | 369 | Future — Greater Bengaluru Authority, elections pending |
@@ -94,6 +94,41 @@ outside_share, split, samples, method`.
 truncation). The JSON adds a machine-readable `shares` array
 (`[{datameet243_no, share}, …]`) for proportional consumers — `shares` plus
 `outside_share` sum to ~1.
+
+## BBMP-198 → DataMeet-243 { #bbmp-198-datameet-243 }
+
+Three BBMP datasets Kaun shows are keyed on the **198-ward** map in force for the
+2010 and 2015 councils: ward works spend by category (2018–23), Fix My Street
+pothole complaints (2022) and ward committee meetings (2020–22). The 198 and 243
+maps number different places — 198 #25 is Horamavu, 243 #25 is Rajeshwari
+Nagar; only 3 of 198 ward numbers land mostly in the 243 ward of the same
+number — so these were once shown under the wrong ward.
+
+**Method.** Same engine as the GBA-369 crosswalk: both boundary layers
+(DataMeet `BBMP_oldWards.geojson` and `BBMP.geojson`, pinned to one commit) are
+sampled on 40×40 interior grids in **both** directions; no names are matched.
+Every overlapping pair keeps two shares:
+
+- `bbmp198_share` — fraction of the 198 ward inside the 243 ward. Spend and
+  complaint totals are **allocated** with this weight (a current GBA ward then
+  applies its own `legacy_share`). Allocated figures are labelled estimates.
+- `dm243_share` — fraction of the 243 ward covered by the 198 ward.
+
+**Ward committee meetings are not split.** A committee's meeting count belongs
+to that committee; a ward covering 30% of Horamavu did not hold 30% of its
+meetings. Each committee is named under a ward only when the overlap is ≥10% in
+both directions (or it is the ward's largest overlap), with its own count, and
+counts are never added up.
+
+**Result (version `bbmp198-dm243-2026.09`).** 1,024 overlapping pairs, 365 of
+them material. By largest 198 overlap, 243 wards are 166 clear primary (≥70%),
+60 split primary (50–70%) and 17 ambiguous (<50%). 0.47% of the 198-ward area
+lies outside the 243 map.
+
+- [:material-code-json: JSON — `bbmp2010_198_to_datameet_243.json`](ward-crosswalk/bbmp2010_198_to_datameet_243.json) (rows per 243 ward with every 198 overlap, both shares, provenance)
+- [:material-file-delimited: CSV — `bbmp2010_198_to_datameet_243_pairs.csv`](ward-crosswalk/bbmp2010_198_to_datameet_243_pairs.csv) (`bbmp198_no, bbmp198_name, datameet243_no, datameet243_name, bbmp198_share, dm243_share, material, is_primary_for_243`)
+
+Rebuild: `node scripts/wardmap/build-bbmp198-crosswalk.mjs --generated-at <ISO time>`.
 
 ## Corrections
 

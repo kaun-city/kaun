@@ -427,7 +427,12 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 mla_questions_asked: ward.reportCard?.questions_asked ?? null,
                 mla_lad_utilization_pct: ward.reportCard?.lad_utilization_pct ?? null,
                 mla_criminal_cases: ward.reportCard?.criminal_cases ?? null,
-                committee_meetings: ward.committeeMeetings?.meetings_count ?? null,
+                former_ward_committees: ward.committeeMeetings.map(committee => ({
+                  ward_name: committee.ward_name,
+                  bbmp198_ward_no: committee.ward_no,
+                  meetings_count: committee.meetings_count,
+                  period: committee.period,
+                })),
                 signal_count: ward.infraStats?.signal_count ?? null,
                 // ward_infra_stats.bus_stop_count is inflated ~14x by duplicate
                 // stop rows, and the route compares against that inflated
