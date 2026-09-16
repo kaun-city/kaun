@@ -21,7 +21,14 @@ interface Props {
  */
 export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
   const [open, setOpen] = useState(false)
+  // The legend folds away without clearing the layer, so the painted map can
+  // be read full-size; a new layer always opens its legend.
+  const [legendOpen, setLegendOpen] = useState(true)
   const wrapRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setLegendOpen(true)
+  }, [activeId])
 
   const active: MapLayerMeta | null = MAP_LAYERS.find(l => l.id === activeId) ?? null
 
@@ -77,17 +84,30 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
       )}
 
       {/* Legend for the active layer */}
-      {active && !open && (
-        <div className="mb-2 w-60 bg-paper border border-ink/55 px-3 py-2.5">
+      {active && !open && legendOpen && (
+        <div id="city-layer-legend" className="mb-2 w-60 bg-paper border border-ink/55 px-3 py-2.5">
           <div className="flex items-center justify-between gap-2">
             <p className="text-ink text-xs font-semibold truncate">{active.label}</p>
-            <button
-              onClick={() => onSelect(null)}
-              aria-label="Clear layer"
-              className="w-11 h-11 -my-2 -mr-2 flex items-center justify-center text-ink/60 hover:text-ink hover:bg-ink/5 text-sm leading-none shrink-0"
-            >
-              &times;
-            </button>
+            <div className="flex shrink-0 items-center -my-2 -mr-2">
+              <button
+                onClick={() => setLegendOpen(false)}
+                aria-label="Hide legend"
+                aria-controls="city-layer-legend"
+                aria-expanded="true"
+                className="w-11 h-11 flex items-center justify-center text-ink/60 hover:text-ink hover:bg-ink/5"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <button
+                onClick={() => onSelect(null)}
+                aria-label="Clear layer"
+                className="w-11 h-11 flex items-center justify-center text-ink/60 hover:text-ink hover:bg-ink/5 text-sm leading-none"
+              >
+                &times;
+              </button>
+            </div>
           </div>
           {loading ? (
             <p className="text-ink/60 text-[11px] mt-1.5">Loading...</p>
@@ -112,6 +132,7 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
         </div>
       )}
 
+      <div className="flex items-stretch">
       <button
         onClick={() => setOpen(o => !o)}
         className={`flex min-h-11 items-center gap-2 px-4 py-2.5
@@ -129,6 +150,20 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
         </svg>
         {active ? active.label : "Layers"}
       </button>
+      {active && !open && !legendOpen && (
+        <button
+          onClick={() => setLegendOpen(true)}
+          aria-label="Show legend"
+          aria-controls="city-layer-legend"
+          aria-expanded="false"
+          className="-ml-px flex w-11 min-h-11 items-center justify-center border border-accent bg-paper text-accent hover:bg-paper-muted"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="rotate-180">
+            <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
+      </div>
     </div>
   )
 }

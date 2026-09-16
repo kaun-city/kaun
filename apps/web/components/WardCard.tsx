@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useCallback } from "react"
+import { useRef, useState, useCallback, useEffect } from "react"
 import type { PinResult } from "@/lib/types"
 import type { HistoricalWardRef } from "@/lib/gba-crosswalk"
 import { useWardData } from "@/hooks/useWardData"
@@ -9,7 +9,7 @@ import { WhoTab } from "@/components/tabs/WhoTab"
 import { SpendTab } from "@/components/tabs/SpendTab"
 import { CitizenTab } from "@/components/tabs/CitizenTab"
 import { ReachTab } from "@/components/tabs/ReachTab"
-import { AskKaunBar } from "@/components/shared/AskKaunBar"
+import { AskKaunPanel } from "@/components/shared/AskKaunPanel"
 import { WardHeadline } from "@/components/WardHeadline"
 import { WardGrade } from "@/components/WardGrade"
 import { getCity } from "@/lib/cities"
@@ -91,8 +91,18 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const primaryHistoricalWard = ward.historicalWards[0]
   const listWards = ward.recordWards ?? ward.historicalWards
   const [copied, setCopied] = useState(false)
+  /** Phones only: fold the sheet down to the ward's name so the map shows. */
+  const [collapsed, setCollapsed] = useState(false)
+  /** Ask Kaun opens over the record on request instead of always taking space. */
+  const [askOpen, setAskOpen] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const recordEndRef = useRef<HTMLDivElement>(null)
+
+  const wardKey = `${result?.gba_corporation_id ?? ""}:${result?.gba_ward_no ?? ""}:${result?.ward_no ?? ""}`
+  useEffect(() => {
+    setCollapsed(false)
+    setAskOpen(false)
+  }, [wardKey])
 
   const handleShare = useCallback(async () => {
     if (!result?.found) return
@@ -120,6 +130,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
   // Tabs live in the footer, so a tab switch must bring its content into view
   // when the reader has already scrolled past the ward record.
   const selectTab = useCallback((tab: Tab) => {
+    setAskOpen(false)
     ward.setTab(tab)
     const scroller = scrollRef.current
     const recordEnd = recordEndRef.current
@@ -135,6 +146,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
   if (!loading && !result) return null
 
   const code = result?.found ? recordCode(result) : null
+  const askEnabled = !!result?.found && getCity(result.city_id).features.askKaun
+  // While folded (phones), everything below the ward identity steps aside.
+  const foldedAway = collapsed ? "max-lg:hidden" : ""
 
   return (
     /*
@@ -142,28 +156,37 @@ export default function WardCard({ result, loading, onClose }: Props) {
      *   Mobile  : fixed bottom sheet (overlays map, slides up from bottom)
      *   Desktop : static flex sidebar (map shrinks to accommodate)
      *
-     * One scroll region holds the record and the active tab; the tab bar and
-     * Ask Kaun stay pinned at the bottom, as in the Signal on Paper reference.
+     * One scroll region holds the record and the active tab; the tab bar stays
+     * pinned at the bottom, as in the Signal on Paper reference. Ask Kaun opens
+     * in place of the scroll region only when asked for. On phones the sheet
+     * folds down to the ward's name.
      */
     <div
       ref={cardRef}
-      className="signal-panel
+      data-sheet={collapsed ? "collapsed" : "expanded"}
+      className={`signal-panel ward-sheet
       fixed bottom-0 left-0 right-0 z-[1050]
       flex flex-col
       bg-paper border-t-2 border-ink
-      min-h-[48svh] max-h-[88svh]
+      ${collapsed ? "" : askOpen ? "min-h-[64svh]" : "min-h-[48svh]"} max-h-[88svh]
       animate-slide-up
 
       lg:static lg:z-auto
       lg:w-[26rem] lg:h-dvh lg:min-h-0 lg:max-h-none
       lg:border-t-0 lg:border-l lg:border-ink/25
-    ">
-      {/* Drag handle (mobile only) */}
-      <div className="flex justify-center items-center pt-2.5 pb-1 lg:hidden shrink-0 cursor-grab active:cursor-grabbing">
-        <div className="w-10 h-1 bg-ink/25" />
-      </div>
+    `}>
+      {/* Handle (phones): tap to fold or unfold the sheet */}
+      <button
+        type="button"
+        onClick={() => setCollapsed(value => !value)}
+        aria-expanded={!collapsed}
+        aria-label={collapsed ? "Expand ward record" : "Collapse ward record"}
+        className="lg:hidden shrink-0 flex w-full min-h-7 items-center justify-center pt-2 pb-1 hover:bg-ink/5"
+      >
+        <span aria-hidden="true" className="w-10 h-1 bg-ink/30" />
+      </button>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto min-h-0 overscroll-contain">
+      <div ref={scrollRef} className={`flex-1 overflow-y-auto min-h-0 overscroll-contain ${askOpen ? "hidden" : ""}`}>
         {/* Record header */}
         <div className="px-5 pt-2 pb-4 lg:pt-4">
           <div className="flex items-center justify-between gap-2">
@@ -172,7 +195,20 @@ export default function WardCard({ result, loading, onClose }: Props) {
             </p>
             <div className="flex items-center gap-1.5">
               {code && !loading && (
-                <span className="mr-1 font-mono text-[11px] tracking-[0.04em] text-ink/60">{code}</span>
+                <span className="mr-1 hidden min-[400px]:inline font-mono text-[11px] tracking-[0.04em] text-ink/60">{code}</span>
+              )}
+              {result?.found && !loading && (
+                <button
+                  type="button"
+                  onClick={() => setCollapsed(value => !value)}
+                  aria-expanded={!collapsed}
+                  aria-label={collapsed ? "Expand ward record" : "Collapse ward record"}
+                  className={`${iconButton} lg:hidden`}
+                >
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className={collapsed ? "rotate-180" : ""}>
+                    <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
               )}
               {result?.found && !loading && (
                 <button onClick={handleShare} aria-label={copied ? "Link copied" : "Share"} className={iconButton}>
@@ -223,7 +259,11 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   </>
                 )}
               </p>
-              {result.gba_ward_name && <HistoricalNote wards={ward.historicalWards} listWards={listWards} />}
+              {result.gba_ward_name && (
+                <div className={foldedAway}>
+                  <HistoricalNote wards={ward.historicalWards} listWards={listWards} />
+                </div>
+              )}
             </>
           ) : (
             <>
@@ -234,7 +274,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
         </div>
 
         {!loading && result?.found && (
-          <>
+          <div className={foldedAway}>
             {/* Most important finding, with its source */}
             <WardHeadline
               reportCard={ward.reportCard}
@@ -330,7 +370,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 />
               )}
             </div>
-          </>
+          </div>
         )}
 
         {/* Not found */}
@@ -346,31 +386,13 @@ export default function WardCard({ result, loading, onClose }: Props) {
         )}
       </div>
 
-      {/* Pinned footer: tabs + Ask Kaun */}
-      {!loading && result?.found && (
-        <div className="shrink-0 bg-paper">
-          <div role="tablist" aria-label="Ward record sections" className="flex border-y border-ink/20">
-            {TABS.map((t, index) => (
-              <button
-                key={t.id}
-                role="tab"
-                aria-selected={ward.tab === t.id}
-                onClick={() => selectTab(t.id)}
-                className={`flex-1 min-h-11 py-3 lg:py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors
-                  ${index > 0 ? "border-l border-ink/20" : ""}
-                  ${ward.tab === t.id
-                    ? "bg-ink text-paper"
-                    : "text-ink/60 hover:text-ink hover:bg-ink/5"
-                  }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Ask Kaun bar — Bengaluru-only until the AI tools/prompt are city-scoped */}
-          {getCity(result.city_id).features.askKaun && <AskKaunBar
-              wardContext={result.found ? {
+      {/* Ask Kaun — mounted while the ward is open so a conversation survives */}
+      {askEnabled && result?.found && !loading && (
+        <div className={`contents ${foldedAway}`}>
+          <AskKaunPanel
+            open={askOpen && !collapsed}
+            onClose={() => setAskOpen(false)}
+            wardContext={result.found ? {
                 ward_no: primaryHistoricalWard?.ward_no ?? null,
                 ward_name: result.gba_ward_name ?? result.ward_name ?? "",
                 assembly_constituency: result.gba_ac ?? result.assembly_constituency ?? "",
@@ -396,7 +418,49 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   : null,
                 grievance_count: ward.grievances?.length ?? null,
               } : null}
-            />}
+          />
+        </div>
+      )}
+
+      {/* Pinned footer: tabs, plus the Ask control */}
+      {!loading && result?.found && (
+        <div className={`shrink-0 bg-paper ${foldedAway}`}>
+          <div className="flex border-t border-ink/20 pb-[env(safe-area-inset-bottom)]">
+            <div role="tablist" aria-label="Ward record sections" className="flex flex-1">
+              {TABS.map((t, index) => {
+                const active = !askOpen && ward.tab === t.id
+                return (
+                  <button
+                    key={t.id}
+                    role="tab"
+                    aria-selected={ward.tab === t.id}
+                    onClick={() => selectTab(t.id)}
+                    className={`flex-1 min-h-11 py-3 lg:py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors
+                      ${index > 0 ? "border-l border-ink/20" : ""}
+                      ${active
+                        ? "bg-ink text-paper"
+                        : "text-ink/60 hover:text-ink hover:bg-ink/5"
+                      }`}
+                  >
+                    {t.label}
+                  </button>
+                )
+              })}
+            </div>
+            {askEnabled && (
+              <button
+                type="button"
+                onClick={() => setAskOpen(value => !value)}
+                aria-expanded={askOpen}
+                aria-controls="ask-kaun-panel"
+                aria-label={askOpen ? "Close Ask Kaun" : "Ask Kaun about this ward"}
+                className={`min-h-11 shrink-0 border-l border-ink/20 px-3.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors
+                  ${askOpen ? "bg-ink text-paper" : "text-ink hover:bg-ink/5"}`}
+              >
+                Ask<span className={askOpen ? "text-paper/80" : "text-accent"}>?</span>
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

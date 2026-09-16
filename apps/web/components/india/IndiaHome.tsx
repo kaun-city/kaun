@@ -54,6 +54,11 @@ function layerValuesFor(layerId: IndiaLayerId): Promise<Record<string, number>> 
   return p
 }
 
+/** Below Tailwind's md breakpoint the bottom rail is a stacked column. */
+function isNarrowViewport(): boolean {
+  return typeof window !== "undefined" && !window.matchMedia("(min-width: 768px)").matches
+}
+
 export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   const [features, setFeatures] = useState<PcFeatureProps[]>([])
   const [selected, setSelected] = useState<PcFeatureProps | null>(null)
@@ -62,6 +67,12 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   const [values, setValues] = useState<Record<string, number> | null>(null)
   const [layerLoading, setLayerLoading] = useState(false)
   const [q, setQ] = useState("")
+  /**
+   * The layer panel folds to one line so a phone keeps its map. Phones start
+   * folded and fold again after a pick; from md up it starts open, where it
+   * sits in a corner and costs nothing.
+   */
+  const [panelOpen, setPanelOpen] = useState(false)
   const focusRef = useRef<{ focus: (pcCode: string) => void } | null>(null)
 
   /**
@@ -85,6 +96,20 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   const [initialView] = useState<MapView | null>(() => readMapView())
 
   const layer = getIndiaLayer(layerId)
+
+  useEffect(() => {
+    if (!isNarrowViewport()) setPanelOpen(true)
+  }, [])
+
+  const selectSeat = useCallback((feature: PcFeatureProps | null) => {
+    setSelected(feature)
+    if (feature && isNarrowViewport()) setPanelOpen(false)
+  }, [])
+
+  const chooseLayer = useCallback((id: IndiaLayerId | null) => {
+    setLayerId(id)
+    if (isNarrowViewport()) setPanelOpen(false)
+  }, [])
   const mpBySeat = useMemo(() => new Map(mps.map(m => [m.pc_code, m])), [mps])
 
   /**
@@ -220,7 +245,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                     onClick={e => {
                       e.stopPropagation()
                       setQ("")
-                      setSelected(f)
+                      selectSeat(f)
                       setStateFilter(f.st_code)
                       focusRef.current?.focus(f.pc_code)
                     }}
@@ -263,7 +288,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
           breaks={breaks}
           layer={layer}
           stateFilter={stateFilter}
-          onSelect={setSelected}
+          onSelect={selectSeat}
           focusRef={focusRef}
           onFeaturesLoaded={setFeatures}
           initialView={initialView}
@@ -286,61 +311,103 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
         <div className="absolute inset-x-0 bottom-0 z-[900] flex flex-col-reverse gap-2 p-4 pb-11
           pointer-events-none md:contents">
 
-          {/* Layer switcher + legend */}
+          {/* Layer switcher + legend. Folded, it is one line naming the
+              layer plus the colour key, so the map stays readable; the full
+              legend (description, missing-seat count, source) is one tap away. */}
           <div className="pointer-events-auto w-full
             md:absolute md:bottom-4 md:left-4 md:z-[900] md:w-[min(20rem,calc(100vw-2rem))]
-            bg-paper border border-ink/55 p-3">
-            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60 mb-2">Color by</p>
-            <div className="grid grid-cols-2 gap-1.5 md:flex md:flex-wrap">
-              <button
-                onClick={() => setLayerId(null)}
-                className={`min-h-11 md:min-h-8 px-2 py-1 border font-mono text-[11px] uppercase tracking-[0.06em] leading-tight
-                  transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
-                  layerId === null
-                    ? "border-ink bg-ink text-paper"
-                    : "border-ink/20 text-ink/60 hover:text-ink hover:bg-ink/5"}`}
-              >
-                None
-              </button>
-              {INDIA_LAYERS.map(l => (
-                <button
-                  key={l.id}
-                  onClick={() => setLayerId(l.id)}
-                  className={`min-h-11 md:min-h-8 px-2 py-1 border font-mono text-[11px] uppercase tracking-[0.06em] leading-tight
-                    transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
-                    layerId === l.id
-                      ? "border-ink bg-ink text-paper"
-                      : "border-ink/20 text-ink/60 hover:text-ink hover:bg-ink/5"}`}
-                >
-                  {l.label}
-                </button>
-              ))}
-            </div>
+            bg-paper border border-ink/55">
+            <button
+              type="button"
+              onClick={() => setPanelOpen(open => !open)}
+              aria-expanded={panelOpen}
+              aria-controls="india-layer-panel"
+              className="flex w-full min-h-11 items-center justify-between gap-3 px-3 py-1.5 text-left
+                hover:bg-ink/5 transition-colors
+                focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+            >
+              <span className="min-w-0">
+                <span className="block text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Color by</span>
+                <span className="block truncate font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-ink">
+                  {layer ? layer.label : "None"}
+                </span>
+              </span>
+              <span className="flex shrink-0 items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">
+                {panelOpen ? "Hide" : "Show"}
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className={panelOpen ? "" : "rotate-180"}>
+                  <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </button>
 
-            {layer && (
-              <div className="mt-2.5 space-y-1.5">
-                <p className="text-ink/75 text-xs leading-snug">{layer.description}</p>
-                <div className="flex items-center gap-px">
+            {!panelOpen && layer && (
+              <div className="flex items-center gap-2 px-3 pb-2.5 font-mono text-[11px] tabular-nums text-ink/70">
+                <span>{legendNums.length ? formatValue(Math.min(...legendNums), layer.format) : "—"}</span>
+                <span className="flex flex-1 items-center gap-px" aria-hidden="true">
                   {rampFor(layer).map((c, i) => (
                     <span key={i} className="h-2 flex-1" style={{ backgroundColor: c }} />
                   ))}
+                </span>
+                <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
+              </div>
+            )}
+
+            {panelOpen && (
+              <div id="india-layer-panel" className="border-t border-ink/15 p-3">
+                <div className="grid grid-cols-2 gap-1.5 md:flex md:flex-wrap">
+                  <button
+                    onClick={() => chooseLayer(null)}
+                    aria-pressed={layerId === null}
+                    className={`min-h-11 md:min-h-8 px-2 py-1 border font-mono text-[11px] uppercase tracking-[0.06em] leading-tight
+                      transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
+                      layerId === null
+                        ? "border-ink bg-ink text-paper"
+                        : "border-ink/20 text-ink/60 hover:text-ink hover:bg-ink/5"}`}
+                  >
+                    None
+                  </button>
+                  {INDIA_LAYERS.map(l => (
+                    <button
+                      key={l.id}
+                      onClick={() => chooseLayer(l.id)}
+                      aria-pressed={layerId === l.id}
+                      className={`min-h-11 md:min-h-8 px-2 py-1 border font-mono text-[11px] uppercase tracking-[0.06em] leading-tight
+                        transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
+                        layerId === l.id
+                          ? "border-ink bg-ink text-paper"
+                          : "border-ink/20 text-ink/60 hover:text-ink hover:bg-ink/5"}`}
+                    >
+                      {l.label}
+                    </button>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between text-ink/70 text-[11px] font-mono tabular-nums">
-                  <span>{legendNums.length ? formatValue(Math.min(...legendNums), layer.format) : "—"}</span>
-                  <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-ink/60 text-xs">
-                  <span className="w-2.5 h-2.5 shrink-0 border border-ink/20" style={{ backgroundColor: NO_DATA_FILL }} />
-                  <span>
-                    {layerLoading
-                      ? "loading…"
-                      : `no value for ${(features.length || LOK_SABHA_SEATS) - painted} of ${features.length || LOK_SABHA_SEATS} seats`}
-                  </span>
-                </div>
-                {layer.absentNote && (
-                  <p className="text-ink/60 text-xs leading-snug">{layer.absentNote}</p>
+
+                {layer && (
+                  <div className="mt-2.5 space-y-1.5">
+                    <p className="text-ink/75 text-xs leading-snug">{layer.description}</p>
+                    <div className="flex items-center gap-px">
+                      {rampFor(layer).map((c, i) => (
+                        <span key={i} className="h-2 flex-1" style={{ backgroundColor: c }} />
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between text-ink/70 text-[11px] font-mono tabular-nums">
+                      <span>{legendNums.length ? formatValue(Math.min(...legendNums), layer.format) : "—"}</span>
+                      <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-ink/60 text-xs">
+                      <span className="w-2.5 h-2.5 shrink-0 border border-ink/20" style={{ backgroundColor: NO_DATA_FILL }} />
+                      <span>
+                        {layerLoading
+                          ? "loading…"
+                          : `no value for ${(features.length || LOK_SABHA_SEATS) - painted} of ${features.length || LOK_SABHA_SEATS} seats`}
+                      </span>
+                    </div>
+                    {layer.absentNote && (
+                      <p className="text-ink/60 text-xs leading-snug">{layer.absentNote}</p>
+                    )}
+                    <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">Source: {layer.source}</p>
+                  </div>
                 )}
-                <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">Source: {layer.source}</p>
               </div>
             )}
           </div>

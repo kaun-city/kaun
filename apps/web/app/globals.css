@@ -143,6 +143,14 @@ body {
   }
 }
 
+/* An open ward sheet covers the map on phones; its zoom buttons would only
+ * peek out above the sheet's top rule. They return when the sheet folds. */
+@media (max-width: 1023px) {
+  .signal-map:has(.ward-sheet[data-sheet="expanded"]) .leaflet-control-zoom {
+    display: none;
+  }
+}
+
 .leaflet-control-attribution {
   background: rgba(248, 245, 239, 0.92) !important;
   color: rgba(22, 19, 14, 0.62) !important;
