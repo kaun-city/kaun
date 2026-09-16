@@ -2,17 +2,32 @@
 
 import { useState } from "react"
 import { STATUS_STYLES } from "@/lib/constants"
-import { formatLakh, timeAgo } from "@/lib/ward-utils"
+import { formatCrore, formatINR, formatLakh, timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
 import type {
   BudgetSummary, ContractorProfile, PinResult, PropertyTaxData,
   WardProfile, WardSpendCategory, WardTradeLicenses, WorkOrder,
 } from "@/lib/types"
-import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { SkeletonBarRow, SkeletonCard } from "@/components/shared/Skeleton"
 
-const TENDERS_PREVIEW = 5
+const CORPORATION_TENDERS_SHOWN = 3
 const WORK_ORDERS_PREVIEW = 5
+const CONTRACTORS_PREVIEW = 5
+
+// Signal on Paper: hairline-ruled sections, mono figures, a source under each.
+const SECTION = "border-t border-ink/15 pt-2"
+const EYEBROW = "text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60"
+const FIGURE = "font-mono font-semibold tabular-nums"
+const SOURCE = "font-mono text-[11px] uppercase leading-snug tracking-[0.06em] text-ink/60"
+const FOCUS = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+const LINK = "text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent"
+const EMPTY = "bg-paper-muted px-4 py-4 text-center"
+const TOGGLE = `flex min-h-11 w-full items-center justify-between border-b border-ink/15 text-left text-xs text-ink/70 hover:text-ink ${FOCUS}`
+
+/** Where a section's figures come from. Same text the freshness chip carried. */
+function Provenance({ label, source }: { label: string; source?: string }) {
+  return <p className={`mt-1.5 ${SOURCE}`}>{source ? `${source} · ` : ""}{label}</p>
+}
 
 function stripHtml(str: string): string {
   return str.replace(/<[^>]*>/g, "").replace(/^\d{3}-\d{2}-\d{6}/, "").trim()
@@ -26,9 +41,9 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
   if (workOrders.length === 0) {
     if (!profileLoading && profile !== null) {
       return (
-        <div className="p-4 rounded-xl bg-white/5 text-center space-y-1">
-          <p className="text-white/25 text-sm">No work orders on record</p>
-          <p className="text-white/15 text-xs">BBMP IFMS / opencity</p>
+        <div className={`${EMPTY} space-y-1`}>
+          <p className="text-sm text-ink/75">No work orders on record</p>
+          <p className={SOURCE}>BBMP IFMS / opencity</p>
         </div>
       )
     }
@@ -47,22 +62,19 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
   )].sort()
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <p className="text-white/30 text-xs uppercase tracking-wider">Works ({workOrders.length})</p>
-        <FreshnessBadge label={freshnessLabel} source="BBMP IFMS" />
-      </div>
+    <section className={SECTION}>
+      <p className={EYEBROW}>Works ({workOrders.length})</p>
       {sourceWards.length > 0 && (
-        <div className="rounded-xl bg-white/[0.03] border border-white/5 px-3 py-2">
-          <p className="text-white/40 text-[10px] leading-relaxed">
+        <div className="mt-1.5 bg-paper-muted px-3 py-2">
+          <p className="text-xs leading-relaxed text-ink/75">
             BBMP records these under its 2023 (225-ward) delimitation as{" "}
-            <span className="text-white/55">{sourceWards.join(", ")}</span>.
+            <span className="font-medium text-ink">{sourceWards.join(", ")}</span>.
             Reconciled to this map&apos;s ward by spatial overlap —{" "}
             <a
               href="https://data.kaun.city/bengaluru/ward-crosswalk/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#FF9933]/70 hover:text-[#FF9933] underline"
+              className={`${LINK} ${FOCUS}`}
             >
               how this works
             </a>
@@ -70,7 +82,7 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
           </p>
         </div>
       )}
-      <div className="space-y-2">
+      <div className="mt-1 divide-y divide-ink/10 border-b border-ink/10">
         {visible.map(wo => {
           const desc = stripHtml(wo.description)
           const contractor = wo.contractor
@@ -79,39 +91,37 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
           // IFMS rows have net_paid null (per-bill drill-down is a follow-up).
           // Fall back to sanctioned_amount with a label so the number is honest
           // about what it represents.
-          const paidLakh = wo.net_paid != null ? wo.net_paid / 100000 : null
-          const sanctLakh = wo.sanctioned_amount != null ? wo.sanctioned_amount / 100000 : null
-          const shownAmount = paidLakh ?? sanctLakh
-          const amountLabel = paidLakh != null ? "paid" : "sanctioned"
+          const shownAmount = wo.net_paid ?? wo.sanctioned_amount ?? null
+          const amountLabel = wo.net_paid != null ? "paid" : "sanctioned"
           return (
-            <div key={wo.id} className="rounded-xl bg-white/5 p-3">
-              <p className="text-white text-xs leading-snug line-clamp-2">{desc}</p>
-              <div className="flex items-center justify-between mt-2 gap-2">
-                <p className="text-white/30 text-[10px] truncate">{contractor}</p>
+            <div key={wo.id} className="py-2.5">
+              <p className="line-clamp-2 text-sm leading-snug text-ink">{desc}</p>
+              <div className="mt-1 flex items-baseline justify-between gap-3">
+                <p className="min-w-0 truncate text-xs text-ink/70">{contractor}</p>
                 {shownAmount != null && (
-                  <p className="text-[#FF9933] text-xs font-semibold shrink-0">
-                    Rs.{shownAmount.toFixed(1)}L
-                    <span className="text-white/30 text-[9px] font-normal ml-1">{amountLabel}</span>
+                  <p className="shrink-0 text-sm text-ink">
+                    <span className={FIGURE}>{formatINR(shownAmount)}</span>
+                    <span className="ml-1 text-[11px] text-ink/60">{amountLabel}</span>
                   </p>
                 )}
               </div>
               {wo.payment_status && (
-                <p className="text-white/40 text-[10px] mt-1.5">
-                  <span className="text-white/25">Bill stage:</span> {wo.payment_status}
+                <p className="mt-1 text-xs text-ink/75">
+                  <span className="text-ink/60">Bill stage:</span> {wo.payment_status}
                 </p>
               )}
               {(wo.division || wo.fy) && (
-                <p className="text-white/25 text-[9px] mt-0.5 truncate">
+                <p className={`mt-1 truncate ${SOURCE}`}>
                   {[wo.division, wo.fy && `FY ${wo.fy}`].filter(Boolean).join(" · ")}
                 </p>
               )}
               {wo.source_ward_name && (
-                <p className="text-white/20 text-[9px] mt-0.5 truncate">
+                <p className={`mt-0.5 truncate ${SOURCE}`}>
                   BBMP ward: {wo.source_ward_name}
                 </p>
               )}
               {wo.is_primary === false && (
-                <p className="text-[#FF9933]/40 text-[9px] mt-0.5 truncate">
+                <p className="mt-0.5 truncate text-xs text-info">
                   shared — ~{Math.round((wo.overlap_share ?? 0) * 100)}% of this ward&apos;s area
                 </p>
               )}
@@ -121,95 +131,97 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
       </div>
       {!expanded && hidden > 0 && (
         <button
+          type="button"
           onClick={() => setExpanded(true)}
-          className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/40 hover:text-white/70 text-xs"
+          aria-expanded={false}
+          className={TOGGLE}
         >
-          Show {hidden} more work order{hidden !== 1 ? "s" : ""} &darr;
+          <span>Show {hidden} more work order{hidden !== 1 ? "s" : ""}</span>
+          <span aria-hidden="true">&darr;</span>
         </button>
       )}
       {expanded && hidden > 0 && (
         <button
+          type="button"
           onClick={() => setExpanded(false)}
-          className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/40 hover:text-white/70 text-xs"
+          aria-expanded={true}
+          className={TOGGLE}
         >
-          Show less &uarr;
+          <span>Show less</span>
+          <span aria-hidden="true">&uarr;</span>
         </button>
       )}
-    </div>
+      <Provenance label={freshnessLabel} source="BBMP IFMS" />
+    </section>
   )
 }
 
-function TendersList({ profile, profileLoading }: { profile: WardProfile | null; profileLoading: boolean }) {
-  const [expanded, setExpanded] = useState(false)
-  const tenders = profile?.tenders ?? []
-  const visible = expanded ? tenders : tenders.slice(0, TENDERS_PREVIEW)
-  const hidden = tenders.length - TENDERS_PREVIEW
+/** "West" / "Bengaluru West City Corporation" -> "Bengaluru West City Corporation", the KPPP department name. */
+function corporationDepartment(corporation: string | null | undefined): string | null {
+  const direction = corporation?.match(/\b(Central|North|South|East|West)\b/i)?.[1]
+  if (!direction) return null
+  return `Bengaluru ${direction[0].toUpperCase()}${direction.slice(1).toLowerCase()} City Corporation`
+}
+
+/** KPPP statuses beyond the four styled ones (RETENDERED, NO_BIDS_RECIEVED…) read as plain text, never as "Open". */
+function tenderStatus(status: string): { className: string; label: string } {
+  const styled = STATUS_STYLES[status]
+  if (styled) return { className: `${styled.bg} ${styled.text}`, label: styled.label }
+  const words = status.replace(/RECIEVED/g, "RECEIVED").replace(/_/g, " ").toLowerCase()
+  return { className: "border border-ink/20 text-ink/70", label: words.charAt(0).toUpperCase() + words.slice(1) }
+}
+
+/**
+ * KPPP tenders cannot be scoped to a ward: most carry no ward, and the ward
+ * numbers parsed from titles mix the old BBMP maps with the new corporations'
+ * own numbering. So this is labelled for what it is — the latest tenders from
+ * the reader's GBA corporation — with a small fixed list, no ward total, and
+ * no "show 13,000 more".
+ */
+function CorporationTenders({ result, profile, profileLoading }: { result: PinResult; profile: WardProfile | null; profileLoading: boolean }) {
+  const department = corporationDepartment(result.gba_corporation)
+  if (!department) return null
+  const tenders = (profile?.tenders ?? []).filter(t => t.department === department)
+  const latest = tenders.slice(0, CORPORATION_TENDERS_SHOWN)
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <p className="text-white/30 text-xs uppercase tracking-wider">
-          {profileLoading && !profile ? "Tenders" : profile ? `${profile.tender_count} Tender${profile.tender_count !== 1 ? "s" : ""}` : "Tenders"}
-        </p>
-        <div className="flex items-center gap-1.5">
-          {profile && <span className="text-[#FF9933] text-xs font-semibold">{formatLakh(profile.tender_total_lakh)} total</span>}
-          <FreshnessBadge label="2023-present" source="KPPP" />
-        </div>
-      </div>
+    <section className={SECTION}>
+      <p className={EYEBROW}>Latest corporation tenders</p>
+      <p className="mt-1 text-xs leading-snug text-ink/70">
+        From {department}, not specific to this ward. KPPP tenders are not reliably tagged to wards.
+      </p>
 
       {profileLoading && !profile ? (
-        <><SkeletonCard lines={3} /><SkeletonCard lines={2} /><SkeletonCard lines={3} /></>
-      ) : tenders.length > 0 ? (
-        <>
-          {visible.map(t => {
-            const st = STATUS_STYLES[t.status] ?? STATUS_STYLES.OPEN
+        <div className="mt-1.5 space-y-2"><SkeletonCard lines={2} /><SkeletonCard lines={2} /></div>
+      ) : latest.length > 0 ? (
+        <div className="mt-1 divide-y divide-ink/10 border-b border-ink/10">
+          {latest.map(t => {
+            const status = tenderStatus(t.status)
             return (
-              <div key={t.id} className="p-3 rounded-xl bg-white/5">
-                <p className="text-white text-sm leading-snug line-clamp-2">{t.title}</p>
-                <div className="flex items-center gap-2 mt-2 flex-wrap">
-                  <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${st.bg} ${st.text}`}>{st.label}</span>
-                  {t.value_lakh != null && <span className="text-[#FF9933] text-xs font-semibold">{formatLakh(t.value_lakh)}</span>}
-                  {t.issued_date && <span className="text-white/30 text-xs">{t.issued_date}</span>}
+              <div key={t.id} className="py-2.5">
+                <p className="line-clamp-2 text-sm leading-snug text-ink">{t.title}</p>
+                <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                  <span className={`inline-flex items-center px-1.5 py-0.5 font-mono text-[11px] font-medium ${status.className}`}>{status.label}</span>
+                  {t.value_lakh != null && <span className={`text-sm text-ink ${FIGURE}`}>{formatLakh(t.value_lakh)}</span>}
+                  {t.issued_date && <span className="font-mono text-[11px] tabular-nums text-ink/60">{t.issued_date}</span>}
                 </div>
-                {t.contractor_name && (
-                  <div className="flex items-center gap-1.5 mt-1.5">
-                    {t.contractor_blacklisted && <span className="text-amber-400 text-xs font-bold">Govt. Record</span>}
-                    <p className={`text-xs ${t.contractor_blacklisted ? "text-amber-200" : "text-white/40"}`}>{t.contractor_name}</p>
-                  </div>
-                )}
-                {t.source_url && (
-                  <a href={t.source_url} target="_blank" rel="noopener noreferrer"
-                    className="text-[#FF9933]/50 hover:text-[#FF9933] text-xs transition-colors mt-1 inline-block">
-                    View on KPPP &rarr;
-                  </a>
-                )}
               </div>
             )
           })}
-          {!expanded && hidden > 0 && (
-            <button
-              onClick={() => setExpanded(true)}
-              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/40 hover:text-white/70 text-xs"
-            >
-              Show {hidden} more tender{hidden !== 1 ? "s" : ""} &darr;
-            </button>
-          )}
-          {expanded && hidden > 0 && (
-            <button
-              onClick={() => setExpanded(false)}
-              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/40 hover:text-white/70 text-xs"
-            >
-              Show less &uarr;
-            </button>
-          )}
-        </>
-      ) : !profileLoading ? (
-        <div className="p-5 rounded-xl bg-white/5 text-center space-y-1">
-          <p className="text-white/30 text-sm">No tenders found</p>
-          <p className="text-white/20 text-xs">File an RTI to get the complete works register.</p>
         </div>
-      ) : null}
-    </div>
+      ) : (
+        <p className="mt-1.5 text-xs text-ink/70">No recent tenders from this corporation on record.</p>
+      )}
+      <a
+        href="https://kppp.karnataka.gov.in"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`inline-flex min-h-11 items-center text-xs ${LINK} ${FOCUS}`}
+      >
+        Search all tenders on KPPP &rarr;
+      </a>
+      <Provenance label={profile ? `latest ${latest.length} of ${tenders.length.toLocaleString("en-IN")}` : "latest"} source="KPPP" />
+    </section>
   )
 }
 
@@ -222,213 +234,243 @@ interface Props {
   workOrders: WorkOrder[]
   tradeLicenses: WardTradeLicenses[]
   wardSpend: WardSpendCategory | null
+  /** Ward spend has been looked up for this ward; before that, show a skeleton rather than "no data". */
+  wardSpendSettled: boolean
+  /** False while ward spend is only available on the older 198-ward map, which can't be matched to this ward. */
+  wardSpendAttributable: boolean
   propertyTax: PropertyTaxData | null
   wardContractors: ContractorProfile[]
 }
 
 export function SpendTab({
   result, city, profile, profileLoading, budget,
-  workOrders, tradeLicenses, wardSpend, propertyTax, wardContractors,
+  workOrders, tradeLicenses, wardSpend, wardSpendSettled, wardSpendAttributable, propertyTax, wardContractors,
 }: Props) {
+  const [contractorsExpanded, setContractorsExpanded] = useState(false)
+  // Flagged firms first, so a short list never hides one.
+  const contractors = [...wardContractors].sort((a, b) => Number(b.blacklist_flags.length > 0) - Number(a.blacklist_flags.length > 0))
+  const visibleContractors = contractorsExpanded ? contractors : contractors.slice(0, CONTRACTORS_PREVIEW)
+  const hiddenContractors = contractors.length - CONTRACTORS_PREVIEW
+
   return (
-    <div className="px-5 py-4 space-y-4 pb-safe-content">
+    <div className="px-5 py-4 space-y-5 pb-safe-content">
 
       {/* City-wide Budget */}
       {budget ? (
-        <div className="rounded-xl bg-white/5 p-3 space-y-3">
-          <div className="flex items-center justify-between">
-            <p className="text-white/50 text-[10px] uppercase tracking-wider">BBMP Budget</p>
-            <div className="flex items-center gap-1.5">
-              <p className="text-[#FF9933] text-lg font-bold">
-                Rs.{budget.total_expenditure_lakh ? Math.round(budget.total_expenditure_lakh / 100).toLocaleString("en-IN") : "--"} Cr
-              </p>
-              <FreshnessBadge label={city.budgetYear} source="BBMP" />
-            </div>
+        <section className={SECTION}>
+          <div className="flex items-baseline justify-between gap-3">
+            <p className={EYEBROW}>BBMP Budget</p>
+            <p className={`shrink-0 text-lg text-ink ${FIGURE}`}>
+              {formatLakh(budget.total_expenditure_lakh)}
+            </p>
           </div>
           {budget.departments && budget.departments.length > 0 && (
-            <div className="space-y-2">
+            <div className="mt-1.5 space-y-2">
               {budget.departments.map((dept, i) => (
                 <div key={i}>
-                  <div className="flex items-center justify-between gap-2 mb-0.5">
-                    <p className="text-white/60 text-xs truncate flex-1">{dept.department}</p>
-                    <p className="text-white/40 text-xs font-mono shrink-0">Rs.{dept.amount_cr} Cr <span className="text-white/20">({dept.pct}%)</span></p>
+                  <div className="mb-1 flex items-baseline justify-between gap-2">
+                    <p className="min-w-0 flex-1 truncate text-xs text-ink/75">{dept.department}</p>
+                    <p className="shrink-0 font-mono text-xs tabular-nums text-ink">{formatCrore(dept.amount_cr)} <span className="text-ink/60">({dept.pct}%)</span></p>
                   </div>
-                  <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#FF9933]/60 rounded-full" style={{ width: `${Math.min(dept.pct, 100)}%` }} />
+                  <div className="h-1.5 w-full overflow-hidden bg-ink/10">
+                    <div className="h-full bg-ink/70" style={{ width: `${Math.min(dept.pct, 100)}%` }} />
                   </div>
                 </div>
               ))}
             </div>
           )}
-        </div>
+          <Provenance label={city.budgetYear} source="BBMP" />
+        </section>
       ) : (
-        <div className="rounded-xl bg-white/5 p-3 space-y-2">
-          <div className="h-3 w-28 bg-white/10 rounded animate-pulse" />
+        <div className={`${SECTION} space-y-2`}>
+          <div className="h-3 w-28 bg-ink/10 animate-pulse" />
           <SkeletonBarRow />
         </div>
       )}
 
       {/* Ward-level BBMP Spending */}
       {wardSpend && wardSpend.grand_total > 0 ? (
-        <div className="rounded-xl bg-white/5 p-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-white/50 text-[10px] uppercase tracking-wider">Ward Spending</p>
-            <div className="flex items-center gap-1.5">
-              <p className="text-white/30 text-[10px]">Rs.{(wardSpend.grand_total / 10000000).toFixed(1)} Cr total</p>
-              <FreshnessBadge label="2018-23" source="BBMP" />
-            </div>
+        <section className={SECTION}>
+          <div className="flex items-baseline justify-between gap-3">
+            <p className={EYEBROW}>Ward Spending</p>
+            <p className="shrink-0 text-xs text-ink/70"><span className={`text-sm text-ink ${FIGURE}`}>{formatINR(wardSpend.grand_total)}</span> total</p>
           </div>
-          {[
-            { label: "Roads & Infrastructure", val: wardSpend.roads_and_infrastructure },
-            { label: "Roads & Drains",         val: wardSpend.roads_and_drains },
-            { label: "Drainage",               val: wardSpend.drainage },
-            { label: "Streetlighting",         val: wardSpend.streetlighting },
-            { label: "Waste Management",       val: wardSpend.waste_management },
-            { label: "Water & Sanitation",     val: wardSpend.water_and_sanitation },
-            { label: "Buildings & Facilities", val: wardSpend.buildings_facilities },
-          ].filter(x => x.val > 0).map(({ label, val }) => {
-            const pct = wardSpend.grand_total > 0 ? Math.round((val / wardSpend.grand_total) * 100) : 0
-            return (
-              <div key={label}>
-                <div className="flex justify-between text-[10px] mb-0.5">
-                  <span className="text-white/40">{label}</span>
-                  <span className="text-white/60 font-mono">Rs.{(val / 10000000).toFixed(1)} Cr ({pct}%)</span>
+          <div className="mt-1.5 space-y-2">
+            {[
+              { label: "Roads & Infrastructure", val: wardSpend.roads_and_infrastructure },
+              { label: "Roads & Drains",         val: wardSpend.roads_and_drains },
+              { label: "Drainage",               val: wardSpend.drainage },
+              { label: "Streetlighting",         val: wardSpend.streetlighting },
+              { label: "Waste Management",       val: wardSpend.waste_management },
+              { label: "Water & Sanitation",     val: wardSpend.water_and_sanitation },
+              { label: "Buildings & Facilities", val: wardSpend.buildings_facilities },
+            ].filter(x => x.val > 0).map(({ label, val }) => {
+              const pct = wardSpend.grand_total > 0 ? Math.round((val / wardSpend.grand_total) * 100) : 0
+              return (
+                <div key={label}>
+                  <div className="mb-1 flex items-baseline justify-between gap-2 text-xs">
+                    <span className="min-w-0 truncate text-ink/75">{label}</span>
+                    <span className="shrink-0 font-mono tabular-nums text-ink">{formatINR(val)} <span className="text-ink/60">({pct}%)</span></span>
+                  </div>
+                  <div className="h-1 bg-ink/10">
+                    <div className="h-1 bg-ink/70" style={{ width: `${pct}%` }} />
+                  </div>
                 </div>
-                <div className="h-1 rounded-full bg-white/10">
-                  <div className="h-1 rounded-full bg-[#FF9933]/60" style={{ width: `${pct}%` }} />
-                </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
+          <Provenance label="2018-23" source="BBMP 198-ward records, estimated by map overlap" />
+        </section>
+      ) : !wardSpendAttributable ? (
+        <section className={SECTION}>
+          <p className={EYEBROW}>Ward Spending</p>
+          <p className="mt-1 text-xs leading-snug text-ink/70">
+            Not shown. BBMP recorded ward spending for 2018-23 on its older 198-ward map, which Kaun cannot yet match to this ward.
+          </p>
+        </section>
+      ) : !wardSpendSettled ? (
+        <div aria-busy="true" className={`${SECTION} space-y-2`}>
+          <p className={EYEBROW}>Ward Spending</p>
+          <SkeletonBarRow />
         </div>
-      ) : wardSpend !== undefined && (!wardSpend || wardSpend.grand_total === 0) ? (
-        <div className="p-4 rounded-xl bg-white/5 text-center">
-          <p className="text-white/25 text-sm">No ward spend data</p>
-          <p className="text-white/15 text-xs mt-0.5">BBMP 2018-23 · Not yet available for this ward</p>
+      ) : (
+        <div className={EMPTY}>
+          <p className="text-sm text-ink/75">No ward spend data</p>
+          <p className={`mt-0.5 ${SOURCE}`}>BBMP 2018-23 · Not yet available for this ward</p>
         </div>
-      ) : null}
+      )}
 
       {/* Property Tax */}
       {propertyTax?.years && propertyTax.years.length > 0 ? (
-        <div className="rounded-xl bg-white/5 p-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-white/50 text-[10px] uppercase tracking-wider">Property Tax Collection</p>
-            <FreshnessBadge label="2021-24" source="BBMP" />
-          </div>
-          {propertyTax.years.map(yr => (
-            <div key={yr.financial_year} className="flex items-center justify-between gap-2">
-              <div className="min-w-0">
-                <p className="text-white text-xs font-mono">{yr.financial_year}</p>
-                <p className="text-white/30 text-[10px]">{yr.total_applications?.toLocaleString("en-IN")} properties</p>
+        <section className={SECTION}>
+          <p className={EYEBROW}>Property Tax Collection</p>
+          <div className="mt-1 divide-y divide-ink/10 border-b border-ink/10">
+            {propertyTax.years.map(yr => (
+              <div key={yr.financial_year} className="flex items-baseline justify-between gap-3 py-1.5">
+                <div className="min-w-0">
+                  <p className="font-mono text-sm tabular-nums text-ink">{yr.financial_year}</p>
+                  <p className="text-xs text-ink/60">{yr.total_applications?.toLocaleString("en-IN")} properties</p>
+                </div>
+                <p className={`shrink-0 text-sm text-ink ${FIGURE}`}>{formatLakh(yr.total_collection_lakh)}</p>
               </div>
-              <p className="text-[#FF9933] text-sm font-bold shrink-0">Rs.{(yr.total_collection_lakh / 100).toFixed(0)} Cr</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+          <Provenance label="2021-24" source="BBMP" />
+        </section>
       ) : null}
 
-      {/* Tenders */}
-      <TendersList profile={profile} profileLoading={profileLoading} />
+      {/* Tenders — corporation-wide, clearly labelled; ward scoping isn't possible */}
+      <CorporationTenders result={result} profile={profile} profileLoading={profileLoading} />
 
       {/* Work Orders */}
       <WorkOrdersList workOrders={workOrders} profileLoading={profileLoading} profile={profile} />
 
       {/* Contractor Accountability */}
-      {wardContractors.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-white/30 text-xs uppercase tracking-wider">Contractors in this Ward</p>
-            <FreshnessBadge label="2013-25" source="BBMP / opencity.in" />
-          </div>
-          <p className="text-white/20 text-[10px]">Payment deductions recorded in BBMP work orders. High deductions may reflect quality disputes, delays, or scope changes.</p>
-          {wardContractors.map(c => {
-            const isFlagged = c.blacklist_flags.length > 0
-            return (
-              <div key={c.entity_id} className={`rounded-xl p-3 ${isFlagged ? "bg-amber-500/10 border border-amber-500/20" : "bg-white/5"}`}>
-                <div className="flex items-center justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      {isFlagged && <span className="text-amber-400 text-[10px] font-bold uppercase tracking-wider shrink-0">Govt. Record</span>}
-                      <p className={`text-sm font-semibold truncate ${isFlagged ? "text-amber-200" : "text-white"}`}>{c.canonical_name}</p>
+      {contractors.length > 0 && (
+        <section className={SECTION}>
+          <p className={EYEBROW}>Contractors with work orders in this area</p>
+          <p className="mt-1 text-xs leading-snug text-ink/70">Every figure here covers the firm&apos;s BBMP work orders across the city, not this ward&apos;s share. High payment deductions may reflect quality disputes, delays, or scope changes.</p>
+          <div className="mt-1.5 border-t border-ink/10">
+            {visibleContractors.map(c => {
+              const isFlagged = c.blacklist_flags.length > 0
+              return (
+                <div key={c.entity_id} className={isFlagged ? "my-2 border border-warning/35 bg-warning/[0.07] px-3 py-2.5" : "border-b border-ink/10 py-2.5"}>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline gap-1.5">
+                        {isFlagged && <span className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-warning">Govt. Record</span>}
+                        <p className="truncate text-sm font-semibold text-ink">{c.canonical_name}</p>
+                      </div>
+                      {c.aliases.length > 1 && (
+                        <p className="mt-0.5 truncate text-xs text-ink/60">
+                          Also: {c.aliases.filter(a => a !== c.canonical_name).slice(0, 2).join(", ")}
+                        </p>
+                      )}
                     </div>
-                    {c.aliases.length > 1 && (
-                      <p className="text-white/20 text-[10px] truncate mt-0.5">
-                        Also: {c.aliases.filter(a => a !== c.canonical_name).slice(0, 2).join(", ")}
-                      </p>
-                    )}
-                  </div>
-                  <p className="text-[#FF9933] text-sm font-bold shrink-0">Rs.{c.total_value_lakh >= 100 ? `${(c.total_value_lakh / 100).toFixed(1)} Cr` : `${c.total_value_lakh.toFixed(0)} L`}</p>
-                </div>
-                <div className="grid grid-cols-3 gap-2 mt-2 text-center">
-                  <div>
-                    <p className="text-white/80 text-xs font-semibold">{c.total_contracts}</p>
-                    <p className="text-white/30 text-[10px]">Contracts</p>
-                  </div>
-                  <div>
-                    <p className="text-white/80 text-xs font-semibold">{c.ward_count}</p>
-                    <p className="text-white/30 text-[10px]">Wards</p>
-                  </div>
-                  <div>
-                    <p className={`text-xs font-semibold ${c.avg_deduction_pct > 15 ? "text-red-400" : c.avg_deduction_pct > 10 ? "text-yellow-400" : "text-green-400"}`}>
-                      {c.avg_deduction_pct}%
+                    <p className="shrink-0 text-right">
+                      <span className={`block text-sm text-ink ${FIGURE}`}>{formatLakh(c.total_value_lakh)}</span>
+                      <span className="block text-[11px] text-ink/70">city-wide</span>
                     </p>
-                    <p className="text-white/30 text-[10px]">Deductions</p>
                   </div>
+                  <div className="mt-1.5 grid grid-cols-3 gap-2">
+                    <div>
+                      <p className={`text-sm text-ink ${FIGURE}`}>{c.total_contracts}</p>
+                      <p className="text-[11px] text-ink/70">Contracts, city-wide</p>
+                    </div>
+                    <div>
+                      <p className={`text-sm text-ink ${FIGURE}`}>{c.ward_count}</p>
+                      <p className="text-[11px] text-ink/70">Wards worked in</p>
+                    </div>
+                    <div>
+                      <p className={`text-sm ${FIGURE} ${c.avg_deduction_pct > 15 ? "text-danger" : c.avg_deduction_pct > 10 ? "text-warning" : "text-ink"}`}>
+                        {c.avg_deduction_pct}%
+                      </p>
+                      <p className="text-[11px] text-ink/70">Deductions</p>
+                    </div>
+                  </div>
+                  {isFlagged && (
+                    <div className="mt-2 border-t border-warning/25 pt-2">
+                      {c.blacklist_flags.map((flag, i) => (
+                        <p key={i} className="text-xs leading-relaxed text-warning">▸ {flag}</p>
+                      ))}
+                      {/* Each flag ends with its own citation (scripts/lib/contractor-flags.mjs);
+                          none of them comes from KPPP or BBMP records. */}
+                      <p className={`mt-1 ${SOURCE}`}>Reported by the source named on each line</p>
+                    </div>
+                  )}
+                  {c.is_govt_entity && <p className="mt-1 text-xs text-ink/60">Government entity</p>}
                 </div>
-                {isFlagged && (
-                  <div className="mt-2 pt-2 border-t border-amber-500/10">
-                    {c.blacklist_flags.map((flag, i) => (
-                      <p key={i} className="text-amber-400/80 text-[10px] leading-relaxed">▸ {flag}</p>
-                    ))}
-                    <p className="text-white/20 text-[10px] mt-1 italic">Source: KPPP / BBMP official records</p>
-                  </div>
-                )}
-                {c.is_govt_entity && <p className="text-white/20 text-[10px] mt-1">Government entity</p>}
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </div>
+          {hiddenContractors > 0 && (
+            <button
+              type="button"
+              onClick={() => setContractorsExpanded(value => !value)}
+              aria-expanded={contractorsExpanded}
+              className={TOGGLE}
+            >
+              <span>{contractorsExpanded ? "Show less" : `Show ${hiddenContractors} more contractor${hiddenContractors !== 1 ? "s" : ""}`}</span>
+              <span aria-hidden="true">{contractorsExpanded ? "\u2191" : "\u2193"}</span>
+            </button>
+          )}
+          <Provenance label="2013-25" source="BBMP / opencity.in" />
+        </section>
       )}
 
       {/* Trade Licenses */}
       {tradeLicenses.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-white/30 text-xs uppercase tracking-wider">Trade Licenses</p>
-            <FreshnessBadge label="2021-23" source="BBMP" />
-          </div>
-          <div className="space-y-2">
+        <section className={SECTION}>
+          <p className={EYEBROW}>Trade Licenses</p>
+          <div className="mt-1 divide-y divide-ink/10 border-b border-ink/10">
             {tradeLicenses.map(tl => (
-              <div key={tl.year} className="rounded-xl bg-white/5 px-4 py-3">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-white text-sm font-semibold">{tl.year}</span>
-                  <span className="text-[#FF9933] text-sm font-bold">{tl.total_licenses.toLocaleString("en-IN")} licenses</span>
+              <div key={tl.year} className="py-2.5">
+                <div className="mb-1.5 flex items-baseline justify-between gap-3">
+                  <span className={`text-sm text-ink ${FIGURE}`}>{tl.year}</span>
+                  <span className="text-xs text-ink/70"><span className={`text-sm text-ink ${FIGURE}`}>{tl.total_licenses.toLocaleString("en-IN")}</span> licenses</span>
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="rounded-lg bg-white/5 py-1.5">
-                    <p className="text-green-400 text-xs font-bold">{tl.new_licenses.toLocaleString("en-IN")}</p>
-                    <p className="text-white/30 text-[10px]">New</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <p className={`text-sm text-ink ${FIGURE}`}>{tl.new_licenses.toLocaleString("en-IN")}</p>
+                    <p className="text-[11px] text-ink/70">New</p>
                   </div>
-                  <div className="rounded-lg bg-white/5 py-1.5">
-                    <p className="text-blue-400 text-xs font-bold">{tl.renewals.toLocaleString("en-IN")}</p>
-                    <p className="text-white/30 text-[10px]">Renewed</p>
+                  <div>
+                    <p className={`text-sm text-ink ${FIGURE}`}>{tl.renewals.toLocaleString("en-IN")}</p>
+                    <p className="text-[11px] text-ink/70">Renewed</p>
                   </div>
-                  <div className="rounded-lg bg-white/5 py-1.5">
-                    <p className="text-white text-xs font-bold">
-                      {tl.total_revenue >= 10000000
-                        ? `${(tl.total_revenue / 10000000).toFixed(1)} Cr`
-                        : tl.total_revenue >= 100000
-                          ? `${(tl.total_revenue / 100000).toFixed(1)} L`
-                          : `${Math.round(tl.total_revenue / 1000)}K`}
+                  <div>
+                    <p className={`text-sm text-ink ${FIGURE}`}>
+                      {formatINR(tl.total_revenue)}
                     </p>
-                    <p className="text-white/30 text-[10px]">Revenue</p>
+                    <p className="text-[11px] text-ink/70">Revenue</p>
                   </div>
                 </div>
-                {tl.top_trade_type && <p className="text-white/20 text-[10px] mt-1.5 truncate">Top: {tl.top_trade_type}</p>}
+                {tl.top_trade_type && <p className="mt-1.5 truncate text-xs text-ink/60">Top: {tl.top_trade_type}</p>}
               </div>
             ))}
           </div>
-        </div>
+          <Provenance label="2021-23" source="BBMP" />
+        </section>
       )}
     </div>
   )

@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
-import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { enforceRateLimit, makeAiLimiter } from "@/lib/ratelimit"
+import { describeFormerWardCommittees, type FormerWardCommittee } from "@/lib/bbmp198-crosswalk"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
@@ -16,13 +17,17 @@ export interface RTIDraftRequest {
   issue_type: RTIIssueType
   ward_name: string
   ward_no: number
+  /** Human citation of the ward, e.g. "Bengaluru East corporation, ward 50". */
+  ward_label?: string
   assembly_constituency: string
   // Issue-specific context
   mla_name?: string
   mla_party?: string
   lad_utilization_pct?: number | null
   lad_total_lakh?: number | null
-  committee_meetings?: number | null
+  /** Former BBMP-198 ward committees covering the ward, each with its own count. */
+  former_ward_committees?: FormerWardCommittee[]
+  /** Estimated for the ward from BBMP 198-ward records by map overlap. */
   pothole_complaints?: number | null
   ward_spend_total_lakh?: number | null
   ward_spend_roads_pct?: number | null
@@ -58,7 +63,7 @@ const ISSUE_CONFIG: Record<RTIIssueType, { subject: string; authority: string; a
 
 function buildContext(d: RTIDraftRequest): string {
   const lines = [
-    `Ward: ${d.ward_name} (Ward #${d.ward_no})`,
+    `Ward: ${d.ward_name} (${typeof d.ward_label === "string" && d.ward_label.trim() ? d.ward_label.trim().slice(0, 80) : `Ward #${d.ward_no}`})`,
     `Assembly Constituency: ${d.assembly_constituency}`,
   ]
   if (d.mla_name) lines.push(`MLA: ${d.mla_name} (${d.mla_party ?? "Unknown party"})`)
@@ -69,12 +74,12 @@ function buildContext(d: RTIDraftRequest): string {
       if (d.lad_total_lakh != null) lines.push(`Total LAD allocation: Rs ${d.lad_total_lakh} lakh`)
       break
     case "committee_meetings":
-      if (d.committee_meetings != null)
-        lines.push(`Ward committee meetings held 2020-2022: ${d.committee_meetings} out of a possible 56`)
+      for (const committee of describeFormerWardCommittees(d.former_ward_committees))
+        lines.push(`Former ${committee}`)
       break
     case "pothole_complaints":
-      if (d.pothole_complaints != null)
-        lines.push(`Pothole complaints logged: ${d.pothole_complaints}`)
+      if (d.pothole_complaints != null && Number.isFinite(Number(d.pothole_complaints)))
+        lines.push(`Pothole complaints, Fix My Street 2022 (Kaun's estimate for this ward from BBMP 198-ward records; request the exact figure): ${Math.round(Number(d.pothole_complaints))}`)
       break
     case "ward_spend":
       if (d.ward_spend_total_lakh != null)
@@ -87,8 +92,8 @@ function buildContext(d: RTIDraftRequest): string {
 }
 
 export async function POST(req: Request) {
-  const { success, reset } = await makeAiLimiter().limit(getIP(req))
-  if (!success) return rateLimitResponse(reset)
+  const limited = await enforceRateLimit(makeAiLimiter, req, "RTI drafting")
+  if (limited) return limited
 
   try {
   const data: RTIDraftRequest = await req.json()

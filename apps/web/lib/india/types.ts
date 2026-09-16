@@ -49,7 +49,10 @@ export interface Mp {
   gender: string | null
   age: number | null
   no_of_terms: number | null
-  qualification: string | null
+  // No qualification field: sansad.in's education label is not shown anywhere.
+  // It disagrees with the member's own affidavit (e.g. "Doctorate" for an
+  // MBBS, or for members who declare Class 10 or 12). Education comes from
+  // MpAffidavit.education_category only.
   profession: string | null
   status: string
   is_minister: boolean
@@ -63,6 +66,8 @@ export interface Mp {
  *  are anon-readable (RLS policy in_mp_affidavits_anon_read_matched). */
 export interface MpAffidavit {
   id: number
+  /** in_mps.id of the member who FILED it. Shown only when that member is sitting (lib/india/affidavit.ts). */
+  mp_id: number | null
   election: string
   candidate_name: string
   party_abbr: string | null
@@ -174,7 +179,10 @@ export interface TrackedProject extends CentralProject, Omit<CentralProjectChang
 export interface ConstituencyProfile {
   constituency: Constituency
   mp: Mp | null
+  /** The sitting member's own affidavit, or null. */
   affidavit: MpAffidavit | null
+  /** The seat has a general-election affidavit, filed by someone other than the sitting member (a by-election). */
+  affidavitFiledByPredecessor: boolean
   /** Term-cumulative row first (PRS MP Track), then per-session rows. */
   activity: MpActivity[]
   mplads: MpladsSummary[]

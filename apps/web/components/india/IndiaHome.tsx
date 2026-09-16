@@ -19,8 +19,8 @@ import { decodeMapState, encodeMapState } from "@/lib/india/map-url-state"
 import { markMapSeen, readMapView, saveMapView, type MapView } from "@/lib/india/map-view-store"
 import { indiaHref } from "@/lib/host-routing"
 import { LOK_SABHA_SEATS } from "@/lib/india/constants"
-import { NO_DATA_FILL } from "@/lib/india/viz"
-import { IndiaHeader } from "./IndiaHeader"
+import { PageHeader, indiaSectionNav } from "@/components/shared/PageHeader"
+import { MapLayerPicker, type PickerLegend } from "@/components/shared/MapLayerPicker"
 import type { PcFeatureProps } from "./IndiaMapView"
 
 const IndiaMapView = dynamic(() => import("./IndiaMapView"), { ssr: false })
@@ -82,9 +82,23 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
    * is ssr:false, so this value never reaches server HTML and cannot desync
    * hydration.
    */
-  const [initialView] = useState<MapView | null>(() => readMapView())
+  const [initialView] = useState<MapView | null>(() => {
+    // Only a return trip restores a viewport. The map writes its seat, layer
+    // and state filter into the URL (below), so coming back to it — history
+    // back, or BackToMap's ?seat= fallback — always carries at least one of
+    // them. A bare /india is someone asking for the map itself: the header's
+    // Map link, a reload, a fresh visit. Restoring a stale zoom there opened
+    // the page on a corner of the country while the filter said "All India".
+    if (typeof window === "undefined") return null
+    const url = decodeMapState(window.location.search)
+    if (!url.seat && !url.layer && url.stateFilter === null) return null
+    return readMapView()
+  })
 
   const layer = getIndiaLayer(layerId)
+
+  const selectSeat = useCallback((feature: PcFeatureProps | null) => setSelected(feature), [])
+  const chooseLayer = useCallback((id: string | null) => setLayerId(getIndiaLayer(id)?.id ?? null), [])
   const mpBySeat = useMemo(() => new Map(mps.map(m => [m.pc_code, m])), [mps])
 
   /**
@@ -189,70 +203,99 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
     }).slice(0, 8)
   }, [q, features, mpBySeat])
 
-  const painted = values ? Object.keys(values).length : 0
-  const legendNums = values ? Object.values(values) : []
+  const legend = useMemo((): PickerLegend | null => {
+    if (!layer || !values) return null
+    const nums = Object.values(values)
+    return {
+      ramp: rampFor(layer),
+      min: nums.length ? Math.min(...nums) : 0,
+      max: nums.length ? Math.max(...nums) : 0,
+      painted: nums.length,
+      total: features.length || LOK_SABHA_SEATS,
+    }
+  }, [layer, values, features.length])
 
   return (
-    <main className="flex flex-col h-full bg-[#0A0A0A] overflow-hidden">
+    <main className="signal-map flex flex-col h-full bg-paper-canvas overflow-hidden">
       <div className="relative flex-1 min-h-0">
-        <IndiaHeader variant="overlay" />
+        {/* The top stack — header, search, state filter — is ONE flow column.
+            They used to be three absolutely positioned rows at guessed
+            offsets, and on a 375px phone the header wrapped to two rows and
+            the search input landed on top of its nav, making the tracker
+            unreachable. In flow, nothing can overlap whatever wraps.
 
-        {/* Search — seat name, seat code, or MP name. Phones stack it above the
-            state filter below the wrapped header; sm+ puts them side by side.
-            z sits above the filter so the results list can drop over it. */}
-        <div className="absolute top-[4.5rem] sm:top-16 left-4 right-4 z-[910] sm:right-auto sm:w-[min(22rem,calc(100vw-2rem))]">
-          <input
-            value={q}
-            onChange={e => setQ(e.target.value)}
-            placeholder="Search a constituency or MP…"
-            className="w-full min-h-11 bg-black/80 backdrop-blur-xl border border-white/15 rounded-lg px-3 py-2
-              text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#FF9933]/40"
-          />
-          {results.length > 0 && (
-            <div className="mt-1 bg-[#111] border border-white/10 rounded-lg overflow-hidden shadow-xl max-h-72 overflow-y-auto">
-              {results.map(f => {
-                const mp = mpBySeat.get(f.pc_code)
-                return (
-                  <button
-                    key={f.pc_code}
-                    onMouseDown={e => e.preventDefault()}
-                    onClick={e => {
-                      e.stopPropagation()
-                      setQ("")
-                      setSelected(f)
-                      setStateFilter(f.st_code)
-                      focusRef.current?.focus(f.pc_code)
-                    }}
-                    className="w-full min-h-11 text-left px-3 py-2 hover:bg-white/10 transition-colors"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-white/85 text-xs">{f.pc_name}</span>
-                      <span className="text-white/20 text-[10px] font-mono">{f.pc_code}</span>
-                    </div>
-                    <div className="text-white/30 text-[10px] mt-0.5">
-                      {f.state_name}{mp ? ` · ${mp.name}` : ""}
-                    </div>
-                  </button>
-                )
-              })}
+            Phones: header (two rows), search, then the state filter under it,
+            left-aligned and at most 13rem wide so it ends well short of the
+            Leaflet zoom control, which globals.css parks at top: 172px on the
+            right — below the header and search, beside the filter. sm and up:
+            search and filter share a row on the left, leaving the top-right
+            corner to the zoom control.
+
+            z-[1010] puts the stack, and the search results that drop out of
+            it, above Leaflet's controls (z-1000) and above the bottom rail. */}
+        <div className="absolute top-4 inset-x-4 z-[1010] flex flex-col items-start gap-2 pointer-events-none">
+          <PageHeader surface="india" variant="overlay" nav={indiaSectionNav("map")} />
+
+          <div className="flex w-full flex-col items-start gap-2 sm:flex-row">
+            {/* Search — seat name, seat code, or MP name. */}
+            <div className="relative w-full pointer-events-auto sm:w-[min(22rem,calc(100vw-2rem))]">
+              <input
+                value={q}
+                onChange={e => setQ(e.target.value)}
+                placeholder="Search a constituency or MP…"
+                aria-label="Search a constituency or MP"
+                className="w-full min-h-11 bg-paper-bright border border-ink/55 px-3 py-2
+                  text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:border-ink
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              />
+              {results.length > 0 && (
+                <div className="absolute inset-x-0 top-full mt-1 bg-paper border border-ink/55 divide-y divide-ink/10 max-h-72 overflow-y-auto">
+                  {results.map(f => {
+                    const mp = mpBySeat.get(f.pc_code)
+                    return (
+                      <button
+                        key={f.pc_code}
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={e => {
+                          e.stopPropagation()
+                          setQ("")
+                          selectSeat(f)
+                          setStateFilter(f.st_code)
+                          focusRef.current?.focus(f.pc_code)
+                        }}
+                        className="w-full min-h-11 text-left px-3 py-2 hover:bg-ink/5 transition-colors
+                          focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-ink text-sm">{f.pc_name}</span>
+                          <span className="text-ink/60 text-[11px] font-mono tabular-nums">{f.pc_code}</span>
+                        </div>
+                        <div className="text-ink/60 text-xs mt-0.5">
+                          {f.state_name}{mp ? ` · ${mp.name}` : ""}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* State filter — below the search on phones, beside it from sm up */}
-        <div className="absolute top-[7.5rem] right-4 z-[900] sm:top-16 sm:right-4">
-          <select
-            value={stateFilter ?? ""}
-            onChange={e => setStateFilter(e.target.value === "" ? null : Number(e.target.value))}
-            aria-label="Filter constituencies by state"
-            className="min-h-11 bg-black/80 backdrop-blur-xl border border-white/15 rounded-lg px-2.5 py-2
-              text-xs text-white/80 focus:outline-none focus:border-[#FF9933]/40 max-w-[13rem]"
-          >
-            <option value="">All India · {features.length || LOK_SABHA_SEATS} seats</option>
-            {states.map(s => (
-              <option key={s.st_code} value={s.st_code}>{s.name} · {s.seats}</option>
-            ))}
-          </select>
+            {/* State filter. Each option counts SEATS — the tracker's state
+                filter counts projects, so the unit is spelled out. */}
+            <select
+              value={stateFilter ?? ""}
+              onChange={e => setStateFilter(e.target.value === "" ? null : Number(e.target.value))}
+              aria-label="Filter constituencies by state"
+              className="pointer-events-auto min-h-11 max-w-[13rem] bg-paper border border-ink/55 px-2.5 py-2
+                text-xs text-ink focus:outline-none focus:border-ink
+                focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            >
+              <option value="">All India · {features.length || LOK_SABHA_SEATS} seats</option>
+              {states.map(s => (
+                <option key={s.st_code} value={s.st_code}>{s.name} · {s.seats} seat{s.seats === 1 ? "" : "s"}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <IndiaMapView
@@ -260,7 +303,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
           breaks={breaks}
           layer={layer}
           stateFilter={stateFilter}
-          onSelect={setSelected}
+          onSelect={selectSeat}
           focusRef={focusRef}
           onFeaturesLoaded={setFeatures}
           initialView={initialView}
@@ -276,104 +319,70 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
             The rail is pointer-events-none and only as tall as its content, so
             the map underneath still pans; the panels re-enable pointers.
             `pb-11` clears Leaflet's attribution bar, which is two lines tall at
-            phone widths and sits at z-1000, above both panels.
+            phone widths.
+            z-[1005] sits above Leaflet's controls (z-1000): with the layer
+            picker open the rail is tall enough to reach the zoom buttons, and the zoom
+            control used to sit on top of the preview's close button. The rail
+            also stops at top-56, below the top stack, and the layer panel's
+            body scrolls inside what is left — so however tall the panels get,
+            they neither run under the search box nor push its own close button
+            off screen.
             From md up the rail stops generating a box (`md:contents`) and each
             panel returns to its own corner, unchanged. md, not sm: at 640 two
             20rem panels still overlap by 2rem. */}
-        <div className="absolute inset-x-0 bottom-0 z-[900] flex flex-col-reverse gap-2 p-4 pb-11
+        <div className="absolute inset-x-0 top-56 bottom-0 z-[1005] flex flex-col-reverse gap-2 p-4 pb-11
           pointer-events-none md:contents">
 
-          {/* Layer switcher + legend */}
-          <div className="pointer-events-auto w-full
-            md:absolute md:bottom-4 md:left-4 md:z-[900] md:w-[min(20rem,calc(100vw-2rem))]
-            bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl p-3">
-            <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">Color by</p>
-            <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:gap-1.5">
-              <button
-                onClick={() => setLayerId(null)}
-                className={`min-h-11 md:min-h-0 text-[11px] px-2 py-1 rounded border transition-colors ${
-                  layerId === null
-                    ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
-                    : "border-white/10 text-white/40 hover:text-white/70"}`}
-              >
-                None
-              </button>
-              {INDIA_LAYERS.map(l => (
-                <button
-                  key={l.id}
-                  onClick={() => setLayerId(l.id)}
-                  className={`min-h-11 md:min-h-0 text-[11px] px-2 py-1 rounded border transition-colors ${
-                    layerId === l.id
-                      ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
-                      : "border-white/10 text-white/40 hover:text-white/70"}`}
-                >
-                  {l.label}
-                </button>
-              ))}
-            </div>
-
-            {layer && (
-              <div className="mt-2.5 space-y-1.5">
-                <p className="text-white/40 text-[11px] leading-snug">{layer.description}</p>
-                <div className="flex items-center gap-1">
-                  {rampFor(layer).map((c, i) => (
-                    <span key={i} className="h-2 flex-1 rounded-sm" style={{ backgroundColor: c }} />
-                  ))}
-                </div>
-                <div className="flex items-center justify-between text-white/25 text-[10px]">
-                  <span>{legendNums.length ? formatValue(Math.min(...legendNums), layer.format) : "—"}</span>
-                  <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-white/25 text-[10px]">
-                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: NO_DATA_FILL }} />
-                  <span>
-                    {layerLoading
-                      ? "loading…"
-                      : `no value for ${(features.length || LOK_SABHA_SEATS) - painted} of ${features.length || LOK_SABHA_SEATS} seats`}
-                  </span>
-                </div>
-                {layer.absentNote && (
-                  <p className="text-white/20 text-[10px] leading-snug">{layer.absentNote}</p>
-                )}
-                <p className="text-white/15 text-[10px]">Source: {layer.source}</p>
-              </div>
-            )}
-          </div>
+          {/* Layer picker — the same control as the city map's. Folded, it
+              is one line plus the colour key, so the map stays readable. */}
+          <MapLayerPicker
+            id="india-layer-panel"
+            layers={INDIA_LAYERS}
+            activeId={layerId}
+            onSelect={chooseLayer}
+            legend={legend}
+            loading={layerLoading}
+            noun={{ one: "seat", other: "seats" }}
+            noDataSwatch="dashed"
+            className="w-full md:absolute md:bottom-4 md:left-4 md:z-[900] md:max-h-[calc(100%-15rem)] md:w-[min(20rem,calc(100vw-2rem))]"
+          />
 
           {/* Seat preview — a doorway to the seat's own page, never a substitute */}
           {selected && (
-            <div className="pointer-events-auto w-full
+            <div className="pointer-events-auto w-full shrink-0
               md:absolute md:bottom-4 md:right-4 md:z-[950] md:w-[min(20rem,calc(100vw-2rem))]
-              bg-[#111] border border-white/10 rounded-xl p-4 shadow-2xl">
+              bg-paper border border-ink/55 border-t-2 border-t-ink p-4">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-white/30 text-[10px] uppercase tracking-widest">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">
                     {selected.state_name} · seat {selected.pc_no}
                   </p>
-                  <p className="text-white font-semibold text-base mt-0.5">{selected.pc_name}</p>
+                  <p className="text-ink font-semibold text-base mt-0.5">{selected.pc_name}</p>
                   {(() => {
                     const mp = mpBySeat.get(selected.pc_code)
                     if (!mp) {
-                      return <p className="text-white/30 text-xs mt-1">No sitting MP on record for this seat.</p>
+                      return <p className="text-ink/60 text-xs mt-1">No sitting MP on record for this seat.</p>
                     }
                     return (
-                      <p className="text-white/50 text-xs mt-1">
+                      <p className="text-ink/75 text-xs mt-1">
                         {mp.name}{mp.party_abbr ? ` · ${mp.party_abbr}` : ""}
                       </p>
                     )
                   })()}
                   {layer && (
-                    <p className="text-white/40 text-xs mt-1.5">
+                    <p className="text-ink/70 text-xs mt-1.5">
                       {layer.label}:{" "}
                       {values && values[selected.pc_code] !== undefined
-                        ? <span className="text-white/80">{formatValue(values[selected.pc_code], layer.format)}</span>
-                        : <span className="text-white/25 italic">no value recorded</span>}
+                        ? <span className="text-ink font-mono tabular-nums font-semibold">{formatValue(values[selected.pc_code], layer.format)}</span>
+                        : <span className="text-ink/60 italic">no value recorded</span>}
                     </p>
                   )}
                 </div>
                 <button
                   onClick={() => setSelected(null)}
-                  className="text-white/30 hover:text-white/70 text-lg leading-none w-7 h-7 flex items-center justify-center shrink-0"
+                  className="w-11 h-11 -mt-2 -mr-2 flex items-center justify-center shrink-0 border border-ink/20
+                    text-ink/60 hover:bg-ink/5 hover:text-ink text-lg leading-none transition-colors
+                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                   aria-label="Close"
                 >&times;</button>
               </div>
@@ -384,9 +393,10 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                   map's one job; it should not feel like leaving. */}
               <Link
                 href={indiaHref(`/c/${selected.pc_code}`)}
-                className="mt-3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
-                  bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95 text-black font-semibold text-sm
-                  transition-all duration-150"
+                className="mt-3 flex min-h-11 items-center justify-center gap-2 px-4
+                  bg-ink text-paper font-mono text-[11px] font-semibold uppercase tracking-[0.08em]
+                  hover:bg-ink/85 transition-colors
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Open constituency page &rarr;
               </Link>

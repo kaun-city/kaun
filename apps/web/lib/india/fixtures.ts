@@ -100,7 +100,7 @@ export const FIXTURE_MPS: Mp[] = [
     state_name: "Karnataka", constituency_label: "Bangalore Rural",
     name: "C N Manjunath", party_abbr: "BJP", party_full: "Bharatiya Janata Party",
     gender: "Male", age: 69, no_of_terms: 1,
-    qualification: "Post Graduate and above", profession: "Cardiologist",
+    profession: "Cardiologist",
     status: "Sitting", is_minister: false, minister_note: null,
     profile_url: "https://sansad.in/ls/members/5590",
     data_source: SANSAD_SRC, updated_at: "2026-07-10T00:00:00Z",
@@ -110,7 +110,7 @@ export const FIXTURE_MPS: Mp[] = [
     state_name: "Karnataka", constituency_label: "Bangalore North",
     name: "Shobha Karandlaje", party_abbr: "BJP", party_full: "Bharatiya Janata Party",
     gender: "Female", age: 59, no_of_terms: 3,
-    qualification: "Post Graduate and above", profession: "Parliamentarian",
+    profession: "Parliamentarian",
     status: "Sitting", is_minister: true,
     minister_note: "Union Minister of State. Ministers do not sign the attendance register, ask questions, or introduce private member bills.",
     profile_url: "https://sansad.in/ls/members/4616",
@@ -121,7 +121,7 @@ export const FIXTURE_MPS: Mp[] = [
     state_name: "Karnataka", constituency_label: "Bangalore Central",
     name: "P C Mohan", party_abbr: "BJP", party_full: "Bharatiya Janata Party",
     gender: "Male", age: 63, no_of_terms: 4,
-    qualification: "Upto Higher Secondary", profession: "Business and Social Worker",
+    profession: "Business and Social Worker",
     status: "Sitting", is_minister: false, minister_note: null,
     profile_url: "https://sansad.in/ls/members/4321",
     data_source: SANSAD_SRC, updated_at: "2026-07-10T00:00:00Z",
@@ -131,7 +131,7 @@ export const FIXTURE_MPS: Mp[] = [
     state_name: "Karnataka", constituency_label: "Bangalore South",
     name: "Tejasvi Surya", party_abbr: "BJP", party_full: "Bharatiya Janata Party",
     gender: "Male", age: 35, no_of_terms: 2,
-    qualification: "Graduate", profession: "Advocate",
+    profession: "Advocate",
     status: "Sitting", is_minister: false, minister_note: null,
     profile_url: "https://sansad.in/ls/members/5182",
     data_source: SANSAD_SRC, updated_at: "2026-07-10T00:00:00Z",
@@ -147,7 +147,7 @@ const MYNETA_SRC = "ECI affidavits via myneta.info (ADR)"
 
 export const FIXTURE_AFFIDAVITS: Record<string, MpAffidavit> = {
   "29-24": {
-    id: 1, election: "LokSabha2024", candidate_name: "SHOBHA KARANDLAJE",
+    id: 1, mp_id: 2, election: "LokSabha2024", candidate_name: "SHOBHA KARANDLAJE",
     party_abbr: "BJP", age: 57, self_profession: "Parliamentarian",
     education_category: "Post Graduate",
     education_detail: "Master of Social Services (Social Service), Roshani Nilaya, Mangalore University, 1990",
@@ -162,7 +162,7 @@ export const FIXTURE_AFFIDAVITS: Record<string, MpAffidavit> = {
     data_source: MYNETA_SRC, updated_at: "2026-07-25T00:00:00Z",
   },
   "29-25": {
-    id: 2, election: "LokSabha2024", candidate_name: "P C MOHAN",
+    id: 2, mp_id: 3, election: "LokSabha2024", candidate_name: "P C MOHAN",
     party_abbr: "BJP", age: 60, self_profession: "Business and Social Worker",
     education_category: "12th Pass",
     education_detail: "2nd PUC, Vijaya College, Jayanagar, Bengaluru, 1981",
@@ -178,7 +178,7 @@ export const FIXTURE_AFFIDAVITS: Record<string, MpAffidavit> = {
     data_source: MYNETA_SRC, updated_at: "2026-07-25T00:00:00Z",
   },
   "29-26": {
-    id: 3, election: "LokSabha2024", candidate_name: "TEJASVI SURYA",
+    id: 3, mp_id: 4, election: "LokSabha2024", candidate_name: "TEJASVI SURYA",
     party_abbr: "BJP", age: 33, self_profession: "Advocate",
     education_category: "Graduate Professional",
     education_detail: "BA LLB, Bangalore Institute of Legal Studies (Bangalore University), 2013",

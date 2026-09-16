@@ -28,8 +28,9 @@
  * view's.
  */
 import { ImageResponse } from "next/og"
-import { OgFrame, OG_SAFFRON } from "@/components/india/OgFrame"
+import { OgFrame, OG_CARD, OG_DANGER, OG_INK, ogInk } from "@/components/india/OgFrame"
 import { fetchActivity, fetchAffidavit, fetchConstituency, fetchSittingMp } from "@/lib/india/api"
+import { affidavitOfSittingMember } from "@/lib/india/affidavit"
 import { buildConstituencyCard, fallbackConstituencyCard, OG_SIZE, type ConstituencyCard } from "@/lib/india/og"
 import { ogFonts } from "@/lib/india/og-fonts"
 import { isPcCode } from "@/lib/india/pc-code"
@@ -51,10 +52,12 @@ async function loadCard(pcCode: string): Promise<ConstituencyCard> {
     const constituency = await fetchConstituency(pcCode)
     if (!constituency) return fallbackConstituencyCard(pcCode)
 
-    const [mp, affidavit] = await Promise.all([
+    const [mp, seatAffidavit] = await Promise.all([
       fetchSittingMp(pcCode),
       fetchAffidavit(pcCode),
     ])
+    // The seat's affidavit is only this member's if they filed it (by-elections).
+    const affidavit = affidavitOfSittingMember(seatAffidavit, mp)
     // Only when there is no affidavit is attendance worth a fourth round trip.
     const activity: MpActivity[] = mp && !affidavit ? await fetchActivity(mp.id, pcCode) : []
 
@@ -64,19 +67,28 @@ async function loadCard(pcCode: string): Promise<ConstituencyCard> {
   }
 }
 
+/**
+ * A declared criminal case count is the one figure the page itself marks as an
+ * alarm (MpCard renders it in danger), so the card does the same — and only
+ * for a real, non-zero declaration, never "None declared" or "Not recorded".
+ */
+function isAlarm(label: string, value: string): boolean {
+  return label === "Criminal cases" && /^[1-9]\d* declared$/.test(value)
+}
+
 function Fact({ label, value, note }: { label: string; value: string; note: string | null }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
       <div style={{
         display: "flex",
-        color: "rgba(255,255,255,0.35)",
+        color: ogInk(0.6),
         fontSize: "16px",
         letterSpacing: "1.4px",
         textTransform: "uppercase",
       }}>{label}</div>
       <div style={{
         display: "flex",
-        color: "white",
+        color: isAlarm(label, value) ? OG_DANGER : OG_INK,
         fontSize: "34px",
         fontWeight: 700,
         marginTop: "6px",
@@ -84,7 +96,7 @@ function Fact({ label, value, note }: { label: string; value: string; note: stri
       {note && (
         <div style={{
           display: "flex",
-          color: "rgba(255,255,255,0.28)",
+          color: ogInk(0.6),
           fontSize: "15px",
           marginTop: "5px",
         }}>{note}</div>
@@ -110,16 +122,15 @@ export default async function Image({ params }: Props) {
           {/* identity */}
           <div style={{
             display: "flex",
-            color: OG_SAFFRON,
+            color: ogInk(0.6),
             fontSize: "20px",
             letterSpacing: "1.6px",
             textTransform: "uppercase",
-            opacity: 0.85,
           }}>{card.eyebrow}</div>
 
           <div style={{
             display: "flex",
-            color: "white",
+            color: OG_INK,
             fontSize: `${card.titleSize}px`,
             fontWeight: 700,
             letterSpacing: "-1.5px",
@@ -130,7 +141,7 @@ export default async function Image({ params }: Props) {
           {card.hindi && (
             <div style={{
               display: "flex",
-              color: "rgba(255,255,255,0.38)",
+              color: ogInk(0.7),
               fontSize: "26px",
               marginTop: "4px",
             }}>{card.hindi}</div>
@@ -141,7 +152,7 @@ export default async function Image({ params }: Props) {
             <div style={{ display: "flex", flexDirection: "column", marginTop: "22px" }}>
               <div style={{
                 display: "flex",
-                color: "rgba(255,255,255,0.35)",
+                color: ogInk(0.6),
                 fontSize: "16px",
                 letterSpacing: "1.4px",
                 textTransform: "uppercase",
@@ -149,27 +160,39 @@ export default async function Image({ params }: Props) {
               <div style={{ display: "flex", alignItems: "center", marginTop: "4px" }}>
                 <div style={{
                   display: "flex",
-                  color: "white",
+                  color: OG_INK,
                   fontSize: `${card.mpSize}px`,
                   fontWeight: 700,
                 }}>{card.mpName}</div>
+                {/* Party colours are not all legible as text on paper (TDP is
+                    gold), so the colour rides a swatch and the name stays ink. */}
                 {card.party && (
                   <div style={{
                     display: "flex",
+                    alignItems: "center",
                     marginLeft: "14px",
                     padding: "5px 14px",
-                    borderRadius: "8px",
-                    backgroundColor: `${partyColor}26`,
-                    color: partyColor,
+                    backgroundColor: OG_CARD,
+                    border: `1px solid ${ogInk(0.2)}`,
+                    color: OG_INK,
                     fontSize: "20px",
                     fontWeight: 700,
-                  }}>{card.party}</div>
+                  }}>
+                    <div style={{
+                      display: "flex",
+                      width: "12px",
+                      height: "12px",
+                      marginRight: "10px",
+                      backgroundColor: partyColor,
+                    }} />
+                    {card.party}
+                  </div>
                 )}
               </div>
               {card.mpMeta && (
                 <div style={{
                   display: "flex",
-                  color: "rgba(255,255,255,0.3)",
+                  color: ogInk(0.6),
                   fontSize: "18px",
                   marginTop: "4px",
                 }}>{card.mpMeta}</div>
@@ -190,7 +213,7 @@ export default async function Image({ params }: Props) {
             The honest empty state, as a rule-and-sentence rather than a boxed
             callout: a box costs ~30px of padding, and the densest card — a
             member with attendance but no matched affidavit — does not have
-            30px to spare. The saffron rule carries the emphasis instead.
+            30px to spare. The ink rule carries the emphasis instead.
           */}
           {card.note && (
             <div style={{
@@ -202,12 +225,12 @@ export default async function Image({ params }: Props) {
               <div style={{
                 display: "flex",
                 width: "3px",
-                backgroundColor: "rgba(255,153,51,0.55)",
+                backgroundColor: ogInk(0.55),
                 marginRight: "14px",
               }} />
               <div style={{
                 display: "flex",
-                color: "rgba(255,255,255,0.45)",
+                color: ogInk(0.7),
                 fontSize: "19px",
                 lineHeight: 1.4,
               }}>{card.note}</div>

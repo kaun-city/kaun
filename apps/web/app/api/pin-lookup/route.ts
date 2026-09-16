@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { publicSupabaseConfig } from "@/lib/supabase-config"
 
 export const runtime = "nodejs"
 
@@ -34,9 +35,8 @@ export async function POST(request: Request) {
   const point = coordinates(body)
   if (!point) return NextResponse.json({ error: "lat and lng must be valid coordinates" }, { status: 400 })
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return NextResponse.json({ error: "Pin lookup is not configured" }, { status: 503 })
+  const { url, anonKey } = publicSupabaseConfig()
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? anonKey
 
   try {
     const response = await fetch(`${url}/rest/v1/rpc/pin_lookup`, {

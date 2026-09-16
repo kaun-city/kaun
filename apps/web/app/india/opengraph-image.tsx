@@ -10,7 +10,7 @@
  * domain rewrites to /india, so this is what kaun.city unfurls as.
  */
 import { ImageResponse } from "next/og"
-import { OgFrame, OG_SAFFRON } from "@/components/india/OgFrame"
+import { OgFrame, OG_CARD, OG_INK, ogInk } from "@/components/india/OgFrame"
 import { LOK_SABHA_SEATS } from "@/lib/india/constants"
 import { OG_SIZE } from "@/lib/india/og"
 import { ogFonts } from "@/lib/india/og-fonts"
@@ -36,17 +36,16 @@ export default async function Image() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{
             display: "flex",
-            color: OG_SAFFRON,
+            color: ogInk(0.6),
             fontSize: "21px",
             letterSpacing: "1.8px",
             textTransform: "uppercase",
-            opacity: 0.85,
           }}>{LOK_SABHA_SEATS} seats · one page each</div>
 
           <div style={{
             display: "flex",
             flexDirection: "column",
-            color: "white",
+            color: OG_INK,
             fontSize: "66px",
             fontWeight: 700,
             letterSpacing: "-2px",
@@ -59,7 +58,7 @@ export default async function Image() {
 
           <div style={{
             display: "flex",
-            color: "rgba(255,255,255,0.45)",
+            color: ogInk(0.7),
             fontSize: "26px",
             lineHeight: 1.4,
             marginTop: "18px",
@@ -75,10 +74,9 @@ export default async function Image() {
                 display: "flex",
                 marginRight: "14px",
                 padding: "10px 20px",
-                backgroundColor: "rgba(255,153,51,0.12)",
-                border: "1px solid rgba(255,153,51,0.25)",
-                borderRadius: "100px",
-                color: "rgba(255,255,255,0.72)",
+                backgroundColor: OG_CARD,
+                border: `1px solid ${ogInk(0.2)}`,
+                color: ogInk(0.75),
                 fontSize: "19px",
               }}>{label}</div>
             ))}

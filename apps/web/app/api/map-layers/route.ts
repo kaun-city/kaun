@@ -1,5 +1,12 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 import { MAP_LAYERS, getLayer, quantileBreaks } from "@/lib/map-layers"
+import { publicSupabaseConfig } from "@/lib/supabase-config"
+import gbaCrosswalkJson from "@/public/bengaluru-gba-369-to-datameet-243.json"
+import sourceCrosswalkJson from "@/public/bengaluru-ward-crosswalk.json"
+import { bbmp198ValuesToDatameet243 } from "@/lib/bbmp198-crosswalk"
+import { BBMP198_INDEX } from "@/lib/bbmp198-server"
+import { constituencyKey } from "@/lib/bengaluru-constituencies"
+import { flaggedContractorCountsByCurrentWard, type CurrentWardRecordRow, type LegacySourceWardRow } from "@/lib/gba-crosswalk"
 
 export const runtime = "nodejs"
 
@@ -14,11 +21,33 @@ export function OPTIONS() {
   return new Response(null, { status: 204, headers: CORS_HEADERS })
 }
 
-type Values = Record<number, number>
+type Values = Record<string, number>
+
+type GbaCrosswalkRow = (typeof gbaCrosswalkJson.rows)[number]
+
+/** 198-ward totals -> DataMeet-243 (bbmp198_share) -> current GBA wards (legacy_share). */
+function currentizeBbmp198Values(bbmp198Values: Values): Values {
+  return currentizeLegacyValues(bbmp198ValuesToDatameet243(bbmp198Values, BBMP198_INDEX))
+}
+
+function currentizeLegacyValues(legacyValues: Values): Values {
+  const values: Values = {}
+  for (const row of gbaCrosswalkJson.rows as GbaCrosswalkRow[]) {
+    const key = `${row.corporation_id}:${row.ward_no}`
+    const estimate = row.historical_wards.reduce(
+      (sum, ref) => sum + (legacyValues[String(ref.ward_no)] ?? 0) * ref.legacy_share,
+      0,
+    )
+    if (row.historical_wards.some(ref => legacyValues[String(ref.ward_no)] !== undefined)) {
+      values[key] = estimate
+    }
+  }
+  return values
+}
 
 /**
- * Per-ward values for an MLA-affidavit metric: join wards → rep_report_cards
- * on assembly constituency, so every ward inherits its MLA's number.
+ * MLA metrics are constituency data, so join them directly to the current GBA
+ * ward's published assembly constituency instead of routing through 243 wards.
  */
 async function mlaMetric(
   supabase: SupabaseClient,
@@ -26,20 +55,25 @@ async function mlaMetric(
   column: "criminal_cases" | "attendance_pct" | "lad_utilization_pct",
 ): Promise<Values> {
   const [wards, cards] = await Promise.all([
-    supabase.from("wards").select("ward_no,assembly_constituency").eq("city_id", cityId),
+    cityId === "bengaluru"
+      ? supabase.from("gba_wards").select("gba_corporation_id,gba_ward_no,gba_ac")
+      : supabase.from("wards").select("ward_no,assembly_constituency").eq("city_id", cityId),
     supabase.from("rep_report_cards").select(`constituency,${column}`).eq("role", "MLA"),
   ])
   const byAc = new Map<string, number>()
   for (const c of (cards.data ?? []) as Array<Record<string, unknown>>) {
-    const ac = String(c.constituency ?? "").toLowerCase().trim()
+    const ac = constituencyKey(String(c.constituency ?? ""))
     const v = Number(c[column])
     if (ac && Number.isFinite(v)) byAc.set(ac, v)
   }
   const values: Values = {}
   for (const w of wards.data ?? []) {
-    const ac = String(w.assembly_constituency ?? "").toLowerCase().trim()
+    const ac = constituencyKey(String(("gba_ac" in w ? w.gba_ac : w.assembly_constituency) ?? ""))
     const v = byAc.get(ac)
-    if (v !== undefined) values[w.ward_no] = v
+    if (v !== undefined) {
+      const key = "gba_ward_no" in w ? `${w.gba_corporation_id}:${w.gba_ward_no}` : String(w.ward_no)
+      values[key] = v
+    }
   }
   return values
 }
@@ -54,38 +88,49 @@ async function layerValues(supabase: SupabaseClient, layerId: string, cityId: st
       return mlaMetric(supabase, cityId, "lad_utilization_pct")
 
     case "potholes": {
-      const { data } = await supabase
-        .from("ward_potholes")
-        .select("ward_no,complaints")
-        .eq("city_id", cityId)
+      let query = supabase.from("ward_potholes").select("ward_no,complaints")
+      if (cityId !== "bengaluru") query = query.eq("city_id", cityId)
+      const { data } = await query
       const values: Values = {}
       for (const r of data ?? []) if (r.complaints != null) values[r.ward_no] = r.complaints
-      return values
+      // ward_potholes is keyed on BBMP's 198-ward map, never a 243 number.
+      return cityId === "bengaluru" ? currentizeBbmp198Values(values) : values
     }
 
     case "ward_spend": {
-      const { data } = await supabase
-        .from("ward_spend_category")
-        .select("ward_no,grand_total")
-        .eq("city_id", cityId)
+      let query = supabase.from("ward_spend_category").select("ward_no,grand_total")
+      if (cityId !== "bengaluru") query = query.eq("city_id", cityId)
+      const { data } = await query
       const values: Values = {}
-      for (const r of data ?? []) if (r.grand_total != null) values[r.ward_no] = Number(r.grand_total)
-      return values
+      // Stored values are rupees; the public layer contract is INR lakh.
+      for (const r of data ?? []) if (r.grand_total != null) values[r.ward_no] = Number(r.grand_total) / 100_000
+      // ward_spend_category is keyed on BBMP's 198-ward map, never a 243 number.
+      return cityId === "bengaluru" ? currentizeBbmp198Values(values) : values
     }
 
     case "flagged_contractors": {
-      const { data } = await supabase
+      let query = supabase
         .from("contractor_profiles")
         .select("wards,blacklist_flags")
-        .eq("city_id", cityId)
+        .neq("blacklist_flags", "{}")
         .limit(5000)
+      if (cityId !== "bengaluru") query = query.eq("city_id", cityId)
+      const { data } = await query
+      const profiles = (data ?? []) as Array<{ wards: number[] | null; blacklist_flags: unknown[] | null }>
+      if (cityId === "bengaluru") {
+        // Same attribution as the ward card: only materially overlapping former
+        // wards, bridged to BBMP-225 with the same threshold. Counts are whole
+        // contractors, never area-weighted fractions of a named business.
+        return flaggedContractorCountsByCurrentWard(
+          gbaCrosswalkJson.rows as CurrentWardRecordRow[],
+          sourceCrosswalkJson.rows as LegacySourceWardRow[],
+          profiles,
+        )
+      }
       const values: Values = {}
-      for (const r of data ?? []) {
-        const flags = (r.blacklist_flags ?? []) as unknown[]
-        if (!Array.isArray(flags) || flags.length === 0) continue
-        for (const w of (r.wards ?? []) as number[]) {
-          values[w] = (values[w] ?? 0) + 1
-        }
+      for (const profile of profiles) {
+        if (!Array.isArray(profile.blacklist_flags) || profile.blacklist_flags.length === 0) continue
+        for (const ward of new Set(profile.wards ?? [])) values[ward] = (values[ward] ?? 0) + 1
       }
       return values
     }
@@ -97,7 +142,7 @@ async function layerValues(supabase: SupabaseClient, layerId: string, cityId: st
         .eq("city_id", cityId)
       const values: Values = {}
       for (const r of data ?? []) if (r.hospitals != null) values[r.ward_no] = r.hospitals
-      return values
+      return cityId === "bengaluru" ? currentizeLegacyValues(values) : values
     }
 
     default:
@@ -129,10 +174,8 @@ export async function GET(req: Request) {
     )
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+  const { url: supabaseUrl, anonKey } = publicSupabaseConfig()
+  const supabase = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY || anonKey)
 
   let values: Values = {}
   try {

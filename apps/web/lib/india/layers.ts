@@ -30,6 +30,8 @@ export interface IndiaLayerMeta {
   description: string
   source: string
   format: LayerFormat
+  /** What the legend scale measures, in plain words, shown under its ends. */
+  unit: string
   ramp: Ramp
   /**
    * When true the ramp is read high→low, i.e. the DIM end is the high value.
@@ -48,6 +50,7 @@ export const INDIA_LAYERS: IndiaLayerMeta[] = [
     description: "Cases the sitting MP declared in their 2024 nomination affidavit",
     source: "ECI affidavits via MyNeta",
     format: "count",
+    unit: "Criminal cases declared by the sitting MP",
     ramp: RAMP_SEQUENTIAL,
     absentNote: "A seat with no colour has no reviewed affidavit loaded — that is not a declaration of zero.",
   },
@@ -57,6 +60,7 @@ export const INDIA_LAYERS: IndiaLayerMeta[] = [
     description: "Share of sittings attended this term",
     source: "PRS India MP Track",
     format: "pct",
+    unit: "% of Lok Sabha sittings attended this term",
     ramp: RAMP_SEQUENTIAL,
     invert: true,
     absentNote: "Ministers and the Speaker do not sign the attendance register, so their seats carry no value here.",
@@ -67,6 +71,7 @@ export const INDIA_LAYERS: IndiaLayerMeta[] = [
     description: "Share of the MP's local area development allocation actually spent",
     source: "eSAKSHI (MoSPI)",
     format: "pct",
+    unit: "% of the MP's MPLADS allocation spent",
     ramp: RAMP_SEQUENTIAL,
     invert: true,
   },

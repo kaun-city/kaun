@@ -11,9 +11,8 @@ import { surfaceLinks, type SurfaceId } from "@/lib/host-routing"
  * same order, with the same words.
  *
  * A segmented pill, not a dropdown: three destinations do not earn a menu, and
- * a menu costs a tap on the phones that are most of Kaun's traffic. It is sized
- * to survive a 360px header — the city map's top strip already carries the
- * wordmark, the info button and the search affordance.
+ * a menu costs a tap on the phones that are most of Kaun's traffic. It renders
+ * inside PageHeader on every page, beside the wordmark.
  *
  * Every href comes from surfaceLinks() in lib/host-routing.ts, which is pure and
  * exhaustively tested, so the flag- and host-awareness lives in one place rather
@@ -26,9 +25,16 @@ import { surfaceLinks, type SurfaceId } from "@/lib/host-routing"
  * navigation across origins is not a thing — a <Link> to bengaluru.kaun.city
  * from kaun.city would try to fetch an RSC payload from another host. The
  * relative ones are this same Next app on this same host, so they get a Link
- * and prefetch. surfaceLinks() computes the flag and host-routing.test.mjs
- * asserts it agrees with the href on every host in every mode, so the question
- * is answered in one place, once.
+ * for a client-side transition. surfaceLinks() computes the flag and
+ * host-routing.test.mjs asserts it agrees with the href on every host in every
+ * mode, so the question is answered in one place, once.
+ *
+ * No prefetch. Every link here leaves the current surface, and a surface's
+ * page can carry heavy resource hints: /india preloads its 1.4 MB constituency
+ * outlines, so prefetching it from the Bengaluru map downloaded a file that
+ * page never uses. A cross-surface hop is rare enough to pay for on click.
+ *
+ * Every segment is at least 44px wide on phones ("IN" alone is 35px).
  */
 export function SurfaceSwitcher({
   current,
@@ -43,7 +49,7 @@ export function SurfaceSwitcher({
   host?: string
   /** Defaults to NEXT_PUBLIC_INDIA_ROOT — pass only in tests/stories. */
   indiaRoot?: boolean
-  /** `overlay` floats over a map; `inline` sits in a page header. */
+  /** `overlay` floats over a map (turns pointer events back on); `inline` sits in a page header. */
   variant?: "overlay" | "inline"
   className?: string
 }) {
@@ -52,25 +58,28 @@ export function SurfaceSwitcher({
   return (
     <nav
       aria-label="Kaun surfaces"
-      className={`inline-flex items-center shrink-0 overflow-hidden rounded-full
-        border border-white/12 divide-x divide-white/10
-        ${variant === "overlay" ? "bg-black/60 backdrop-blur-md shadow-lg pointer-events-auto" : "bg-white/5"}
+      className={`inline-flex items-stretch shrink-0 overflow-hidden border border-ink/55 divide-x divide-ink/15 bg-paper
+        ${variant === "overlay" ? "pointer-events-auto" : ""}
         ${className}`}
     >
       {links.map(link => {
-        const cls = "min-h-11 sm:min-h-0 px-2 py-1 text-[10px] sm:text-[11px] leading-none whitespace-nowrap transition-colors flex items-center"
+        // One label set on every surface; the full name stays in aria-label.
+        const displayLabel = link.id === "india" ? "IN" : link.id === "city" ? "BLR" : "DATA"
+        // One size at every width and in both variants: the switcher is the
+        // same control wherever it appears, and 44px is a touch target.
+        const cls = "min-h-11 min-w-11 px-3 font-mono text-[11px] font-semibold tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center justify-center"
         if (link.id === current) {
           return (
-            <span key={link.id} aria-current="page" className={`${cls} bg-[#FF9933]/10 text-[#FF9933] font-medium`}>
-              {link.label}
+            <span key={link.id} aria-current="page" aria-label={link.label} className={`${cls} bg-ink text-paper`}>
+              {displayLabel}
             </span>
           )
         }
-        const linkCls = `${cls} text-white/45 hover:text-white/85 hover:bg-white/5`
+        const linkCls = `${cls} text-ink/60 hover:text-ink hover:bg-ink/5`
         return link.external ? (
-          <a key={link.id} href={link.href} className={linkCls}>{link.label}</a>
+          <a key={link.id} href={link.href} aria-label={link.label} className={linkCls}>{displayLabel}</a>
         ) : (
-          <Link key={link.id} href={link.href} className={linkCls}>{link.label}</Link>
+          <Link key={link.id} href={link.href} prefetch={false} aria-label={link.label} className={linkCls}>{displayLabel}</Link>
         )
       })}
     </nav>

@@ -10,7 +10,7 @@ import { getFallbackFacts, type FallbackFact } from "@/lib/cities/fallback-facts
  * One fact at a time, auto-rotates every 5 seconds. Tap to expand.
  *
  * Tone-aware:
- *   - Bengaluru (accountability) → red/yellow scams + missing money
+ *   - Bengaluru (accountability) → red/yellow markers: scams + missing money
  *   - Visakhapatnam (transparency) → green/yellow open-data + scheme delivery
  *
  * Tone is read from the city config; fallbacks live in lib/cities/fallback-facts.
@@ -22,6 +22,59 @@ interface PulseFact {
   headline: string
   source: string
   url: string | null
+}
+
+/** Pulse headlines arrive from feeds with HTML entities still encoded. */
+export function decodeEntities(text: string): string {
+  return text
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(parseInt(code, 16)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;|&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+}
+
+/**
+ * The headline as displayed: entities decoded, emoji and invisible joiners
+ * removed (voice rule: no emoji), whitespace collapsed. Arrows and the
+ * ©/®/™ marks are text, not decoration, so they stay.
+ */
+export function pulseHeadline(raw: string): string {
+  return decodeEntities(raw)
+    .replace(/(?![\u00A9\u00AE\u2122\u2190-\u21FF])[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}]/gu, "")
+    .replace(/[\u{FE0E}\u{FE0F}\u{200B}-\u{200D}\u{20E3}\u{1F3FB}-\u{1F3FF}]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+/**
+ * Where a pulse item came from, and what its link should say.
+ *
+ * Ingestion now stores the publisher ("X via Google News", "The News Minute";
+ * see lib/pulse-ingest.mjs). Rows written before that carry the search that
+ * found them ("X/Pothole", "Google News BWSSB"), which lands on unrelated
+ * items (a POWER cut filed under "X/POTHOLE"). Those are never printed; the
+ * link's host names the source instead. The link label follows
+ * the host too: only an x.com/twitter.com link says "View on X".
+ */
+export function pulseSource(source: string, url: string | null): { label: string | null; linkLabel: string } {
+  let host = ""
+  if (url) {
+    try {
+      host = new URL(url).hostname.toLowerCase().replace(/^www\./, "")
+    } catch {
+      host = ""
+    }
+  }
+  const onX = /(^|\.)(x|twitter)\.com$/.test(host)
+  const name = decodeEntities(source).trim()
+  const searchLabel = /^(x\s*\/|google news\b)/i.test(name)
+  let label: string | null = name && !searchLabel ? name : null
+  if (!label && host) label = host === "news.google.com" ? "Google News" : onX ? "X" : host
+  return { label, linkLabel: onX ? "View on X" : "Read source" }
 }
 
 interface Props {
@@ -82,34 +135,16 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
   const fact = facts[index % facts.length]
   if (!fact) return null
 
-  const isTwitter = fact.source.startsWith("X/") || fact.url?.includes("x.com")
-
-  // Severity → background + accent classes
-  const sev = (() => {
-    switch (fact.severity) {
-      case "red":
-        return {
-          bg: "bg-[#1a0505]/90 border-red-500/30",
-          cat: "text-red-400/70",
-          link: "text-red-400/80",
-        }
-      case "green":
-        return {
-          bg: "bg-[#051a0c]/90 border-emerald-500/30",
-          cat: "text-emerald-400/80",
-          link: "text-emerald-400/80",
-        }
-      default:
-        return {
-          bg: "bg-[#1a1505]/90 border-yellow-500/30",
-          cat: "text-yellow-400/70",
-          link: "text-yellow-400/80",
-        }
-    }
-  })()
+  // Severity is carried by the small square marker alone. Labels are ink and
+  // the link is accent: red is reserved for the one most alarming finding on
+  // a screen, and a rotating feed item is not that.
+  const mark = { red: "bg-danger", green: "bg-success", yellow: "bg-warning" }[fact.severity]
+  const headline = pulseHeadline(fact.headline)
+  const source = pulseSource(fact.source, fact.url)
+  const position = `${(index % facts.length) + 1}/${facts.length}`
 
   return (
-    <div className="absolute top-[4.25rem] sm:top-12 left-4 right-16 md:right-auto md:max-w-[380px] z-[900] pointer-events-auto">
+    <div className="absolute top-[4.25rem] left-3.5 right-16 md:right-auto md:max-w-[420px] z-[900] pointer-events-auto">
       <div
         onClick={handleTap}
         onKeyDown={e => {
@@ -120,24 +155,24 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
         }}
         role="button"
         tabIndex={0}
-        className={`w-full text-left rounded-xl backdrop-blur-xl px-4 py-2.5 shadow-lg border transition-all duration-300 cursor-pointer ${sev.bg}`}
+        aria-expanded={expanded}
+        aria-label={`${fact.category}: ${headline}`}
+        className="signal-ticker w-full text-left pl-3 pr-1 py-1.5 cursor-pointer bg-paper border-y border-ink/55 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
       >
-        <div className="flex items-start gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className={`text-[9px] font-bold uppercase tracking-wider ${sev.cat}`}>
+        <div className="flex items-start gap-2">
+          <span aria-hidden="true" className={`mt-[0.4rem] h-2 w-2 shrink-0 ${mark}`} />
+          <div className="flex-1 min-w-0 py-0.5">
+            <p className={`text-[13px] leading-snug text-ink/85 ${expanded ? "" : "line-clamp-2 sm:line-clamp-1"}`}>
+              <span className="mr-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-ink">
                 {fact.category}
               </span>
-              <span className="text-white/15 text-[9px]">{fact.source}</span>
-            </div>
-            <p className={`text-white/80 text-xs leading-snug mt-0.5 ${expanded ? "" : "line-clamp-2"}`}>
-              {fact.headline}
+              {headline}
             </p>
           </div>
           <button
             onClick={e => { e.stopPropagation(); setDismissed(true) }}
-            className="w-11 h-11 -mr-2 -mt-1 flex items-center justify-center text-white/20 hover:text-white/50 text-xs shrink-0"
-            aria-label="Dismiss"
+            className="w-11 h-11 -my-2 flex items-center justify-center text-ink/60 hover:bg-ink/5 hover:text-ink text-sm shrink-0"
+            aria-label="Dismiss headlines"
           >
             &times;
           </button>
@@ -145,40 +180,29 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
 
         {/* Expanded: source link + next */}
         {expanded && (
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
-            {fact.url ? (
-              <a
-                href={fact.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                className={`text-[10px] font-medium ${sev.link}`}
+          <div className="flex items-center justify-between gap-3 mt-1.5 mb-0.5 pt-1.5 pr-2 border-t border-ink/15">
+            <span className="min-w-0 truncate font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">
+              {source.label ? `${source.label} · ${position}` : position}
+            </span>
+            <span className="flex shrink-0 items-center gap-3">
+              {fact.url && (
+                <a
+                  href={fact.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  className="min-h-11 flex items-center text-xs font-medium text-accent underline decoration-accent/40 underline-offset-2"
+                >
+                  {source.linkLabel} &rarr;
+                </a>
+              )}
+              <button
+                onClick={e => { e.stopPropagation(); handleNext() }}
+                className="min-h-11 min-w-11 px-2 flex items-center justify-center text-xs text-ink/60 hover:text-ink hover:bg-ink/5"
               >
-                {isTwitter ? "View on X" : "Read source"} &rarr;
-              </a>
-            ) : (
-              <span />
-            )}
-            <button
-              onClick={e => { e.stopPropagation(); handleNext() }}
-              className="text-white/30 hover:text-white/60 text-[10px]"
-            >
-              Next &rsaquo;
-            </button>
-          </div>
-        )}
-
-        {/* Progress dots */}
-        {!expanded && (
-          <div className="flex items-center justify-center gap-1 mt-2">
-            {facts.slice(0, 20).map((_, i) => (
-              <div
-                key={i}
-                className={`h-0.5 rounded-full transition-all duration-300 ${
-                  i === index % facts.length ? "w-3 bg-white/40" : "w-1.5 bg-white/10"
-                }`}
-              />
-            ))}
+                Next &rsaquo;
+              </button>
+            </span>
           </div>
         )}
       </div>

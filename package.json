@@ -3,11 +3,19 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "db:doctor": "node scripts/local-db/doctor.mjs",
+    "db:sync": "node scripts/local-db/sync-remote.mjs",
+    "db:start": "node scripts/local-db/start.mjs",
+    "db:stop": "supabase stop",
+    "db:reset": "node scripts/local-db/reset.mjs",
+    "db:status": "supabase status",
+    "db:use-hosted": "node scripts/local-db/use-hosted.mjs",
     "test": "node --test --experimental-strip-types 'tests/**/*.test.mjs'",
     "test:watch": "node --test --watch --experimental-strip-types 'tests/**/*.test.mjs'"
   },
   "devDependencies": {
     "pdfjs-dist": "^4.10.38",
-    "shapefile": "^0.6.6"
+    "shapefile": "^0.6.6",
+    "supabase": "^2.117.0"
   }
 }

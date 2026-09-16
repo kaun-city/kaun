@@ -19,13 +19,43 @@ import { pinLookup } from "@/lib/api"
 import { bengaluru, type CityConfig } from "@/lib/cities"
 import { BASE_TILE_OPTIONS, BASE_TILE_URL } from "@/lib/base-map"
 import { colorFor } from "@/lib/map-layers"
-import { currentWardMeta, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
+import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
+import { GBA_CROSSWALK_URL, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact, type GbaCrosswalkRow } from "@/lib/gba-crosswalk"
+import { DEFAULT_SUPABASE_ANON_KEY, DEFAULT_SUPABASE_URL } from "@/lib/supabase-config"
+import { ACCENT, INK, PAPER, SUCCESS, WARNING } from "@/lib/design-tokens"
 
 /** Per-ward values + quantile breaks + ramp for choropleth painting */
 export interface ChoroplethData {
-  values: Record<number, number>
+  values: Record<string, number>
   breaks: number[]
   ramp: readonly string[]
+}
+
+/** Escape a value for interpolation into Leaflet popup/divIcon HTML. */
+function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
+
+/** A design token at partial opacity, for Leaflet paths and popup HTML. */
+function tint(hex: string, alpha: number): string {
+  const n = parseInt(hex.slice(1), 16)
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`
+}
+
+/** Only http(s) photo URLs may reach an <img src>; anything else is dropped. */
+function safeImageUrl(value: unknown): string | null {
+  if (typeof value !== "string") return null
+  try {
+    const url = new URL(value)
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : null
+  } catch {
+    return null
+  }
 }
 
 function relativeTime(isoStr: string): string {
@@ -43,16 +73,16 @@ function relativeTime(isoStr: string): string {
 // Multi-city: each city has its own center, zoom, geojson URL and ward label key.
 const DEFAULT_CITY = bengaluru
 
-// Saffron palette
+// Signal-on-paper: geography is ink; saffron is reserved for actions and pins.
 const WARD_STYLE = {
-  color: "#FF9933",
-  weight: 0.8,
-  opacity: 0.6,
-  fillColor: "#FF9933",
-  fillOpacity: 0.05,
+  color: INK,
+  weight: 0.75,
+  opacity: 0.46,
+  fillColor: INK,
+  fillOpacity: 0.025,
 }
 const WARD_HOVER_STYLE = {
-  fillOpacity: 0.18,
+  fillOpacity: 0.11,
   weight: 1.5,
 }
 
@@ -61,7 +91,10 @@ const LABEL_ZOOM_THRESHOLD = 14
 interface Props {
   onPin: (result: PinResult | null, lat: number, lng: number) => void
   resizeKey?: number
-  panRef?: MutableRefObject<{ panTo: (lat: number, lng: number) => void } | null>
+  panRef?: MutableRefObject<{
+    panTo: (lat: number, lng: number) => void
+    selectAt: (lat: number, lng: number) => Promise<void>
+  } | null>
   /** Increment to refresh report markers after a new submission */
   reportRefresh?: number
   /** When true, next tap captures a report location instead of a ward lookup */
@@ -70,20 +103,21 @@ interface Props {
   city?: CityConfig
   /** When set, wards are painted by metric value instead of the flat style */
   choropleth?: ChoroplethData | null
-  onReportPin?: (lat: number, lng: number) => void
+  onReportPin?: (lat: number, lng: number, currentWard: CurrentWardMeta | null) => void
 }
 
 /** Ward number from a GeoJSON feature, across per-city property conventions */
-function wardNoOf(feature: Feature | undefined): number | null {
+function wardKeyOf(feature: Feature | undefined): string | null {
   const p = feature?.properties as Record<string, unknown> | undefined
   if (!p) return null
-  // GBA ward numbers restart in each corporation and cannot index
-  // datasets keyed to the former 243 BBMP wards. A future citable crosswalk
-  // may provide legacy_ward_no; until then these polygons stay honestly blank.
-  if (p.boundary_system === "gba-369-2025" && p.legacy_ward_no == null) return null
+  if (p.boundary_system === "gba-369-2025") {
+    const corporationId = Number(p.corporation_id)
+    const wardNo = Number(p.ward_no)
+    return Number.isFinite(corporationId) && Number.isFinite(wardNo) ? `${corporationId}:${wardNo}` : null
+  }
   const raw = p.legacy_ward_no ?? p.KGISWardNo ?? p.ward_no ?? p.WARD_NO
   const n = parseInt(String(raw), 10)
-  return Number.isFinite(n) ? n : null
+  return Number.isFinite(n) ? String(n) : null
 }
 
 export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 0, reportPickMode = false, onReportPin, city = DEFAULT_CITY, choropleth = null }: Props) {
@@ -92,6 +126,9 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
   const choroplethRef = useRef<ChoroplethData | null>(choropleth)
   const currentWardAtRef = useRef<(lat: number, lng: number) => CurrentWardMeta | null>(() => null)
+  const crosswalkReadyRef = useRef<Promise<void>>(Promise.resolve())
+  const boundariesReadyRef = useRef<Promise<void>>(Promise.resolve())
+  const selectAtRef = useRef<(lat: number, lng: number) => Promise<void>>(async () => {})
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const reportLayerRef = useRef<any>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,21 +144,21 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   useEffect(() => { onReportPinRef.current = onReportPin }, [onReportPin])
 
   /**
-   * Ward polygon style — flat saffron by default; when a choropleth layer
+   * Ward polygon style — flat ink by default; when a choropleth layer
    * is active, fill each ward by its metric bucket. Reads the ref so the
    * same function stays valid for Leaflet's resetStyle across layer changes.
    */
   function styleFeature(feature?: Feature): PathOptions {
     const data = choroplethRef.current
     if (!data) return WARD_STYLE
-    const wardNo = wardNoOf(feature)
-    const value = wardNo != null ? data.values[wardNo] : undefined
+    const wardKey = wardKeyOf(feature)
+    const value = wardKey != null ? data.values[wardKey] : undefined
     if (value === undefined) {
       // No data for this ward — recede so painted wards stand out
-      return { color: "#666", weight: 0.5, opacity: 0.35, fillColor: "#444", fillOpacity: 0.12 }
+      return { color: INK, weight: 0.5, opacity: 0.22, fillColor: PAPER.stage, fillOpacity: 0.5 }
     }
     return {
-      color: "#0A0A0A",
+      color: INK,
       weight: 0.6,
       opacity: 0.8,
       fillColor: colorFor(value, data.breaks, data.ramp),
@@ -142,6 +179,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       panTo: (lat: number, lng: number) => {
         mapRef.current?.setView([lat, lng], 15, { animate: true })
       },
+      selectAt: (lat: number, lng: number) => selectAtRef.current(lat, lng),
     }
   }, [panRef])
 
@@ -152,7 +190,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
     return () => clearTimeout(t)
   }, [resizeKey])
 
-  // Refresh report markers: both pending (yellow, confirmable) + approved (orange)
+  // Refresh report markers: both pending (warning, confirmable) + approved (accent)
   useEffect(() => {
     if (!mapRef.current || loading) return
     import("leaflet").then((L) => {
@@ -162,8 +200,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
         reportLayerRef.current = L.layerGroup().addTo(mapRef.current!)
       }
 
-      const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
-      const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
+      const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL ?? DEFAULT_SUPABASE_URL
+      const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? DEFAULT_SUPABASE_ANON_KEY
 
       const ISSUE_LABELS: Record<string, string> = {
         hoarding: "Illegal banner / hoarding",
@@ -186,24 +224,32 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
           const confirmed: number[] = JSON.parse(localStorage.getItem("kaun_confirmed") ?? "[]")
 
           reports.forEach((report) => {
+            // Every report field is user- or model-supplied: escape before it
+            // reaches popup HTML (stored XSS on the admin-secret origin).
+            const reportId    = Number(report.id)
+            if (!Number.isFinite(reportId)) return
             const isPending   = report.status === "pending"
-            const label       = ISSUE_LABELS[report.issue_type] ?? report.issue_type
-            const upvotes     = report.upvotes ?? 0
-            const alreadyDone = confirmed.includes(report.id)
-            const photoHtml   = report.photo_url
-              ? `<img src="${report.photo_url}" style="width:100%;height:90px;object-fit:cover;border-radius:6px;margin:6px 0 4px;display:block" />`
+            const label       = escapeHtml(ISSUE_LABELS[report.issue_type] ?? report.issue_type)
+            const upvotes     = Number(report.upvotes) || 0
+            const alreadyDone = confirmed.includes(reportId)
+            const photoUrl    = safeImageUrl(report.photo_url)
+            const photoHtml   = photoUrl
+              ? `<img src="${escapeHtml(photoUrl)}" style="width:100%;height:90px;object-fit:cover;margin:6px 0 4px;display:block;border:1px solid ${tint(INK, 0.15)}" />`
               : ""
-            const summaryText = report.ai_label || report.description || ""
+            const wardName    = escapeHtml(report.ward_name)
+            const aiPerson    = escapeHtml(report.ai_person)
+            const summaryText = escapeHtml(report.ai_label || report.description || "")
+            const reportedAgo = escapeHtml(relativeTime(report.reported_at))
 
             if (isPending) {
-              // Yellow pulsing marker for unverified reports
+              // Pulsing warning marker for unverified reports
               const icon = L.divIcon({
                 html: `<div style="
                   width:13px;height:13px;
-                  background:#facc15;
-                  border:2px solid rgba(255,255,255,0.8);
+                  background:${WARNING};
+                  border:2px solid ${PAPER.DEFAULT};
                   border-radius:50%;
-                  box-shadow:0 0 0 4px rgba(250,204,21,0.3);
+                  box-shadow:0 0 0 4px ${tint(WARNING, 0.25)};
                   animation:kaun-pulse 1.5s ease-in-out infinite;
                 "></div>`,
                 iconSize: [13, 13],
@@ -212,33 +258,34 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               })
               const marker = L.marker([report.lat, report.lng], { icon })
               const statusBtn = alreadyDone
-                ? `<div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.3);border-radius:20px">
-                    <span style="width:6px;height:6px;background:#facc15;border-radius:50%;display:inline-block"></span>
-                    <span style="color:#facc15;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; you confirmed</span>
+                ? `<div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:${tint(WARNING, 0.07)};border:1px solid ${tint(WARNING, 0.35)}">
+                    <span style="width:6px;height:6px;background:${WARNING};border-radius:50%;display:inline-block"></span>
+                    <span style="color:${WARNING};font-family:var(--font-plex-mono),ui-monospace,monospace;font-size:11px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; you confirmed</span>
                    </div>`
-                : `<button id="confirm-${report.id}" style="
+                : `<button id="confirm-${reportId}" style="
                     display:inline-flex;align-items:center;gap:5px;
-                    padding:3px 8px;border-radius:20px;
-                    background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);
+                    min-height:44px;padding:0 10px;
+                    background:${tint(WARNING, 0.07)};border:1px solid ${tint(WARNING, 0.35)};
+                    color:${WARNING};font-family:var(--font-plex-mono),ui-monospace,monospace;font-size:11px;font-weight:600;letter-spacing:0.05em;
                     cursor:pointer;
                   ">
-                    <span style="width:6px;height:6px;background:#facc15;border-radius:50%;display:inline-block;animation:kaun-pulse 1.5s ease-in-out infinite"></span>
-                    <span style="color:#facc15;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; Confirm ${upvotes}/2</span>
+                    <span style="width:6px;height:6px;background:${WARNING};border-radius:50%;display:inline-block;animation:kaun-pulse 1.5s ease-in-out infinite"></span>
+                    <span style="color:${WARNING};font-size:11px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; Confirm ${upvotes}/2</span>
                    </button>`
               marker.bindPopup(`
                 <div style="font-family:sans-serif;width:200px">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
                     ${statusBtn}
-                    <span style="color:#555;font-size:10px">${relativeTime(report.reported_at)}</span>
+                    <span style="color:${tint(INK, 0.6)};font-size:11px">${reportedAgo}</span>
                   </div>
                   ${photoHtml}
-                  <div style="font-size:12px;font-weight:600;color:#eee;margin-bottom:2px">${label}</div>
-                  ${report.ward_name ? `<div style="color:#888;font-size:11px;margin-bottom:3px">${report.ward_name}</div>` : ""}
-                  ${summaryText ? `<div style="font-size:11px;color:#aaa;line-height:1.4">${summaryText}</div>` : ""}
+                  <div style="font-size:12px;font-weight:600;color:${INK};margin-bottom:2px">${label}</div>
+                  ${wardName ? `<div style="color:${tint(INK, 0.6)};font-size:11px;margin-bottom:3px">${wardName}</div>` : ""}
+                  ${summaryText ? `<div style="font-size:11px;color:${tint(INK, 0.75)};line-height:1.4">${summaryText}</div>` : ""}
                 </div>
               `)
               marker.on("popupopen", () => {
-                const btn = document.getElementById(`confirm-${report.id}`)
+                const btn = document.getElementById(`confirm-${reportId}`)
                 if (!btn || alreadyDone) return
                 btn.onclick = async () => {
                   btn.textContent = "Confirming..."
@@ -247,19 +294,23 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                     const res = await fetch("/api/confirm-report", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ id: report.id }),
+                      body: JSON.stringify({ id: reportId }),
                     })
                     const data = await res.json()
                     const newUpvotes = data.upvotes ?? upvotes + 1
                     // Save to localStorage
                     const stored: number[] = JSON.parse(localStorage.getItem("kaun_confirmed") ?? "[]")
-                    localStorage.setItem("kaun_confirmed", JSON.stringify([...stored, report.id]))
+                    localStorage.setItem("kaun_confirmed", JSON.stringify([...stored, reportId]))
                     if (data.status === "approved") {
-                      btn.textContent = "Approved!"
-                      btn.style.background = "#FF9933"
+                      btn.textContent = "Approved"
+                      btn.style.background = tint(ACCENT, 0.07)
+                      btn.style.borderColor = tint(ACCENT, 0.35)
+                      btn.style.color = ACCENT
                     } else {
                       btn.textContent = `Confirmed (${newUpvotes}/2)`
-                      btn.style.background = "#86efac"
+                      btn.style.background = tint(SUCCESS, 0.07)
+                      btn.style.borderColor = tint(SUCCESS, 0.35)
+                      btn.style.color = SUCCESS
                     }
                   } catch {
                     btn.textContent = "Try again"
@@ -269,28 +320,28 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               })
               reportLayerRef.current.addLayer(marker)
             } else {
-              // Orange solid dot for approved reports
+              // Solid accent dot for approved reports
               const dot = L.circleMarker([report.lat, report.lng], {
                 radius: 6,
-                color: "#FF9933",
-                fillColor: "#FF9933",
-                fillOpacity: 0.9,
+                color: PAPER.DEFAULT,
+                fillColor: ACCENT,
+                fillOpacity: 1,
                 weight: 2,
               })
               dot.bindPopup(`
                 <div style="font-family:sans-serif;width:200px">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                    <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,153,51,0.1);border:1px solid rgba(255,153,51,0.3);border-radius:20px">
-                      <span style="width:6px;height:6px;background:#FF9933;border-radius:50%;display:inline-block"></span>
-                      <span style="color:#FF9933;font-size:10px;font-weight:600;letter-spacing:0.05em">VERIFIED</span>
+                    <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:${tint(ACCENT, 0.07)};border:1px solid ${tint(ACCENT, 0.35)}">
+                      <span style="width:6px;height:6px;background:${ACCENT};display:inline-block"></span>
+                      <span style="color:${ACCENT};font-family:var(--font-plex-mono),ui-monospace,monospace;font-size:11px;font-weight:600;letter-spacing:0.05em">VERIFIED</span>
                     </div>
-                    <span style="color:#555;font-size:10px">${relativeTime(report.reported_at)}</span>
+                    <span style="color:${tint(INK, 0.6)};font-size:11px">${reportedAgo}</span>
                   </div>
                   ${photoHtml}
-                  <div style="font-size:12px;font-weight:600;color:#eee;margin-bottom:2px">${label}</div>
-                  ${report.ward_name ? `<div style="color:#888;font-size:11px;margin-bottom:3px">${report.ward_name}</div>` : ""}
-                  ${report.ai_person ? `<div style="color:#FF9933;font-size:11px;margin-bottom:3px">${report.ai_person}</div>` : ""}
-                  ${summaryText ? `<div style="font-size:11px;color:#aaa;line-height:1.4">${summaryText}</div>` : ""}
+                  <div style="font-size:12px;font-weight:600;color:${INK};margin-bottom:2px">${label}</div>
+                  ${wardName ? `<div style="color:${tint(INK, 0.6)};font-size:11px;margin-bottom:3px">${wardName}</div>` : ""}
+                  ${aiPerson ? `<div style="color:${ACCENT};font-size:11px;margin-bottom:3px">${aiPerson}</div>` : ""}
+                  ${summaryText ? `<div style="font-size:11px;color:${tint(INK, 0.75)};line-height:1.4">${summaryText}</div>` : ""}
                 </div>
               `)
               reportLayerRef.current.addLayer(dot)
@@ -330,19 +381,49 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       if (city.wardBoundarySource) {
         const source = city.wardBoundarySource
         map.attributionControl.addAttribution(
-          `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label}</a>`
+          `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a>`
         )
       }
+
+      // The historical crosswalk only enriches current wards with former-ward
+      // data. It loads independently: if it fails, boundaries still draw and
+      // clicks still resolve the current ward (with no historical vector).
+      let crosswalkIndex = new Map<string, GbaCrosswalkRow>()
+      let crosswalkVersion: string | undefined
+      const crosswalkReady: Promise<void> = city.id === "bengaluru"
+        ? fetch(GBA_CROSSWALK_URL, { signal: controller.signal })
+          .then((r) => {
+            if (!r.ok) throw new Error(`GBA crosswalk ${r.status}`)
+            return r.json() as Promise<GbaCrosswalkArtifact>
+          })
+          .then((crosswalk) => {
+            crosswalkIndex = indexGbaCrosswalk(crosswalk)
+            crosswalkVersion = crosswalk.version
+          })
+          .catch(() => {})
+        : Promise.resolve()
+      crosswalkReadyRef.current = crosswalkReady
+
+      // Clicks, search and "Find my ward" wait for the boundaries too: resolving
+      // a point before they exist would fall back to the historical lookup and
+      // present one former ward as if it were the whole current ward.
+      let resolveBoundaries: () => void = () => {}
+      boundariesReadyRef.current = new Promise<void>(resolve => { resolveBoundaries = resolve })
 
       // Load ward GeoJSON overlay (per-city)
       fetch(city.geojsonUrl, { signal: controller.signal })
         .then((r) => r.json())
         .then((data) => {
-          if (!active) return
+          if (!active) return resolveBoundaries()
           const wardFeatures = data.features as Feature[]
           currentWardAtRef.current = (lat, lng) => {
             const feature = wardFeatures.find(candidate => featureContains(candidate, lat, lng))
-            return feature ? currentWardMeta(feature) : null
+            if (!feature) return null
+            const p = feature.properties as Record<string, unknown> | null
+            const row = p
+              ? crosswalkIndex.get(gbaWardKey(Number(p.corporation_id), Number(p.ward_no)))
+              : undefined
+            return currentWardMeta(feature, row, crosswalkVersion)
           }
           geojsonRef.current = L.geoJSON(data, {
             style: styleFeature,
@@ -391,14 +472,14 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
             const label = L.marker(centroid, {
               icon: L.divIcon({
                 html: `<span style="
-                  font-size:9px;
-                  color:rgba(255,255,255,0.45);
-                  text-shadow:0 1px 3px rgba(0,0,0,0.8);
+                  font-size:11px;
+                  color:${tint(INK, 0.6)};
+                  text-shadow:0 1px 0 ${tint(PAPER.DEFAULT, 0.9)};
                   white-space:nowrap;
                   pointer-events:none;
                   font-family:system-ui,sans-serif;
                   letter-spacing:0.02em;
-                ">${String(displayName).replace(/ Ward$/i, "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}</span>`,
+                ">${escapeHtml(String(displayName).replace(/ Ward$/i, ""))}</span>`,
                 className: "",
                 iconAnchor: [0, 0],
               }),
@@ -424,19 +505,21 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
           updateLabels()
 
           setLoading(false)
+          resolveBoundaries()
         })
         .catch(error => {
           if (active && error instanceof Error && error.name !== "AbortError") setLoading(false)
+          resolveBoundaries()
         }) // show map even if GeoJSON fails
 
       // Custom pin icon
       const pinIcon = L.divIcon({
         html: `<div style="
           width:14px;height:14px;
-          background:#FF9933;
-          border:2px solid #fff;
+          background:${ACCENT};
+          border:2px solid ${PAPER.DEFAULT};
           border-radius:50%;
-          box-shadow:0 0 0 3px rgba(255,153,51,0.35)
+          box-shadow:0 0 0 3px ${tint(ACCENT, 0.28)}
         "></div>`,
         iconSize: [14, 14],
         iconAnchor: [7, 7],
@@ -445,12 +528,16 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
 
       let marker: ReturnType<typeof L.marker> | null = null
 
-      map.on("click", async (e) => {
-        const { lat, lng } = e.latlng
-
+      const selectAt = async (lat: number, lng: number) => {
+        // Never resolve a click against a half-loaded crosswalk (a click
+        // during load would otherwise lose its historical vector). The
+        // promise always settles, success or failure.
+        await Promise.all([crosswalkReadyRef.current, boundariesReadyRef.current])
+        if (!active) return
+        const currentWard = currentWardAtRef.current(lat, lng)
         // Report pick mode: capture coords and hand off — no ward lookup
         if (reportPickRef.current) {
-          onReportPinRef.current?.(lat, lng)
+          onReportPinRef.current?.(lat, lng, currentWard)
           return
         }
 
@@ -463,9 +550,20 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
 
         onPinRef.current(null, lat, lng) // signal loading state
 
-        const result = await pinLookup(lat, lng)
-        if (result?.found) Object.assign(result, currentWardAtRef.current(lat, lng) ?? {})
+        const remoteResult = await pinLookup(lat, lng)
+        // The current GBA boundary file is already loaded in the browser and is
+        // authoritative for whether a click is inside Bengaluru. Do not turn a
+        // valid ward click into "Not in Bengaluru" merely because the optional
+        // server-side enrichment lookup is unavailable.
+        const result: PinResult | null = currentWard
+          ? currentWardPinResult(currentWard, remoteResult, city.id)
+          : remoteResult
         onPinRef.current(result, lat, lng)
+      }
+      selectAtRef.current = selectAt
+
+      map.on("click", (e) => {
+        void selectAt(e.latlng.lat, e.latlng.lng)
       })
     })
 
@@ -477,13 +575,16 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       geojsonRef.current = null
       labelLayerRef.current = null
       currentWardAtRef.current = () => null
+      crosswalkReadyRef.current = Promise.resolve()
+      boundariesReadyRef.current = Promise.resolve()
+      selectAtRef.current = async () => {}
     }
   }, [city.center, city.geojsonUrl, city.zoom])
 
   return (
     <div className={`relative w-full h-full${reportPickMode ? " [&_.leaflet-container]:cursor-crosshair" : ""}`}>
       {loading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-[#FF9933] text-sm tracking-widest uppercase">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-paper-canvas/90 text-ink/75 font-mono text-xs font-semibold tracking-[0.12em] uppercase">
           Loading ward boundaries...
         </div>
       )}

@@ -29,14 +29,16 @@ export function formatRupees(inr: number | null | undefined): string {
 }
 
 /**
- * Crore -> display. MoSPI's own unit, so no conversion; only grouping and a
- * lakh-crore step for the handful of projects above ₹1,00,000 Cr.
- *   30695.1 -> "₹30,695 Cr"      4.5 -> "₹4.5 Cr"
+ * Crore -> display. MoSPI's own unit, so no conversion; only Indian grouping.
+ *   30695.1 -> "₹30,695 Cr"      111234 -> "₹1,11,234 Cr"      4.5 -> "₹4.50 Cr"
+ *
+ * There is deliberately no lakh-crore step. "₹1.11 L Cr" is a newsroom
+ * abbreviation most readers cannot expand, and the handful of projects above
+ * ₹1,00,000 Cr read fine grouped in full.
  */
 export function formatCrore(cr: number | null | undefined): string {
   if (cr === null || cr === undefined || !Number.isFinite(cr)) return "—"
   const abs = Math.abs(cr)
-  if (abs >= 1e5) return `₹${(cr / 1e5).toFixed(2)} L Cr`
   if (abs >= 100) return `₹${groupIndian(cr)} Cr`
   return `₹${cr.toFixed(2)} Cr`
 }
@@ -89,4 +91,42 @@ export function formatSlip(months: number | null | undefined): string {
   const abs = Math.abs(months)
   const unit = abs === 1 ? "month" : "months"
   return months > 0 ? `${abs} ${unit} later` : `${abs} ${unit} earlier`
+}
+
+/**
+ * States and UTs whose principal official language is Hindi, by census st_code.
+ *
+ * The constituency table carries one local-script name per seat, and it is
+ * always Hindi (Devanagari). Printed under a Karnataka or Tamil Nadu seat that
+ * is not the seat's local name at all — it is a Hindi transliteration of an
+ * English one. So it is shown only where Hindi is the state's own language,
+ * and omitted everywhere else rather than standing in for Kannada, Tamil or
+ * Bengali. Deliberately conservative: J&K and Chandigarh (where Hindi is one
+ * official language among several, or not the principal one) and Dadra and
+ * Nagar Haveli and Daman and Diu are left out.
+ */
+export const HINDI_STATE_CODES: ReadonlySet<number> = new Set([
+  2,  // Himachal Pradesh
+  5,  // Uttarakhand
+  6,  // Haryana
+  7,  // Delhi
+  8,  // Rajasthan
+  9,  // Uttar Pradesh
+  10, // Bihar
+  20, // Jharkhand
+  22, // Chhattisgarh
+  23, // Madhya Pradesh
+  35, // Andaman & Nicobar Islands
+])
+
+/** The seat's Hindi name when Hindi is its state's own language, else null. */
+export function localSeatName(stCode: number | null | undefined, pcNameHi: string | null | undefined): string | null {
+  if (stCode === null || stCode === undefined || !pcNameHi) return null
+  return HINDI_STATE_CODES.has(stCode) ? pcNameHi : null
+}
+
+/** Physical progress as a phrase: "66.0% complete", or "progress not reported". */
+export function formatProgress(v: number | null | undefined): string {
+  if (v === null || v === undefined || !Number.isFinite(v)) return "progress not reported"
+  return `${formatPct(v)} complete`
 }

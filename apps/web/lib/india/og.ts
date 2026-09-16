@@ -25,7 +25,7 @@
  * tests/india-og.test.mjs can exercise every branch, and so the image route
  * stays a dumb renderer of whatever this decides.
  */
-import { formatPct, formatRupees } from "./format.ts"
+import { formatPct, formatRupees, localSeatName } from "./format.ts"
 import type { Constituency, Mp, MpActivity, MpAffidavit } from "./types.ts"
 
 /** Every unfurl surface wants 1.91:1. This is that, at the size crawlers cache. */
@@ -227,7 +227,7 @@ export function buildConstituencyCard(input: ConstituencyCardInput): Constituenc
     return {
       title,
       titleSize: titleSizeFor(title),
-      hindi: c.pc_name_hi,
+      hindi: localSeatName(c.st_code, c.pc_name_hi),
       eyebrow,
       mpName: null,
       mpSize: 42,
@@ -261,7 +261,7 @@ export function buildConstituencyCard(input: ConstituencyCardInput): Constituenc
   return {
     title,
     titleSize: titleSizeFor(title),
-    hindi: c.pc_name_hi,
+    hindi: localSeatName(c.st_code, c.pc_name_hi),
     eyebrow,
     mpName,
     mpSize: mpSizeFor(mpName),

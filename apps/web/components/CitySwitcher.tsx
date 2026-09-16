@@ -49,11 +49,9 @@ export function CitySwitcher({ activeCityId }: Props) {
     <div ref={wrapRef} className="relative shrink-0 pointer-events-auto">
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full
-          bg-black/60 hover:bg-black/80 backdrop-blur-md
-          border border-white/15 hover:border-white/25
-          text-white/80 text-xs font-medium tracking-wide
-          shadow-lg transition-all"
+        className="flex min-h-11 sm:min-h-9 items-center gap-1.5 border border-ink/55 px-3 py-1.5
+          bg-paper hover:bg-paper-muted
+          text-ink/75 hover:text-ink text-xs font-medium tracking-wide transition-colors"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
@@ -72,9 +70,9 @@ export function CitySwitcher({ activeCityId }: Props) {
         <div
           role="listbox"
           aria-label="Switch city"
-          className="absolute left-0 top-full mt-2 min-w-[200px] py-1
-            bg-[#0A0A0A]/95 backdrop-blur-md
-            border border-white/10 rounded-lg shadow-2xl"
+          className="absolute left-0 top-full mt-2 min-w-[210px] py-1
+            bg-paper
+            border border-ink/55"
         >
           {cities.map(city => {
             const isActive = city.id === activeCityId
@@ -84,13 +82,13 @@ export function CitySwitcher({ activeCityId }: Props) {
                 role="option"
                 aria-selected={isActive}
                 onClick={() => navigate(city)}
-                className={`w-full text-left px-3 py-2 flex items-center justify-between gap-2
-                  hover:bg-white/5 transition-colors
-                  ${isActive ? "text-[#FF9933]" : "text-white/70"}`}
+                className={`w-full min-h-11 text-left px-3 py-2 flex items-center justify-between gap-2
+                  transition-colors
+                  ${isActive ? "bg-ink text-paper" : "text-ink/75 hover:bg-ink/5 hover:text-ink"}`}
               >
                 <div>
                   <div className="text-xs font-medium">{city.name}</div>
-                  <div className="text-[10px] text-white/40 mt-0.5">
+                  <div className={`text-[11px] mt-0.5 ${isActive ? "text-paper/75" : "text-ink/60"}`}>
                     {city.state} &middot; {city.wardCount ?? "?"} wards
                   </div>
                 </div>
@@ -102,12 +100,12 @@ export function CitySwitcher({ activeCityId }: Props) {
               </button>
             )
           })}
-          <div className="border-t border-white/5 mt-1 pt-1">
+          <div className="border-t border-ink/15 mt-1 pt-1">
             <a
               href="https://github.com/kaun-city/kaun/issues/new?template=city-request.yml&labels=city-request"
               target="_blank"
               rel="noopener noreferrer"
-              className="block px-3 py-2 text-[10px] text-white/40 hover:text-white/60"
+              className="block min-h-11 px-3 py-3 text-xs text-ink/60 hover:text-accent hover:bg-ink/5"
             >
               + Request another city
             </a>

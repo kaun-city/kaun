@@ -18,6 +18,10 @@ The current 369-ward GBA boundary and its corporation-aware identifiers are avai
 |---|---|
 | `ward` | Ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality) |
 
+`infrastructure.bus_stop_count` counts physical BMTC stops inside the ward and `infrastructure.daily_trips` is scheduled bus arrivals a day summed over those stops (a bus stopping at two of them counts twice). Before 2026-09 both counted duplicate stop rows (one per nearby polling booth) and were inflated roughly 20× and 240×; the CSV export's `bus_stops` and `daily_bus_trips` columns had the same problem.
+
+`spending` and `potholes` are recorded on BBMP's 198-ward map (2010 delimitation), whose numbers name different places. They are allocated to the requested 243 ward by area overlap using the [BBMP-198 → DataMeet-243 crosswalk](../bengaluru/ward-crosswalk.md#bbmp-198-datameet-243) and carry an `estimate` object: `method`, `crosswalk_version`, `crosswalk` and `bbmp198_wards` (each source ward with the `bbmp198_share` of it allocated here). Before 2026-09 these fields were looked up by ward number and showed another place's figures.
+
 **Examples:**
 - All wards: [`/api/data/wards`](https://kaun.city/api/data/wards)
 - Ward 42 detail: [`/api/data/wards?ward=42`](https://kaun.city/api/data/wards?ward=42)
@@ -59,6 +63,8 @@ BBMP budget, work orders, ward-level spending by category, and property tax coll
 | `ward` | Ward number for ward-specific data |
 | `type` | `budget`, `work-orders`, `ward-spending`, `property-tax`, or `all` |
 
+`ward_spending` for a `ward` is an area-overlap estimate from BBMP's 198-ward records, with the same `estimate` object as `/api/data/wards`; its `ward_no` and `ward_name` are the requested 243 ward.
+
 **Examples:**
 - City budget: [`/api/data/spending?type=budget`](https://kaun.city/api/data/spending?type=budget)
 - Work orders: [`/api/data/spending?ward=42&type=work-orders`](https://kaun.city/api/data/spending?ward=42&type=work-orders)
@@ -69,7 +75,9 @@ Full ward-level dataset as downloadable CSV. Demographics, infrastructure, spend
 
 | Parameter | Description |
 |---|---|
-| `type` | `all`, `ward-spending`, or `ward-demographics` |
+| `type` | `all`, `ward-spending`, `ward-spending-bbmp198`, or `ward-demographics` |
+
+`all` and `ward-spending` have one row per historical 243 ward; their spending and pothole columns are allocated from BBMP's 198-ward records by area overlap (noted in the CSV footer). `ward-spending-bbmp198` is the unallocated source table, with `bbmp198_ward_no` / `bbmp198_ward_name` columns; never join those numbers to 243 or GBA ward numbers.
 
 **Example:**
 - [`/api/export?type=all`](https://kaun.city/api/export?type=all) — downloads CSV

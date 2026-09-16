@@ -30,7 +30,9 @@
  *   1. in_pc_source_aliases (source='myneta', source_key=constituency_id).
  *   2. The structural constraint: exactly one WINNER per seat on each side.
  *      Resolve the seat by exact normalized name within the state, then
- *      corroborate against the single sitting in_mps row (party must agree).
+ *      corroborate against the roster member who filed it (party must agree).
+ *      That is the sitting member only when the seat has had no by-election;
+ *      see lib/affidavit-member.mjs.
  *   3. A human, recorded with match_method='manual_reviewed'.
  * Anything else stays needs_review=true, which the RLS policy
  * in_mp_affidavits_anon_read_matched keeps out of public reads. The
@@ -59,6 +61,8 @@ import { openSink } from "./lib/sink.mjs"
 import { politeFetch } from "./lib/http.mjs"
 import { loadPcReference, loadAliases, aliasCandidate } from "./lib/pc-reference.mjs"
 import { opt, intOpt, banner, run } from "./lib/cli.mjs"
+import { affidavitOwner, loadAffidavitOwners } from "./lib/affidavit-member.mjs"
+import { LS_TERM } from "./sansad-roster.mjs"
 
 const LOADER = "myneta-affidavits"
 const ELECTION = "LokSabha2024"
@@ -357,17 +361,18 @@ async function main() {
   const reference = await loadPcReference(sink)
   const aliases = await loadAliases(sink, ["myneta"])
 
-  // Sitting MPs, for the party-agreement corroboration. Absent → every row
-  // stays needs_review, which is the safe default rather than a silent guess.
+  // The Lok Sabha roster, every status, to find the member who FILED each
+  // seat's general-election affidavit (lib/affidavit-member.mjs) — not
+  // whoever sits there now, which after a by-election is someone else.
+  // Absent → every row stays needs_review, the safe default.
   // party_full as well as party_abbr: the corroboration compares every label
   // each side offers, not one field against a differently-shaped one.
   const mpRows = await sink.select("in_mps", {
-    columns: "id,pc_code,name,party_abbr,party_full,house,status",
+    columns: "id,mpsno,pc_code,name,party_abbr,party_full,house,status,term_label",
   })
-  const sittingByPc = new Map(
-    mpRows.filter(m => m.house === "LS" && m.status === "Sitting" && m.pc_code)
-      .map(m => [m.pc_code, m]))
-  sink.count("sitting LS MPs available for corroboration", sittingByPc.size)
+  const lsRows = mpRows.filter(m => m.house === "LS" && m.term_label === LS_TERM.term_label && m.pc_code)
+  const owners = loadAffidavitOwners()
+  sink.count("LS roster rows available for corroboration", lsRows.length)
 
   const index = parseConstituencyIndex(
     await politeFetch(`${BASE}/`, { namespace: "myneta", json: false, delayMs: REQUEST_DELAY_MS }))
@@ -413,8 +418,11 @@ async function main() {
     let needs_review = true
     let reviewReason = null
 
+    let owner = null
     if (res.pc_code) {
-      const mp = sittingByPc.get(res.pc_code)
+      const found = affidavitOwner(res.pc_code, lsRows, owners)
+      const mp = found.member
+      owner = mp
       const partyAgrees = mp
         ? samePartyish(partyLabels(winner.party_abbr, d.party_abbr, d.party_full),
                        partyLabels(mp.party_abbr, mp.party_full))
@@ -422,7 +430,7 @@ async function main() {
       pc_code = res.pc_code
       match_method = res.method === "alias_table" ? "alias_table" : "one_winner_per_pc"
       if (!mp) {
-        reviewReason = "no sitting in_mps row to corroborate (run sansad-roster first)"
+        reviewReason = `no roster member to link: ${found.reason} (run sansad-roster first if the roster is empty)`
       } else if (partyAgrees === false) {
         reviewReason = `party conflict: myneta "${d.party_full ?? winner.party_abbr}" ` +
           `vs roster "${mp.party_full ?? mp.party_abbr}"`
@@ -458,7 +466,9 @@ async function main() {
       constituency_label: c.constituency_label,
       state_label: c.state,
       pc_code,
-      mp_id: pc_code ? (sittingByPc.get(pc_code)?.id ?? null) : null,
+      // The member who filed this affidavit. Surfaces show it only when that
+      // member is the one sitting (apps/web/lib/india/affidavit.ts).
+      mp_id: owner?.id ?? null,
       is_winner: true,
       candidate_name: d.candidate_name ?? winner.candidate_name ?? "unknown",
       party_abbr: winner.party_abbr ?? d.party_abbr ?? null,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { IndiaHeader } from "@/components/india/IndiaHeader"
+import { BackLink, PageHeader, indiaSectionNav } from "@/components/shared/PageHeader"
 import { ObjectHeader, Section, Stat } from "@/components/india/ObjectHeader"
 import { ProjectTimeline } from "@/components/india/ProjectTimeline"
 import { SourcesFooter } from "@/components/india/SourcesFooter"
@@ -11,7 +11,7 @@ import { indiaHref } from "@/lib/host-routing"
 import { SOURCE_MOSPI } from "@/lib/india/constants"
 import { formatCrore, formatCroreDelta, formatMonth, formatPct, formatSlip } from "@/lib/india/format"
 import { divergingColor } from "@/lib/india/viz"
-import { OVERRUN_SCALE_CR, SLIP_SCALE_MONTHS } from "@/components/india/ProjectRow"
+import { OVERRUN_SCALE_CR, SLIP_SCALE_MONTHS, SignedValue } from "@/components/india/ProjectRow"
 
 /**
  * A central project's own page.
@@ -65,11 +65,16 @@ export default async function ProjectPage({ params }: Props) {
     : null
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="max-w-3xl mx-auto px-5 py-6">
-        <IndiaHeader />
+    <div className="signal-page h-full overflow-y-auto">
+      <PageHeader
+        surface="india"
+        nav={indiaSectionNav("project")}
+        back={<BackLink href={indiaHref("/projects")} label="Projects" ariaLabel="Back to project overruns" />}
+        width="3xl"
+      />
 
-        <div className="mt-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+        <div>
           <ObjectHeader
             eyebrow={[project.ministry, project.sector].filter(Boolean).join(" · ") || "Central project"}
             title={project.project_name}
@@ -79,7 +84,7 @@ export default async function ProjectPage({ params }: Props) {
                 {project.state_raw ?? "state not stated"}
                 {project.st_code !== null && (
                   <> · <Link href={indiaHref(`/projects?state=${project.st_code}`)}
-                    className="text-[#FF9933]/60 hover:text-[#FF9933]">other projects in this state</Link></>
+                    className="inline-flex min-h-11 items-center text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">other projects in this state</Link></>
                 )}
               </>
             }
@@ -94,21 +99,21 @@ export default async function ProjectPage({ params }: Props) {
         </div>
 
         <Section title="Money">
-          <div className="rounded-xl bg-white/5 p-4">
+          <div className="bg-paper border border-ink/15 p-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <Stat label="Sanctioned at" value={formatCrore(originalCost)} />
               <Stat label="Latest cost" value={formatCrore(latest?.revised_cost_cr ?? null)} />
               <Stat
                 label="Difference"
                 value={
-                  <span style={{ color: divergingColor(latest?.cost_overrun_cr ?? null, OVERRUN_SCALE_CR) }}>
+                  <SignedValue color={divergingColor(latest?.cost_overrun_cr ?? null, OVERRUN_SCALE_CR)}>
                     {formatCroreDelta(latest?.cost_overrun_cr ?? null)}
-                  </span>
+                  </SignedValue>
                 }
               />
               <Stat label="Spent to date" value={formatCrore(latest?.cumulative_expenditure_cr ?? null)} />
             </div>
-            <p className="text-white/20 text-[10px] mt-3">
+            <p className="text-ink/60 text-xs mt-3">
               As printed in the {formatMonth(latest?.report_month)} flash report. Costs are MoSPI&apos;s own
               figures in crore.
             </p>
@@ -116,18 +121,22 @@ export default async function ProjectPage({ params }: Props) {
         </Section>
 
         <Section title="Schedule">
-          <div className="rounded-xl bg-white/5 p-4">
+          <div className="bg-paper border border-ink/15 p-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <Stat label="Now expected" value={formatMonth(latest?.revised_doc_month ?? null)} />
               <Stat
                 label="Against original"
                 value={
-                  <span style={{ color: divergingColor(latest?.schedule_slip_months ?? null, SLIP_SCALE_MONTHS) }}>
+                  <SignedValue color={divergingColor(latest?.schedule_slip_months ?? null, SLIP_SCALE_MONTHS)}>
                     {formatSlip(latest?.schedule_slip_months ?? null)}
-                  </span>
+                  </SignedValue>
                 }
               />
-              <Stat label="Physical progress" value={formatPct(latest?.physical_progress_pct ?? null)} />
+              <Stat
+                label="Physical progress"
+                value={latest?.physical_progress_pct == null ? "not reported" : formatPct(latest.physical_progress_pct)}
+                muted={latest?.physical_progress_pct == null}
+              />
               <Stat
                 label="Last change"
                 value={monthsSinceLastChange === null

@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import { BackLink, PageHeader } from "@/components/shared/PageHeader"
 
 const API_BASE = "https://kaun.city/api/data"
 
@@ -8,9 +8,9 @@ const ENDPOINTS = [
   {
     name: "Wards",
     path: "/api/data/wards",
-    description: "All 243 Bengaluru wards with assembly constituency and zone mapping.",
+    description: "The 243 historical Bengaluru wards (2022 KGIS/DataMeet delimitation) with assembly constituency and zone mapping. These are not the current 369 GBA wards, and the ward numbers differ.",
     params: [
-      { name: "ward", description: "Ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality)" },
+      { name: "ward", description: "Historical 243-ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality). Spending and potholes are recorded on BBMP's 198-ward map and allocated to the 243 ward by area overlap; each carries an estimate object naming its source wards." },
     ],
     examples: [
       { label: "All wards", url: `${API_BASE}/wards` },
@@ -50,7 +50,7 @@ const ENDPOINTS = [
     path: "/api/data/spending",
     description: "BBMP budget, work orders, ward-level spending by category, and property tax collections.",
     params: [
-      { name: "ward", description: "Ward number for ward-specific data" },
+      { name: "ward", description: "Historical 243-ward number for ward-specific data (ward-spending is an area-overlap estimate from BBMP's 198-ward records)" },
       { name: "type", description: "budget, work-orders, ward-spending, property-tax, or all" },
     ],
     examples: [
@@ -61,9 +61,9 @@ const ENDPOINTS = [
   {
     name: "CSV Export",
     path: "/api/export",
-    description: "Full ward-level dataset as downloadable CSV. Demographics, infrastructure, spending by category, potholes, crashes, air quality, work order counts. Source attribution footer included.",
+    description: "Full ward-level dataset as downloadable CSV, one row per historical 243 ward. Demographics, infrastructure, spending by category, potholes, crashes, air quality, work order counts. Spending and potholes are allocated from BBMP's 198-ward records by area overlap. Source attribution footer included.",
     params: [
-      { name: "type", description: "all, ward-spending, or ward-demographics" },
+      { name: "type", description: "all, ward-spending, ward-spending-bbmp198 (the unallocated source table, with its own 198-ward numbers), or ward-demographics" },
     ],
     examples: [
       { label: "Full dataset (CSV)", url: "https://kaun.city/api/export?type=all" },
@@ -89,105 +89,111 @@ const DATA_SOURCES = [
   { name: "Blacklist Cross-Reference", records: "4 flagged", period: "Live", source: "GeM, World Bank, CPPP, KPCL, BNP/RTI", url: null },
 ]
 
+const EYEBROW = "text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60"
+const SECTION_LABEL = `${EYEBROW} border-b border-ink/15 pb-2 mb-4`
+const LINK_CHIP = "inline-flex min-h-11 items-center border border-ink/20 bg-paper px-3 font-mono text-[11px] text-ink/75 hover:bg-ink/5 hover:text-ink transition-colors"
+const TEXT_LINK = "text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent"
+
 export default function DataCatalog() {
   return (
-    <div className="fixed inset-0 overflow-y-auto bg-[#0A0A0A] text-white">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="signal-page fixed inset-0 overflow-y-auto bg-paper-canvas text-ink">
+      <PageHeader surface="city" back={<BackLink href="/" label="Map" ariaLabel="Back to the map" />} width="4xl" />
 
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold tracking-tight">
-            <Link href="/" className="hover:text-[#FF9933] transition-colors">KAUN<span className="text-[#FF9933]">?</span></Link>
-            <span className="text-white/30 font-normal ml-3 text-lg">Open Data</span>
-          </h1>
-          <p className="text-white/50 text-sm mt-2 max-w-2xl leading-relaxed">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+
+        <div className="mb-10">
+          <h1 className="text-2xl font-bold tracking-tight text-ink">Open data</h1>
+          <p className="text-ink/75 text-sm mt-2 max-w-2xl leading-relaxed">
             Public APIs for Bengaluru civic data. Free, open, CORS-enabled. Built for civic tools,
             journalism, research, and public interest. All data from public records.
           </p>
-          <div className="flex gap-3 mt-3">
-            <a href="https://github.com/kaun-city/kaun" target="_blank" rel="noopener noreferrer" className="text-[#FF9933] text-xs hover:underline">GitHub</a>
-            <span className="text-white/15">·</span>
-            <a href="/status" className="text-white/40 text-xs hover:text-white/60">System Status</a>
-            <span className="text-white/15">·</span>
-            <a href="/api/export?type=all" className="text-white/40 text-xs hover:text-white/60">Download CSV</a>
+          <div className="flex flex-wrap items-center gap-x-3 mt-2 text-xs">
+            <a href="https://github.com/kaun-city/kaun" target="_blank" rel="noopener noreferrer" className={`inline-flex min-h-11 items-center ${TEXT_LINK}`}>GitHub</a>
+            <span aria-hidden="true" className="text-ink/60">·</span>
+            <a href="/status" className="inline-flex min-h-11 items-center text-ink/75 underline decoration-ink/30 underline-offset-2 hover:text-ink hover:decoration-ink">System Status</a>
+            <span aria-hidden="true" className="text-ink/60">·</span>
+            <a href="/api/export?type=all" className="inline-flex min-h-11 items-center text-ink/75 underline decoration-ink/30 underline-offset-2 hover:text-ink hover:decoration-ink">Download CSV</a>
           </div>
         </div>
 
         {/* API Endpoints */}
-        <div className="space-y-6 mb-12">
-          <h2 className="text-white/40 text-xs uppercase tracking-wider">API Endpoints</h2>
-          {ENDPOINTS.map(ep => (
-            <div key={ep.path} className="rounded-xl bg-white/5 p-5">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-green-400 text-xs font-mono font-bold">GET</span>
-                <code className="text-white font-mono text-sm">{ep.path}</code>
-              </div>
-              <p className="text-white/50 text-sm leading-relaxed">{ep.description}</p>
+        <section className="mb-12">
+          <h2 className={SECTION_LABEL}>API Endpoints</h2>
+          <div className="space-y-4">
+            {ENDPOINTS.map(ep => (
+              <div key={ep.path} className="bg-paper border border-ink/15 p-5">
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <span className="inline-flex items-center border border-success/35 bg-success/[0.07] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-success">GET</span>
+                  <code className="bg-paper-muted px-1.5 py-0.5 font-mono text-sm text-ink">{ep.path}</code>
+                </div>
+                <p className="text-ink/75 text-sm leading-relaxed">{ep.description}</p>
 
-              {ep.params.length > 0 && (
-                <div className="mt-3">
-                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Parameters</p>
-                  <div className="space-y-1">
-                    {ep.params.map(p => (
-                      <div key={p.name} className="flex gap-2 text-xs">
-                        <code className="text-[#FF9933]/70 font-mono shrink-0">{p.name}</code>
-                        <span className="text-white/30">{p.description}</span>
-                      </div>
+                {ep.params.length > 0 && (
+                  <div className="mt-4">
+                    <p className={`${EYEBROW} mb-1`}>Parameters</p>
+                    <div className="divide-y divide-ink/10 border-y border-ink/10">
+                      {ep.params.map(p => (
+                        <div key={p.name} className="flex gap-3 py-1.5 text-xs">
+                          <code className="self-start bg-paper-muted px-1 font-mono text-ink shrink-0">{p.name}</code>
+                          <span className="text-ink/70">{p.description}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-4">
+                  <p className={`${EYEBROW} mb-2`}>Try it</p>
+                  <div className="flex flex-wrap gap-2">
+                    {ep.examples.map(ex => (
+                      <a
+                        key={ex.url}
+                        href={ex.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={LINK_CHIP}
+                      >
+                        {ex.label}
+                      </a>
                     ))}
                   </div>
                 </div>
-              )}
-
-              <div className="mt-3">
-                <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Try it</p>
-                <div className="flex flex-wrap gap-2">
-                  {ep.examples.map(ex => (
-                    <a
-                      key={ex.url}
-                      href={ex.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[10px] px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-mono transition-colors"
-                    >
-                      {ex.label}
-                    </a>
-                  ))}
-                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
 
         {/* Bulk Datasets */}
-        <div className="mb-12">
-          <h2 className="text-white/40 text-xs uppercase tracking-wider mb-4">Bulk Datasets</h2>
-          <div className="rounded-xl bg-white/5 p-5">
-            <p className="text-white/80 text-sm font-medium">Kaun Ward Crosswalk — BBMP-Final-2023 (225) ↔ KGIS/DataMeet (243)</p>
-            <p className="text-white/50 text-sm leading-relaxed mt-1">
+        <section className="mb-12">
+          <h2 className={SECTION_LABEL}>Bulk Datasets</h2>
+          <div className="bg-paper border border-ink/15 p-5">
+            <p className="text-ink text-sm font-semibold">Kaun Ward Crosswalk — BBMP-Final-2023 (225) ↔ KGIS/DataMeet (243)</p>
+            <p className="text-ink/75 text-sm leading-relaxed mt-1">
               The first public correspondence between BBMP&apos;s 225-ward delimitation (used for work
               orders, payments and tenders) and the historical 243-ward data layer. The public map now
               renders the final 369 GBA wards; this crosswalk remains the documented bridge for older records.
             </p>
             <div className="flex flex-wrap gap-2 mt-3">
-              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/bbmp2023_225_to_datameet_243.csv" target="_blank" rel="noopener noreferrer" className="text-[10px] px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-mono transition-colors">CSV</a>
-              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/bbmp2023_225_to_datameet_243.json" target="_blank" rel="noopener noreferrer" className="text-[10px] px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-mono transition-colors">JSON</a>
-              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/" target="_blank" rel="noopener noreferrer" className="text-[10px] px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-mono transition-colors">Methodology</a>
+              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/bbmp2023_225_to_datameet_243.csv" target="_blank" rel="noopener noreferrer" className={LINK_CHIP}>CSV</a>
+              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/bbmp2023_225_to_datameet_243.json" target="_blank" rel="noopener noreferrer" className={LINK_CHIP}>JSON</a>
+              <a href="https://data.kaun.city/bengaluru/ward-crosswalk/" target="_blank" rel="noopener noreferrer" className={LINK_CHIP}>Methodology</a>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Data Sources */}
-        <div className="mb-8">
-          <h2 className="text-white/40 text-xs uppercase tracking-wider mb-4">Data Sources</h2>
-          <div className="rounded-xl bg-white/5 overflow-hidden">
-            <div className="divide-y divide-white/5">
+        <section className="mb-12">
+          <h2 className={SECTION_LABEL}>Data Sources</h2>
+          <div className="bg-paper border border-ink/15">
+            <div className="divide-y divide-ink/10">
               {DATA_SOURCES.map(ds => (
                 <div key={ds.name} className="px-4 py-3 flex items-center justify-between gap-4">
                   <div className="min-w-0 flex-1">
-                    <p className="text-white/80 text-sm">{ds.name}</p>
-                    <p className="text-white/30 text-xs mt-0.5">
-                      {ds.records} · {ds.period}
+                    <p className="text-ink/85 text-sm">{ds.name}</p>
+                    <p className="text-ink/60 text-xs mt-0.5">
+                      <span className="font-mono tabular-nums">{ds.records}</span> · {ds.period}
                       {ds.url && (
-                        <> · <a href={ds.url} target="_blank" rel="noopener noreferrer" className="text-[#FF9933]/50 hover:text-[#FF9933]">{ds.source}</a></>
+                        <> · <a href={ds.url} target="_blank" rel="noopener noreferrer" className={TEXT_LINK}>{ds.source}</a></>
                       )}
                       {!ds.url && <> · {ds.source}</>}
                     </p>
@@ -196,28 +202,28 @@ export default function DataCatalog() {
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Usage */}
-        <div className="rounded-xl bg-white/5 p-5 mb-8">
-          <h2 className="text-white/40 text-xs uppercase tracking-wider mb-3">Usage</h2>
-          <p className="text-white/50 text-sm leading-relaxed mb-3">
+        <section className="mb-8">
+          <h2 className={SECTION_LABEL}>Usage</h2>
+          <p className="text-ink/75 text-sm leading-relaxed mb-3">
             All endpoints return JSON with CORS headers enabled. No API key required. Rate limited to 60 requests/minute per IP.
           </p>
-          <pre className="text-xs font-mono text-white/60 bg-black/30 p-3 rounded-lg overflow-x-auto">
+          <pre className="text-xs font-mono text-ink/85 bg-paper-muted border border-ink/10 p-3 overflow-x-auto">
 {`curl -s "https://kaun.city/api/data/contractors?flagged=true" | jq .
 
 fetch("https://kaun.city/api/data/wards?ward=42")
   .then(r => r.json())
   .then(data => console.log(data))`}
           </pre>
-        </div>
+        </section>
 
-        <div className="text-center space-y-1">
-          <p className="text-white/15 text-xs">
+        <div className="border-t border-ink/15 pt-4 text-center space-y-1">
+          <p className="text-ink/60 text-xs">
             All data is from public records. kaun.city aggregates and serves — we don&apos;t generate the underlying data.
           </p>
-          <p className="text-white/10 text-xs">
+          <p className="text-ink/60 text-xs">
             kaun.city · open source civic accountability · MIT license
           </p>
         </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { IndiaHeader } from "@/components/india/IndiaHeader"
+import { PageHeader, indiaSectionNav } from "@/components/shared/PageHeader"
 import { BackToMap } from "@/components/india/BackToMap"
 import { ObjectHeader, Section } from "@/components/india/ObjectHeader"
 import { MpCard } from "@/components/india/MpCard"
@@ -15,7 +15,7 @@ import { isPcCode } from "@/lib/india/pc-code"
 import { mapHrefForSeat } from "@/lib/india/map-url-state"
 import { indiaHref } from "@/lib/host-routing"
 import { FIXTURE_ACTIVITY_BENCHMARKS, isFixtureMode } from "@/lib/india/fixtures"
-import { formatMonth } from "@/lib/india/format"
+import { formatMonth, localSeatName } from "@/lib/india/format"
 import {
   MOSPI_STATE_LEVEL_NOTE, SOURCE_ACTIVITY, SOURCE_AFFIDAVITS, SOURCE_MOSPI,
   SOURCE_MPLADS, SOURCE_PC_BOUNDARIES, SOURCE_ROSTER,
@@ -64,6 +64,19 @@ export function generateStaticParams() {
 }
 
 type Props = { params: Promise<{ pc_code: string }> }
+
+/** Reader-facing names for the boundary builder's geom_source keys. */
+const BOUNDARY_SOURCE_LABELS: Record<string, string> = {
+  "datameet": "DataMeet 2019",
+  "shijithpk-2024": "shijithpk 2024",
+}
+
+/**
+ * The MPLADS fixture rows carry a developer note as their data_source. The
+ * caveat a reader needs is the same fact in plain words.
+ */
+const MPLADS_FIXTURE_CAVEAT =
+  "Illustrative sample figures, not this MP's real MPLADS numbers — no per-MP figures were available when the preview set was built."
 
 /**
  * Metadata is the other half of the share card.
@@ -119,8 +132,10 @@ export default async function ConstituencyPage({ params }: Props) {
   const profile = await fetchConstituencyProfile(pc_code)
   if (!profile) notFound()
 
-  const { constituency: c, mp, affidavit, activity, mplads, projects, projectsTotal } = profile
+  const { constituency: c, mp, affidavit, affidavitFiledByPredecessor, activity, mplads, projects, projectsTotal } = profile
   const reportMonth = projects[0]?.report_month ?? null
+  /** Only a Hindi-speaking state's seat gets its Hindi name; see localSeatName. */
+  const localName = localSeatName(c.st_code, c.pc_name_hi)
 
   /**
    * The map, with this seat already selected. Used by both ways back — the
@@ -135,32 +150,26 @@ export default async function ConstituencyPage({ params }: Props) {
     SOURCE_ROSTER,
     ...(affidavit ? [SOURCE_AFFIDAVITS] : []),
     ...(activity.length ? [SOURCE_ACTIVITY] : []),
-    ...(mplads.length ? [{ ...SOURCE_MPLADS, caveat: mplads[0].data_source.startsWith("FIXTURE") ? mplads[0].data_source : undefined }] : []),
+    ...(mplads.length ? [{ ...SOURCE_MPLADS, caveat: mplads[0].data_source.startsWith("FIXTURE") ? MPLADS_FIXTURE_CAVEAT : undefined }] : []),
     ...(projects.length ? [SOURCE_MOSPI] : []),
   ]
 
   return (
-    <div className="h-full overflow-y-auto">
-      {/* pb-28 on phones clears the fixed back control; from md up it is an
-          in-flow chip and the ordinary padding is enough again. */}
-      <div className="max-w-3xl mx-auto px-5 py-6 pb-28 md:pb-6">
-        <BackToMap href={mapHref} />
+    <div className="signal-page h-full overflow-y-auto">
+      <PageHeader surface="india" nav={indiaSectionNav("seat")} back={<BackToMap href={mapHref} />} width="3xl" />
 
-        {/* The entry animation lives on this wrapper and not on the container
-            above, because a transform makes an element the containing block for
-            every fixed descendant — animating the container would peel the back
-            control off the viewport and slide it with the page. */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+        {/* The entry animation lives on this wrapper, below the header, so the
+            chrome and the one way out of the page stay put while it slides in. */}
         <div className="kaun-page-enter">
-          <IndiaHeader />
-
-          <div className="mt-6">
+          <div>
             <ObjectHeader
               eyebrow={`${c.state_name} · Lok Sabha seat ${c.pc_no}`}
               title={c.pc_name}
               subtitle={
                 <>
-                  {c.pc_name_hi && <span className="text-white/40">{c.pc_name_hi} · </span>}
-                  <Link href={mapHref} className="text-[#FF9933]/60 hover:text-[#FF9933]">see on the map</Link>
+                  {localName && <span lang="hi" className="text-ink/70">{localName} · </span>}
+                  <Link href={mapHref} className="inline-flex min-h-11 items-center text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">see on the map</Link>
                 </>
               }
               chips={[
@@ -169,14 +178,16 @@ export default async function ConstituencyPage({ params }: Props) {
                   ? [{ label: "reserved", value: c.reserved_for, title: `Source: ${c.reserved_source}` }]
                   : []),
                 ...(mp ? [{ label: "term", value: mp.term_label }] : []),
-                ...(c.geom_source ? [{ label: "boundary", value: c.geom_source }] : []),
+                ...(c.geom_source
+                  ? [{ label: "boundary", value: BOUNDARY_SOURCE_LABELS[c.geom_source] ?? c.geom_source }]
+                  : []),
               ]}
               /* presence slot intentionally empty in v1 — see ObjectHeader */
             />
           </div>
 
           {!c.reserved_for && (
-            <p className="text-white/20 text-[11px] mt-3 leading-snug">
+            <p className="text-ink/60 text-xs mt-3 leading-snug">
               Reservation status (SC/ST) is shown only when it comes from the Delimitation Order. Every
               boundary and roster file checked under-reports it, so Kaun leaves it blank rather than
               repeating a figure it knows to be wrong.
@@ -184,7 +195,7 @@ export default async function ConstituencyPage({ params }: Props) {
           )}
 
           <Section title="Who holds this seat">
-            <MpCard mp={mp} affidavit={affidavit} />
+            <MpCard mp={mp} affidavit={affidavit} affidavitFiledByPredecessor={affidavitFiledByPredecessor} />
           </Section>
 
           <Section title="In Parliament" note="components, not a score">
@@ -208,21 +219,27 @@ export default async function ConstituencyPage({ params }: Props) {
             title={`Central projects in ${c.state_name}`}
             note={reportMonth ? `MoSPI report, ${formatMonth(reportMonth)}` : undefined}
           >
-            <p className="text-white/30 text-[11px] leading-snug mb-2.5">{MOSPI_STATE_LEVEL_NOTE}</p>
+            <p className="text-ink/60 text-xs leading-snug mb-2.5">{MOSPI_STATE_LEVEL_NOTE}</p>
             {projects.length === 0 ? (
-              <div className="rounded-xl bg-white/5 p-4">
-                <p className="text-white/50 text-sm">No central projects loaded for this state yet.</p>
+              <div className="bg-paper border border-ink/15 p-4">
+                <p className="text-ink/75 text-sm">No central projects loaded for this state yet.</p>
               </div>
             ) : (
               <>
+                {/* The count is the one the tracker leads with for this state:
+                    ongoing projects on Kaun's record. The rows are a slice of
+                    them, so the slice says what it is. */}
+                <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60 mb-2">
+                  {projects.length} of {projectsTotal.toLocaleString("en-IN")} ongoing · largest cost overrun first
+                </p>
                 <div className="space-y-2">
                   {projects.map(p => <ProjectRow key={p.project_code} p={p} />)}
                 </div>
                 <Link
                   href={indiaHref(`/projects?state=${c.st_code}`)}
-                  className="inline-block mt-3 text-[#FF9933]/70 hover:text-[#FF9933] text-xs"
+                  className="inline-flex items-center min-h-11 mt-1 text-sm text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent"
                 >
-                  All {projectsTotal.toLocaleString("en-IN")} central projects in {c.state_name} &rarr;
+                  All {projectsTotal.toLocaleString("en-IN")} ongoing central projects in {c.state_name} &rarr;
                 </Link>
               </>
             )}

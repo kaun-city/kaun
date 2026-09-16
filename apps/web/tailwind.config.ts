@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss"
+import { COLORS } from "./lib/design-tokens"
 
 const config: Config = {
   content: [
@@ -8,8 +9,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-        saffron: "#FF9933",
+      // Signal on Paper tokens only (lib/design-tokens.ts). Use bg-paper,
+      // text-ink/80, border-ink/15, text-accent, bg-danger, etc.
+      colors: COLORS,
+      fontFamily: {
+        mono: ["var(--font-plex-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
       animation: {
         "slide-up": "slide-up 0.25s ease-out forwards",

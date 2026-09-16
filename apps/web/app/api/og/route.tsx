@@ -1,7 +1,11 @@
 import { ImageResponse } from "next/og"
+import { ACCENT, INK, PAPER } from "@/lib/design-tokens"
 
 const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+/** Ink at an opacity (8-digit hex). Text stays at 0.6+, the contrast floor on paper. */
+const ink = (alpha: number) => INK + Math.round(alpha * 255).toString(16).padStart(2, "0")
 
 async function fetchJson(path: string) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
@@ -44,27 +48,27 @@ export async function GET(req: Request) {
         flexDirection: "column",
         width: "100%",
         height: "100%",
-        backgroundColor: "#0A0A0A",
+        backgroundColor: PAPER.canvas,
         padding: "56px 72px",
         fontFamily: "sans-serif",
       }}>
 
         {/* Wordmark */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ color: "white", fontSize: "26px", fontWeight: 900 }}>KAUN</span>
-          <span style={{ color: "#FF9933", fontSize: "30px", fontWeight: 900, marginLeft: "2px" }}>?</span>
+        <div style={{ display: "flex", alignItems: "center", alignSelf: "flex-start", borderBottom: `2px solid ${INK}`, paddingBottom: "4px" }}>
+          <span style={{ color: INK, fontSize: "26px", fontWeight: 900 }}>KAUN</span>
+          <span style={{ color: ACCENT, fontSize: "30px", fontWeight: 900, marginLeft: "2px" }}>?</span>
         </div>
 
         {/* Ward name */}
         <div style={{ display: "flex", flexDirection: "column", marginTop: "48px" }}>
-          <span style={{ color: "white", fontSize: "76px", fontWeight: 800, letterSpacing: "-2px" }}>
+          <span style={{ color: INK, fontSize: "76px", fontWeight: 800, letterSpacing: "-2px" }}>
             {wardName}
           </span>
-          <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "24px", marginTop: "10px" }}>
+          <span style={{ color: ink(0.7), fontSize: "24px", marginTop: "10px" }}>
             {wardLabel}
           </span>
           {constituency ? (
-            <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "24px", marginTop: "10px" }}>
+            <span style={{ color: ink(0.7), fontSize: "24px", marginTop: "10px" }}>
               Assembly constituency · {constituency}
             </span>
           ) : null}
@@ -76,15 +80,14 @@ export async function GET(req: Request) {
             display: "flex",
             alignItems: "center",
             marginTop: "48px",
-            backgroundColor: "rgba(255,153,51,0.12)",
-            border: "2px solid rgba(255,153,51,0.30)",
-            borderRadius: "16px",
+            backgroundColor: PAPER.DEFAULT,
+            border: `2px solid ${ink(0.15)}`,
             padding: "28px 40px",
           }}>
-            <span style={{ color: "#FF9933", fontSize: "44px", fontWeight: 900, marginRight: "20px" }}>
+            <span style={{ color: INK, fontSize: "44px", fontWeight: 900, marginRight: "20px" }}>
               {population}
             </span>
-            <span style={{ color: "rgba(255,255,255,0.65)", fontSize: "24px", fontWeight: 400 }}>
+            <span style={{ color: ink(0.8), fontSize: "24px", fontWeight: 400 }}>
               people in this ward
             </span>
           </div>
@@ -95,10 +98,10 @@ export async function GET(req: Request) {
 
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "20px" }}>
+          <span style={{ color: ink(0.6), fontSize: "20px" }}>
             Explore your ward&apos;s civic data
           </span>
-          <span style={{ color: "rgba(255,255,255,0.55)", fontSize: "22px", fontWeight: 700 }}>
+          <span style={{ color: ink(0.75), fontSize: "22px", fontWeight: 700 }}>
             kaun.city
           </span>
         </div>

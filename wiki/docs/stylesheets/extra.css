@@ -1,32 +1,112 @@
-/* Kaun.city-inspired styling for the civic data wiki */
+/* Signal on Paper for the civic data wiki (data.kaun.city).
+   The same one visual language as kaun.city: paper ground, one ink with
+   hierarchy by opacity, burnt-saffron accent for links and the wordmark "?",
+   tinted danger/warning/success/info callouts, square corners, no shadows.
+   Colours mirror apps/web/lib/design-tokens.ts; change them there first.
+   mkdocs.yml sets a single light palette with primary/accent "custom", so
+   every Material colour below comes from this file. Text never goes below
+   ink at 60% opacity (the 4.6:1 contrast floor on paper). */
 
-:root {
-  --md-primary-fg-color: #FF9933;
-  --md-primary-fg-color--light: #ffb366;
-  --md-primary-fg-color--dark: #cc7a29;
-  --md-accent-fg-color: #FF9933;
-  --md-accent-fg-color--transparent: rgba(255, 153, 51, 0.1);
+:root,
+[data-md-color-scheme] {
+  /* Tokens (lib/design-tokens.ts) */
+  --kaun-paper: #F8F5EF;
+  --kaun-paper-bright: #FFFDF8;
+  --kaun-paper-muted: #EFE9DE;
+  --kaun-paper-canvas: #F2EDE4;
+  --kaun-paper-stage: #E5DFD3;
+  --kaun-ink: #16130E;
+  --kaun-accent: #A64E00;
+  --kaun-danger: #B42318;
+  --kaun-warning: #754500;
+  --kaun-success: #24643C;
+  --kaun-info: #255C86;
+  /* The same colours as RGB triplets, for rgba() tints. */
+  --kaun-ink-rgb: 22, 19, 14;
+  --kaun-accent-rgb: 166, 78, 0;
+  --kaun-danger-rgb: 180, 35, 24;
+  --kaun-warning-rgb: 117, 69, 0;
+  --kaun-success-rgb: 36, 100, 60;
+  --kaun-info-rgb: 37, 92, 134;
+  --kaun-canvas-rgb: 242, 237, 228;
+
+  /* Header and tabs: paper with ink text, like the app header. */
+  --md-primary-fg-color: var(--kaun-paper);
+  --md-primary-fg-color--light: var(--kaun-paper-bright);
+  --md-primary-fg-color--dark: var(--kaun-paper-muted);
+  --md-primary-bg-color: var(--kaun-ink);
+  --md-primary-bg-color--light: rgba(var(--kaun-ink-rgb), 0.7);
+
+  --md-accent-fg-color: var(--kaun-accent);
+  --md-accent-fg-color--transparent: rgba(var(--kaun-accent-rgb), 0.1);
+  --md-accent-bg-color: var(--kaun-paper);
+  --md-accent-bg-color--light: rgba(248, 245, 239, 0.7);
+
+  /* Page: canvas ground, ink text. */
+  --md-default-bg-color: var(--kaun-paper-canvas);
+  --md-default-bg-color--light: rgba(var(--kaun-canvas-rgb), 0.7);
+  --md-default-bg-color--lighter: rgba(var(--kaun-canvas-rgb), 0.3);
+  --md-default-bg-color--lightest: rgba(var(--kaun-canvas-rgb), 0.12);
+  --md-default-fg-color: var(--kaun-ink);
+  --md-default-fg-color--light: rgba(var(--kaun-ink-rgb), 0.72);
+  --md-default-fg-color--lighter: rgba(var(--kaun-ink-rgb), 0.6);
+  --md-default-fg-color--lightest: rgba(var(--kaun-ink-rgb), 0.1);
+
+  --md-typeset-color: var(--kaun-ink);
+  --md-typeset-a-color: var(--kaun-accent);
+  --md-typeset-mark-color: rgba(var(--kaun-accent-rgb), 0.16);
+  --md-typeset-del-color: rgba(var(--kaun-danger-rgb), 0.15);
+  --md-typeset-ins-color: rgba(var(--kaun-success-rgb), 0.15);
+  --md-typeset-kbd-color: var(--kaun-paper-bright);
+  --md-typeset-kbd-accent-color: var(--kaun-paper-bright);
+  --md-typeset-kbd-border-color: rgba(var(--kaun-ink-rgb), 0.35);
+  --md-typeset-table-color: rgba(var(--kaun-ink-rgb), 0.15);
+  --md-typeset-table-color--light: rgba(var(--kaun-ink-rgb), 0.04);
+
+  /* Code: paper-muted blocks, syntax in the status tokens. */
+  --md-code-fg-color: var(--kaun-ink);
+  --md-code-bg-color: var(--kaun-paper-muted);
+  --md-code-bg-color--light: rgba(239, 233, 222, 0.7);
+  --md-code-bg-color--lighter: rgba(239, 233, 222, 0.3);
+  --md-code-hl-color: var(--kaun-accent);
+  --md-code-hl-color--light: rgba(var(--kaun-accent-rgb), 0.1);
+  --md-code-hl-number-color: var(--kaun-danger);
+  --md-code-hl-special-color: var(--kaun-danger);
+  --md-code-hl-function-color: var(--kaun-accent);
+  --md-code-hl-constant-color: var(--kaun-info);
+  --md-code-hl-keyword-color: var(--kaun-info);
+  --md-code-hl-string-color: var(--kaun-success);
+  --md-code-hl-name-color: var(--kaun-ink);
+  --md-code-hl-operator-color: rgba(var(--kaun-ink-rgb), 0.72);
+  --md-code-hl-punctuation-color: rgba(var(--kaun-ink-rgb), 0.72);
+  --md-code-hl-comment-color: rgba(var(--kaun-ink-rgb), 0.6);
+  --md-code-hl-generic-color: rgba(var(--kaun-ink-rgb), 0.72);
+  --md-code-hl-variable-color: rgba(var(--kaun-ink-rgb), 0.72);
+
+  --md-admonition-fg-color: var(--kaun-ink);
+  --md-admonition-bg-color: var(--kaun-paper);
+
+  --md-footer-fg-color: var(--kaun-ink);
+  --md-footer-fg-color--light: rgba(var(--kaun-ink-rgb), 0.75);
+  --md-footer-fg-color--lighter: rgba(var(--kaun-ink-rgb), 0.6);
+  --md-footer-bg-color: var(--kaun-paper);
+  --md-footer-bg-color--dark: var(--kaun-paper-muted);
+
+  --md-warning-fg-color: var(--kaun-warning);
+  --md-warning-bg-color: rgba(var(--kaun-warning-rgb), 0.07);
+
+  /* Paper has no shadows. */
+  --md-shadow-z1: none;
+  --md-shadow-z2: none;
+  --md-shadow-z3: none;
 }
 
-/* Dark theme — match kaun.city #0A0A0A background */
-[data-md-color-scheme="slate"] {
-  --md-default-bg-color: #0A0A0A;
-  --md-default-bg-color--light: #111111;
-  --md-default-bg-color--lighter: #1a1a1a;
-  --md-default-fg-color: rgba(255, 255, 255, 0.87);
-  --md-default-fg-color--light: rgba(255, 255, 255, 0.54);
-  --md-default-fg-color--lighter: rgba(255, 255, 255, 0.32);
-  --md-default-fg-color--lightest: rgba(255, 255, 255, 0.07);
-  --md-typeset-color: rgba(255, 255, 255, 0.87);
-  --md-typeset-a-color: #FF9933;
-  --md-code-bg-color: rgba(255, 255, 255, 0.04);
-  --md-code-fg-color: rgba(255, 255, 255, 0.87);
-}
-
-/* Header — minimal, kaun-style wordmark */
-[data-md-color-scheme="slate"] .md-header {
-  background-color: #0A0A0A;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+/* Header — paper, ink text, a 2px ink rule beneath (the app header). */
+.md-header,
+.md-header--shadow {
+  background-color: var(--kaun-paper);
+  color: var(--kaun-ink);
+  border-bottom: 2px solid var(--kaun-ink);
   box-shadow: none;
 }
 
@@ -50,27 +130,56 @@
 }
 .md-header__title::before {
   content: "KAUN";
-  color: white;
+  color: var(--kaun-ink);
   font-weight: 800;
   font-size: 1rem;
   letter-spacing: -0.01em;
 }
 .md-header__title::after {
   content: "?";
-  color: #FF9933;
+  color: var(--kaun-accent);
   font-weight: 800;
   font-size: 1rem;
   margin-right: 12px;
 }
 
+/* Header search — a paper input, square, hairline ink border. */
+@media screen and (min-width: 60em) {
+  .md-search__form,
+  .md-search__form:hover,
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__form {
+    background-color: var(--kaun-paper-bright);
+    border: 1px solid rgba(var(--kaun-ink-rgb), 0.25);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .md-search__output {
+    border: 1px solid rgba(var(--kaun-ink-rgb), 0.25);
+    border-top: 0;
+  }
+}
+
+.md-search__input::placeholder {
+  color: rgba(var(--kaun-ink-rgb), 0.6);
+}
+
+/* Mobile drawer title matches the header. */
+.md-nav--primary .md-nav__title[for="__drawer"] {
+  background-color: var(--kaun-paper);
+  color: var(--kaun-ink);
+  border-bottom: 2px solid var(--kaun-ink);
+}
+
 /* Tabs (top navigation) */
-[data-md-color-scheme="slate"] .md-tabs {
-  background-color: #0A0A0A;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+.md-tabs {
+  background-color: var(--kaun-paper);
+  color: var(--kaun-ink);
+  border-bottom: 1px solid rgba(var(--kaun-ink-rgb), 0.15);
 }
 
 .md-tabs__link {
-  opacity: 0.6;
+  opacity: 1;
+  color: rgba(var(--kaun-ink-rgb), 0.7);
   font-weight: 500;
   font-size: 0.72rem;
   letter-spacing: 0.02em;
@@ -78,18 +187,27 @@
 }
 
 .md-tabs__link:hover,
-.md-tabs__link--active {
+.md-tabs__link:focus,
+.md-tabs__item--active .md-tabs__link {
   opacity: 1;
-  color: #FF9933;
+  color: var(--kaun-ink);
+}
+
+/* The active tab carries the accent as its marker. */
+.md-tabs__item--active .md-tabs__link {
+  text-decoration: underline;
+  text-decoration-color: var(--kaun-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
 }
 
 /* Sidebar */
-[data-md-color-scheme="slate"] .md-nav {
+.md-nav {
   font-size: 0.72rem;
 }
 
 .md-nav__title {
-  color: rgba(255, 255, 255, 0.32);
+  color: rgba(var(--kaun-ink-rgb), 0.6);
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.62rem;
@@ -97,18 +215,18 @@
 }
 
 .md-nav__link {
-  opacity: 0.7;
-  transition: opacity 0.15s, color 0.15s;
+  color: rgba(var(--kaun-ink-rgb), 0.75);
+  transition: color 0.15s;
 }
 
-.md-nav__link:hover {
-  opacity: 1;
-  color: #FF9933;
+.md-nav__link[href]:hover,
+.md-nav__link[for]:hover {
+  color: var(--kaun-ink);
 }
 
-.md-nav__link--active {
-  color: #FF9933;
-  opacity: 1;
+.md-nav__item .md-nav__link--active,
+.md-nav__item .md-nav__link--active code {
+  color: var(--kaun-accent);
   font-weight: 500;
 }
 
@@ -128,123 +246,237 @@
 }
 
 .md-typeset h1 {
-  color: white;
+  color: var(--kaun-ink);
   font-size: 1.8rem;
   margin-bottom: 1rem;
 }
 
 .md-typeset h2 {
-  color: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--kaun-ink);
+  border-bottom: 1px solid rgba(var(--kaun-ink-rgb), 0.15);
   padding-bottom: 0.5rem;
   margin-top: 2rem;
 }
 
 .md-typeset h3 {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(var(--kaun-ink-rgb), 0.85);
 }
 
-/* Links — kaun saffron */
-.md-typeset a {
-  color: #FF9933;
-  text-decoration: none;
-  border-bottom: 1px dotted rgba(255, 153, 51, 0.4);
-  transition: border-color 0.15s, color 0.15s;
+/* Links — accent, underlined */
+.md-typeset a:not(.headerlink):not(.md-button) {
+  color: var(--kaun-accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--kaun-accent-rgb), 0.4);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.15s;
 }
 
-.md-typeset a:hover {
-  color: #ffb366;
-  border-bottom-color: #FF9933;
+.md-typeset a:not(.headerlink):not(.md-button):hover,
+.md-typeset a:not(.headerlink):not(.md-button):focus {
+  color: var(--kaun-accent);
+  text-decoration-color: var(--kaun-accent);
+}
+
+/* Buttons — the app's primary (ink) and secondary (paper) buttons. */
+.md-typeset .md-button {
+  background-color: var(--kaun-paper);
+  border: 1px solid rgba(var(--kaun-ink-rgb), 0.55);
+  border-radius: 0;
+  color: var(--kaun-ink);
+}
+
+.md-typeset .md-button:hover,
+.md-typeset .md-button:focus {
+  background-color: var(--kaun-paper-muted);
+  border-color: var(--kaun-ink);
+  color: var(--kaun-ink);
+}
+
+.md-typeset .md-button--primary,
+.md-typeset .md-button--primary:hover,
+.md-typeset .md-button--primary:focus {
+  background-color: var(--kaun-ink);
+  border-color: var(--kaun-ink);
+  color: var(--kaun-paper);
+}
+
+.md-typeset .md-button--primary:hover,
+.md-typeset .md-button--primary:focus {
+  background-color: rgba(var(--kaun-ink-rgb), 0.85);
 }
 
 /* Code blocks */
 .md-typeset code {
-  background-color: rgba(255, 153, 51, 0.08);
-  color: #ffb366;
-  border-radius: 4px;
+  background-color: var(--kaun-paper-muted);
+  color: var(--kaun-ink);
+  border-radius: 0;
   padding: 0.1em 0.4em;
   font-size: 0.85em;
 }
 
 .md-typeset pre code {
-  background-color: rgba(255, 255, 255, 0.03);
-  color: rgba(255, 255, 255, 0.87);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: var(--kaun-paper-muted);
+  color: var(--kaun-ink);
+  border: 1px solid rgba(var(--kaun-ink-rgb), 0.15);
 }
 
-/* Tables */
-[data-md-color-scheme="slate"] .md-typeset table:not([class]) {
-  background-color: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+.md-clipboard {
+  color: rgba(var(--kaun-ink-rgb), 0.5);
+}
+
+.md-clipboard:hover,
+.md-clipboard:focus {
+  color: var(--kaun-accent);
+}
+
+/* Tables — paper sheet, hairline ink rules, square. */
+.md-typeset table:not([class]) {
+  background-color: var(--kaun-paper);
+  border: 1px solid rgba(var(--kaun-ink-rgb), 0.15);
+  border-radius: 0;
   overflow: hidden;
   font-size: 0.75rem;
 }
 
-[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
-  background-color: rgba(255, 153, 51, 0.08);
-  color: #ffb366;
+.md-typeset table:not([class]) th {
+  background-color: var(--kaun-paper-muted);
+  color: rgba(var(--kaun-ink-rgb), 0.8);
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.68rem;
   letter-spacing: 0.04em;
-  border-bottom: 1px solid rgba(255, 153, 51, 0.2);
+  border-bottom: 1px solid rgba(var(--kaun-ink-rgb), 0.15);
 }
 
-[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+.md-typeset table:not([class]) td {
+  border-top: 1px solid rgba(var(--kaun-ink-rgb), 0.15);
 }
 
-[data-md-color-scheme="slate"] .md-typeset table:not([class]) tr:hover td {
-  background-color: rgba(255, 255, 255, 0.02);
+.md-typeset table:not([class]) tbody tr:hover {
+  background-color: rgba(var(--kaun-ink-rgb), 0.04);
+  box-shadow: none;
 }
 
-/* Admonitions (note/warning/etc boxes) */
-[data-md-color-scheme="slate"] .md-typeset .admonition {
-  background-color: rgba(255, 255, 255, 0.03);
-  border-left: 3px solid #FF9933;
-  border-radius: 4px;
+/* Admonitions — tinted callouts: info, success, warning, danger; neutral ink
+   for examples and quotes. Selectors match Material's own specificity so the
+   later rule (this file) wins without !important. */
+.md-typeset .admonition,
+.md-typeset details {
+  --kaun-callout: var(--kaun-ink-rgb);
 }
 
-/* Search */
-[data-md-color-scheme="slate"] .md-search__input {
-  background-color: rgba(255, 255, 255, 0.06);
-  color: white;
+.md-typeset .note,
+.md-typeset .abstract,
+.md-typeset .summary,
+.md-typeset .tldr,
+.md-typeset .info,
+.md-typeset .todo {
+  --kaun-callout: var(--kaun-info-rgb);
 }
 
-[data-md-color-scheme="slate"] .md-search__input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+.md-typeset .tip,
+.md-typeset .hint,
+.md-typeset .important,
+.md-typeset .success,
+.md-typeset .check,
+.md-typeset .done {
+  --kaun-callout: var(--kaun-success-rgb);
+}
+
+.md-typeset .question,
+.md-typeset .help,
+.md-typeset .faq,
+.md-typeset .warning,
+.md-typeset .caution,
+.md-typeset .attention {
+  --kaun-callout: var(--kaun-warning-rgb);
+}
+
+.md-typeset .failure,
+.md-typeset .fail,
+.md-typeset .missing,
+.md-typeset .danger,
+.md-typeset .error,
+.md-typeset .bug {
+  --kaun-callout: var(--kaun-danger-rgb);
+}
+
+.md-typeset .admonition[class],
+.md-typeset details[class] {
+  background-color: rgba(var(--kaun-callout), 0.07);
+  border: 1px solid rgba(var(--kaun-callout), 0.35);
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--kaun-ink);
+}
+
+.md-typeset [class] > .admonition-title,
+.md-typeset [class] > summary {
+  background-color: rgba(var(--kaun-callout), 0.1);
+  color: var(--kaun-ink);
+}
+
+.md-typeset [class] > .admonition-title::before,
+.md-typeset [class] > summary::before {
+  background-color: rgb(var(--kaun-callout));
+}
+
+.md-typeset [class] > summary::after {
+  color: rgb(var(--kaun-callout));
+}
+
+/* Search results */
+.md-search-result__meta {
+  background-color: var(--kaun-paper-muted);
+  color: rgba(var(--kaun-ink-rgb), 0.6);
 }
 
 /* Footer */
-[data-md-color-scheme="slate"] .md-footer {
-  background-color: #0A0A0A;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+.md-footer {
+  background-color: var(--kaun-paper);
+  color: var(--kaun-ink);
+  border-top: 1px solid rgba(var(--kaun-ink-rgb), 0.15);
 }
 
 .md-footer-meta {
-  background-color: #0A0A0A;
+  background-color: var(--kaun-paper-muted);
+  border-top: 1px solid rgba(var(--kaun-ink-rgb), 0.15);
+}
+
+/* Back to top — square, hairline, ink on hover. */
+.md-top {
+  background-color: var(--kaun-paper);
+  border: 1px solid rgba(var(--kaun-ink-rgb), 0.2);
+  border-radius: 0;
+  box-shadow: none;
+  color: rgba(var(--kaun-ink-rgb), 0.7);
+}
+
+.md-top:hover,
+.md-top:focus {
+  background-color: var(--kaun-ink);
+  color: var(--kaun-paper);
 }
 
 /* Edit page button */
 .md-content__button {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(var(--kaun-ink-rgb), 0.6);
 }
 
 .md-content__button:hover {
-  color: #FF9933;
+  color: var(--kaun-accent);
 }
 
 /* Horizontal rule */
 .md-typeset hr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(var(--kaun-ink-rgb), 0.15);
   margin: 2rem 0;
 }
 
 /* Blockquotes */
 .md-typeset blockquote {
-  color: rgba(255, 255, 255, 0.7);
-  border-left: 3px solid #FF9933;
+  color: rgba(var(--kaun-ink-rgb), 0.75);
+  border-left: 3px solid rgba(var(--kaun-ink-rgb), 0.35);
   padding-left: 1rem;
 }
 
@@ -255,43 +487,39 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: var(--kaun-paper-canvas);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
+  background: rgba(var(--kaun-ink-rgb), 0.2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 153, 51, 0.3);
+  background: rgba(var(--kaun-ink-rgb), 0.35);
 }
 
 /* Badge styling for red/yellow severity in findings */
-.md-typeset .severity-red {
+.md-typeset .severity-red,
+.md-typeset .severity-yellow {
   display: inline-block;
-  background-color: rgba(239, 68, 68, 0.15);
-  color: #f87171;
   padding: 0.15em 0.5em;
-  border-radius: 4px;
+  border-radius: 0;
   font-size: 0.75em;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.md-typeset .severity-red {
+  background-color: rgba(var(--kaun-danger-rgb), 0.07);
+  color: var(--kaun-danger);
+  border: 1px solid rgba(var(--kaun-danger-rgb), 0.35);
 }
 
 .md-typeset .severity-yellow {
-  display: inline-block;
-  background-color: rgba(234, 179, 8, 0.15);
-  color: #fbbf24;
-  padding: 0.15em 0.5em;
-  border-radius: 4px;
-  font-size: 0.75em;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 1px solid rgba(234, 179, 8, 0.3);
+  background-color: rgba(var(--kaun-warning-rgb), 0.07);
+  color: var(--kaun-warning);
+  border: 1px solid rgba(var(--kaun-warning-rgb), 0.35);
 }
 
 /* --- Mobile-friendly tables ---
@@ -299,7 +527,7 @@
    per-ward work orders) that are unusable on phones without tweaks.
    MkDocs Material already wraps them in a horizontally scrolling
    container; we improve that experience with tighter typography and
-   a right-edge shadow so readers can tell more content is available
+   a right-edge fade so readers can tell more content is available
    to the right. */
 .md-typeset .md-typeset__scrollwrap,
 .md-typeset__scrollwrap {
@@ -308,19 +536,19 @@
 
 @media (max-width: 900px) {
   /* Denser cells and smaller font so more columns fit per viewport. */
-  [data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+  .md-typeset table:not([class]) {
     font-size: 0.7rem;
   }
-  [data-md-color-scheme="slate"] .md-typeset table:not([class]) th,
-  [data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+  .md-typeset table:not([class]) th,
+  .md-typeset table:not([class]) td {
     padding: 0.45em 0.55em;
   }
-  [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  .md-typeset table:not([class]) th {
     font-size: 0.62rem;
     white-space: nowrap;
   }
 
-  /* Right-edge shadow on scrollable table wrapper — tells the reader
+  /* Right-edge paper fade on scrollable table wrapper — tells the reader
      the table continues horizontally. Only shown on narrow screens
      where horizontal scroll is likely. */
   .md-typeset__scrollwrap::after {
@@ -331,26 +559,24 @@
     bottom: 0;
     width: 24px;
     pointer-events: none;
-    background: linear-gradient(to left, rgba(10, 10, 10, 0.85), transparent);
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+    background: linear-gradient(to left, rgba(var(--kaun-canvas-rgb), 0.95), rgba(var(--kaun-canvas-rgb), 0));
   }
 
   /* Keep the cells from breaking in awkward ways — line-wrap is fine
      for description columns but numbers, FYs, and refs look better
      on one line. */
-  [data-md-color-scheme="slate"] .md-typeset table:not([class]) td:first-child {
+  .md-typeset table:not([class]) td:first-child {
     white-space: normal;
   }
 }
 
 @media (max-width: 500px) {
   /* On very narrow phones, go even denser. */
-  [data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+  .md-typeset table:not([class]) {
     font-size: 0.64rem;
   }
-  [data-md-color-scheme="slate"] .md-typeset table:not([class]) th,
-  [data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+  .md-typeset table:not([class]) th,
+  .md-typeset table:not([class]) td {
     padding: 0.35em 0.45em;
   }
 

@@ -2,223 +2,138 @@
 
 import { useState } from "react"
 import type { ContractorProfile, RepReportCard, WardCommitteeMeetings, WardInfraStats, WardPotholes } from "@/lib/types"
-import { getCity } from "@/lib/cities"
 
 interface Props {
   reportCard: RepReportCard | null
-  committeeMeetings: WardCommitteeMeetings | null
+  /** Former BBMP-198 ward committees covering this ward, largest overlap first. */
+  committeeMeetings: WardCommitteeMeetings[]
   infraStats: WardInfraStats | null
   potholes: WardPotholes | null
   wardContractors: ContractorProfile[]
-  /** city_id from PinResult — used for tone-aware copy ("accountability" vs "transparency") */
   cityId?: string
+  /** The measures below have loaded; until then rows are held as skeletons so they don't jump in. */
+  settled?: boolean
 }
 
-interface Dimension {
+interface EvidenceItem {
   label: string
-  score: number       // 0-100
-  weight: number
-  note: string | null // shown in breakdown
+  value: string
+  note: string
 }
+
+function availableEvidence(props: Props): EvidenceItem[] {
+  const items: EvidenceItem[] = []
+  const { reportCard, committeeMeetings, infraStats, potholes, wardContractors } = props
+
+  if (reportCard?.attendance_pct != null) items.push({
+    label: "MLA attendance",
+    value: `${reportCard.attendance_pct}%`,
+    note: `${reportCard.term} assembly record`,
+  })
+  if (reportCard?.lad_utilization_pct != null) items.push({
+    label: "LAD fund used",
+    value: `${reportCard.lad_utilization_pct}%`,
+    note: "Constituency development funds",
+  })
+  if (reportCard?.criminal_cases != null) items.push({
+    label: "Declared cases",
+    value: String(reportCard.criminal_cases),
+    note: "Candidate election affidavit",
+  })
+  // One committee's own count, never a sum across committees.
+  const [largestCommittee] = committeeMeetings
+  if (largestCommittee) items.push({
+    label: "Ward committee meetings",
+    value: String(largestCommittee.meetings_count),
+    note: committeeMeetings.length === 1
+      ? `${largestCommittee.ward_name} committee · ${largestCommittee.period}`
+      : `${largestCommittee.ward_name}, largest of ${committeeMeetings.length} committees · ${largestCommittee.period}`,
+  })
+  if (infraStats?.signal_count != null) items.push({
+    label: "Traffic signals",
+    value: String(infraStats.signal_count),
+    note: "Mapped in OpenStreetMap",
+  })
+  if (potholes) items.push({
+    label: "Pothole reports",
+    value: potholes.complaints.toLocaleString("en-IN"),
+    note: `Estimated · Fix My Street ${potholes.data_year}`,
+  })
+  if (wardContractors.length > 0) {
+    const flagged = wardContractors.filter(contractor => contractor.blacklist_flags.length > 0).length
+    items.push({
+      label: "Contractors on debarment lists",
+      value: String(flagged),
+      note: `Of ${wardContractors.length} with work orders in this area`,
+    })
+  }
+  return items
+}
+
+const VISIBLE_ROWS = 4
 
 /**
- * Compute an accountability score (0-100) from available data.
- * Returns null if fewer than 2 dimensions are available.
- *
- * Dimensions:
- *   - MLA attendance %            weight 2  (source: Myneta / assembly records)
- *   - LAD fund utilization %      weight 2  (source: assembly records)
- *   - Criminal cases (inverse)    weight 1.5 (source: Myneta affidavits)
- *   - Flagged contractors         weight 1.5 (source: KPPP tender records)
+ * Raw evidence replaces the old weighted ward score. Unlike a composite
+ * number, every measure can be understood, sourced and challenged on its own.
+ * The first rows stay visible, as in the reference record sheet.
  */
-function computeScore(props: Props): { score: number; dimensions: Dimension[]; dataPoints: number } | null {
-  const { reportCard, wardContractors } = props
-  const dimensions: Dimension[] = []
-
-  // MLA attendance (0-100)
-  if (reportCard?.attendance_pct != null) {
-    const v = Math.min(reportCard.attendance_pct, 100)
-    dimensions.push({
-      label: "MLA attendance",
-      score: v,
-      weight: 2,
-      note: `${reportCard.attendance_pct}% sessions attended`,
-    })
-  }
-
-  // LAD utilization (0-100)
-  if (reportCard?.lad_utilization_pct != null) {
-    const v = Math.min(Number(reportCard.lad_utilization_pct), 100)
-    dimensions.push({
-      label: "LAD fund use",
-      score: v,
-      weight: 2,
-      note: `${reportCard.lad_utilization_pct}% of constituency development funds utilised`,
-    })
-  }
-
-  // Criminal cases (inverse: 0 = 100, 5+ = 0)
-  if (reportCard?.criminal_cases != null) {
-    const v = Math.max(0, 100 - reportCard.criminal_cases * 20)
-    dimensions.push({
-      label: "Criminal cases",
-      score: v,
-      weight: 1.5,
-      note: reportCard.criminal_cases === 0
-        ? "No declared criminal cases"
-        : `${reportCard.criminal_cases} declared criminal case${reportCard.criminal_cases > 1 ? "s" : ""}`,
-    })
-  }
-
-  // Flagged contractors (any = penalty; 0 flagged = 100)
-  const flaggedCount = wardContractors.filter(c => c.blacklist_flags.length > 0).length
-  if (wardContractors.length > 0) {
-    const v = Math.max(0, 100 - flaggedCount * 40)
-    dimensions.push({
-      label: "Contractor flags",
-      score: v,
-      weight: 1.5,
-      note: flaggedCount === 0
-        ? "No flagged contractors on ward tenders"
-        : `${flaggedCount} contractor${flaggedCount > 1 ? "s" : ""} with blacklist flags`,
-    })
-  }
-
-  if (dimensions.length < 2) return null
-
-  const totalWeight = dimensions.reduce((s, d) => s + d.weight, 0)
-  const weighted = dimensions.reduce((s, d) => s + d.score * d.weight, 0) / totalWeight
-
-  return { score: Math.round(weighted), dimensions, dataPoints: dimensions.length }
-}
-
-function scoreColor(score: number) {
-  if (score >= 70) return { bar: "bg-green-400", text: "text-green-400" }
-  if (score >= 50) return { bar: "bg-yellow-400", text: "text-yellow-400" }
-  if (score >= 30) return { bar: "bg-orange-400", text: "text-orange-400" }
-  return { bar: "bg-red-400", text: "text-red-400" }
-}
-
-const INFO_TEXT = `Accountability Score (0-100)
-
-A number — not a grade — based on publicly available data about your ward's MLA and BBMP contractors.
-
-What's counted:
-- MLA assembly attendance
-- LAD fund utilisation
-- Declared criminal cases (from election affidavits)
-- Contractors with blacklist flags on ward tenders
-
-What's not counted:
-- Road or drainage quality (ward-level delivery data is not reliably public)
-- Corporator performance (not yet available for all wards)
-
-Sources: Myneta.info, Karnataka assembly records, KPPP tender portal.
-
-This score reflects available data only and is not a comprehensive assessment of the ward.`
-
-function InfoTip() {
-  const [show, setShow] = useState(false)
-  return (
-    <div className="relative">
-      <button
-        onClick={() => setShow(v => !v)}
-        className="w-4 h-4 rounded-full border border-white/20 text-white/30 hover:text-white/60 hover:border-white/40 text-[10px] font-bold leading-none flex items-center justify-center transition-colors"
-        aria-label="How this score is calculated"
-      >
-        i
-      </button>
-      {show && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setShow(false)} />
-          <div className="absolute right-0 top-6 z-50 w-72 rounded-xl bg-zinc-900 border border-white/15 shadow-2xl p-4 text-left">
-            <div className="flex items-start justify-between mb-2">
-              <p className="text-white/80 text-[12px] font-semibold">How this score works</p>
-              <button onClick={() => setShow(false)} className="text-white/30 hover:text-white/60 text-sm ml-2">&times;</button>
-            </div>
-            <div className="space-y-2 text-[11px] text-white/50 leading-relaxed">
-              <p>A number from 0 to 100 based on publicly available data about your ward&apos;s MLA and BBMP contractors. Not a grade &mdash; not a ranking.</p>
-              <div>
-                <p className="text-white/70 font-medium mb-1">What&apos;s counted</p>
-                <ul className="space-y-0.5 list-disc list-inside">
-                  <li>MLA assembly attendance</li>
-                  <li>LAD constituency fund utilisation</li>
-                  <li>Declared criminal cases (election affidavits)</li>
-                  <li>Contractors with blacklist flags on ward tenders</li>
-                </ul>
-              </div>
-              <div>
-                <p className="text-white/70 font-medium mb-1">What&apos;s not counted</p>
-                <ul className="space-y-0.5 list-disc list-inside">
-                  <li>Road or drainage quality</li>
-                  <li>Corporator performance</li>
-                  <li>Service delivery or complaints resolved</li>
-                </ul>
-              </div>
-              <p className="text-white/30 text-[10px] pt-1 border-t border-white/10">Sources: Myneta.info, Karnataka assembly records, KPPP tender portal. Score reflects available data only.</p>
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
-
 export function WardGrade(props: Props) {
   const [open, setOpen] = useState(false)
-  const result = computeScore(props)
-  if (!result) return null
 
-  const { score, dimensions, dataPoints } = result
-  const { bar, text } = scoreColor(score)
-  const tone = getCity(props.cityId).tone
-  const scoreWord = tone === "transparency" ? "transparency" : "accountability"
+  if (props.settled === false) {
+    return (
+      <div aria-busy="true" className="mx-5 mb-3">
+        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Evidence snapshot</p>
+        <div className="mt-1.5 border-t border-ink/15">
+          {Array.from({ length: VISIBLE_ROWS }, (_, index) => (
+            <div key={index} aria-hidden="true" className="flex h-[3.5rem] items-center justify-between gap-4 border-b border-ink/15">
+              <div className="space-y-1.5">
+                <div className="h-3 w-28 bg-ink/10 animate-pulse" />
+                <div className="h-2.5 w-40 bg-ink/10 animate-pulse" />
+              </div>
+              <div className="h-4 w-10 bg-ink/10 animate-pulse" />
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const evidence = availableEvidence(props)
+  if (evidence.length === 0) return null
+
+  const rows = open ? evidence : evidence.slice(0, VISIBLE_ROWS)
+  const hidden = evidence.length - VISIBLE_ROWS
 
   return (
-    <div className="mt-1">
-      {/* Compact bar — always visible */}
-      <div className="flex items-center gap-1.5">
-        <button
-          onClick={() => setOpen(v => !v)}
-          className="flex items-center gap-2 group flex-1 text-left"
-        >
-          <div className="h-1.5 w-20 rounded-full bg-white/10 overflow-hidden shrink-0">
-            <div className={`h-full rounded-full transition-all ${bar}`} style={{ width: `${score}%` }} />
+    <div className="mx-5 mb-3">
+      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">
+        Evidence snapshot · {evidence.length} measure{evidence.length === 1 ? "" : "s"}
+      </p>
+      <dl className="mt-1.5 border-t border-ink/15">
+        {rows.map(item => (
+          <div key={item.label} className="flex items-baseline justify-between gap-4 border-b border-ink/15 py-2">
+            <dt className="min-w-0">
+              <span className="block text-sm text-ink/80">{item.label}</span>
+              <span className="block text-xs leading-snug text-ink/60">{item.note}</span>
+            </dt>
+            {/* Values stay ink: the headline above is the record's one red. */}
+            <dd className="shrink-0 font-mono text-base font-semibold tabular-nums text-ink">
+              {item.value}
+            </dd>
           </div>
-          <span className={`text-[11px] font-semibold ${text}`}>{score}<span className="text-white/30 font-normal">/100</span></span>
-          <span className="text-white/20 text-[10px] group-hover:text-white/40 transition-colors">
-            {scoreWord} {open ? "▲" : "▼"}
-          </span>
+        ))}
+      </dl>
+      {hidden > 0 && (
+        <button
+          type="button"
+          onClick={() => setOpen(value => !value)}
+          aria-expanded={open}
+          className="flex min-h-11 w-full items-center justify-between text-left text-xs text-ink/60 hover:text-ink"
+        >
+          <span>{open ? "Show fewer measures" : `Show ${hidden} more measure${hidden === 1 ? "" : "s"}`}</span>
+          <span aria-hidden="true">{open ? "−" : "+"}</span>
         </button>
-        <InfoTip />
-      </div>
-
-      {/* Expanded breakdown */}
-      {open && (
-        <div className="mt-2 rounded-lg bg-white/5 border border-white/10 p-3 space-y-2">
-          <p className="text-white/40 text-[10px] uppercase tracking-wide font-medium mb-1">
-            Score breakdown &middot; {dataPoints} data point{dataPoints > 1 ? "s" : ""}
-          </p>
-          {dimensions.map((d) => {
-            const dc = scoreColor(d.score)
-            return (
-              <div key={d.label}>
-                <div className="flex items-center justify-between mb-0.5">
-                  <span className="text-white/60 text-[11px]">{d.label}</span>
-                  <span className={`text-[11px] font-semibold ${dc.text}`}>{d.score}/100</span>
-                </div>
-                <div className="h-1 w-full rounded-full bg-white/10 overflow-hidden">
-                  <div className={`h-full rounded-full ${dc.bar}`} style={{ width: `${d.score}%` }} />
-                </div>
-                {d.note && <p className="text-white/30 text-[10px] mt-0.5">{d.note}</p>}
-              </div>
-            )
-          })}
-          <p className="text-white/20 text-[10px] pt-1 border-t border-white/10">
-            Sources: Myneta affidavits, assembly records, KPPP tender data.{" "}
-            <span className="text-white/30">Score reflects available data only — not a comprehensive ward assessment.</span>
-          </p>
-        </div>
       )}
     </div>
   )

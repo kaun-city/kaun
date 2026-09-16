@@ -2,17 +2,43 @@ import { openai } from "@ai-sdk/openai"
 import { generateText, tool, zodSchema, stepCountIs } from "ai"
 import { z } from "zod"
 import { createClient } from "@supabase/supabase-js"
-import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { enforceRateLimit, makeAiLimiter } from "@/lib/ratelimit"
+import { BBMP_198_RECORDS_ATTRIBUTABLE } from "@/lib/ward-data-quality"
+import { publicSupabaseConfig } from "@/lib/supabase-config"
+import {
+  attributableHistoricalWards, gbaWardKey, indexGbaCrosswalk, sourceWardNosForLegacyWard,
+  type GbaCrosswalkArtifact, type LegacySourceWardRow,
+} from "@/lib/gba-crosswalk"
+// Bundled server-side (no relative fetch from a route handler). These are the
+// same versioned public assets the client reads.
+import legacyWardCrosswalk from "@/public/bengaluru-ward-crosswalk.json"
+import gbaWardCrosswalk from "@/public/bengaluru-gba-369-to-datameet-243.json"
+import { attributableBbmp198Wards, describeFormerWardCommittees, type FormerWardCommittee } from "@/lib/bbmp198-crosswalk"
+import { BBMP198_INDEX } from "@/lib/bbmp198-server"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
 
+const LEGACY_SOURCE_WARDS = (legacyWardCrosswalk as { rows: LegacySourceWardRow[] }).rows
+const GBA_CROSSWALK_INDEX = indexGbaCrosswalk(gbaWardCrosswalk as GbaCrosswalkArtifact)
+
+/** Former 243 wards whose ward-tagged records may be attributed to the current GBA ward. */
+function recordWardsFor(c: AskKaunRequest["ward_context"]) {
+  if (c.boundary_system !== "gba-369-2025" || c.gba_corporation_id == null || c.gba_ward_no == null) return []
+  const row = GBA_CROSSWALK_INDEX.get(gbaWardKey(c.gba_corporation_id, c.gba_ward_no))
+  return row ? attributableHistoricalWards(row.historical_wards) : []
+}
+
 export interface AskKaunRequest {
   question: string
   ward_context: {
-    ward_no: number
+    ward_no: number | null
     ward_name: string
     assembly_constituency: string
+    boundary_system?: "gba-369-2025" | "datameet-243"
+    gba_corporation_id?: number | null
+    gba_ward_no?: number | null
+    historical_wards?: Array<{ ward_no: number; ward_name: string; current_share: number }>
     corporator_name?: string | null
     corporator_party?: string | null
     mla_name?: string | null
@@ -21,7 +47,8 @@ export interface AskKaunRequest {
     mla_questions_asked?: number | null
     mla_lad_utilization_pct?: number | null
     mla_criminal_cases?: number | null
-    committee_meetings?: number | null
+    /** Former BBMP-198 ward committees covering the ward; counts stay per committee. */
+    former_ward_committees?: FormerWardCommittee[]
     signal_count?: number | null
     bus_stop_count?: number | null
     pothole_complaints?: number | null
@@ -43,19 +70,33 @@ export interface AskKaunRequest {
 }
 
 function buildContext(c: AskKaunRequest["ward_context"]): string {
-  const lines = [`Ward: ${c.ward_name} (Ward #${c.ward_no}), Assembly Constituency: ${c.assembly_constituency}`]
+  const currentIdentity = c.boundary_system === "gba-369-2025"
+    ? `${c.ward_name} (current GBA ward ${c.gba_corporation_id}:${c.gba_ward_no})`
+    : `${c.ward_name} (historical ward #${c.ward_no})`
+  const lines = [`Ward: ${currentIdentity}, Assembly Constituency: ${c.assembly_constituency}`]
+  if (c.historical_wards?.length) {
+    lines.push(`Historical data provenance: ${c.historical_wards.map(ref => `${ref.ward_name} #${ref.ward_no} (${Math.round(ref.current_share * 100)}% of current ward area)`).join(", ")}`)
+  }
+  const recordWards = recordWardsFor(c)
+  if (recordWards.length) {
+    lines.push(`Former wards with attributable ward-level records (>=10% overlap; the only ward numbers to use for ward_contractors): ${recordWards.map(ref => `${ref.ward_name} #${ref.ward_no}`).join(", ")}`)
+  }
   if (c.corporator_name)             lines.push(`Corporator: ${c.corporator_name}${c.corporator_party ? ` (${c.corporator_party})` : ""}`)
   if (c.mla_name)                    lines.push(`MLA: ${c.mla_name}${c.mla_party ? ` (${c.mla_party})` : ""}`)
   if (c.mla_attendance_pct != null)  lines.push(`MLA attendance: ${c.mla_attendance_pct}%`)
   if (c.mla_questions_asked != null) lines.push(`MLA questions asked: ${c.mla_questions_asked}`)
   if (c.mla_lad_utilization_pct != null) lines.push(`MLA LAD fund utilization: ${c.mla_lad_utilization_pct}%`)
   if (c.mla_criminal_cases != null)  lines.push(`MLA criminal cases (EC affidavit): ${c.mla_criminal_cases}`)
-  if (c.committee_meetings != null)  lines.push(`Ward committee meetings (2020-22): ${c.committee_meetings}/56`)
+  if (BBMP_198_RECORDS_ATTRIBUTABLE) {
+    const committees = describeFormerWardCommittees(c.former_ward_committees)
+    if (committees.length) lines.push(`Ward committee meetings (per committee; never add them up): ${committees.join("; ")}`)
+  }
   if (c.signal_count != null)        lines.push(`Traffic signals: ${c.signal_count} (city avg: 5.5)`)
-  if (c.bus_stop_count != null)      lines.push(`BMTC bus stops: ${c.bus_stop_count} (city avg: 155)`)
-  if (c.pothole_complaints != null)  lines.push(`Pothole complaints: ${c.pothole_complaints}`)
-  if (c.ward_spend_total_lakh != null) lines.push(`BBMP ward spend: Rs ${c.ward_spend_total_lakh} lakh (2018-2023)`)
-  if (c.ward_spend_roads_pct != null) lines.push(`Roads share of spend: ${c.ward_spend_roads_pct.toFixed(1)}%`)
+  if (c.bus_stop_count != null)      lines.push(`BMTC bus stops (physical stops, from ward_bus_stops): ${c.bus_stop_count}`)
+  // Recorded on BBMP's 198-ward map and allocated to this ward by map overlap.
+  if (c.pothole_complaints != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`Pothole complaints, Fix My Street 2022 (estimated from BBMP 198-ward records by map overlap): ${Math.round(c.pothole_complaints)}`)
+  if (c.ward_spend_total_lakh != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`BBMP ward works spend 2018-2023 (estimated from BBMP 198-ward records by map overlap): ₹${Math.round(c.ward_spend_total_lakh)} lakh`)
+  if (c.ward_spend_roads_pct != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`Roads share of spend: ${c.ward_spend_roads_pct.toFixed(1)}%`)
   if (c.grievance_count != null)     lines.push(`BBMP grievances: ${c.grievance_count}`)
   // Amenities (OSM)
   if (c.hospitals != null)           lines.push(`Hospitals: ${c.hospitals}`)
@@ -75,29 +116,55 @@ function makeTools(supabase: any) {
     rank_wards: tool({
       description: "Get top or bottom N wards across Bengaluru for a specific metric. Use for questions like 'which ward has the most signals', 'worst MLA attendance', 'where are the most potholes'.",
       inputSchema: zodSchema(z.object({
+        // bus_stops ranks historical 243 wards by physical BMTC stops (ward_bus_stops, never ward_infra_stats).
+        // committee_meetings ranks former BBMP-198 ward committees, not current wards.
         metric: z.enum(["signals", "bus_stops", "committee_meetings", "mla_attendance", "lad_utilization", "criminal_cases", "hospitals", "pharmacies", "atms", "public_toilets", "ev_charging", "metro_stations"]),
         order: z.enum(["top", "bottom"]).describe("top = highest/best, bottom = lowest/worst"),
         limit: z.number().min(1).max(10).default(5),
       })),
       execute: async ({ metric, order, limit }): Promise<unknown> => {
         const asc = order === "bottom"
-        if (metric === "signals" || metric === "bus_stops") {
-          const col = metric === "signals" ? "signal_count" : "bus_stop_count"
+        if (metric === "signals") {
           const { data } = await supabase
             .from("ward_infra_stats")
-            .select("ward_no, ward_name, signal_count, bus_stop_count")
-            .not(col, "is", null)
-            .order(col, { ascending: asc })
+            .select("ward_no, ward_name, signal_count")
+            .not("signal_count", "is", null)
+            .order("signal_count", { ascending: asc })
             .limit(limit)
           return data ?? []
         }
+        if (metric === "bus_stops") {
+          // Wards with no stop have no ward_bus_stops row; count them as 0 so
+          // "fewest bus stops" can find them.
+          const [wardsRes, stopsRes] = await Promise.all([
+            supabase.from("wards").select("ward_no, ward_name").eq("city_id", "bengaluru"),
+            supabase.from("ward_bus_stops").select("ward_no, stop_count, total_trips"),
+          ])
+          const stops = new Map(((stopsRes.data ?? []) as Array<{ ward_no: number; stop_count: number; total_trips: number }>).map(row => [row.ward_no, row]))
+          return ((wardsRes.data ?? []) as Array<{ ward_no: number; ward_name: string }>)
+            .map(ward => ({
+              ward_no: ward.ward_no,
+              ward_name: ward.ward_name,
+              bus_stop_count: stops.get(ward.ward_no)?.stop_count ?? 0,
+              scheduled_daily_arrivals: stops.get(ward.ward_no)?.total_trips ?? 0,
+            }))
+            .sort((a, b) => (asc ? a.bus_stop_count - b.bus_stop_count : b.bus_stop_count - a.bus_stop_count) || a.ward_no - b.ward_no)
+            .slice(0, limit)
+        }
         if (metric === "committee_meetings") {
+          if (!BBMP_198_RECORDS_ATTRIBUTABLE) return []
           const { data } = await supabase
             .from("ward_committee_meetings")
-            .select("ward_no, ward_name, meetings_count")
+            .select("ward_no, ward_name, meetings_count, period")
             .order("meetings_count", { ascending: asc })
             .limit(limit)
-          return data ?? []
+          // These are committees of BBMP's 198-ward map (2010 delimitation).
+          // Their numbers are not DataMeet-243 or current GBA ward numbers.
+          return {
+            map: "BBMP 198-ward map (2010 delimitation) ward committees; ward numbers are not current or DataMeet-243 wards",
+            committees: ((data ?? []) as Array<{ ward_no: number; ward_name: string; meetings_count: number; period: string }>)
+              .map(row => ({ bbmp198_ward_no: row.ward_no, committee: row.ward_name, meetings_count: row.meetings_count, period: row.period })),
+          }
         }
         if (["hospitals", "pharmacies", "atms", "public_toilets", "ev_charging", "metro_stations"].includes(metric)) {
           const { data } = await supabase
@@ -142,15 +209,22 @@ function makeTools(supabase: any) {
           const ward = wardRes.data as { ward_no: number; ward_name: string; assembly_constituency: string } | null
           if (!ward) { results.push({ searched: name, found: false }); continue }
 
-          const [infra, report, meetings, amenities] = await Promise.all([
-            supabase.from("ward_infra_stats").select("signal_count, bus_stop_count").eq("ward_no", ward.ward_no).single(),
+          // ward_committee_meetings is keyed on the 198-ward map: name the
+          // committees that materially overlap this 243 ward, never its number.
+          const committeeWards = BBMP198_INDEX.get(ward.ward_no)
+          const committeeWardNos = committeeWards ? attributableBbmp198Wards(committeeWards).map(ref => ref.ward_no) : []
+          const [infra, report, meetings, amenities, busStops] = await Promise.all([
+            supabase.from("ward_infra_stats").select("signal_count").eq("ward_no", ward.ward_no).single(),
             supabase.from("rep_report_cards").select("attendance_pct, lad_utilization_pct, criminal_cases").eq("constituency", ward.assembly_constituency).eq("role", "MLA").single(),
-            supabase.from("ward_committee_meetings").select("meetings_count").eq("ward_no", ward.ward_no).single(),
+            BBMP_198_RECORDS_ATTRIBUTABLE && committeeWardNos.length
+              ? supabase.from("ward_committee_meetings").select("ward_no, ward_name, meetings_count, period").in("ward_no", committeeWardNos)
+              : Promise.resolve({ data: [] }),
             supabase.from("ward_amenities").select("hospitals, clinics, pharmacies, atms, banks, public_toilets, ev_charging, metro_stations").eq("ward_no", ward.ward_no).single(),
+            supabase.from("ward_bus_stops").select("stop_count").eq("ward_no", ward.ward_no).maybeSingle(),
           ])
-          const i = infra.data as { signal_count: number; bus_stop_count: number } | null
+          const i = infra.data as { signal_count: number } | null
           const r = report.data as { attendance_pct: number; lad_utilization_pct: number; criminal_cases: number } | null
-          const m = meetings.data as { meetings_count: number } | null
+          const m = (meetings.data ?? []) as Array<{ ward_no: number; ward_name: string; meetings_count: number; period: string }>
           const a = amenities.data as { hospitals: number; clinics: number; pharmacies: number; atms: number; banks: number; public_toilets: number; ev_charging: number; metro_stations: number } | null
 
           results.push({
@@ -158,11 +232,14 @@ function makeTools(supabase: any) {
             ward_no: ward.ward_no,
             assembly_constituency: ward.assembly_constituency,
             signal_count: i?.signal_count ?? null,
-            bus_stop_count: i?.bus_stop_count ?? null,
+            bus_stop_count: i ? (busStops.data as { stop_count: number } | null)?.stop_count ?? 0 : null,
             mla_attendance_pct: r?.attendance_pct ?? null,
             lad_utilization_pct: r?.lad_utilization_pct ?? null,
             criminal_cases: r?.criminal_cases ?? null,
-            committee_meetings: m?.meetings_count ?? null,
+            former_ward_committees: committeeWardNos
+              .map(wardNo => m.find(row => row.ward_no === wardNo))
+              .filter((row): row is (typeof m)[number] => !!row)
+              .map(row => ({ bbmp198_ward_no: row.ward_no, committee: row.ward_name, meetings_count: row.meetings_count, period: row.period })),
             hospitals: a?.hospitals ?? null,
             clinics: a?.clinics ?? null,
             pharmacies: a?.pharmacies ?? null,
@@ -235,31 +312,38 @@ function makeTools(supabase: any) {
     }),
 
     ward_contractors: tool({
-      description: "Get contractors active in a specific ward. Use for 'who are the contractors in my ward', 'which companies work in ward X'.",
+      description: "Get contractors active in a historical DataMeet-243 ward. Use for 'who are the contractors in my ward', 'which companies work in ward X'. For a current GBA ward, call it once per former ward listed as having attributable ward-level records.",
       inputSchema: zodSchema(z.object({
-        ward_no: z.number().describe("Ward number to look up"),
+        ward_no: z.number().describe("Historical DataMeet-243 ward number (from find_ward or the attributable former wards in context)"),
       })),
       execute: async ({ ward_no }): Promise<unknown> => {
+        // contractor_profiles.wards holds BBMP-Final-225 numbers. Bridge through
+        // the same >= 10% material-overlap pairs as prod ward_crosswalk /
+        // v_work_orders_243, never a raw 243 number or "any shared area".
+        const sourceWardNos = sourceWardNosForLegacyWard(LEGACY_SOURCE_WARDS, ward_no)
+        if (!sourceWardNos.length) return { datameet243_ward_no: ward_no, bbmp225_source_wards: [], contractors: [] }
         const { data } = await supabase
           .from("contractor_profiles")
           .select("canonical_name, aliases, total_contracts, total_value_lakh, avg_deduction_pct, ward_count, blacklist_flags, is_govt_entity")
-          .contains("wards", [ward_no])
+          .eq("city_id", "bengaluru")
+          .overlaps("wards", sourceWardNos)
           .order("total_value_lakh", { ascending: false })
           .limit(10)
-        return data ?? []
+        return { datameet243_ward_no: ward_no, bbmp225_source_wards: sourceWardNos, contractors: data ?? [] }
       },
     }),
   }
 }
 
 export async function POST(req: Request) {
-  const { success, reset } = await makeAiLimiter().limit(getIP(req))
-  if (!success) return rateLimitResponse(reset)
+  const limited = await enforceRateLimit(makeAiLimiter, req, "Ask Kaun")
+  if (limited) return limited
 
   try {
+    const { url, anonKey } = publicSupabaseConfig()
     const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+      url,
+      process.env.SUPABASE_SERVICE_ROLE_KEY ?? anonKey
     )
 
     const body = await req.json()
@@ -271,11 +355,11 @@ export async function POST(req: Request) {
     const context = buildContext(ward_context)
 
     const { text } = await generateText({
-      model: openai("gpt-4o"),
+      model: openai(process.env.OPENAI_ASK_KAUN_MODEL ?? "gpt-4.1-mini"),
       tools: makeTools(supabase),
       stopWhen: stepCountIs(4),
       system: `You are Kaun, a civic accountability assistant for Bengaluru, India.
-You have real data about the user's selected location AND tools to query all 243 historical Bengaluru data wards.
+You have current GBA ward identity plus explicitly-labelled estimates derived from historical 243-ward records. Never describe an historical estimate as a current-ward measurement.
 
 Bengaluru civic structure:
 - Roads/potholes: BBMP (ward Corporator is the elected contact) — call 1533 or bbmp.gov.in

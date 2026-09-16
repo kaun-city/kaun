@@ -34,11 +34,11 @@ function Metric({
 }: { label: string; value: string | null; benchmark?: string }) {
   return (
     <div className="space-y-0.5">
-      <p className="text-white/30 text-[10px] uppercase tracking-wider">{label}</p>
+      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">{label}</p>
       {value === null
-        ? <p className="text-white/20 text-xs italic">N/A (Minister)</p>
-        : <p className="text-white text-lg font-semibold">{value}</p>}
-      {value !== null && benchmark && <p className="text-white/25 text-[10px]">{benchmark}</p>}
+        ? <p className="text-ink/60 text-xs italic">N/A (Minister)</p>
+        : <p className="text-ink text-lg font-semibold font-mono tabular-nums">{value}</p>}
+      {value !== null && benchmark && <p className="text-ink/60 text-xs">{benchmark}</p>}
     </div>
   )
 }
@@ -56,19 +56,19 @@ export function ActivityCard({
 
   if (view.kind === "none") {
     return (
-      <div className="rounded-xl bg-white/5 p-4">
-        <p className="text-white/50 text-sm">No activity record loaded for this member yet.</p>
+      <div className="bg-paper border border-ink/15 p-4">
+        <p className="text-ink/75 text-sm">No activity record loaded for this member yet.</p>
       </div>
     )
   }
 
   if (view.kind === "sitting-only") {
     return (
-      <div className="rounded-xl bg-white/5 p-4 space-y-2">
-        <p className="text-white/50 text-sm">
+      <div className="bg-paper border border-ink/15 p-4 space-y-2">
+        <p className="text-ink/75 text-sm">
           No completed session on record for this member yet.
         </p>
-        <p className="text-white/35 text-[11px] leading-snug">
+        <p className="text-ink/60 text-xs leading-snug">
           Parliament is sitting now ({view.sitting.session_label ?? "current session"}) and the
           attendance register for it is still open. Kaun shows a session&apos;s figures once it has
           ended — a part-signed register is not an attendance record.
@@ -82,9 +82,9 @@ export function ActivityCard({
   const excluded = row.metrics_excluded
 
   return (
-    <div className="rounded-xl bg-white/5 p-4 space-y-3">
+    <div className="bg-paper border border-ink/15 p-4 space-y-3">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-white/50 text-[10px] uppercase tracking-wider">
+        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/75">
           {isTerm ? "This term" : "Latest completed session"}
         </p>
         <FreshnessBadge
@@ -116,13 +116,13 @@ export function ActivityCard({
       </div>
 
       {excluded && row.metrics_excluded_reason && (
-        <p className="text-white/35 text-[11px] leading-snug border-t border-white/5 pt-2.5">
+        <p className="text-ink/70 text-xs leading-snug border-t border-ink/10 pt-2.5">
           {row.metrics_excluded_reason}
         </p>
       )}
 
       {!isTerm && (
-        <p className="text-white/35 text-[11px] leading-snug border-t border-white/5 pt-2.5">
+        <p className="text-ink/70 text-xs leading-snug border-t border-ink/10 pt-2.5">
           These are one session&rsquo;s figures, not the term&rsquo;s. PRS publishes no
           term-cumulative record for this member, so Kaun shows the most recent session that has
           ended rather than adding sessions together into a total PRS did not publish.
@@ -133,7 +133,7 @@ export function ActivityCard({
         </p>
       )}
 
-      <p className="text-white/15 text-[10px]">Source: {row.data_source}</p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">Source: {row.data_source}</p>
     </div>
   )
 }

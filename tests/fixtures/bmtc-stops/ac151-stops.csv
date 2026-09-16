@@ -1,0 +1,4 @@
+Stop Name,Latitude,Longitude,Num trips in stop,Boothcode,Routes with num trips
+Border Circle,13.05000000,77.60000000,45,29151007,{'KBS-1': 45}
+KR Puram Station,13.00000000,77.69000000,300,29151008,"{'500-D': 150, 'KBS-8': 150}"
+"Hebbal ""Flyover"", East",13.03000000,77.59000000,10,29151009,{'X': 10}

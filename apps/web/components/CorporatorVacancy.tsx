@@ -32,8 +32,12 @@ interface Props {
  * ribbon. An explicit width opts out of shrink-to-fit, and -translate-x-1/2
  * still centres it.
  *
- * At full width the card also reached under the "New ward?" pill, which is
- * 16px into its bottom edge on a phone, so below sm it sits a notch higher.
+ * At full width the card also reached under the "Old ward numbers" button,
+ * which is 16px into its bottom edge on a phone, so below sm it sits a notch
+ * higher.
+ *
+ * The count is ink, not danger: the sentence beside it carries the alarm, and
+ * red is kept for the single most alarming finding on a screen.
  */
 export function CorporatorVacancy({ cityId }: Props) {
   const [days, setDays] = useState(() => daysSince(VACANCY_START))
@@ -46,27 +50,22 @@ export function CorporatorVacancy({ cityId }: Props) {
   if (cityId !== "bengaluru") return null
 
   return (
-    <div className="absolute bottom-40 sm:bottom-36 left-1/2 -translate-x-1/2 z-[900] pointer-events-auto">
-      <div className="
-        flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl
-        bg-[#111]/90 backdrop-blur-md border border-red-500/20
-        shadow-xl shadow-red-500/5
-        w-[min(360px,92vw)] sm:w-[min(420px,90vw)]
-      ">
-        <div className="shrink-0 flex flex-col items-center justify-center w-14 h-11 sm:w-16 sm:h-14 rounded-lg sm:rounded-xl bg-red-500/10">
-          <span className="text-red-400 text-sm sm:text-xl font-bold leading-none tabular-nums">
+    <div className="absolute bottom-[10.5rem] sm:bottom-40 left-1/2 -translate-x-1/2 z-[900] pointer-events-auto">
+      <div className="flex items-stretch w-[min(360px,calc(100vw-2rem))] sm:w-[min(420px,90vw)] border border-ink/55 bg-paper">
+        <div className="shrink-0 flex flex-col items-center justify-center min-w-[4.5rem] px-2 border-r border-ink/20">
+          <span className="font-mono text-lg sm:text-xl font-semibold leading-none tabular-nums text-ink">
             {formatNumber(days)}
           </span>
-          <span className="text-red-400/60 text-[9px] uppercase tracking-wider mt-0.5">days</span>
+          <span className="mt-1 font-mono text-[11px] uppercase tracking-[0.1em] text-ink/60">days</span>
         </div>
-        <div className="min-w-0">
-          <p className="text-white/80 text-xs font-semibold leading-snug">
+        <div className="min-w-0 px-3 py-2">
+          <p className="text-[13px] font-semibold leading-snug text-ink">
             No elected corporator in your ward
           </p>
-          <p className="sm:hidden text-white/35 text-[10px] leading-snug mt-0.5">
+          <p className="sm:hidden mt-0.5 text-xs leading-snug text-ink/60">
             Council dissolved Sept 2020
           </p>
-          <p className="hidden sm:block text-white/40 text-[10px] leading-snug mt-0.5">
+          <p className="hidden sm:block mt-0.5 text-xs leading-snug text-ink/60">
             BBMP&apos;s last elected council dissolved Sept 2020. Bengaluru&apos;s ward areas are run by unelected administrators.
           </p>
         </div>

@@ -90,8 +90,8 @@ const REPO = "https://github.com/kaun-city/kaun/blob/master"
 // surface read the same fields. Geometry is never selected — it is megabytes per
 // seat and the wiki does not render maps.
 const C_COLS = "pc_code,st_code,pc_no,state_name,pc_name,pc_name_hi,reserved_for,reserved_source,wikidata_qid,geom_source,data_source,updated_at"
-const MP_COLS = "id,mpsno,house,term_label,pc_code,state_name,constituency_label,name,party_abbr,party_full,gender,age,no_of_terms,qualification,profession,status,is_minister,minister_note,profile_url,data_source,updated_at"
-const AFF_COLS = "id,pc_code,election,candidate_name,party_abbr,age,self_profession,education_category,education_detail,criminal_cases,total_assets_inr,liabilities_inr,profile_url,data_source,updated_at"
+const MP_COLS = "id,mpsno,house,term_label,pc_code,state_name,constituency_label,name,party_abbr,party_full,gender,age,no_of_terms,profession,status,is_minister,minister_note,profile_url,data_source,updated_at"
+const AFF_COLS = "id,pc_code,mp_id,election,candidate_name,party_abbr,age,self_profession,education_category,education_detail,criminal_cases,total_assets_inr,liabilities_inr,profile_url,data_source,updated_at"
 const ACT_COLS = "id,mp_id,period_kind,session_no,session_label,sittings_held,signed_days,attendance_pct,questions_asked,debates,private_member_bills,committees,metrics_excluded,metrics_excluded_reason,data_source"
 const MPLADS_COLS = "id,pc_code,source,house,term_label,allocated_inr,expenditure_inr,unspent_inr,utilization_pct,works_recommended,works_sanctioned,works_completed,captured_at,data_source"
 const PROJ_COLS = "project_code,legacy_ocms_code,pmgid,project_name,ministry,sector,agency,state_raw,st_code,is_multi_state,first_seen_month,last_seen_month,is_ongoing"
@@ -187,7 +187,6 @@ export function formatCrore(cr) {
   if (cr === null || cr === undefined || !Number.isFinite(Number(cr))) return "—"
   const v = Number(cr)
   const abs = Math.abs(v)
-  if (abs >= 1e5) return `₹${(v / 1e5).toFixed(2)} L Cr`
   if (abs >= 100) return `₹${groupIndian(v)} Cr`
   return `₹${v.toFixed(2)} Cr`
 }
@@ -429,6 +428,22 @@ export function vacancyKind(former) {
   return "vacant"
 }
 
+/**
+ * Which of a seat's affidavit to publish, mirroring apps/web/lib/india/affidavit.ts.
+ *
+ * The affidavit is the 2024 general-election winner's; mp_id names who filed
+ * it. With a sitting member it is shown only if they filed it — Wayanad's is
+ * Rahul Gandhi's and Nanded's the late Vasantrao Chavan's, and neither is the
+ * sitting member's. A vacant seat's page names the candidate on the affidavit,
+ * so it keeps showing it. An affidavit not yet tied to any member is withheld.
+ */
+export function seatAffidavit(affidavit, mp) {
+  if (!affidavit) return { affidavit: null, filedByPredecessor: false }
+  if (!mp) return { affidavit, filedByPredecessor: false }
+  if (affidavit.mp_id != null && affidavit.mp_id === mp.id) return { affidavit, filedByPredecessor: false }
+  return { affidavit: null, filedByPredecessor: affidavit.mp_id != null }
+}
+
 export function renderIndex({ constituencies, mpByPc, formerByPc, affidavitByPc, crosswalk, coverage, unresolvedMps }) {
   const byState = new Map()
   for (const c of constituencies) {
@@ -523,7 +538,7 @@ export function renderIndex({ constituencies, mpByPc, formerByPc, affidavitByPc,
     for (const c of seats) {
       const cw = crosswalk.byPc.get(c.pc_code)
       const mp = mpByPc.get(c.pc_code)
-      const aff = affidavitByPc.get(c.pc_code)
+      const aff = seatAffidavit(affidavitByPc.get(c.pc_code), mp).affidavit
       const reserved = reservedLabel(c.reserved_for, cw?.reserved_status)
       const mpCell = mp
         ? `${cell(mp.name)}${mp.is_minister ? " ·&nbsp;minister" : ""}`
@@ -567,7 +582,7 @@ export function renderIndex({ constituencies, mpByPc, formerByPc, affidavitByPc,
 // seat page
 // ---------------------------------------------------------------------------
 
-export function renderSeat({ c, cw, mp, former = [], affidavit, activity, mplads, projects, reportMonth, crosswalk, staleByCode, unresolvedCount = 0 }) {
+export function renderSeat({ c, cw, mp, former = [], affidavit, affidavitFiledByPredecessor = false, activity, mplads, projects, reportMonth, crosswalk, staleByCode, unresolvedCount = 0 }) {
   const reserved = reservedLabel(c.reserved_for, cw?.reserved_status)
   const acs = cw?.acs ?? []
   const lines = []
@@ -700,7 +715,6 @@ export function renderSeat({ c, cw, mp, former = [], affidavit, activity, mplads
     if (mp.no_of_terms != null) lines.push(`| Terms served | ${mp.no_of_terms} |`)
     if (mp.age != null) lines.push(`| Age | ${mp.age} |`)
     if (mp.gender) lines.push(`| Gender | ${cell(mp.gender)} |`)
-    if (mp.qualification) lines.push(`| Qualification | ${cell(mp.qualification)} |`)
     if (mp.profession) lines.push(`| Profession | ${cell(mp.profession)} |`)
     if (mp.is_minister) lines.push(`| Minister | yes${mp.minister_note ? ` — ${cell(mp.minister_note)}` : ""} |`)
     if (mp.constituency_label && mp.constituency_label !== c.pc_name) {
@@ -721,7 +735,11 @@ export function renderSeat({ c, cw, mp, former = [], affidavit, activity, mplads
   lines.push("")
   lines.push("## Declared record")
   lines.push("")
-  if (!affidavit) {
+  if (!affidavit && affidavitFiledByPredecessor) {
+    lines.push("**No affidavit on record for this member.** They won the seat at a by-election. The seat's")
+    lines.push("Lok Sabha 2024 nomination affidavit was filed by the previous member, so it describes them and is")
+    lines.push("not reproduced here. By-election affidavits are not loaded yet.")
+  } else if (!affidavit) {
     lines.push(AFFIDAVIT_PENDING)
     lines.push("")
     lines.push(`The underlying declarations are public at [myneta.info](https://myneta.info) in the meantime.`)
@@ -1264,7 +1282,7 @@ async function main() {
     const cw = crosswalk.byPc.get(c.pc_code) ?? null
     const mp = mpByPc.get(c.pc_code) ?? null
     const former = formerByPc.get(c.pc_code) ?? []
-    const affidavit = affidavitByPc.get(c.pc_code) ?? null
+    const { affidavit, filedByPredecessor } = seatAffidavit(affidavitByPc.get(c.pc_code) ?? null, mp)
     const activity = mp ? (activityByMp.get(mp.id) ?? []) : []
     const mplads = mpladsByPc.get(c.pc_code) ?? []
     const projects = (trackedByState.get(c.st_code) ?? []).slice(0, PC_PROJECTS_LIMIT)
@@ -1281,7 +1299,7 @@ async function main() {
     writeFileSync(
       join(SEATS_DIR, seatFilename(c)),
       renderSeat({
-        c, cw, mp, former, affidavit, activity, mplads, projects, reportMonth, crosswalk, staleByCode,
+        c, cw, mp, former, affidavit, affidavitFiledByPredecessor: filedByPredecessor, activity, mplads, projects, reportMonth, crosswalk, staleByCode,
         unresolvedCount: unresolvedMps.length,
       }),
     )

@@ -1,0 +1,342 @@
+import type { PinResult } from "@/lib/types"
+
+export type EvidenceState = "verified" | "reported" | "conflicting" | "unknown"
+export type ProjectRecordKind = "start" | "deadline" | "scope" | "cost" | "land" | "court" | "accountability"
+
+export interface CivicProjectSource {
+  id: string
+  title: string
+  publisher: string
+  url: string
+  publishedOn: string | null
+  kind: "official" | "court" | "news"
+}
+
+export interface CivicProjectMetric {
+  label: string
+  value: string
+  note: string
+  evidence: EvidenceState
+}
+
+export interface CivicProjectRecord {
+  id: string
+  date: string
+  dateLabel: string
+  kind: ProjectRecordKind
+  title: string
+  body: string
+  evidence: EvidenceState
+  sourceIds: string[]
+}
+
+export interface CivicProjectSignal {
+  id: string
+  label: string
+  value: string
+  explanation: string
+  evidence: EvidenceState
+  asOf: string | null
+  sourceIds: string[]
+}
+
+export interface CivicProject {
+  slug: string
+  cityId: string
+  title: string
+  shortTitle: string
+  routeName: string
+  projectType: string
+  road: string
+  status: "Delayed" | "In progress" | "Completed" | "Paused"
+  statusNote: string
+  ownerAgency: string
+  /** Short agency name used in compact labels (e.g. "KRDCL"). */
+  ownerAgencyShort: string
+  /** Latest publicly reported completion target, as displayed. */
+  nextTarget: string
+  /** One-line evidence summary shown on ward cards that link to the record. */
+  wardSignalNote: string
+  affectedWardNames: string[]
+  affectedWardLabels: string[]
+  summary: string
+  latestAsOf: string
+  alert: string
+  metrics: CivicProjectMetric[]
+  records: CivicProjectRecord[]
+  signals: CivicProjectSignal[]
+  sources: CivicProjectSource[]
+  suggestedQuestions: string[]
+}
+
+const varthurGunjur: CivicProject = {
+  slug: "varthur-gunjur-road",
+  cityId: "bengaluru",
+  title: "Varthur–Gunjur road corridor",
+  shortTitle: "Varthur–Gunjur corridor",
+  routeName: "Varthur Kodi to Gunjur",
+  projectType: "Road widening + elevated corridor",
+  road: "SH-35",
+  status: "Delayed",
+  statusNote: "Work began in 2019. The latest publicly reported target is December 2026.",
+  ownerAgency: "Karnataka Road Development Corporation Limited (KRDCL)",
+  ownerAgencyShort: "KRDCL",
+  nextTarget: "Dec 2026",
+  wardSignalNote: "KRDCL · ₹482–488 Cr reported · 14 properties pending",
+  affectedWardNames: ["varthur", "gunjur"],
+  affectedWardLabels: ["Varthur · East Ward 40", "Gunjur · East Ward 50"],
+  summary:
+    "A widening and elevated-corridor project whose scope, cost and completion date have changed repeatedly. The public record still does not identify the project contractor or disclose a project-level milestone and payment trail.",
+  latestAsOf: "2026-08-11",
+  alert: "The contractor’s identity and enforceable milestone schedule are not in the public record Kaun reviewed.",
+  metrics: [
+    {
+      label: "Reported cost",
+      value: "₹482–488 Cr",
+      note: "Two published figures; no public reconciliation found.",
+      evidence: "conflicting",
+    },
+    {
+      label: "Land acquisition",
+      value: "80%",
+      note: "Reported by KRDCL’s managing director in August 2026.",
+      evidence: "reported",
+    },
+    {
+      label: "Properties pending",
+      value: "14",
+      note: "TDR, cash-compensation, consent or documentation issues reported.",
+      evidence: "reported",
+    },
+    {
+      label: "Court stays found",
+      value: "0",
+      note: "The corridor-linked 2024 petition was disposed of without a stay.",
+      evidence: "verified",
+    },
+  ],
+  records: [
+    {
+      id: "work-started",
+      date: "2019-05-20",
+      dateLabel: "20 May 2019",
+      kind: "start",
+      title: "Work began",
+      body: "The project was reported as starting with an original completion target of November 2021.",
+      evidence: "reported",
+      sourceIds: ["toi-2026-08"],
+    },
+    {
+      id: "original-deadline",
+      date: "2021-11-01",
+      dateLabel: "November 2021",
+      kind: "deadline",
+      title: "Original deadline passed",
+      body: "The original 30-month completion window ended without the corridor being completed.",
+      evidence: "reported",
+      sourceIds: ["toi-2026-08", "toi-2024-12"],
+    },
+    {
+      id: "cabinet-expansion",
+      date: "2022-01-27",
+      dateLabel: "27 January 2022",
+      kind: "scope",
+      title: "Cabinet approved a larger elevated-corridor scope",
+      body: "The cabinet cleared a 1.92 km extension to an existing elevated corridor at an estimated ₹482 crore.",
+      evidence: "verified",
+      sourceIds: ["indian-express-2022-01"],
+    },
+    {
+      id: "court-order",
+      date: "2024-11-08",
+      dateLabel: "8 November 2024",
+      kind: "court",
+      title: "High Court recorded owners’ right to refuse TDR",
+      body: "The court disposed of the petitions after BBMP stated that owners refusing development rights would be acquired under the 2013 land-acquisition law. The order did not stay the project.",
+      evidence: "verified",
+      sourceIds: ["khc-2024"],
+    },
+    {
+      id: "july-2025-target",
+      date: "2024-12-30",
+      dateLabel: "December 2024",
+      kind: "deadline",
+      title: "Completion moved to July 2025",
+      body: "Reporting described land acquisition and utility shifting as continuing obstacles.",
+      evidence: "reported",
+      sourceIds: ["toi-2024-12"],
+    },
+    {
+      id: "realistic-2027",
+      date: "2025-11-26",
+      dateLabel: "November 2025",
+      kind: "deadline",
+      title: "KRDCL said 2027 was realistic",
+      body: "The expected completion moved again, this time into 2027.",
+      evidence: "reported",
+      sourceIds: ["toi-2025-11"],
+    },
+    {
+      id: "december-2026-target",
+      date: "2026-08-11",
+      dateLabel: "11 August 2026",
+      kind: "deadline",
+      title: "Target pulled forward to December 2026",
+      body: "At a review meeting, KRDCL directed the contractor to accelerate work. Its managing director reported 80% land acquisition and 14 properties still pending.",
+      evidence: "reported",
+      sourceIds: ["toi-2026-08"],
+    },
+  ],
+  signals: [
+    {
+      id: "responsible-agency",
+      label: "Responsible agency",
+      value: "KRDCL",
+      explanation: "SH-35 and the elevated-corridor work are being executed through KRDCL.",
+      evidence: "verified",
+      asOf: null,
+      sourceIds: ["krdcl-contact", "toi-2026-08"],
+    },
+    {
+      id: "contractor",
+      label: "Contractor",
+      value: "Not publicly identified",
+      explanation: "The contractor name, tender ID, work order, milestone schedule, payments and penalties remain open questions.",
+      evidence: "unknown",
+      asOf: "2026-09-15",
+      sourceIds: ["krdcl-contractors", "krdcl-progress"],
+    },
+    {
+      id: "cost",
+      label: "Accepted project cost",
+      value: "Conflicting public figures",
+      explanation: "The 2022 cabinet decision was reported at ₹482 crore; the latest project report used ₹488 crore.",
+      evidence: "conflicting",
+      asOf: "2026-08-11",
+      sourceIds: ["indian-express-2022-01", "toi-2026-08"],
+    },
+    {
+      id: "litigation",
+      label: "Project-blocking litigation",
+      value: "No stay found",
+      explanation: "The identified 2024 matter established the acquisition route when owners refuse TDR; it did not halt construction.",
+      evidence: "verified",
+      asOf: "2024-11-08",
+      sourceIds: ["khc-2024"],
+    },
+  ],
+  sources: [
+    {
+      id: "toi-2026-08",
+      title: "Six years after start of work, Varthur elevated corridor gets December 2026 deadline",
+      publisher: "The Times of India",
+      url: "https://timesofindia.indiatimes.com/city/bengaluru/six-years-after-start-of-work-varthur-elevated-corridor-gets-december-2026-deadline/articleshow/133130415.cms",
+      publishedOn: "2026-08-11",
+      kind: "news",
+    },
+    {
+      id: "toi-2025-11",
+      title: "Dust, potholes and traffic jams to plague Varthur–Gunjur stretch for two more years",
+      publisher: "The Times of India",
+      url: "https://timesofindia.indiatimes.com/city/bengaluru/dust-potholes-and-traffic-jams-to-plague-varthurgunjur-stretch-in-bengaluru-for-2-more-years/articleshow/125572590.cms",
+      publishedOn: "2025-11-26",
+      kind: "news",
+    },
+    {
+      id: "toi-2024-12",
+      title: "Varthur–Gunjur road users will have to face brunt of traffic until July",
+      publisher: "The Times of India",
+      url: "https://timesofindia.indiatimes.com/city/bengaluru/varthur-gunjur-road-users-will-have-to-face-brunt-of-traffic-until-july/articleshow/116749770.cms",
+      publishedOn: "2024-12-30",
+      kind: "news",
+    },
+    {
+      id: "indian-express-2022-01",
+      title: "Karnataka Cabinet gives nod to ₹482-crore extension of elevated corridor",
+      publisher: "The Indian Express",
+      url: "https://indianexpress.com/article/cities/bangalore/karnataka-cabinet-extension-elevated-corridor-bengaluru-7744700/",
+      publishedOn: "2022-01-27",
+      kind: "news",
+    },
+    {
+      id: "khc-2024",
+      title: "Karnataka High Court order — W.P. 25844/2024 and connected petitions",
+      publisher: "Indian Kanoon (court record)",
+      url: "https://indiankanoon.org/doc/178667971/",
+      publishedOn: "2024-11-08",
+      kind: "court",
+    },
+    {
+      id: "krdcl-contact",
+      title: "KRDCL contact directory",
+      publisher: "KRDCL",
+      url: "https://krdcl.in/en/contactus",
+      publishedOn: null,
+      kind: "official",
+    },
+    {
+      id: "krdcl-contractors",
+      title: "KRDCL contractor roster",
+      publisher: "KRDCL",
+      url: "https://www.krdcl.in/en/proc-contractors",
+      publishedOn: null,
+      kind: "official",
+    },
+    {
+      id: "krdcl-progress",
+      title: "KRDCL latest progress reports",
+      publisher: "KRDCL",
+      url: "https://www.krdcl.in/en/latestprogressreports",
+      publishedOn: null,
+      kind: "official",
+    },
+  ],
+  suggestedQuestions: [
+    "Who is the contractor, and is there a public work order?",
+    "Has KRDCL published any progress update after August 2026?",
+    "What do public records say about penalties or deadline extensions?",
+  ],
+}
+
+export const CIVIC_PROJECTS: CivicProject[] = [varthurGunjur]
+
+export function getCivicProject(slug: string): CivicProject | null {
+  return CIVIC_PROJECTS.find(project => project.slug === slug) ?? null
+}
+
+export function getCivicProjectsForPin(result: PinResult | null): CivicProject[] {
+  if (!result?.found) return []
+  const names = [result.gba_ward_name, result.ward_name]
+    .filter((name): name is string => Boolean(name))
+    .map(name => name.trim().toLowerCase())
+
+  return CIVIC_PROJECTS.filter(project =>
+    project.cityId === result.city_id &&
+    project.affectedWardNames.some(name => names.includes(name)),
+  )
+}
+
+function searchText(project: CivicProject): string {
+  return [
+    project.title, project.shortTitle, project.routeName, project.road,
+    project.ownerAgency, project.ownerAgencyShort, project.projectType,
+    ...project.affectedWardNames, ...project.affectedWardLabels,
+  ].join(" ").toLowerCase()
+}
+
+/**
+ * Projects whose name, road, agency or affected wards contain every word of
+ * the query (2+ characters). Used by map search so a record is findable
+ * without first opening one of its wards.
+ */
+export function searchCivicProjects(query: string, cityId: string): CivicProject[] {
+  const words = query.toLowerCase().split(/[^a-z0-9]+/).filter(word => word.length >= 2)
+  if (!words.length) return []
+  return CIVIC_PROJECTS.filter(project =>
+    project.cityId === cityId && words.every(word => searchText(project).includes(word)),
+  )
+}
+
+export function sourceMap(project: CivicProject): Map<string, CivicProjectSource> {
+  return new Map(project.sources.map(source => [source.id, source]))
+}

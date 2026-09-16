@@ -3,7 +3,7 @@ import { FixtureBanner } from "@/components/india/FixtureBanner"
 
 /**
  * Shell for the India layer. Sits inside the app's root layout, so fonts,
- * analytics and the dark base come from there unchanged — this only adds the
+ * analytics and the paper base come from there unchanged — this only adds the
  * national-layer metadata and the preview-data banner that must appear on
  * every page of this surface.
  */
@@ -54,7 +54,7 @@ export default function IndiaLayout({ children }: { children: React.ReactNode })
    * scroll (object pages) or not (the map).
    */
   return (
-    <div className="fixed inset-0 flex flex-col bg-[#0A0A0A] text-white">
+    <div className="fixed inset-0 flex flex-col bg-paper-canvas text-ink">
       <FixtureBanner />
       <div className="flex-1 min-h-0">{children}</div>
     </div>

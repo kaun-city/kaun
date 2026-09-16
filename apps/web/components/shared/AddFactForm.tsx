@@ -55,32 +55,36 @@ export function AddFactForm({ wardNo, cityId, onSubmitted }: Props) {
 
   if (done) {
     return (
-      <div className="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs text-center font-medium">
-        OK Added! Others can now corroborate this.
+      <div className="mt-3 p-3 bg-success/[0.07] border border-success/35 text-success text-xs text-center font-medium">
+        Added. Others can now corroborate this.
       </div>
     )
   }
+
+  const focusRing = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+  const fieldLabel = "text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60 block mb-1"
+  const control = "w-full min-h-11 bg-paper-bright border border-ink/25 text-ink placeholder:text-ink/50 focus:outline-none focus:border-ink/60"
 
   return (
     <div className="mt-3">
       {!open ? (
         <button
           onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 100) }}
-          className="w-full py-2.5 rounded-xl border border-dashed border-white/20 text-white/30 text-xs hover:border-white/40 hover:text-white/50 transition-colors"
+          className={`w-full min-h-11 px-4 py-2.5 border border-dashed border-ink/35 text-ink/70 text-xs hover:border-ink/60 hover:text-ink hover:bg-ink/5 transition-colors ${focusRing}`}
         >
           + Know something? Add it for your community
         </button>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
-          <p className="text-white/50 text-xs font-semibold">Add what you know</p>
+        <form onSubmit={handleSubmit} className="space-y-2.5 p-3 bg-paper-muted border border-ink/15">
+          <p className="text-ink text-sm font-semibold">Add what you know</p>
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-white/30 text-[10px] uppercase tracking-wider block mb-1">Officer type</label>
+              <label className={fieldLabel}>Officer type</label>
               <select
                 value={subject}
                 onChange={e => setSubject(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-white/70 text-xs focus:outline-none focus:border-white/30"
+                className={`${control} px-2 py-1.5 text-xs`}
               >
                 {Object.entries(OFFICER_SUBJECTS).map(([k, v]) => (
                   <option key={k} value={k}>{v}</option>
@@ -88,11 +92,11 @@ export function AddFactForm({ wardNo, cityId, onSubmitted }: Props) {
               </select>
             </div>
             <div>
-              <label className="text-white/30 text-[10px] uppercase tracking-wider block mb-1">Field</label>
+              <label className={fieldLabel}>Field</label>
               <select
                 value={field}
                 onChange={e => setField(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-white/70 text-xs focus:outline-none focus:border-white/30"
+                className={`${control} px-2 py-1.5 text-xs`}
               >
                 {allFields.map(f => (
                   <option key={f} value={f}>{f}</option>
@@ -108,7 +112,7 @@ export function AddFactForm({ wardNo, cityId, onSubmitted }: Props) {
             onChange={e => setValue(e.target.value)}
             onFocus={handleInputFocus}
             placeholder={field === "phone" ? "98XXXXXXXX" : field === "email" ? "officer@gba.gov.in" : "Enter value"}
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder-white/20 focus:outline-none focus:border-white/30"
+            className={`${control} px-3 py-2 text-sm`}
             required
           />
 
@@ -117,27 +121,27 @@ export function AddFactForm({ wardNo, cityId, onSubmitted }: Props) {
             value={sourceNote}
             onChange={e => setSourceNote(e.target.value)}
             placeholder="Source (optional): GBA notice board, RTI reply, etc."
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white/60 text-xs placeholder-white/20 focus:outline-none focus:border-white/30"
+            className={`${control} px-3 py-2 text-xs`}
           />
 
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={submitting || !value.trim()}
-              className="flex-1 py-2 rounded-lg bg-[#FF9933]/20 border border-[#FF9933]/40 text-[#FF9933] text-xs font-semibold hover:bg-[#FF9933]/30 disabled:opacity-40 transition-colors"
+              className={`flex-1 min-h-11 px-4 bg-ink text-paper font-mono text-[11px] font-semibold uppercase tracking-[0.08em] hover:bg-ink/85 disabled:bg-ink/15 disabled:text-ink/50 transition-colors ${focusRing}`}
             >
               {submitting ? "Submitting..." : "Submit"}
             </button>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-3 py-2 rounded-lg bg-white/5 text-white/30 text-xs hover:text-white/50 transition-colors"
+              className={`min-h-11 px-4 bg-paper border border-ink/55 text-ink font-mono text-[11px] font-semibold uppercase tracking-[0.08em] hover:bg-paper-muted transition-colors ${focusRing}`}
             >
               Cancel
             </button>
           </div>
 
-          <p className="text-white/20 text-[10px] text-center leading-relaxed">
+          <p className="text-ink/60 text-xs text-center leading-relaxed">
             No login required. Your submission is anonymous.<br />
             Others can +1 it to verify.
           </p>

@@ -1,0 +1,46 @@
+name: Cleanup CityPulse Labels
+
+# One-off. Manual only. Defaults to dry-run so a careless click previews
+# (read-only) instead of writing. Run 'apply' once, after the refresh-pulse
+# labelling fix is deployed; the script is idempotent so a re-run is safe.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run (preview, read-only) or apply (relabels source_name, headline, category; deactivates rows the new rules would skip)"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Cleanup CityPulse labels (${{ github.event.inputs.mode }})
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "apply" ]; then
+            node scripts/cleanup-pulse-labels.mjs --apply --out pulse-cleanup-plan.json
+          else
+            node scripts/cleanup-pulse-labels.mjs --out pulse-cleanup-plan.json
+          fi
+
+      - name: Keep the before/after plan (revert record)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pulse-cleanup-plan-${{ github.event.inputs.mode }}
+          path: pulse-cleanup-plan.json
+          if-no-files-found: ignore

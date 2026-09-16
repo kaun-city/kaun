@@ -31,21 +31,25 @@
  * Pure data + pure functions. No React, no Leaflet.
  */
 
-/** Brand accent. The bright end of the sequential ramp is this colour. */
-export const KAUN_SAFFRON = "#FF9933"
+/**
+ * Value absent — never a colour on either ramp, always this warm grey. It is
+ * drawn at full strength (see IndiaMapView) so the legend swatch is exactly
+ * what a reader sees on the paper map.
+ */
+export const NO_DATA_FILL = "#d6cfc2"
+export const NO_DATA_STROKE = "#9d968a"
 
-/** Value absent — never a colour on either ramp, always this grey. */
-export const NO_DATA_FILL = "#3a3a3a"
-export const NO_DATA_STROKE = "#5a5a5a"
-
-/** Magnitude, low → high. Monotonic in lightness on a near-black basemap. */
-export const RAMP_SEQUENTIAL = ["#4a2c0b", "#7d4a0e", "#b06c12", "#e08d1f", "#ffb454"] as const
+/**
+ * Magnitude, low → high. Monotonic in lightness on the paper basemap: the
+ * notable (high) end is the darkest, so emphasis reads as ink, not glare.
+ */
+export const RAMP_SEQUENTIAL = ["#f3d7a6", "#e2aa5c", "#c47f2c", "#8f5516", "#4f2c07"] as const
 
 /**
  * Signed, most-negative → most-positive.
  * teal (under / earlier) · neutral (no change) · amber → deep orange (over / later)
  */
-export const RAMP_DIVERGING = ["#0e7490", "#5aa9bd", "#7a7a7a", "#e0912a", "#c2410c"] as const
+export const RAMP_DIVERGING = ["#0e6a84", "#6aa9ba", "#e4ded2", "#dd9446", "#a83a0a"] as const
 
 export type Ramp = readonly [string, string, string, string, string]
 

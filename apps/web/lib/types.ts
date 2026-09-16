@@ -121,6 +121,10 @@ export interface PinResult {
   gba_zone: string | null
   gba_zone_name: string | null
   gba_population: number | null
+  /** Historical ward overlaps for interpreting legacy ward-keyed datasets. */
+  historical_wards?: import("./gba-crosswalk").HistoricalWardRef[]
+  historical_crosswalk_tier?: "outside" | "clear-primary" | "split-primary" | "ambiguous" | null
+  historical_crosswalk_version?: string | null
 }
 
 export interface Department {

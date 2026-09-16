@@ -1,12 +1,33 @@
 import { createClient } from "@supabase/supabase-js"
+import { estimateDatameet243FromBbmp198 } from "@/lib/bbmp198-crosswalk"
+import { BBMP198_CROSSWALK_VERSION } from "@/lib/constants"
+import { BBMP198_INDEX, WARD_CROSSWALK_PAGE } from "@/lib/bbmp198-server"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
 
+const SPEND_FIELDS = ["buildings_facilities", "drainage", "roads_and_drains", "roads_and_infrastructure", "streetlighting", "waste_management", "water_and_sanitation", "grand_total"] as const
+type SpendRow = { ward_no: number; ward_name: string | null; period: string | null } & Record<(typeof SPEND_FIELDS)[number], number | null>
+
+const BBMP198_ALLOCATION_NOTE =
+  `"# Ward spending and pothole complaints are recorded on BBMP's 198-ward map (2010 delimitation). They are allocated to these DataMeet-243 wards by area overlap (estimates; crosswalk ${BBMP198_CROSSWALK_VERSION}: ${WARD_CROSSWALK_PAGE}). The unallocated source table is type=ward-spending-bbmp198."`
+
+/** 198-keyed spend rows allocated to every DataMeet-243 ward, keyed by 243 ward number. */
+function spendBy243(rows: readonly SpendRow[]) {
+  const out = new Map<number, Record<(typeof SPEND_FIELDS)[number], number> & { period: string | null }>()
+  for (const wardNo of BBMP198_INDEX.keys()) {
+    const estimate = estimateDatameet243FromBbmp198(BBMP198_INDEX, wardNo, rows, SPEND_FIELDS)
+    if (estimate) out.set(wardNo, { ...estimate.values, period: rows[0]?.period ?? null })
+  }
+  return out
+}
+
 /**
- * GET /api/export?type=ward-spending|ward-demographics|all
+ * GET /api/export?type=ward-spending|ward-spending-bbmp198|ward-demographics|all
  *
- * Exports ward-level data as CSV for media/research use.
+ * Exports ward-level data as CSV for media/research use. Ward numbers are
+ * historical DataMeet-243 wards, except ward-spending-bbmp198, which is the
+ * source table on BBMP's 198-ward map with its own ward numbers.
  * No auth required — this is public data.
  */
 export async function GET(req: Request) {
@@ -19,14 +40,35 @@ export async function GET(req: Request) {
   )
 
   try {
-    if (type === "ward-spending" || type === "all") {
-      const { data: spending } = await supabase
+    if (type === "ward-spending-bbmp198") {
+      // The source table as published, labelled with its own ward map.
+      const { data } = await supabase
         .from("ward_spend_category")
-        .select("ward_no, ward_name, buildings_facilities, drainage, roads_and_drains, roads_and_infrastructure, streetlighting, waste_management, water_and_sanitation, grand_total, period")
+        .select(`ward_no, ward_name, ${SPEND_FIELDS.join(", ")}, period`)
         .order("ward_no")
+      const rows = ((data ?? []) as unknown as SpendRow[]).map(({ ward_no, ward_name, ...rest }) => ({
+        bbmp198_ward_no: ward_no,
+        bbmp198_ward_name: ward_name,
+        ...rest,
+      }))
+      return csvResponse(rows, "kaun-ward-spending-bbmp198.csv", [
+        `"# Ward numbers in this file are BBMP's 198-ward map (2010 delimitation), not DataMeet-243 or current GBA wards. Do not join them to other Kaun ward numbers; use the crosswalk: ${WARD_CROSSWALK_PAGE}"`,
+      ])
+    }
+
+    if (type === "ward-spending" || type === "all") {
+      const { data: spendingRows } = await supabase
+        .from("ward_spend_category")
+        .select(`ward_no, ward_name, ${SPEND_FIELDS.join(", ")}, period`)
+        .order("ward_no")
+      // ward_spend_category carries BBMP-198 numbers: allocate to 243 wards.
+      const spendMap = spendBy243((spendingRows ?? []) as unknown as SpendRow[])
 
       if (type === "ward-spending") {
-        return csvResponse(spending ?? [], "kaun-ward-spending.csv")
+        const rows = [...BBMP198_INDEX.values()]
+          .filter(row => spendMap.has(row.datameet243_no))
+          .map(row => ({ ward_no: row.datameet243_no, ward_name: row.datameet243_name, ...spendMap.get(row.datameet243_no) }))
+        return csvResponse(rows, "kaun-ward-spending.csv", [BBMP198_ALLOCATION_NOTE])
       }
 
       // For "all" — get demographics via direct fetch to PostgREST RPC
@@ -65,15 +107,18 @@ export async function GET(req: Request) {
         }
       }
 
-      const [infraRes, potholesRes, crashesRes, airRes, workOrderRes] = await Promise.all([
-        supabase.from("ward_infra_stats").select("ward_no, ward_name, signal_count, bus_stop_count, daily_trips").order("ward_no"),
-        supabase.from("ward_potholes").select("ward_no, ward_name, complaints, data_year").order("ward_no"),
+      const [infraRes, busStopsRes, potholesRes, crashesRes, airRes, workOrderRes] = await Promise.all([
+        supabase.from("ward_infra_stats").select("ward_no, signal_count").order("ward_no"),
+        // Bus figures come only from ward_bus_stops, never ward_infra_stats'
+        // bus columns (see lib/ward-data-quality.ts).
+        supabase.from("ward_bus_stops").select("ward_no, stop_count, total_trips"),
+        supabase.from("ward_potholes").select("ward_no, complaints, data_year").order("ward_no"),
         supabase.from("ward_road_crashes").select("ward_no, crashes_2024, fatal_2024, crashes_2025, fatal_2025").order("ward_no"),
         supabase.from("ward_air_quality").select("ward_no, station_name, avg_pm25, avg_pm10, data_year").order("ward_no"),
         supabase.from("bbmp_work_orders").select("ward_no, bbmp_ward_no, ward_class").order("ward_no"),
       ])
       const infraStats = infraRes.data ?? []
-      const potholes = potholesRes.data ?? []
+      const potholeRows = (potholesRes.data ?? []) as Array<{ ward_no: number; complaints: number | null; data_year: string | null }>
       const crashes = crashesRes.data ?? []
       const airQuality = airRes.data ?? []
       // Count work orders per ward using bbmp_ward_no (DataMeet-243, from the
@@ -86,11 +131,15 @@ export async function GET(req: Request) {
         if (wn != null) woCountMap.set(wn, (woCountMap.get(wn) ?? 0) + 1)
       }
 
-      // Build lookup maps
-      const spendMap = new Map((spending ?? []).map(s => [s.ward_no, s]))
-      const spendByName = new Map((spending ?? []).map(s => [s.ward_name?.toLowerCase().trim(), s]))
+      // Build lookup maps. Spend and potholes are allocated from BBMP-198
+      // wards by area overlap; never matched by ward number or ward name.
       const infraMap = new Map(infraStats.map(i => [i.ward_no, i]))
-      const potholesMap = new Map(potholes.map(p => [p.ward_no, p]))
+      const busStopsMap = new Map(((busStopsRes.data ?? []) as Array<{ ward_no: number; stop_count: number; total_trips: number }>).map(b => [b.ward_no, b]))
+      const potholesMap = new Map<number, { complaints: number; data_year: string | null }>()
+      for (const wardNo of BBMP198_INDEX.keys()) {
+        const estimate = estimateDatameet243FromBbmp198(BBMP198_INDEX, wardNo, potholeRows, ["complaints"])
+        if (estimate) potholesMap.set(wardNo, { complaints: estimate.values.complaints, data_year: potholeRows[0]?.data_year ?? null })
+      }
       const crashesMap = new Map(crashes.map(c => [c.ward_no, c]))
       const airMap = new Map(airQuality.map(a => [a.ward_no, a]))
 
@@ -107,7 +156,7 @@ export async function GET(req: Request) {
 
       const combined = (wards ?? []).map(w => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const spend: any = spendMap.get(w.ward_no) ?? spendByName.get(w.ward_name?.toLowerCase().trim()) ?? {}
+        const spend: any = spendMap.get(w.ward_no) ?? {}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const infra: any = infraMap.get(w.ward_no) ?? {}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -138,8 +187,9 @@ export async function GET(req: Request) {
           demographics_year: acStat.data_year ?? "",
           // Infrastructure (ward level)
           traffic_signals: infra.signal_count ?? "",
-          bus_stops: infra.bus_stop_count ?? "",
-          daily_bus_trips: infra.daily_trips ?? "",
+          // A ward in the infra view with no ward_bus_stops row has no stop inside it.
+          bus_stops: busStopsMap.get(w.ward_no)?.stop_count ?? (infraMap.has(w.ward_no) ? 0 : ""),
+          daily_bus_trips: busStopsMap.get(w.ward_no)?.total_trips ?? (infraMap.has(w.ward_no) ? 0 : ""),
           // Spending (ward level, Rs)
           spend_buildings_facilities: spend.buildings_facilities ?? "",
           spend_drainage: spend.drainage ?? "",
@@ -151,8 +201,8 @@ export async function GET(req: Request) {
           spend_grand_total: spend.grand_total ?? "",
           spend_period: spend.period ?? "",
           // Potholes
-          pothole_complaints: (potholesMap.get(w.ward_no) as any)?.complaints ?? "",
-          pothole_data_year: (potholesMap.get(w.ward_no) as any)?.data_year ?? "",
+          pothole_complaints: potholesMap.get(w.ward_no)?.complaints ?? "",
+          pothole_data_year: potholesMap.get(w.ward_no)?.data_year ?? "",
           // Road crashes
           road_crashes_2024: (crashesMap.get(w.ward_no) as any)?.crashes_2024 ?? "",
           fatal_crashes_2024: (crashesMap.get(w.ward_no) as any)?.fatal_2024 ?? "",
@@ -167,7 +217,10 @@ export async function GET(req: Request) {
         }
       })
 
-      return csvResponse(combined, "kaun-bengaluru-ward-data.csv")
+      return csvResponse(combined, "kaun-bengaluru-ward-data.csv", [
+        BBMP198_ALLOCATION_NOTE,
+        `"# bus_stops counts physical BMTC stops inside each ward. daily_bus_trips is scheduled bus arrivals a day summed over those stops, so a bus stopping at two of them counts twice. Before 2026-09 both columns counted duplicate stop rows and were inflated."`,
+      ])
     }
 
     if (type === "ward-demographics") {
@@ -179,14 +232,14 @@ export async function GET(req: Request) {
       return csvResponse(stats ?? [], "kaun-ward-demographics.csv")
     }
 
-    return Response.json({ error: "Invalid type. Use: ward-spending, ward-demographics, or all" }, { status: 400 })
+    return Response.json({ error: "Invalid type. Use: ward-spending, ward-spending-bbmp198, ward-demographics, or all" }, { status: 400 })
   } catch (e) {
     return Response.json({ error: e instanceof Error ? e.message : "Export failed" }, { status: 500 })
   }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function csvResponse(rows: any[], filename: string): Response {
+function csvResponse(rows: any[], filename: string, notes: string[] = []): Response {
   if (!rows.length) {
     return new Response("No data available", { status: 404, headers: { "Content-Type": "text/plain" } })
   }
@@ -196,6 +249,7 @@ function csvResponse(rows: any[], filename: string): Response {
     "",
     "# DATA SOURCES & ATTRIBUTION",
     `"# Ward spending (2018-2023): BBMP work orders via opencity.in (https://data.opencity.in/dataset/bbmp-work-orders-categorised-2018-2023)"`,
+    ...notes,
     `"# Population & households: Census data via opencity.in (https://opencity.in)"`,
     `"# Infrastructure (traffic signals, bus stops): OpenStreetMap contributors (https://openstreetmap.org) / BMTC via opencity.in"`,
     `"# Trees, clinics, waste centers: KGIS - Karnataka Geographic Information System (https://kgis.ksrsac.in)"`,

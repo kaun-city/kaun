@@ -5,9 +5,9 @@
  * No separate API server needed.
  */
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://xgygxfyfsvccqqmtboeu.supabase.co"
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneWd4Znlmc3ZjY3FxbXRib2V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NDg1NzIsImV4cCI6MjA4ODEyNDU3Mn0.5dzsC5-Ex-Umk-9DTM5xNsQB-t0my-MtWq9WUPhidD4"
+import { publicSupabaseConfig } from "./supabase-config"
+
+const { url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY } = publicSupabaseConfig()
 
 const headers = {
   "apikey": SUPABASE_ANON_KEY,
