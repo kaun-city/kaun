@@ -1,8 +1,8 @@
 "use client"
 
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState, type MouseEvent } from "react"
+import { BackLink } from "@/components/shared/PageHeader"
 import { hasSeenMap } from "@/lib/india/map-view-store"
 
 /**
@@ -35,13 +35,12 @@ import { hasSeenMap } from "@/lib/india/map-view-store"
  * during render would either break the build or desync hydration. The first
  * paint is therefore always the plain link — which is the safe answer.
  *
- * PLACEMENT. An ordinary in-flow chip above the page header, at every width.
- * It used to float at the bottom-left on phones, where a thumb is, but a
- * floating button on a long page of prose sits on top of whatever text is
- * scrolling past it, and clearance at the end of the page does nothing for the
- * middle. The header's own "Map" nav item is there for a reader who has
- * scrolled. It is deliberately labelled, not a bare chevron: a lone "<" next
- * to a seat name reads as "previous constituency".
+ * PLACEMENT. PageHeader's back slot, leading the header row like every other
+ * page's back link, and drawn by the same BackLink. It used to float at the
+ * bottom-left on phones, where a thumb is, but a floating button on a long
+ * page of prose sits on top of whatever text is scrolling past it. From sm up
+ * the header is sticky, so it stays in reach; on a phone the header's own
+ * "Map" nav item is there once the reader scrolls back up.
  */
 export function BackToMap({ href }: { href: string }) {
   const router = useRouter()
@@ -56,20 +55,5 @@ export function BackToMap({ href }: { href: string }) {
     router.back()
   }
 
-  return (
-    <Link
-      href={href}
-      onClick={onClick}
-      aria-label="Back to the map"
-      data-testid="back-to-map"
-      className="mb-4 inline-flex items-center gap-2 min-h-11 px-3
-        bg-paper border border-ink/20 text-ink
-        font-mono text-[11px] font-semibold uppercase tracking-[0.08em]
-        hover:bg-paper-muted transition-colors
-        focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-    >
-      <span aria-hidden="true" className="text-accent">&larr;</span>
-      Map
-    </Link>
-  )
+  return <BackLink href={href} label="Map" ariaLabel="Back to the map" onClick={onClick} testId="back-to-map" />
 }

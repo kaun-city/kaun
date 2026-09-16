@@ -84,13 +84,13 @@ test("sources footer and preview banner show publishers, not repo paths or env f
 // ---------------------------------------------------------------------------
 
 test("the map header is not absolutely positioned on its own guessed offset", () => {
-  const header = code("components/india/IndiaHeader.tsx")
-  assert.doesNotMatch(header, /signal-map-header absolute/)
+  const header = code("components/shared/PageHeader.tsx")
+  assert.doesNotMatch(header, /signal-map-header[^"`]*\babsolute\b/)
   const home = code("components/india/IndiaHome.tsx")
   // the old magic offsets that put the search box on top of the nav
   assert.doesNotMatch(home, /top-\[4\.5rem\]|top-\[7\.5rem\]/)
   // header, search and filter share one flow column
-  const stack = home.indexOf('<IndiaHeader variant="overlay"')
+  const stack = home.indexOf('<PageHeader surface="india" variant="overlay"')
   const search = home.indexOf("<input")
   const filter = home.indexOf('aria-label="Filter constituencies by state"')
   assert.ok(stack > 0 && stack < search && search < filter, "header, then search, then state filter")
@@ -106,17 +106,20 @@ test("map overlays sit above Leaflet's controls (z-1000)", () => {
 })
 
 test("the nav marks the current page and every nav item is at least 44px", () => {
-  const header = code("components/india/IndiaHeader.tsx")
-  assert.match(header, /aria-current=/)
+  const header = code("components/shared/PageHeader.tsx")
+  assert.match(header, /aria-current=\{active \? \(nav\.currentIsPage \? "page" : "true"\) : undefined\}/)
   assert.match(header, /min-h-11 min-w-11/)
-  assert.match(code("components/india/IndiaHome.tsx"), /<IndiaHeader variant="overlay" current="map"/)
-  assert.match(code("app/india/projects/(tracker)/page.tsx"), /<IndiaHeader host=\{host\} current="projects"/)
+  assert.match(code("components/india/IndiaHome.tsx"), /<PageHeader surface="india" variant="overlay" nav=\{indiaSectionNav\("map"\)\}/)
+  assert.match(code("app/india/projects/(tracker)/page.tsx"), /<PageHeader surface="india" host=\{host\} nav=\{indiaSectionNav\("projects"\)\}/)
 })
 
 test("the back-to-map control is in flow, not floating over the page text", () => {
   const back = code("components/india/BackToMap.tsx")
   assert.doesNotMatch(back, /\bfixed\b/)
-  assert.match(back, /min-h-11/)
+  assert.match(back, /<BackLink href=\{href\} label="Map"/)
+  const backLink = code("components/shared/PageHeader.tsx").match(/export function BackLink[\s\S]*$/)?.[0] ?? ""
+  assert.doesNotMatch(backLink, /\bfixed\b/)
+  assert.match(backLink, /min-h-11/)
 })
 
 test("source links are 44px tall", () => {

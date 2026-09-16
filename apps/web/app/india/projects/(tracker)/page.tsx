@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import { headers } from "next/headers"
-import { IndiaHeader } from "@/components/india/IndiaHeader"
+import { PageHeader, indiaSectionNav } from "@/components/shared/PageHeader"
 import { Section } from "@/components/india/ObjectHeader"
 import { ProjectRow } from "@/components/india/ProjectRow"
 import { TrackerControls } from "@/components/india/TrackerControls"
@@ -85,10 +85,10 @@ export default async function ProjectsPage({ searchParams }: Props) {
 
   return (
     <div className="signal-page h-full overflow-y-auto">
-      <div className="max-w-4xl mx-auto px-5 py-6">
-        <IndiaHeader host={host} current="projects" />
+      <PageHeader surface="india" host={host} nav={indiaSectionNav("projects")} width="4xl" />
 
-        <div className="mt-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+        <div>
           <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">
             MoSPI Flash Report · Table 6{reportMonth ? ` · ${formatMonth(reportMonth)}` : ""}
           </p>

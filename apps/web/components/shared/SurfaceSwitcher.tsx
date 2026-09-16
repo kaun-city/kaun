@@ -11,9 +11,8 @@ import { surfaceLinks, type SurfaceId } from "@/lib/host-routing"
  * same order, with the same words.
  *
  * A segmented pill, not a dropdown: three destinations do not earn a menu, and
- * a menu costs a tap on the phones that are most of Kaun's traffic. It is sized
- * to survive a 360px header — the city map's top strip already carries the
- * wordmark, the info button and the search affordance.
+ * a menu costs a tap on the phones that are most of Kaun's traffic. It renders
+ * inside PageHeader on every page, beside the wordmark.
  *
  * Every href comes from surfaceLinks() in lib/host-routing.ts, which is pure and
  * exhaustively tested, so the flag- and host-awareness lives in one place rather
@@ -50,7 +49,7 @@ export function SurfaceSwitcher({
   host?: string
   /** Defaults to NEXT_PUBLIC_INDIA_ROOT — pass only in tests/stories. */
   indiaRoot?: boolean
-  /** `overlay` floats over a map; `inline` sits in a page header. */
+  /** `overlay` floats over a map (turns pointer events back on); `inline` sits in a page header. */
   variant?: "overlay" | "inline"
   className?: string
 }) {
@@ -59,21 +58,19 @@ export function SurfaceSwitcher({
   return (
     <nav
       aria-label="Kaun surfaces"
-      className={`inline-flex items-center shrink-0 overflow-hidden
-        ${variant === "overlay"
-          ? "border border-ink/55 divide-x divide-ink/15 bg-paper pointer-events-auto"
-          : "border border-ink/55 divide-x divide-ink/15 bg-paper"}
+      className={`inline-flex items-stretch shrink-0 overflow-hidden border border-ink/55 divide-x divide-ink/15 bg-paper
+        ${variant === "overlay" ? "pointer-events-auto" : ""}
         ${className}`}
     >
       {links.map(link => {
         // One label set on every surface; the full name stays in aria-label.
         const displayLabel = link.id === "india" ? "IN" : link.id === "city" ? "BLR" : "DATA"
-        const cls = variant === "overlay"
-          ? "min-h-11 min-w-11 sm:min-h-9 sm:min-w-9 px-2.5 py-1 font-mono text-[11px] tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center justify-center"
-          : "min-h-11 min-w-11 px-3 py-1 font-mono text-xs font-semibold tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center justify-center"
+        // One size at every width and in both variants: the switcher is the
+        // same control wherever it appears, and 44px is a touch target.
+        const cls = "min-h-11 min-w-11 px-3 font-mono text-[11px] font-semibold tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center justify-center"
         if (link.id === current) {
           return (
-            <span key={link.id} aria-current="page" aria-label={link.label} className={`${cls} bg-ink text-paper font-semibold`}>
+            <span key={link.id} aria-current="page" aria-label={link.label} className={`${cls} bg-ink text-paper`}>
               {displayLabel}
             </span>
           )

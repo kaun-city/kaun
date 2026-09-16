@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { SurfaceSwitcher } from "@/components/shared/SurfaceSwitcher"
+import { BackLink, PageHeader } from "@/components/shared/PageHeader"
 import { CIVIC_PROJECTS } from "@/lib/civic-projects"
 
 export const metadata: Metadata = {
@@ -19,20 +19,10 @@ export default function CivicProjectsIndexPage() {
 
   return (
     <div className="signal-record fixed inset-0 overflow-y-auto bg-paper-canvas text-ink">
-      <header className="sticky top-0 z-20 border-b-2 border-ink bg-paper">
-        <div className="mx-auto flex min-h-16 max-w-4xl items-center gap-3 px-4 sm:px-6">
-          <Link href="/" className={`flex min-h-11 items-center border-b-2 border-ink px-2 text-xl font-bold tracking-tight ${FOCUS}`}>
-            KAUN<span className="text-accent">?</span>
-          </Link>
-          <SurfaceSwitcher current="city" variant="inline" />
-        </div>
-      </header>
+      <PageHeader surface="city" back={<BackLink href="/" label="Map" ariaLabel="Back to the map" />} width="4xl" />
 
       <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-10">
-        <Link href="/" className={`inline-flex min-h-11 items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-ink/70 hover:text-ink ${FOCUS}`}>
-          <span aria-hidden="true">&larr;</span> Map
-        </Link>
-        <h1 className="mt-2 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">Project records</h1>
+        <h1 className="text-3xl font-bold tracking-[-0.03em] sm:text-4xl">Project records</h1>
         <p className="mt-2 max-w-2xl text-base leading-7 text-ink/75">
           Civic projects that span several wards, followed over time. Each record separates official documents,
           attributed reporting, conflicting figures and what could not be found.

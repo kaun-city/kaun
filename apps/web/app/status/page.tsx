@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import { BackLink, PageHeader } from "@/components/shared/PageHeader"
 import { useState, useEffect, useCallback } from "react"
 
 interface TableCheck {
@@ -158,15 +158,13 @@ export default function StatusPage() {
 
   return (
     <div className="signal-page fixed inset-0 overflow-y-auto bg-paper-canvas text-ink">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <PageHeader surface="city" back={<BackLink href="/" label="Map" ariaLabel="Back to the map" />} width="4xl" />
 
-        {/* Header */}
-        <div className="signal-page-header flex flex-wrap items-end justify-between gap-4 border-b-2 border-ink pb-4 mb-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-ink">
-              <Link href="/" className="hover:text-ink/75 transition-colors">KAUN<span className="text-accent">?</span></Link>
-              <span className="text-ink/70 font-normal ml-3 text-lg">System status</span>
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight text-ink">System status</h1>
             {data && (
               <p className="mt-1 text-[11px] text-ink/60 font-mono">
                 build {data.build.sha.slice(0, 7)} &middot; {data.build.ref} &middot; {timeAgo(data.build.built_at)}

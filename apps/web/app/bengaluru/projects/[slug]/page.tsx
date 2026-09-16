@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { notFound } from "next/navigation"
-import { SurfaceSwitcher } from "@/components/shared/SurfaceSwitcher"
+import { BackLink, PageHeader } from "@/components/shared/PageHeader"
 import { ProjectResearchWorkbench } from "@/components/projects/ProjectResearchWorkbench"
 import { getCivicProject, sourceMap, type EvidenceState } from "@/lib/civic-projects"
 import { fetchPublishedProjectResearch } from "@/lib/civic-projects-server"
@@ -61,15 +60,12 @@ export default async function CivicProjectPage({ params }: Props) {
 
   return (
     <div className="signal-record fixed inset-0 overflow-y-auto bg-paper-stage text-ink">
-      <header className="sticky top-0 z-20 border-b-2 border-ink bg-paper">
-        <div className="mx-auto flex min-h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
-          <Link href="/" className={`flex min-h-11 items-center border-b-2 border-ink px-2 text-xl font-bold tracking-tight ${FOCUS}`}>
-            KAUN<span className="text-accent">?</span>
-          </Link>
-          <SurfaceSwitcher current="city" variant="inline" />
-          <span className="ml-auto hidden font-mono text-xs tracking-[0.08em] text-ink/60 sm:block">PUBLIC RECORD · 01</span>
-        </div>
-      </header>
+      <PageHeader
+        surface="city"
+        back={<BackLink href={`/${project.cityId}/projects`} label="Projects" ariaLabel="Back to project records" />}
+        actions={<span className="hidden font-mono text-xs tracking-[0.08em] text-ink/60 sm:block">PUBLIC RECORD · 01</span>}
+        width="6xl"
+      />
 
       <main className="mx-auto max-w-6xl px-3 py-4 sm:px-6 sm:py-8">
         <article className="border-2 border-ink bg-paper shadow-[8px_8px_0_rgba(22,19,14,0.18)]">

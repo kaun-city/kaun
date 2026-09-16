@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { IndiaHeader } from "@/components/india/IndiaHeader"
+import { PageHeader, indiaSectionNav } from "@/components/shared/PageHeader"
 import { BackToMap } from "@/components/india/BackToMap"
 import { ObjectHeader, Section } from "@/components/india/ObjectHeader"
 import { MpCard } from "@/components/india/MpCard"
@@ -156,15 +156,13 @@ export default async function ConstituencyPage({ params }: Props) {
 
   return (
     <div className="signal-page h-full overflow-y-auto">
-      <div className="max-w-3xl mx-auto px-5 py-6">
-        <BackToMap href={mapHref} />
+      <PageHeader surface="india" nav={indiaSectionNav("seat")} back={<BackToMap href={mapHref} />} width="3xl" />
 
-        {/* The entry animation lives on this wrapper, below the back control,
-            so the one way out of the page is still before it slides in. */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+        {/* The entry animation lives on this wrapper, below the header, so the
+            chrome and the one way out of the page stay put while it slides in. */}
         <div className="kaun-page-enter">
-          <IndiaHeader current="seat" />
-
-          <div className="mt-6">
+          <div>
             <ObjectHeader
               eyebrow={`${c.state_name} · Lok Sabha seat ${c.pc_no}`}
               title={c.pc_name}

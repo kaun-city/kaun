@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { BackLink, PageHeader } from "@/components/shared/PageHeader"
 
 export const metadata: Metadata = {
   title: "How Kaun works | kaun.city",
@@ -16,11 +17,10 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 export default function HowItWorksPage() {
   return (
     <div className="signal-page fixed inset-0 overflow-y-auto bg-paper-canvas text-ink" style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-      <div className="max-w-2xl mx-auto px-5 py-12">
+      <PageHeader surface="city" back={<BackLink href="/" label="Map" ariaLabel="Back to the map" />} width="2xl" />
 
-        {/* Header */}
-        <div className="signal-page-header mb-10 border-b-2 border-ink pb-4">
-          <Link href="/" className="mb-4 inline-flex min-h-11 items-center font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-ink/60 transition-colors hover:text-ink">&larr; Back</Link>
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+        <div className="mb-10">
           <h1 className="mb-2 text-2xl font-bold text-ink">How Kaun works</h1>
           <p className="text-sm text-ink/70">How we source data, what we show, and what we don&apos;t.</p>
         </div>

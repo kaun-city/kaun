@@ -21,7 +21,7 @@ const read = path => readFileSync(new URL(`../apps/web/${path}`, import.meta.url
 const home = read("components/HomePage.tsx")
 const pulse = read("components/CityPulse.tsx")
 const finder = read("components/WardFinder.tsx")
-const layerControl = read("components/LayerControl.tsx")
+const picker = read("components/shared/MapLayerPicker.tsx")
 const vacancy = read("components/CorporatorVacancy.tsx")
 const switcher = read("components/shared/SurfaceSwitcher.tsx")
 const css = read("app/globals.css")
@@ -61,15 +61,16 @@ test("zoom buttons sit below the city map header at every width", () => {
   const rule = css.match(/\.city-map \.leaflet-top\.leaflet-right\s*\{([^}]*)\}/)
   assert.ok(rule, "missing .city-map zoom rule")
   const top = Number(rule[1].match(/top:\s*(\d+)px/)?.[1])
-  // header: 14px offset + 44px control row; Leaflet adds a 10px margin
-  assert.ok(top + 10 >= 14 + 44, `zoom starts at ${top + 10}px, inside the header`)
+  // header: 14px offset + 46px control row (44px targets in a 1px border);
+  // Leaflet adds a 10px margin
+  assert.ok(top + 10 >= 14 + 46, `zoom starts at ${top + 10}px, inside the header`)
   assert.doesNotMatch(css.slice(0, css.indexOf(".city-map .leaflet-top")), /@media[^{]*\{\s*\.city-map \.leaflet-top/, "rule must not be width-scoped")
   // the phone ward sheet still hides zoom while expanded
   assert.match(css, /\.signal-map:has\(\.ward-sheet\[data-sheet="expanded"\]\) \.leaflet-control-zoom/)
 })
 
 test("the header stacks above Leaflet controls, and above the phone sheet while searching", () => {
-  const header = home.match(/signal-map-header[^\n]*/)?.[0] ?? ""
+  const header = home.match(/city-map-header[^\n]*/)?.[0] ?? ""
   const z = [...header.matchAll(/z-\[(\d+)\]/g)].map(m => Number(m[1]))
   assert.ok(z.length === 2 && Math.min(...z) > 1000, `header z-indexes ${z}`)
   assert.match(header, /searchOpen \? "z-\[(\d+)\]"/)
@@ -228,13 +229,13 @@ test("legend ends read as whole counts, percentages and rupees", () => {
 test("the legend keys unpainted wards and rises above a folded ward sheet", () => {
   assert.equal(wardsWithoutData(369, 309), 60)
   assert.equal(wardsWithoutData(369, 400), 0)
-  assert.match(layerControl, /wardsWithoutData\(legend\.totalWards, legend\.wardCount\)/)
-  assert.match(layerControl, /No data &middot;/)
-  assert.match(layerControl, /formatLegendValue\(legend\.min, active\.format\)/)
-  assert.match(layerControl, /\{active\.unit\}/)
-  assert.match(layerControl, /max-lg:\[\.signal-map:has\(\.ward-sheet\[data-sheet=collapsed\]\)_&\]:bottom-\[calc\(var\(--ward-sheet-h,10rem\)\+0\.75rem\)\]/)
+  assert.match(picker, /wardsWithoutData\(legend\.total, legend\.painted\)/)
+  assert.match(picker, /No data \(not zero\) &middot;/)
+  assert.match(picker, /formatLegendValue\(legend\.min, layer\.format\)/)
+  assert.match(picker, /\{layer\.unit\}/)
+  assert.match(home, /max-lg:\[\.signal-map:has\(\.ward-sheet\[data-sheet=collapsed\]\)_&\]:bottom-\[calc\(var\(--ward-sheet-h,10rem\)\+0\.75rem\)\]/)
   assert.match(home, /setProperty\("--ward-sheet-h"/)
-  assert.match(home, /totalWards:/)
+  assert.match(home, /total: Math\.max\(activeCity\.wardCount \?\? 0, nums\.length\)/)
 })
 
 // 9 ─ network
@@ -252,6 +253,7 @@ test("HomePage requests the ward boundary file from one shared loader, on demand
 // 10 ─ touch targets
 
 test("switcher segments and the ticker's Next button are at least 44px", () => {
-  assert.equal(switcher.match(/min-h-11 min-w-11/g)?.length, 2)
+  assert.match(switcher, /const cls = "min-h-11 min-w-11 /)
+  assert.doesNotMatch(switcher, /sm:min-h-9|sm:min-w-9/, "44px at every width")
   assert.match(pulse, /min-h-11 min-w-11[^"]*"\s*>\s*Next/)
 })
