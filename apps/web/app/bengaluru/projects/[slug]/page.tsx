@@ -71,7 +71,7 @@ export default async function CivicProjectPage({ params }: Props) {
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="text-sm font-bold uppercase tracking-[0.13em] text-[#16130e]/70">{project.projectType}</p>
               <time dateTime={project.latestAsOf} className="font-mono text-xs font-medium text-[#16130e]/65">
-                REVIEWED {new Date(`${project.latestAsOf}T00:00:00+05:30`).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase()}
+                REVIEWED {new Date(`${project.latestAsOf}T00:00:00+05:30`).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" }).toUpperCase()}
               </time>
             </div>
           </div>
@@ -93,7 +93,7 @@ export default async function CivicProjectPage({ params }: Props) {
               <div className="mt-6 grid gap-px border border-[#16130e]/25 bg-[#16130e]/25 sm:grid-cols-2">
                 <div className="bg-[#f8f5ef] p-4">
                   <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#16130e]/60">Responsible agency</p>
-                  <p className="mt-2 text-base font-semibold leading-snug">KRDCL</p>
+                  <p className="mt-2 text-base font-semibold leading-snug">{project.ownerAgencyShort}</p>
                   <p className="mt-1 text-sm leading-relaxed text-[#16130e]/65">{project.ownerAgency}</p>
                 </div>
                 <div className="bg-[#f8f5ef] p-4">
@@ -111,7 +111,7 @@ export default async function CivicProjectPage({ params }: Props) {
               <p className="mt-3 text-base leading-7 text-[#16130e]/75">{project.statusNote}</p>
               <div className="mt-6 border-t border-[#16130e]/25 pt-4">
                 <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#16130e]/60">Next public target</p>
-                <p className="mt-1 font-mono text-2xl font-semibold">DEC 2026</p>
+                <p className="mt-1 font-mono text-2xl font-semibold uppercase">{project.nextTarget}</p>
               </div>
             </aside>
           </div>

@@ -7,19 +7,19 @@ export function WardProjectSignal({ result }: { result: PinResult }) {
   if (projects.length === 0) return null
 
   return (
-    <div className="shrink-0 border-b border-white/10 px-4 py-3">
+    <div className="mx-5 mb-3">
       {projects.map(project => (
         <Link
           key={project.slug}
           href={`/bengaluru/projects/${project.slug}`}
-          className="group block min-h-20 border-y border-[#16130e]/20 bg-[#efe9de] px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c25400]"
+          className="group block min-h-20 border border-[#16130e]/25 bg-[#efe9de] px-3.5 py-3 hover:border-[#16130e]/55 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b35400]"
         >
           <div className="flex items-center justify-between gap-3">
             <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#b42318]">Project record · {project.status}</p>
-            <span className="text-sm font-semibold text-[#c25400] group-hover:translate-x-0.5 motion-safe:transition-transform" aria-hidden="true">→</span>
+            <span className="text-sm font-semibold text-[#b35400] group-hover:translate-x-0.5 motion-safe:transition-transform" aria-hidden="true">→</span>
           </div>
           <p className="mt-1 text-sm font-bold leading-snug text-[#16130e]">{project.shortTitle}</p>
-          <p className="mt-1 text-xs leading-relaxed text-[#16130e]/65">KRDCL · ₹482–488 Cr reported · 14 properties pending</p>
+          <p className="mt-1 text-xs leading-relaxed text-[#16130e]/65">{project.wardSignalNote}</p>
         </Link>
       ))}
     </div>

@@ -207,8 +207,10 @@ body {
 .signal-page [class*="text-amber-300"] { color: #754500 !important; }
 .signal-page [class*="text-red-400"] { color: var(--signal-danger) !important; }
 .signal-page [class*="border-[#FF9933]"] { border-color: var(--signal-accent) !important; }
-.signal-page [class*="bg-[#FF9933]"] { background-color: var(--signal-accent) !important; }
-.signal-page [class*="bg-[#FF9933]"][class*="text-black"] { color: var(--signal-paper-bright) !important; }
+/* Token matches (~=) so hover: and /opacity variants are not forced solid. */
+.signal-page [class~="bg-[#FF9933]"] { background-color: var(--signal-accent) !important; }
+.signal-page [class~="bg-[#FF9933]"][class*="text-black"] { color: var(--signal-paper-bright) !important; }
+.signal-page [class*="bg-[#FF9933]/"]:not([class~="bg-[#FF9933]"]) { background-color: rgba(179, 84, 0, 0.1) !important; }
 
 .signal-page [class*="rounded-"]:not([class*="rounded-full"]),
 .signal-page [class~="rounded"] {
@@ -304,11 +306,18 @@ body {
 
 .signal-map .leaflet-popup-close-button { color: rgba(22, 19, 14, 0.55) !important; }
 
-/* Paper sheets floating over the Bengaluru and India maps. */
-.signal-panel,
+/* Paper sheets floating over the Bengaluru and India maps. The panel keeps its
+ * own authored borders (the ink rule on top of the ward sheet). */
+.signal-panel {
+  background-color: rgba(248, 245, 239, 0.98) !important;
+  color: var(--signal-ink) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
 .signal-map [class*="backdrop-blur"],
-.signal-map [class*="bg-[#111111]"],
-.signal-map [class*="bg-[#111]"] {
+.signal-map [class*="bg-[#111111]"]:not(.signal-panel),
+.signal-map [class*="bg-[#111]"]:not(.signal-panel) {
   background-color: rgba(248, 245, 239, 0.98) !important;
   border-color: var(--signal-hairline) !important;
   color: var(--signal-ink) !important;
@@ -444,28 +453,28 @@ body {
   color: var(--signal-ink) !important;
 }
 
-.signal-record [class*="bg-[#e5dfd3]"] { background-color: var(--signal-canvas) !important; }
-.signal-record [class*="bg-[#f8f5ef]"],
-.signal-record [class*="bg-[#fffdf8]"] { background-color: var(--signal-paper) !important; }
-.signal-record [class*="bg-[#efe9de]"] { background-color: var(--signal-paper-muted) !important; }
-.signal-record [class*="bg-[#16130e]"] { background-color: var(--signal-ink) !important; }
-.signal-record [class*="text-[#16130e]"] { color: var(--signal-ink) !important; }
-.signal-record [class*="text-[#f8f5ef]"],
-.signal-record [class*="text-[#fffaf1]"] { color: #ffffff !important; }
-.signal-record [class*="text-[#c25400]"] { color: var(--signal-accent) !important; }
-.signal-record [class*="border-[#16130e]"] { border-color: rgba(22, 19, 14, 0.72) !important; }
-.signal-record [class*="border-[#c25400]"] { border-color: var(--signal-accent) !important; }
-.signal-record [class*="decoration-[#c25400]"] { text-decoration-color: rgba(194, 84, 0, 0.55) !important; }
-.signal-record [class*="ring-[#c25400]"] { --tw-ring-color: rgba(194, 84, 0, 0.4) !important; }
+.signal-record [class~="bg-[#e5dfd3]"] { background-color: var(--signal-canvas) !important; }
+.signal-record [class~="bg-[#f8f5ef]"],
+.signal-record [class~="bg-[#fffdf8]"] { background-color: var(--signal-paper) !important; }
+.signal-record [class~="bg-[#efe9de]"] { background-color: var(--signal-paper-muted) !important; }
+.signal-record [class~="bg-[#16130e]"] { background-color: var(--signal-ink) !important; }
+.signal-record [class~="text-[#16130e]"] { color: var(--signal-ink) !important; }
+.signal-record [class~="text-[#f8f5ef]"],
+.signal-record [class~="text-[#fffaf1]"] { color: #ffffff !important; }
+.signal-record [class~="text-[#c25400]"] { color: var(--signal-accent) !important; }
+.signal-record [class~="border-[#16130e]"] { border-color: rgba(22, 19, 14, 0.72) !important; }
+.signal-record [class~="border-[#c25400]"] { border-color: var(--signal-accent) !important; }
+.signal-record [class~="decoration-[#c25400]"] { text-decoration-color: rgba(194, 84, 0, 0.55) !important; }
+.signal-record [class~="ring-[#c25400]"] { --tw-ring-color: rgba(194, 84, 0, 0.4) !important; }
 
 /* Normalize the research workbench after the palette became shared. */
 .signal-record [class*="bg-white"],
-.signal-record [class*="bg-[#f8fafc]"] { background-color: var(--signal-paper) !important; }
-.signal-record [class*="bg-[#101828]"] { background-color: var(--signal-ink) !important; }
-.signal-record [class*="text-[#101828]"] { color: var(--signal-ink) !important; }
-.signal-record [class*="text-[#2563eb]"] { color: var(--signal-accent) !important; }
-.signal-record [class*="border-[#101828]"] { border-color: rgba(22, 19, 14, 0.72) !important; }
-.signal-record [class*="border-[#2563eb]"] { border-color: var(--signal-accent) !important; }
-.signal-record [class*="decoration-[#2563eb]"] { text-decoration-color: rgba(194, 84, 0, 0.55) !important; }
-.signal-record [class*="ring-[#2563eb]"] { --tw-ring-color: rgba(194, 84, 0, 0.4) !important; }
+.signal-record [class~="bg-[#f8fafc]"] { background-color: var(--signal-paper) !important; }
+.signal-record [class~="bg-[#101828]"] { background-color: var(--signal-ink) !important; }
+.signal-record [class~="text-[#101828]"] { color: var(--signal-ink) !important; }
+.signal-record [class~="text-[#2563eb]"] { color: var(--signal-accent) !important; }
+.signal-record [class~="border-[#101828]"] { border-color: rgba(22, 19, 14, 0.72) !important; }
+.signal-record [class~="border-[#2563eb]"] { border-color: var(--signal-accent) !important; }
+.signal-record [class~="decoration-[#2563eb]"] { text-decoration-color: rgba(194, 84, 0, 0.55) !important; }
+.signal-record [class~="ring-[#2563eb]"] { --tw-ring-color: rgba(194, 84, 0, 0.4) !important; }
 .signal-record [class*="shadow-"] { box-shadow: 4px 4px 0 rgba(22, 19, 14, 0.12) !important; }

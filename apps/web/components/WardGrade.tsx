@@ -16,6 +16,8 @@ interface EvidenceItem {
   label: string
   value: string
   note: string
+  /** A count that is itself a warning sign, set in the danger colour. */
+  alarm?: boolean
 }
 
 function availableEvidence(props: Props): EvidenceItem[] {
@@ -36,6 +38,7 @@ function availableEvidence(props: Props): EvidenceItem[] {
     label: "Declared cases",
     value: String(reportCard.criminal_cases),
     note: "Candidate election affidavit",
+    alarm: reportCard.criminal_cases > 0,
   })
   if (committeeMeetings) items.push({
     label: "Ward meetings",
@@ -57,45 +60,56 @@ function availableEvidence(props: Props): EvidenceItem[] {
     items.push({
       label: "Contractor flags",
       value: String(flagged),
-      note: `${wardContractors.length} contractors checked`,
+      note: `${wardContractors.length} contractor${wardContractors.length === 1 ? "" : "s"} checked`,
+      alarm: flagged > 0,
     })
   }
   return items
 }
 
+const VISIBLE_ROWS = 4
+
 /**
  * Raw evidence replaces the old weighted ward score. Unlike a composite
  * number, every measure can be understood, sourced and challenged on its own.
+ * The first rows stay visible, as in the reference record sheet.
  */
 export function WardGrade(props: Props) {
   const [open, setOpen] = useState(false)
   const evidence = availableEvidence(props)
   if (evidence.length === 0) return null
 
-  return (
-    <div className="mt-2">
-      <button
-        type="button"
-        onClick={() => setOpen(value => !value)}
-        aria-expanded={open}
-        className="flex min-h-11 w-full items-center justify-between gap-3 border-y border-white/10 py-2 text-left"
-      >
-        <span className="font-mono text-xs font-semibold uppercase tracking-[0.08em] text-[#FF9933]">
-          Evidence snapshot · {evidence.length} measures
-        </span>
-        <span aria-hidden="true" className="text-white/35">{open ? "−" : "+"}</span>
-      </button>
+  const rows = open ? evidence : evidence.slice(0, VISIBLE_ROWS)
+  const hidden = evidence.length - VISIBLE_ROWS
 
-      {open && (
-        <div className="grid grid-cols-2 border-b border-white/10 bg-white/5 sm:grid-cols-3">
-          {evidence.map(item => (
-            <div key={item.label} className="border-r border-t border-white/10 p-3">
-              <p className="text-xs font-bold uppercase tracking-[0.08em] text-white/45">{item.label}</p>
-              <p className="mt-1 text-lg font-semibold text-white">{item.value}</p>
-              <p className="mt-1 text-xs leading-snug text-white/35">{item.note}</p>
-            </div>
-          ))}
-        </div>
+  return (
+    <div className="mx-5 mb-3">
+      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#16130e]/55">
+        Evidence snapshot · {evidence.length} measure{evidence.length === 1 ? "" : "s"}
+      </p>
+      <dl className="mt-1.5 border-t border-[#16130e]/15">
+        {rows.map(item => (
+          <div key={item.label} className="flex items-baseline justify-between gap-4 border-b border-[#16130e]/15 py-2">
+            <dt className="min-w-0">
+              <span className="block text-sm text-[#16130e]/80">{item.label}</span>
+              <span className="block text-xs leading-snug text-[#16130e]/45">{item.note}</span>
+            </dt>
+            <dd className={`shrink-0 font-mono text-base font-semibold tabular-nums ${item.alarm ? "text-[#b42318]" : "text-[#16130e]"}`}>
+              {item.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {hidden > 0 && (
+        <button
+          type="button"
+          onClick={() => setOpen(value => !value)}
+          aria-expanded={open}
+          className="flex min-h-11 w-full items-center justify-between text-left text-xs text-[#16130e]/60 hover:text-[#16130e]"
+        >
+          <span>{open ? "Show fewer measures" : `Show ${hidden} more measure${hidden === 1 ? "" : "s"}`}</span>
+          <span aria-hidden="true">{open ? "−" : "+"}</span>
+        </button>
       )}
     </div>
   )

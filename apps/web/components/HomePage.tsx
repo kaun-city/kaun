@@ -18,6 +18,7 @@ import type { ChoroplethData } from "@/components/MapView"
 import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
 import { GBA_CROSSWALK_URL, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact } from "@/lib/gba-crosswalk"
 import { publicSupabaseConfig } from "@/lib/supabase-config"
+import { CorporatorVacancy } from "@/components/CorporatorVacancy"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -415,7 +416,17 @@ export default function HomePage({ host = "" }: { host?: string }) {
         fetch("/api/track", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ event: "pin_drop", ward_no: result.ward_no, ward_name: result.ward_name }),
+          body: JSON.stringify({
+            event: "pin_drop",
+            // ward_no stays the legacy 243 number (null for current GBA wards,
+            // whose numbers restart per corporation); the status page groups
+            // by name, and the GBA identity travels in meta.
+            ward_no: result.ward_no,
+            ward_name: result.gba_ward_name ?? result.ward_name,
+            meta: result.gba_ward_no != null
+              ? { boundary_system: "gba-369-2025", gba_corporation_id: result.gba_corporation_id, gba_ward_no: result.gba_ward_no }
+              : null,
+          }),
         }).catch(() => {})
       }
     }
@@ -521,7 +532,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
                   className="w-full md:w-64 h-11 bg-[#F8F5EF] border border-[#16130e]/55 px-3 text-sm text-[#16130e] placeholder:text-[#16130e]/40 focus:outline-none focus:border-[#C25400]"
                 />
                 {searchResults.length > 0 && (
-                  <div className="absolute top-full mt-1 left-0 right-0 bg-[#111] border border-white/10 rounded-lg overflow-hidden shadow-xl max-h-60 overflow-y-auto z-[1000]">
+                  <div className="absolute top-full mt-1 left-0 right-0 bg-[#F8F5EF] border border-[#16130e]/55 overflow-hidden max-h-60 overflow-y-auto z-[1000]">
                     {searchResults.map(w => (
                       <button
                         key={`${w.corporation_id ?? "legacy"}:${w.ward_no}`}
@@ -530,10 +541,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
                           e.stopPropagation()
                           void handleSearchSelect(w)
                         }}
-                        className="w-full min-h-11 text-left px-3 py-2 hover:bg-white/10 transition-colors flex items-center justify-between"
+                        className="w-full min-h-11 text-left px-3 py-2 hover:bg-[#16130e]/5 border-b border-[#16130e]/10 last:border-b-0 transition-colors flex items-center justify-between gap-3"
                       >
-                        <span className="text-white/80 text-xs">{w.ward_name}</span>
-                        <span className="text-white/25 text-[10px] text-right">
+                        <span className="text-[#16130e] text-sm">{w.ward_name}</span>
+                        <span className="font-mono text-[#16130e]/50 text-[11px] text-right">
                           {w.corporation ? `${w.corporation} · ` : ""}#{w.ward_no}
                         </span>
                       </button>
@@ -559,39 +570,38 @@ export default function HomePage({ host = "" }: { host?: string }) {
 
         {/* City Pulse — accountability headlines before pin drop */}
         {!showCard && !outOfBounds && !searchOpen && <CityPulse cityId={activeCity.id} />}
+        {!showCard && !outOfBounds && !reportPickMode && <CorporatorVacancy cityId={activeCity.id} />}
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
-          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[900]">
-            {geoDenied ? (
-              <p className="text-white/30 text-xs tracking-wide">Tap anywhere on the map</p>
-            ) : (
+          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-[900] flex flex-col items-center gap-2">
+            <p className="pointer-events-none whitespace-nowrap bg-[#F2EDE4]/85 px-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-[#16130e]/55">
+              {geoDenied ? "Location unavailable · tap anywhere on the map" : "Tap anywhere on the map"}
+            </p>
+            {!geoDenied && (
               <button
                 onClick={handleFindMyWard}
                 disabled={geoLoading}
                 className="
-                  signal-primary-action flex items-center gap-1.5 h-9 px-3 py-1.5
-                  bg-[#FF9933]/15 hover:bg-[#FF9933]/25 active:scale-95
-                  border border-[#FF9933]/40
-                  text-[#FF9933] font-medium text-[10px] tracking-wide
-                  backdrop-blur-sm
-                  transition-all duration-150 disabled:opacity-50
+                  signal-primary-action flex items-center gap-2 min-h-11 px-4
+                  active:scale-95 text-[11px]
+                  transition-all duration-150 disabled:opacity-60
                 "
               >
                 {geoLoading ? (
                   <>
-                    <span className="w-3 h-3 border border-[#FF9933]/40 border-t-[#FF9933] rounded-full animate-spin" />
+                    <span className="w-3 h-3 border border-[#F8F5EF]/40 border-t-[#F8F5EF] rounded-full animate-spin" />
                     Locating...
                   </>
                 ) : (
                   <>
-                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="3" fill="#C25400"/>
-                      <circle cx="8" cy="8" r="6.5" stroke="#C25400" strokeWidth="1.5"/>
-                      <line x1="8" y1="0" x2="8" y2="3" stroke="#C25400" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="8" y1="13" x2="8" y2="16" stroke="#C25400" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="0" y1="8" x2="3" y2="8" stroke="#C25400" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="13" y1="8" x2="16" y2="8" stroke="#C25400" strokeWidth="1.5" strokeLinecap="round"/>
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <circle cx="8" cy="8" r="3" fill="#F8F5EF"/>
+                      <circle cx="8" cy="8" r="6.5" stroke="#F8F5EF" strokeWidth="1.5"/>
+                      <line x1="8" y1="0" x2="8" y2="3" stroke="#F8F5EF" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="8" y1="13" x2="8" y2="16" stroke="#F8F5EF" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="0" y1="8" x2="3" y2="8" stroke="#F8F5EF" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="13" y1="8" x2="16" y2="8" stroke="#F8F5EF" strokeWidth="1.5" strokeLinecap="round"/>
                     </svg>
                     Find my ward
                   </>
@@ -608,42 +618,28 @@ export default function HomePage({ host = "" }: { host?: string }) {
               {activeCity.id === "bengaluru" && (
                 <button
                   onClick={() => setWardFinderOpen(true)}
-                  className="
-                    flex items-center gap-2 min-h-11 px-4 py-2.5 rounded-full
-                    bg-[#111] border border-white/15 hover:border-white/30
-                    text-white/70 hover:text-white text-sm font-medium
-                    shadow-lg transition-all duration-150
-                  "
+                  className="flex items-center gap-2 min-h-11 px-4 bg-[#F8F5EF] border border-[#16130e]/55 hover:bg-[#efe9de] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[#16130e] transition-colors duration-150"
                 >
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M8 1.5v13M1.5 8h13" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
-                    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
-                  </svg>
                   New ward?
                 </button>
               )}
               <button
                 onClick={() => setReportPickMode(true)}
-                className="
-                  flex items-center gap-2 min-h-11 px-4 py-2.5 rounded-full
-                  bg-[#111] border border-white/15 hover:border-white/30
-                  text-white/70 hover:text-white text-sm font-medium
-                  shadow-lg transition-all duration-150
-                "
+                className="flex items-center gap-2 min-h-11 px-4 bg-[#F8F5EF] border border-[#16130e]/55 hover:bg-[#efe9de] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[#16130e] transition-colors duration-150"
               >
-                <span className="text-[#FF9933] text-base font-bold">+</span>
+                <span aria-hidden="true">+</span>
                 Report
               </button>
             </div>
 
             <div ref={actionsRef} className="relative sm:hidden">
               {actionsOpen && (
-                <div role="menu" className="absolute bottom-14 right-0 w-44 overflow-hidden rounded-lg bg-[#111]/95 backdrop-blur-md border border-white/15 shadow-2xl">
+                <div role="menu" className="absolute bottom-14 right-0 w-48 overflow-hidden bg-[#F8F5EF] border border-[#16130e]/55">
                   {activeCity.id === "bengaluru" && (
                     <button
                       role="menuitem"
                       onClick={() => { setActionsOpen(false); setWardFinderOpen(true) }}
-                      className="w-full min-h-11 px-3 text-left text-sm text-white/70 hover:bg-white/10"
+                      className="w-full min-h-11 px-3 text-left text-sm text-[#16130e] hover:bg-[#16130e]/5"
                     >
                       New ward crosswalk
                     </button>
@@ -651,7 +647,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
                   <button
                     role="menuitem"
                     onClick={() => { setActionsOpen(false); setReportPickMode(true) }}
-                    className="w-full min-h-11 px-3 text-left text-sm text-white/70 hover:bg-white/10 border-t border-white/10"
+                    className="w-full min-h-11 px-3 text-left text-sm text-[#16130e] hover:bg-[#16130e]/5 border-t border-[#16130e]/15"
                   >
                     Report an issue
                   </button>
@@ -662,9 +658,11 @@ export default function HomePage({ host = "" }: { host?: string }) {
                 aria-label="More map actions"
                 aria-haspopup="menu"
                 aria-expanded={actionsOpen}
-                className="w-11 h-11 flex items-center justify-center rounded-full bg-[#111] border border-white/15 text-white/70 shadow-lg"
+                className="w-11 h-11 flex items-center justify-center bg-[#F8F5EF] border border-[#16130e]/55 text-[#16130e]"
               >
-                <span aria-hidden="true" className="text-xl leading-none -mt-2">...</span>
+                <svg width="16" height="4" viewBox="0 0 16 4" aria-hidden="true" fill="currentColor">
+                  <rect x="0" y="0" width="3" height="3" /><rect x="6.5" y="0" width="3" height="3" /><rect x="13" y="0" width="3" height="3" />
+                </svg>
               </button>
             </div>
           </div>
@@ -672,21 +670,17 @@ export default function HomePage({ host = "" }: { host?: string }) {
 
         {/* Report pick mode banner */}
         {reportPickMode && (
-          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-[900] flex items-center gap-3
-            px-4 py-2.5 rounded-full bg-[#FF9933] text-black text-sm font-semibold shadow-xl whitespace-nowrap">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="8" r="3" fill="black"/>
-              <circle cx="8" cy="8" r="6.5" stroke="black" strokeWidth="1.5"/>
-              <line x1="8" y1="0" x2="8" y2="3" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="8" y1="13" x2="8" y2="16" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="0" y1="8" x2="3" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="13" y1="8" x2="16" y2="8" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-[900] flex items-center gap-2
+            pl-4 pr-1 bg-[#16130e] text-[#F8F5EF] text-sm font-semibold whitespace-nowrap">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="8" cy="8" r="3" fill="#F8F5EF"/>
+              <circle cx="8" cy="8" r="6.5" stroke="#F8F5EF" strokeWidth="1.5"/>
             </svg>
             Tap on the map where the issue is
             <button
               onClick={() => setReportPickMode(false)}
               aria-label="Cancel report location selection"
-              className="ml-1 w-11 h-11 flex items-center justify-center text-black/50 hover:text-black font-bold text-base leading-none"
+              className="w-11 h-11 flex items-center justify-center text-[#F8F5EF]/60 hover:text-[#F8F5EF] text-base leading-none"
             >&times;</button>
           </div>
         )}

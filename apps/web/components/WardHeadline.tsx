@@ -10,27 +10,53 @@ interface Props {
   wardContractors: ContractorProfile[]
   /** city_id from PinResult — used to phrase city-specific copy correctly */
   cityId?: string
+  /**
+   * Former wards whose ward-tagged records were used for a current ward.
+   * Present only when the record is a historical-overlap estimate.
+   */
+  formerWards?: string[]
 }
 
 interface Headline {
   severity: "red" | "yellow" | "info"
   text: string
   detail: string
+  /** Where the number came from. Every headline carries one. */
+  source: string
 }
 
-function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContractors, cityId }: Props): Headline | null {
+function formatLakh(lakh: number): string {
+  return lakh >= 100
+    ? `₹${Math.round(lakh / 100).toLocaleString("en-IN")} Cr`
+    : `₹${Math.round(lakh).toLocaleString("en-IN")} L`
+}
+
+function yearRange(values: Array<string | null | undefined>): string | null {
+  const years = values.filter((value): value is string => !!value).sort()
+  if (!years.length) return null
+  return years[0] === years[years.length - 1] ? years[0] : `${years[0]} to ${years[years.length - 1]}`
+}
+
+export function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContractors, cityId, formerWards }: Props): Headline | null {
   const flagged = wardContractors.filter(c => c.blacklist_flags.length > 0)
   const headlines: (Headline & { priority: number })[] = []
   const stateName = getCity(cityId).state
+  const term = reportCard?.term ? ` · ${reportCard.term}` : ""
 
-  // Flagged contractors in this ward — most alarming
+  // Flagged contractors in this ward's work orders — most alarming
   if (flagged.length > 0) {
     const totalValue = flagged.reduce((s, c) => s + c.total_value_lakh, 0)
+    const years = yearRange(flagged.flatMap(c => [c.first_seen, c.last_seen]))
+    const scope = formerWards?.length ? "this area's" : "this ward's"
     headlines.push({
       priority: 100,
       severity: "red",
-      text: `${flagged.length} flagged contractor${flagged.length > 1 ? "s" : ""} active in this ward`,
-      detail: `Rs ${totalValue >= 100 ? `${(totalValue / 100).toFixed(0)} Cr` : `${totalValue.toFixed(0)} L`} in public money to entities on debarment lists`,
+      text: `${flagged.length} flagged contractor${flagged.length > 1 ? "s" : ""} in ${scope} work orders`,
+      detail: `${formatLakh(totalValue)} in public money to entities on debarment lists`,
+      source: [
+        `BBMP work orders${years ? ` ${years}` : ""}`,
+        formerWards?.length ? `former ward${formerWards.length > 1 ? "s" : ""} ${formerWards.join(", ")}` : null,
+      ].filter(Boolean).join(" · "),
     })
   }
 
@@ -39,8 +65,9 @@ function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContracto
     headlines.push({
       priority: 90,
       severity: "red",
-      text: `MLA has ${reportCard.criminal_cases} criminal case${reportCard.criminal_cases > 1 ? "s" : ""}`,
-      detail: "As declared in Election Commission affidavit",
+      text: `MLA has ${reportCard.criminal_cases} criminal case${reportCard.criminal_cases > 1 ? "s" : ""} declared`,
+      detail: "Self-declared in the election nomination affidavit",
+      source: `Election Commission affidavit${term}`,
     })
   }
 
@@ -50,7 +77,8 @@ function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContracto
       priority: 85,
       severity: "red",
       text: "MLA has spent 0% of development funds",
-      detail: "LAD fund meant for local area development is completely unused",
+      detail: "LAD fund meant for local area development is unused",
+      source: `MLA LAD fund record${term}`,
     })
   }
 
@@ -59,8 +87,9 @@ function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContracto
     headlines.push({
       priority: 80,
       severity: "red",
-      text: `MLA attended only ${reportCard.attendance_pct}% of assembly sessions`,
+      text: `MLA attended ${reportCard.attendance_pct}% of assembly sessions`,
       detail: `Below 40% attendance in the ${stateName} Legislature`,
+      source: `${stateName} Legislature record${term}`,
     })
   }
 
@@ -71,6 +100,7 @@ function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContracto
       severity: "red",
       text: "Ward committee has never met",
       detail: "0 of 56 mandated meetings held (2020-2022)",
+      source: `Ward committee records${committeeMeetings.period ? ` · ${committeeMeetings.period}` : ""}`,
     })
   }
 
@@ -80,7 +110,8 @@ function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContracto
       priority: 60,
       severity: "yellow",
       text: "This ward has zero traffic signals",
-      detail: `City average: 5.5 signals per ward`,
+      detail: "City average: 5.5 signals per ward",
+      source: "Ward infrastructure records",
     })
   }
 
@@ -90,8 +121,9 @@ function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContracto
     headlines.push({
       priority: 55,
       severity: "yellow",
-      text: `Only ${reportCard.lad_utilization_pct}% of MLA development funds used`,
+      text: `${reportCard.lad_utilization_pct}% of MLA development funds used`,
       detail: "Most of the area development budget remains unspent",
+      source: `MLA LAD fund record${term}`,
     })
   }
 
@@ -104,20 +136,20 @@ export function WardHeadline(props: Props) {
   const headline = pickHeadline(props)
   if (!headline) return null
 
-  const colors = {
-    red: { bg: "bg-[#b42318]/5", border: "border-[#b42318]/35", icon: "text-[#b42318]", text: "text-[#8f1c13]", detail: "text-[#8f1c13]/70" },
-    yellow: { bg: "bg-[#a05d00]/5", border: "border-[#a05d00]/35", icon: "text-[#a05d00]", text: "text-[#754500]", detail: "text-[#754500]/70" },
-    info: { bg: "bg-[#255c86]/5", border: "border-[#255c86]/35", icon: "text-[#255c86]", text: "text-[#214f73]", detail: "text-[#214f73]/70" },
+  // Red is a solid block, as in the reference; lesser severities stay tinted
+  // so the one alarming finding is never outshouted.
+  const styles = {
+    red: { box: "bg-[#b42318] border-[#b42318]", text: "text-[#fffaf1]", detail: "text-[#fffaf1]/85", source: "text-[#fffaf1]/70" },
+    yellow: { box: "bg-[#a05d00]/[0.07] border-[#a05d00]/40", text: "text-[#5c3700]", detail: "text-[#5c3700]/80", source: "text-[#5c3700]/65" },
+    info: { box: "bg-[#255c86]/[0.07] border-[#255c86]/35", text: "text-[#1c4566]", detail: "text-[#1c4566]/80", source: "text-[#1c4566]/65" },
   }
-  const c = colors[headline.severity]
+  const s = styles[headline.severity]
 
   return (
-    <div className={`mx-5 mt-3 flex gap-2.5 border-l-4 p-3 ${c.bg} border ${c.border}`}>
-      <span className={`${c.icon} text-base mt-0.5 shrink-0`}>!</span>
-      <div className="min-w-0">
-        <p className={`${c.text} text-xs font-semibold leading-snug`}>{headline.text}</p>
-        <p className={`${c.detail} text-[10px] mt-0.5 leading-snug`}>{headline.detail}</p>
-      </div>
+    <div className={`mx-5 mb-3 border px-3.5 py-3 ${s.box}`}>
+      <p className={`${s.text} text-sm font-semibold leading-snug`}>{headline.text}</p>
+      <p className={`${s.detail} text-xs mt-0.5 leading-snug`}>{headline.detail}</p>
+      <p className={`${s.source} mt-1.5 font-mono text-[10px] uppercase tracking-[0.06em] leading-snug`}>{headline.source}</p>
     </div>
   )
 }

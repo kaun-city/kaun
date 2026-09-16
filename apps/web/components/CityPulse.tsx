@@ -24,6 +24,19 @@ interface PulseFact {
   url: string | null
 }
 
+/** Pulse headlines arrive from feeds with HTML entities still encoded. */
+export function decodeEntities(text: string): string {
+  return text
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(parseInt(code, 16)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;|&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+}
+
 interface Props {
   /** city_id from the active pin or the homepage default ('bengaluru' | 'visakhapatnam' | …) */
   cityId?: string
@@ -84,32 +97,18 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
 
   const isTwitter = fact.source.startsWith("X/") || fact.url?.includes("x.com")
 
-  // Severity → background + accent classes
-  const sev = (() => {
-    switch (fact.severity) {
-      case "red":
-        return {
-          bg: "bg-[#1a0505]/90 border-red-500/30",
-          cat: "text-red-400/70",
-          link: "text-red-400/80",
-        }
-      case "green":
-        return {
-          bg: "bg-[#051a0c]/90 border-emerald-500/30",
-          cat: "text-emerald-400/80",
-          link: "text-emerald-400/80",
-        }
-      default:
-        return {
-          bg: "bg-[#1a1505]/90 border-yellow-500/30",
-          cat: "text-yellow-400/70",
-          link: "text-yellow-400/80",
-        }
-    }
-  })()
+  // Severity carries the alarm through a small square marker and a dark,
+  // paper-safe label colour; the strip itself stays neutral paper.
+  const sev = {
+    red: { mark: "bg-[#b42318]", cat: "text-[#b42318]", link: "text-[#b42318]" },
+    green: { mark: "bg-[#24643c]", cat: "text-[#24643c]", link: "text-[#24643c]" },
+    yellow: { mark: "bg-[#a05d00]", cat: "text-[#754500]", link: "text-[#754500]" },
+  }[fact.severity]
+  const headline = decodeEntities(fact.headline)
+  const source = decodeEntities(fact.source)
 
   return (
-    <div className="absolute top-[4.25rem] sm:top-12 left-4 right-16 md:right-auto md:max-w-[380px] z-[900] pointer-events-auto">
+    <div className="absolute top-[4.25rem] sm:top-14 left-3.5 right-16 md:right-auto md:max-w-[420px] z-[900] pointer-events-auto">
       <div
         onClick={handleTap}
         onKeyDown={e => {
@@ -120,24 +119,24 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
         }}
         role="button"
         tabIndex={0}
-        className={`signal-ticker w-full text-left backdrop-blur-xl px-3 py-2 transition-all duration-300 cursor-pointer ${sev.bg}`}
+        aria-expanded={expanded}
+        aria-label={`${fact.category}: ${headline}`}
+        className="signal-ticker w-full text-left pl-3 pr-1 py-1.5 cursor-pointer"
       >
-        <div className="flex items-start gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className={`text-[9px] font-bold uppercase tracking-wider ${sev.cat}`}>
+        <div className="flex items-start gap-2">
+          <span aria-hidden="true" className={`mt-[0.4rem] h-2 w-2 shrink-0 ${sev.mark}`} />
+          <div className="flex-1 min-w-0 py-0.5">
+            <p className={`text-[13px] leading-snug text-[#16130e]/85 ${expanded ? "" : "line-clamp-2 sm:line-clamp-1"}`}>
+              <span className={`mr-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${sev.cat}`}>
                 {fact.category}
               </span>
-              <span className="text-white/15 text-[9px]">{fact.source}</span>
-            </div>
-            <p className={`text-white/80 text-xs leading-snug mt-0.5 ${expanded ? "" : "line-clamp-2"}`}>
-              {fact.headline}
+              {headline}
             </p>
           </div>
           <button
             onClick={e => { e.stopPropagation(); setDismissed(true) }}
-            className="w-11 h-11 -mr-2 -mt-1 flex items-center justify-center text-white/20 hover:text-white/50 text-xs shrink-0"
-            aria-label="Dismiss"
+            className="w-9 h-9 -my-1 flex items-center justify-center text-[#16130e]/45 hover:text-[#16130e] text-sm shrink-0"
+            aria-label="Dismiss headlines"
           >
             &times;
           </button>
@@ -145,40 +144,29 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
 
         {/* Expanded: source link + next */}
         {expanded && (
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
-            {fact.url ? (
-              <a
-                href={fact.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                className={`text-[10px] font-medium ${sev.link}`}
+          <div className="flex items-center justify-between gap-3 mt-1.5 mb-0.5 pt-1.5 pr-2 border-t border-[#16130e]/15">
+            <span className="min-w-0 truncate font-mono text-[10px] uppercase tracking-[0.06em] text-[#16130e]/50">
+              {source} · {(index % facts.length) + 1}/{facts.length}
+            </span>
+            <span className="flex shrink-0 items-center gap-3">
+              {fact.url && (
+                <a
+                  href={fact.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  className={`min-h-9 flex items-center text-xs font-medium underline underline-offset-2 ${sev.link}`}
+                >
+                  {isTwitter ? "View on X" : "Read source"} &rarr;
+                </a>
+              )}
+              <button
+                onClick={e => { e.stopPropagation(); handleNext() }}
+                className="min-h-9 text-xs text-[#16130e]/60 hover:text-[#16130e]"
               >
-                {isTwitter ? "View on X" : "Read source"} &rarr;
-              </a>
-            ) : (
-              <span />
-            )}
-            <button
-              onClick={e => { e.stopPropagation(); handleNext() }}
-              className="text-white/30 hover:text-white/60 text-[10px]"
-            >
-              Next &rsaquo;
-            </button>
-          </div>
-        )}
-
-        {/* Progress dots */}
-        {!expanded && (
-          <div className="flex items-center justify-center gap-1 mt-2">
-            {facts.slice(0, 20).map((_, i) => (
-              <div
-                key={i}
-                className={`h-0.5 rounded-full transition-all duration-300 ${
-                  i === index % facts.length ? "w-3 bg-white/40" : "w-1.5 bg-white/10"
-                }`}
-              />
-            ))}
+                Next &rsaquo;
+              </button>
+            </span>
           </div>
         )}
       </div>

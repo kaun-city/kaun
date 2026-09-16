@@ -74,17 +74,17 @@ export function AskKaunBar({ wardContext }: Props) {
   if (!wardContext) return null
 
   return (
-    <div className="border-t border-white/10 bg-white/[0.02]">
+    <div className="bg-[#F8F5EF]">
       {/* Header row when expanded — shows collapse button */}
       {expanded && (
-        <div className="flex items-center justify-between px-4 pt-2 pb-0">
-          <span className="text-[10px] text-white/25 uppercase tracking-wider">Ask Kaun</span>
+        <div className="flex items-center justify-between px-4 pt-1 pb-0">
+          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[#16130e]/50">Ask Kaun</span>
           <button
             onClick={collapse}
             aria-label="Close chat"
-            className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/15 text-white/30 hover:text-white/60 transition-colors"
+            className="w-11 h-11 -mr-2 flex items-center justify-center text-[#16130e]/50 hover:text-[#16130e] transition-colors"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path d="M2 4.5L7 9.5L12 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
@@ -93,28 +93,24 @@ export function AskKaunBar({ wardContext }: Props) {
 
       {/* Conversation history */}
       {expanded && messages.length > 0 && (
-        <div className="px-4 py-3 space-y-3 max-h-56 overflow-y-auto">
+        <div className="px-4 py-2 space-y-2.5 max-h-56 overflow-y-auto" aria-live="polite">
           {messages.map((m, i) => (
-            <div key={i} className={`flex gap-2 ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-              {m.role === "assistant" && (
-                <span className="text-[10px] font-bold text-[#FF9933] mt-1 shrink-0">K</span>
-              )}
-              <p className={`text-sm leading-relaxed max-w-[85%] rounded-2xl px-3 py-2 ${
+            <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+              <p className={`text-sm leading-relaxed max-w-[88%] px-3 py-2 ${
                 m.role === "user"
-                  ? "bg-white/10 text-white/80 rounded-br-sm"
-                  : "bg-[#FF9933]/10 text-white/70 rounded-bl-sm"
+                  ? "bg-[#16130e] text-[#F8F5EF]"
+                  : "border border-[#16130e]/15 bg-[#efe9de] text-[#16130e]/85"
               }`}>
                 {m.text}
               </p>
             </div>
           ))}
           {loading && (
-            <div className="flex gap-2 justify-start">
-              <span className="text-[10px] font-bold text-[#FF9933] mt-1 shrink-0">K</span>
-              <div className="bg-[#FF9933]/10 rounded-2xl rounded-bl-sm px-3 py-2 flex gap-1 items-center">
-                <span className="w-1.5 h-1.5 bg-[#FF9933]/50 rounded-full animate-bounce" style={{animationDelay:"0ms"}} />
-                <span className="w-1.5 h-1.5 bg-[#FF9933]/50 rounded-full animate-bounce" style={{animationDelay:"150ms"}} />
-                <span className="w-1.5 h-1.5 bg-[#FF9933]/50 rounded-full animate-bounce" style={{animationDelay:"300ms"}} />
+            <div className="flex justify-start">
+              <div className="border border-[#16130e]/15 bg-[#efe9de] px-3 py-2.5 flex gap-1 items-center" aria-label="Kaun is answering">
+                <span className="w-1.5 h-1.5 bg-[#16130e]/45 animate-bounce motion-reduce:animate-none" style={{animationDelay:"0ms"}} />
+                <span className="w-1.5 h-1.5 bg-[#16130e]/45 animate-bounce motion-reduce:animate-none" style={{animationDelay:"150ms"}} />
+                <span className="w-1.5 h-1.5 bg-[#16130e]/45 animate-bounce motion-reduce:animate-none" style={{animationDelay:"300ms"}} />
               </div>
             </div>
           )}
@@ -124,12 +120,12 @@ export function AskKaunBar({ wardContext }: Props) {
 
       {/* Suggestion chips (first time only) */}
       {!expanded && (
-        <div className="px-4 pt-3 pb-1 flex gap-2 overflow-x-auto scrollbar-hide">
+        <div className="px-4 pt-2.5 flex gap-2 overflow-x-auto scrollbar-hide">
           {SUGGESTIONS.map(s => (
             <button
               key={s}
               onClick={() => ask(s)}
-              className="shrink-0 min-h-11 text-[11px] text-white/40 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3 py-1.5 transition-colors whitespace-nowrap"
+              className="shrink-0 min-h-9 text-xs text-[#16130e]/70 border border-[#16130e]/20 hover:bg-[#16130e]/5 hover:text-[#16130e] px-2.5 py-1.5 transition-colors whitespace-nowrap"
             >
               {s}
             </button>
@@ -139,14 +135,13 @@ export function AskKaunBar({ wardContext }: Props) {
 
       {/* AI disclaimer */}
       {expanded && messages.some(m => m.role === "assistant") && (
-        <p className="px-4 pb-1 text-[10px] text-white/20">
+        <p className="px-4 pb-1 text-[11px] text-[#16130e]/50">
           AI-generated. Verify important claims before acting.
         </p>
       )}
 
       {/* Input bar */}
-      <div className="flex items-center gap-2 px-4 py-2">
-        <span className="text-[#FF9933] font-bold text-sm shrink-0">Ask</span>
+      <div className="flex items-stretch gap-2 px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))]">
         <input
           ref={inputRef}
           value={input}
@@ -154,18 +149,16 @@ export function AskKaunBar({ wardContext }: Props) {
           onKeyDown={e => e.key === "Enter" && ask(input)}
           onFocus={() => setExpanded(true)}
           placeholder={`Ask anything about ${wardContext.ward_name}...`}
-          className="flex-1 min-h-11 bg-transparent text-sm text-white placeholder-white/20 focus:outline-none"
+          aria-label={`Ask Kaun about ${wardContext.ward_name}`}
+          className="flex-1 min-w-0 min-h-11 border border-[#16130e]/25 bg-[#fffdf8] px-3 text-sm text-[#16130e] placeholder:text-[#16130e]/40 focus:outline-none focus:border-[#16130e]/60"
           disabled={loading}
         />
         <button
           onClick={() => ask(input)}
           disabled={!input.trim() || loading}
-          aria-label="Ask Kaun"
-          className="shrink-0 w-11 h-11 rounded-full bg-[#FF9933] disabled:bg-white/10 flex items-center justify-center transition-colors"
+          className="shrink-0 min-h-11 px-3.5 bg-[#16130e] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[#F8F5EF] disabled:bg-[#16130e]/15 disabled:text-[#16130e]/45 transition-colors"
         >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M12 7L2 2l2 5-2 5 10-5z" fill={input.trim() && !loading ? "#000" : "#666"} />
-          </svg>
+          Ask &rarr;
         </button>
       </div>
     </div>

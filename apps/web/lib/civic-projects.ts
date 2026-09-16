@@ -51,6 +51,12 @@ export interface CivicProject {
   status: "Delayed" | "In progress" | "Completed" | "Paused"
   statusNote: string
   ownerAgency: string
+  /** Short agency name used in compact labels (e.g. "KRDCL"). */
+  ownerAgencyShort: string
+  /** Latest publicly reported completion target, as displayed. */
+  nextTarget: string
+  /** One-line evidence summary shown on ward cards that link to the record. */
+  wardSignalNote: string
   affectedWardNames: string[]
   affectedWardLabels: string[]
   summary: string
@@ -74,6 +80,9 @@ const varthurGunjur: CivicProject = {
   status: "Delayed",
   statusNote: "Work began in 2019. The latest publicly reported target is December 2026.",
   ownerAgency: "Karnataka Road Development Corporation Limited (KRDCL)",
+  ownerAgencyShort: "KRDCL",
+  nextTarget: "Dec 2026",
+  wardSignalNote: "KRDCL · ₹482–488 Cr reported · 14 properties pending",
   affectedWardNames: ["varthur", "gunjur"],
   affectedWardLabels: ["Varthur · East Ward 40", "Gunjur · East Ward 50"],
   summary:
