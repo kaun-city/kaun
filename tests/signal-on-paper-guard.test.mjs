@@ -69,7 +69,7 @@ for (const file of uiFiles) {
 }
 
 for (const file of libFiles) {
-  const rel = relative(root, file)
+  const rel = relative(root, file).replaceAll("\\", "/")
   // lib holds class tables (status and trust badges) as well as data palettes.
   const rules = HEX_EXEMPT.has(rel) ? RULES.filter(rule => rule.name !== "old dark palette hex") : RULES
   test(`one style (lib): ${rel}`, () => {

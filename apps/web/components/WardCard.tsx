@@ -135,8 +135,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
     const scroller = scrollRef.current
     const recordEnd = recordEndRef.current
     if (!scroller || !recordEnd) return
-    const top = recordEnd.offsetTop
-    if (scroller.scrollTop > top) scroller.scrollTo({ top })
+    scroller.scrollTo({ top: recordEnd.offsetTop, behavior: "smooth" })
   }, [ward])
 
   const cardRef = useRef<HTMLDivElement>(null)
