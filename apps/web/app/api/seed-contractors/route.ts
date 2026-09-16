@@ -186,22 +186,10 @@ export async function GET(req: Request) {
     })
     addLog("Contractor profiles built")
 
-    // Step 5: Flag KRIDL (known blacklisted)
-    const { error: flagErr } = await supabase
-      .from("contractor_profiles")
-      .update({
-        blacklist_flags: ["BBMP blacklisted (2010) + Social Welfare Dept blacklisted (2018) — received Rs 4,700 crore via Section 4(g) tender exemption"]
-      })
-      .ilike("canonical_name", "%KRIDL%")
-    if (!flagErr) addLog("Flagged KRIDL entities")
-
-    // Also flag any Karnataka Rural Infrastructure variant
-    await supabase
-      .from("contractor_profiles")
-      .update({
-        blacklist_flags: ["BBMP blacklisted (2010) + Social Welfare Dept blacklisted (2018) — received Rs 4,700 crore via Section 4(g) tender exemption"]
-      })
-      .ilike("canonical_name", "%Karnataka Rural Infrastructure%")
+    // Flags are not written here. scripts/scrape-blacklists.mjs is their only
+    // writer, so the wording, citations and name matching live in one place
+    // (scripts/lib/contractor-flags.mjs). Run it after this endpoint.
+    addLog("Blacklist flags: run scripts/scrape-blacklists.mjs to reconcile")
 
     // Summary
     const { count: woCount } = await supabase.from("bbmp_work_orders").select("*", { count: "exact", head: true })

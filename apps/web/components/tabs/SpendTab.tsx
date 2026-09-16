@@ -413,7 +413,9 @@ export function SpendTab({
                       {c.blacklist_flags.map((flag, i) => (
                         <p key={i} className="text-xs leading-relaxed text-warning">▸ {flag}</p>
                       ))}
-                      <p className={`mt-1 ${SOURCE}`}>Source: KPPP / BBMP official records</p>
+                      {/* Each flag ends with its own citation (scripts/lib/contractor-flags.mjs);
+                          none of them comes from KPPP or BBMP records. */}
+                      <p className={`mt-1 ${SOURCE}`}>Reported by the source named on each line</p>
                     </div>
                   )}
                   {c.is_govt_entity && <p className="mt-1 text-xs text-ink/60">Government entity</p>}

@@ -1,343 +1,175 @@
 #!/usr/bin/env node
 /**
- * scrape-blacklists.mjs — Cross-reference contractor profiles against
- * every publicly accessible debarment/blacklist source.
+ * scrape-blacklists.mjs — reconcile contractor_profiles.blacklist_flags with
+ * documented debarments, and optionally with scraped debarment lists.
  *
- * Sources scraped:
- *   1. GeM (Government e-Marketplace) suspended sellers archive PDF
- *   2. World Bank debarment list via OpenSanctions API
- *   3. CPPP (Central Public Procurement Portal) debarment list
- *   4. KPCL (Karnataka Power Corp) blacklisted firms page
- *   5. BBMP registered contractors list (for positive cross-ref)
+ * Usage:
+ *   node scripts/scrape-blacklists.mjs                  # dry run: documented cases only
+ *   node scripts/scrape-blacklists.mjs --lists          # dry run: + GeM, World Bank, CPPP, KPCL
+ *   node scripts/scrape-blacklists.mjs --apply          # writes
+ * Env (only --apply needs credentials):
+ *   SUPABASE_URL, SUPABASE_SERVICE_KEY
  *
- * The script:
- *   - Downloads/parses each source
- *   - Fuzzy-matches against contractor_profiles by name
- *   - Flags matches in contractor_profiles.blacklist_flags[]
- *   - Generates a human-readable report of flagged contractors
+ * RECONCILE, NOT APPEND
+ *   The run computes the complete flag list for every Bengaluru profile and
+ *   writes only the differences — including removing flags nothing supports
+ *   any more. The old version only ever added, so a flag attached by a bad
+ *   match stayed on a firm forever.
  *
- * This is public interest civic accountability work.
- * All sources are government-published public records.
+ * LISTS ARE OPT-IN
+ *   The list scrapers read table cells, not firm records, and none of these
+ *   pages is reliably reachable (Sep 2026: GeM redirects, KPCL returns 500).
+ *   A list that fails to load would make the reconcile strip every flag it
+ *   supports, so --apply refuses to run while any requested list failed.
  *
- * Run:    node scripts/scrape-blacklists.mjs
- * Env:    SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_MANAGEMENT_TOKEN
+ * Wording, citation and money format come from scripts/lib/contractor-flags.mjs;
+ * a flag that fails checkFlag() is never written.
  */
 
-import { dbQuery, upsertRows, selectRows } from "./lib/db.mjs"
+import { mkdirSync, writeFileSync } from "node:fs"
+import { resolve, dirname } from "node:path"
+import { fileURLToPath } from "node:url"
+import { flag, run } from "./india/lib/cli.mjs"
+import { createRest } from "./lib/rest.mjs"
+import {
+  DOCUMENTED_CASES, checkFlag, citeDate, desiredFlags, planFlagChanges,
+} from "./lib/contractor-flags.mjs"
 
-// ─── Fuzzy name matching ──────────────────────────────────────
-function normalize(name) {
-  if (!name) return ""
-  return name
-    .toUpperCase()
-    .replace(/[^A-Z0-9\s]/g, "")
-    .replace(/\b(M\/S|MR|MRS|SMT|SRI|SHRI|PVT|LTD|LIMITED|PRIVATE|INDIA|BANGALORE|BENGALURU)\b/g, "")
-    .replace(/\s+/g, " ")
-    .trim()
-}
+const ARTIFACT = resolve(dirname(fileURLToPath(import.meta.url)), "../.artifacts/contractor-flags.dry-run.json")
+const UA = { "User-Agent": "Mozilla/5.0 (compatible; KaunBot/1.0; civic-transparency)" }
 
-function nameDistance(a, b) {
-  const na = normalize(a)
-  const nb = normalize(b)
-  if (!na || !nb) return 1
+// ─── Sources ──────────────────────────────────────────────────
+// Each returns { id, ok, entries }. A list entry's flag names the list, who
+// published the listing and when Kaun read it; it claims nothing more.
 
-  // Exact normalized match
-  if (na === nb) return 0
-
-  // One contains the other
-  if (na.includes(nb) || nb.includes(na)) return 0.1
-
-  // Token overlap (Jaccard similarity)
-  const tokensA = new Set(na.split(" ").filter(t => t.length > 2))
-  const tokensB = new Set(nb.split(" ").filter(t => t.length > 2))
-  if (tokensA.size === 0 || tokensB.size === 0) return 1
-  const intersection = [...tokensA].filter(t => tokensB.has(t)).length
-  const union = new Set([...tokensA, ...tokensB]).size
-  const jaccard = intersection / union
-  return 1 - jaccard
-}
-
-function findMatches(blacklistName, profiles, threshold = 0.4) {
-  const matches = []
-  for (const p of profiles) {
-    const allNames = [p.canonical_name, ...(p.aliases || [])]
-    for (const alias of allNames) {
-      const dist = nameDistance(blacklistName, alias)
-      if (dist <= threshold) {
-        matches.push({ profile: p, alias, distance: dist })
-        break
-      }
-    }
+function documentedCases() {
+  return {
+    id: "documented",
+    ok: true,
+    entries: DOCUMENTED_CASES.map(c => ({ names: c.names, flags: c.flags, match: "phrase" })),
   }
-  return matches
 }
 
-// ─── Source 1: GeM Suspended Sellers (PDF → text extraction) ──
-async function scrapeGemSuspended() {
-  console.log("\n── GeM Suspended Sellers ──")
-  const pdfUrl = "https://assets-bg.gem.gov.in/resources/pdf/Sellers_Suspended_Archive_List.pdf"
+async function fetchText(url) {
+  const res = await fetch(url, { headers: UA, redirect: "manual", signal: AbortSignal.timeout(30_000) })
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return res.text()
+}
 
+const cells = html => [...html.matchAll(/<td[^>]*>([^<]+)<\/td>/g)].map(m => m[1].trim())
+
+async function scrapeList(id, loader) {
   try {
-    // Fetch the PDF and extract text (GeM also has an HTML page)
-    // Try the HTML suspended sellers page first
-    const htmlUrl = "https://gem.gov.in/suspendedSellers"
-    const res = await fetch(htmlUrl, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; KaunBot/1.0; civic-transparency)" },
-    })
-
-    if (!res.ok) {
-      console.log(`  GeM HTML page returned ${res.status}, trying PDF...`)
-      // PDF parsing would require a library; for now, log and skip
-      console.log(`  PDF at: ${pdfUrl}`)
-      console.log(`  Manual download required for PDF parsing. Skipping automated extraction.`)
-      return []
-    }
-
-    const html = await res.text()
-
-    // Extract seller names from HTML table
-    const sellers = []
-    // GeM typically has a table with seller names and GST numbers
-    const nameRe = /<td[^>]*>([^<]+)<\/td>/g
-    let match
-    while ((match = nameRe.exec(html)) !== null) {
-      const text = match[1].trim()
-      // Filter for likely company names (skip short strings, dates, etc.)
-      if (text.length > 5 && !text.match(/^\d/) && !text.includes("@")) {
-        sellers.push(text)
-      }
-    }
-
-    console.log(`  Extracted ${sellers.length} potential seller names from GeM`)
-    return sellers.map(name => ({ name, source: "GeM Suspended Sellers" }))
+    const entries = await loader()
+    console.log(`  ${id}: ${entries.length} name(s)`)
+    return { id, ok: true, entries }
   } catch (e) {
-    console.error(`  GeM scrape failed:`, e.message)
-    return []
+    console.log(`  ${id}: FAILED (${e.message})`)
+    return { id, ok: false, entries: [] }
   }
 }
 
-// ─── Source 2: World Bank via OpenSanctions ───────────────────
-async function scrapeWorldBank() {
-  console.log("\n── World Bank Debarment (via OpenSanctions) ──")
-
-  try {
-    // OpenSanctions API — search for India-based debarred entities
-    const url = "https://api.opensanctions.org/search/default?q=india&schema=LegalEntity&countries=in&limit=100"
-    const res = await fetch(url, {
-      headers: {
-        "User-Agent": "kaun-civic/1.0 (civic-transparency-project)",
-        "Accept": "application/json",
-      },
-    })
-
-    if (!res.ok) {
-      console.log(`  OpenSanctions API returned ${res.status}`)
-      // Fallback: try direct World Bank search
-      return await scrapeWorldBankDirect()
-    }
-
-    const data = await res.json()
-    const entities = (data.results || []).map(r => ({
-      name: r.caption || r.properties?.name?.[0] || "",
-      source: `World Bank Debarment (${r.datasets?.join(", ") || "sanctions"})`,
-    })).filter(e => e.name)
-
-    console.log(`  Found ${entities.length} India-related sanctioned entities`)
-    return entities
-  } catch (e) {
-    console.error(`  OpenSanctions failed:`, e.message)
-    return await scrapeWorldBankDirect()
-  }
-}
-
-async function scrapeWorldBankDirect() {
-  console.log("  Trying World Bank direct...")
-  try {
-    const url = "https://www.worldbank.org/en/projects-operations/procurement/debarred-firms"
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; KaunBot/1.0; civic-transparency)" },
-    })
-    if (!res.ok) return []
-    const html = await res.text()
-    // Extract firm names from the debarment table
-    const firms = []
-    const re = /India[^<]*<\/td>\s*<td[^>]*>([^<]+)/g
-    let m
-    while ((m = re.exec(html)) !== null) {
-      firms.push({ name: m[1].trim(), source: "World Bank Debarment" })
-    }
-    console.log(`  Found ${firms.length} India-related debarred firms`)
-    return firms
-  } catch (e) {
-    console.error(`  World Bank direct failed:`, e.message)
-    return []
-  }
-}
-
-// ─── Source 3: CPPP National Debarment List ──────────────────
-async function scrapeCPPP() {
-  console.log("\n── CPPP National Debarment List ──")
-
-  try {
-    const url = "https://eprocure.gov.in/eprocure/app?page=FrontEndDebarmentList&service=page"
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; KaunBot/1.0; civic-transparency)" },
-    })
-
-    if (!res.ok) {
-      console.log(`  CPPP returned ${res.status}`)
-      return []
-    }
-
-    const html = await res.text()
-    const firms = []
-
-    // Extract from table rows — typically: org name, contractor name, debarment period
-    const rowRe = /<tr[^>]*>\s*<td[^>]*>(\d+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)/g
-    let m
-    while ((m = rowRe.exec(html)) !== null) {
-      const org = m[2].trim()
-      const contractor = m[3].trim()
-      if (contractor.length > 3) {
-        firms.push({ name: contractor, source: `CPPP Debarment (by ${org})` })
-      }
-    }
-
-    console.log(`  Found ${firms.length} debarred contractors from CPPP`)
-    return firms
-  } catch (e) {
-    console.error(`  CPPP scrape failed:`, e.message)
-    return []
-  }
-}
-
-// ─── Source 4: KPCL Karnataka Blacklisted Firms ──────────────
-async function scrapeKPCL() {
-  console.log("\n── KPCL Blacklisted Firms ──")
-
-  try {
-    const url = "https://kpcl.karnataka.gov.in/info-4/Blacklisted+Firms/en"
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; KaunBot/1.0; civic-transparency)" },
-    })
-
-    if (!res.ok) {
-      console.log(`  KPCL returned ${res.status}`)
-      return []
-    }
-
-    const html = await res.text()
-    const firms = []
-
-    // Extract firm names from the page content
-    const tdRe = /<td[^>]*>([^<]+)<\/td>/g
-    let m
-    while ((m = tdRe.exec(html)) !== null) {
-      const text = m[1].trim()
-      if (text.length > 5 && !text.match(/^\d+$/) && !text.match(/^Sl/) && !text.includes("Period")) {
-        firms.push({ name: text, source: "KPCL Blacklisted Firms (Karnataka)" })
-      }
-    }
-
-    console.log(`  Found ${firms.length} blacklisted firms from KPCL`)
-    return firms
-  } catch (e) {
-    console.error(`  KPCL scrape failed:`, e.message)
-    return []
-  }
-}
-
-// ─── Source 5: Known BBMP blacklisting cases (from reporting) ─
-function getKnownBlacklisted() {
-  // Documented cases from investigative reporting and RTI responses
+function listSources(retrieved) {
   return [
-    { name: "KRIDL", source: "BBMP blacklisted (twice) per BNP/RTI — continued to receive Rs 4,700 crore via Section 4(g) exemption" },
-    { name: "Karnataka Rural Infrastructure Development Limited", source: "BBMP blacklisted (twice) — same as KRIDL" },
+    scrapeList("gem", async () => {
+      const html = await fetchText("https://gem.gov.in/suspendedSellers")
+      return cells(html)
+        .filter(t => t.length > 5 && !/^\d/.test(t) && !t.includes("@"))
+        .map(name => ({
+          names: [name], match: "fuzzy",
+          flags: [`Listed as a suspended seller on Government e-Marketplace (gem.gov.in, retrieved ${retrieved})`],
+        }))
+    }),
+    scrapeList("world-bank", async () => {
+      const html = await fetchText("https://www.worldbank.org/en/projects-operations/procurement/debarred-firms")
+      return [...html.matchAll(/India[^<]*<\/td>\s*<td[^>]*>([^<]+)/g)].map(m => ({
+        names: [m[1].trim()], match: "fuzzy",
+        flags: [`Listed on the World Bank's debarred firms list (worldbank.org, retrieved ${retrieved})`],
+      }))
+    }),
+    scrapeList("cppp", async () => {
+      const html = await fetchText("https://eprocure.gov.in/eprocure/app?page=FrontEndDebarmentList&service=page")
+      const rows = [...html.matchAll(/<tr[^>]*>\s*<td[^>]*>(\d+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)/g)]
+      return rows
+        .filter(m => m[3].trim().length > 3)
+        .map(m => ({
+          names: [m[3].trim()], match: "fuzzy",
+          flags: [`Listed as debarred by ${m[2].trim()} on the Central Public Procurement Portal (eprocure.gov.in, retrieved ${retrieved})`],
+        }))
+    }),
+    scrapeList("kpcl", async () => {
+      const html = await fetchText("https://kpcl.karnataka.gov.in/info-4/Blacklisted+Firms/en")
+      return cells(html)
+        .filter(t => t.length > 5 && !/^\d+$/.test(t) && !/^Sl/.test(t) && !t.includes("Period"))
+        .map(name => ({
+          names: [name], match: "fuzzy",
+          flags: [`Listed as blacklisted by Karnataka Power Corporation (kpcl.karnataka.gov.in, retrieved ${retrieved})`],
+        }))
+    }),
   ]
 }
 
 // ─── Main ─────────────────────────────────────────────────────
+
 async function main() {
-  console.log(`[${new Date().toISOString()}] Blacklist cross-reference started`)
+  const apply = flag("apply")
+  const withLists = flag("lists")
+  console.log(`\nscrape-blacklists — ${apply ? "APPLY (writes)" : "DRY RUN (no writes)"}${withLists ? " · with lists" : ""}`)
 
-  // Load contractor profiles from DB
-  let profiles = []
-  try {
-    profiles = await dbQuery(`
-      SELECT entity_id, canonical_name, aliases, phone, total_value_lakh, ward_count
-      FROM contractor_profiles
-      WHERE city_id = 'bengaluru'
-      ORDER BY total_value_lakh DESC;
-    `)
-    console.log(`Loaded ${profiles.length} contractor profiles from DB`)
-  } catch (e) {
-    console.error("Failed to load profiles:", e.message)
-    console.log("Run seed-work-orders-full.mjs first to generate contractor profiles.")
-    process.exit(1)
+  const rest = createRest()
+  if (apply && !rest.canWrite) throw new Error("--apply needs SUPABASE_SERVICE_KEY")
+
+  const profiles = await rest.selectAll("contractor_profiles", {
+    select: "entity_id,canonical_name,aliases,total_contracts,blacklist_flags",
+    city_id: "eq.bengaluru",
+    order: "entity_id.asc",
+  })
+  console.log(`  profiles read: ${profiles.length}`)
+
+  const sources = [documentedCases()]
+  if (withLists) sources.push(...await Promise.all(listSources(citeDate(new Date()))))
+  const failed = sources.filter(s => !s.ok).map(s => s.id)
+
+  const desired = desiredFlags(profiles, sources.filter(s => s.ok).flatMap(s => s.entries))
+  const changes = planFlagChanges(profiles, desired)
+
+  const unpublishable = changes.flatMap(c => c.after.map(f => ({ flag: f, problems: checkFlag(f) })))
+    .filter(x => x.problems.length)
+  if (unpublishable.length) {
+    for (const u of unpublishable) console.log(`  ! ${u.flag}\n      ${u.problems.join("; ")}`)
+    throw new Error(`${unpublishable.length} flag(s) fail checkFlag(); nothing written`)
   }
 
-  // Scrape all sources
-  const allBlacklisted = [
-    ...getKnownBlacklisted(),
-    ...await scrapeGemSuspended(),
-    ...await scrapeWorldBank(),
-    ...await scrapeCPPP(),
-    ...await scrapeKPCL(),
-  ]
-
-  console.log(`\n── Cross-referencing ${allBlacklisted.length} blacklisted entities against ${profiles.length} contractor profiles ──`)
-
-  const flagged = new Map() // entity_id -> Set of flag strings
-
-  for (const bl of allBlacklisted) {
-    const matches = findMatches(bl.name, profiles)
-    for (const match of matches) {
-      const eid = match.profile.entity_id
-      if (!flagged.has(eid)) flagged.set(eid, new Set())
-      flagged.get(eid).add(bl.source)
-    }
+  const flagged = [...desired.values()].filter(f => f.length).length
+  console.log(`  profiles flagged after this run: ${flagged}`)
+  console.log(`  changes: ${changes.length}`)
+  for (const c of changes) {
+    console.log(`\n  ${c.action.toUpperCase()} ${c.canonical_name} (${c.entity_id}, ${c.total_contracts ?? "?"} contracts)`)
+    for (const f of c.before) console.log(`    - ${f}`)
+    for (const f of c.after) console.log(`    + ${f}`)
   }
 
-  console.log(`\nFLAGGED: ${flagged.size} contractor profiles matched against blacklists`)
+  mkdirSync(dirname(ARTIFACT), { recursive: true })
+  writeFileSync(ARTIFACT, JSON.stringify({
+    generated_at: new Date().toISOString(),
+    mode: apply ? "apply" : "dry-run",
+    sources: sources.map(s => ({ id: s.id, ok: s.ok, entries: s.entries.length })),
+    profiles_read: profiles.length,
+    profiles_flagged_after: flagged,
+    changes,
+  }, null, 2))
+  console.log(`\n  artifact: ${ARTIFACT}`)
 
-  // Update DB
-  for (const [entityId, flags] of flagged) {
-    const flagArr = [...flags]
-    const profile = profiles.find(p => p.entity_id === entityId)
-    console.log(`  ${profile?.canonical_name || entityId}: ${flagArr.join(" | ")}`)
-
-    await dbQuery(`
-      UPDATE contractor_profiles
-      SET blacklist_flags = ARRAY[${flagArr.map(f => `'${f.replace(/'/g, "''")}'`).join(",")}],
-          updated_at = NOW()
-      WHERE entity_id = '${entityId.replace(/'/g, "''")}';
-    `)
+  if (!apply) return
+  if (failed.length) {
+    throw new Error(`list(s) failed to load: ${failed.join(", ")}. Reconciling now would strip the flags they support; nothing written`)
   }
-
-  // Summary report
-  console.log("\n═══════════════════════════════════════════════")
-  console.log("CONTRACTOR ACCOUNTABILITY REPORT — BENGALURU")
-  console.log("═══════════════════════════════════════════════")
-
-  if (flagged.size === 0) {
-    console.log("No matches found. This could mean:")
-    console.log("  - Blacklisted entities operate under different names")
-    console.log("  - The blacklist sources were not accessible")
-    console.log("  - Contractor profiles need enrichment (more data)")
-  } else {
-    for (const [entityId, flags] of flagged) {
-      const p = profiles.find(p => p.entity_id === entityId)
-      if (!p) continue
-      console.log(`\n  ${p.canonical_name}`)
-      console.log(`  Total value: Rs ${p.total_value_lakh} lakh | Wards: ${p.ward_count} | Contracts: ${p.total_contracts || "?"}`)
-      console.log(`  Blacklist flags:`)
-      for (const f of flags) {
-        console.log(`    ▸ ${f}`)
-      }
-    }
+  const now = new Date().toISOString()
+  for (const c of changes) {
+    await rest.patch("contractor_profiles", { entity_id: `eq.${c.entity_id}` },
+      { blacklist_flags: c.after, updated_at: now })
   }
-
-  console.log(`\n[${new Date().toISOString()}] Blacklist cross-reference done.`)
+  console.log(`  wrote ${changes.length} profile(s)`)
 }
 
-main().catch(e => { console.error("Fatal:", e); process.exit(1) })
+run(main, import.meta.url)

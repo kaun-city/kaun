@@ -24,6 +24,7 @@ import { readFileSync } from "node:fs"
 import { stripTypeScriptTypes } from "node:module"
 
 import { formatLakh } from "../apps/web/lib/ward-utils.ts"
+import { DOCUMENTED_CASES } from "../scripts/lib/contractor-flags.mjs"
 
 const read = path => readFileSync(new URL(`../apps/web/${path}`, import.meta.url), "utf8")
 
@@ -54,10 +55,11 @@ const KRIDL = {
   total_contracts: 335, total_value_lakh: 20715.13, total_paid_lakh: 0, total_deduction_lakh: 0,
   avg_deduction_pct: 0, ward_count: 111, wards: [5, 7, 8], first_seen: "2024-25", last_seen: "2024-25",
   is_govt_entity: false,
-  blacklist_flags: ["BBMP blacklisted (2010) + Social Welfare Dept blacklisted (2018) — received Rs 4,700 crore via Section 4(g) tender exemption"],
+  blacklist_flags: DOCUMENTED_CASES.find(c => c.id === "kridl").flags,
 }
 const KRIDL_SECOND_PHONE = { ...KRIDL, entity_id: "ph_8073912353", total_contracts: 10, total_value_lakh: 437.54, ward_count: 7 }
-const SMALL_FLAGGED = { ...KRIDL, entity_id: "ph_9901828068", canonical_name: "N", total_contracts: 1, total_value_lakh: 9.68, ward_count: 1 }
+// A second, smaller flagged firm (synthetic: the one-contract "N" profile once carried a false KRIDL match).
+const SMALL_FLAGGED = { ...KRIDL, entity_id: "ph_test_small", canonical_name: "SMALL FLAGGED WORKS", total_contracts: 1, total_value_lakh: 9.68, ward_count: 1 }
 const CLEAN = { ...KRIDL, entity_id: "ph_1", canonical_name: "CLEAN WORKS", blacklist_flags: [], total_value_lakh: 99999 }
 
 const base = { reportCard: null, committeeMeetings: null, infraStats: null, wardContractors: [], cityId: "bengaluru" }
@@ -85,7 +87,7 @@ test("one firm under two phone numbers counts once; other firms are counted, not
 
 test("a single-ward contractor is not described as spread across the city", () => {
   const headline = pickHeadline({ ...base, wardContractors: [SMALL_FLAGGED] })
-  assert.equal(headline.detail, "N: ₹9.7 L in 1 contract city-wide, in 1 ward")
+  assert.equal(headline.detail, "SMALL FLAGGED WORKS: ₹9.7 L in 1 contract city-wide, in 1 ward")
 })
 
 test("no committee finding claims a denominator the data does not have", () => {
