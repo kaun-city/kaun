@@ -29,8 +29,10 @@ not on the command line.
 `db:start` starts the local Supabase services and writes local API credentials
 to `apps/web/.env.local`. Restart `npm run dev` after switching the database.
 Before `db:start`, `db:reset` or `db:use-hosted` changes that file, the previous
-copy is saved to `supabase/.local/env-backups/` (git-ignored, owner-only) and
-the path is printed. Supabase Studio is available at <http://127.0.0.1:54323>.
+copy is saved to `supabase/.local/env-backups/` (git-ignored, owner-only: mode
+0600 on macOS/Linux, an ACL granting only your account on Windows) and the path
+is printed. If the copy cannot be restricted, it is deleted and the switch
+stops. Supabase Studio is available at <http://127.0.0.1:54323>.
 
 `[db.network_restrictions]` in `supabase/config.toml` applies only to hosted
 projects and stays disabled; it does not limit who can reach the local

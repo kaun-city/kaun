@@ -6,7 +6,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { CIVIC_PROJECTS } from "../apps/web/lib/civic-projects.ts"
-import { baseline, migrationSeededTables, privateTables } from "../scripts/local-db/shared.mjs"
+import { baseline, migrationSeededTables, privateTables, restrictToOwner } from "../scripts/local-db/shared.mjs"
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8")
 const rootPackage = JSON.parse(read("package.json"))
@@ -183,10 +183,60 @@ test("switching environments backs up apps/web/.env.local before rewriting it", 
     assert.equal(backups.length, 1)
     const backup = join(sandbox, "supabase/.local/env-backups", backups[0])
     assert.equal(readFileSync(backup, "utf8"), original)
-    assert.equal(statSync(backup).mode & 0o777, 0o600)
-    assert.match(output, /supabase\/\.local\/env-backups\/web\.env\.local\./)
+    if (process.platform === "win32") {
+      // One explicit grant, no inherited entries: only the current account.
+      const acl = execFileSync("icacls", [backup], { encoding: "utf8" })
+      assert.match(acl, new RegExp(`${process.env.USERNAME}:\\(F\\)`, "i"))
+      assert.doesNotMatch(acl, /\(I\)/)
+      assert.doesNotMatch(acl, /(Everyone|BUILTIN\\Users|Authenticated Users):/i)
+    } else {
+      assert.equal(statSync(backup).mode & 0o777, 0o600)
+    }
+    assert.match(output, /supabase[\\/]\.local[\\/]env-backups[\\/]web\.env\.local\./)
   } finally {
     rmSync(sandbox, { recursive: true, force: true })
   }
   assert.match(read("scripts/local-db/write-web-env.mjs"), /backupWebEnv\(\)/)
+})
+
+test("owner-only restriction uses mode bits on POSIX and an explicit ACL on Windows", () => {
+  const sandbox = mkdtempSync(join(tmpdir(), "kaun-acl-"))
+  try {
+    const file = join(sandbox, "secret")
+    writeFileSync(file, "x")
+    const calls = []
+    const spawn = (command, args) => { calls.push([command, ...args]); return { status: 0, stdout: "", stderr: "" } }
+    restrictToOwner(file, { platform: "win32", env: { USERNAME: "dev", USERDOMAIN: "BOX" }, spawn })
+    restrictToOwner(sandbox, { platform: "win32", env: { USERNAME: "dev" }, spawn })
+    assert.deepEqual(calls, [
+      ["icacls", file, "/inheritance:r", "/grant:r", "BOX\\dev:F"],
+      ["icacls", sandbox, "/inheritance:r", "/grant:r", "dev:(OI)(CI)F"],
+    ])
+    assert.throws(() => restrictToOwner(file, { platform: "win32", env: {}, spawn }), /USERNAME is not set/)
+    assert.throws(
+      () => restrictToOwner(file, { platform: "win32", env: { USERNAME: "dev" }, spawn: () => ({ status: 5, stderr: "Access is denied." }) }),
+      /Access is denied/,
+    )
+  } finally {
+    rmSync(sandbox, { recursive: true, force: true })
+  }
+})
+
+test("a backup that cannot be made owner-only is deleted and stops the rewrite", () => {
+  const sandbox = mkdtempSync(join(tmpdir(), "kaun-env-fail-"))
+  try {
+    mkdirSync(join(sandbox, "apps/web"), { recursive: true })
+    cpSync(fileURLToPath(new URL("../scripts/local-db/", import.meta.url)), join(sandbox, "scripts/local-db"), { recursive: true })
+    writeFileSync(join(sandbox, "apps/web/.env.local"), "SUPABASE_SERVICE_ROLE_KEY=secret\n")
+    const probe = [
+      'import { backupWebEnv } from "./scripts/local-db/shared.mjs"',
+      'try { backupWebEnv({ restrict: path => { if (!path.endsWith("env-backups")) throw new Error("no ACL") } }) }',
+      'catch (error) { console.log(error.message) }',
+    ].join("\n")
+    const output = execFileSync(process.execPath, ["--input-type=module", "-e", probe], { cwd: sandbox, encoding: "utf8" })
+    assert.match(output, /no ACL/)
+    assert.deepEqual(readdirSync(join(sandbox, "supabase/.local/env-backups")), [])
+  } finally {
+    rmSync(sandbox, { recursive: true, force: true })
+  }
 })

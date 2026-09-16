@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process"
-import { chmodSync, constants, copyFileSync, existsSync, mkdirSync, statSync } from "node:fs"
+import { chmodSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs"
 import { relative, resolve } from "node:path"
 
 export const root = resolve(import.meta.dirname, "../..")
@@ -35,15 +35,47 @@ export function hasNonEmptyFile(path) {
 }
 
 /**
+ * Restrict a file or directory to the current user.
+ *
+ * POSIX: mode bits (0600 files, 0700 directories). Windows ignores those bits,
+ * so replace the inherited ACL with a single full-control grant for the
+ * current account. Throws when the restriction cannot be applied, so a copy of
+ * a service-role key is never left readable by other accounts.
+ */
+export function restrictToOwner(path, { platform = process.platform, env = process.env, spawn = spawnSync } = {}) {
+  const isDirectory = statSync(path).isDirectory()
+  if (platform !== "win32") {
+    chmodSync(path, isDirectory ? 0o700 : 0o600)
+    return
+  }
+  const account = env.USERNAME ? (env.USERDOMAIN ? `${env.USERDOMAIN}\\${env.USERNAME}` : env.USERNAME) : null
+  if (!account) throw new Error(`Cannot restrict ${path}: USERNAME is not set`)
+  const grant = isDirectory ? `${account}:(OI)(CI)F` : `${account}:F`
+  const result = spawn("icacls", [path, "/inheritance:r", "/grant:r", grant], { encoding: "utf8", shell: false })
+  if (result.error || result.status !== 0) {
+    const detail = result.error?.message ?? (result.stderr || result.stdout || `exit code ${result.status}`)
+    throw new Error(`Cannot restrict ${path} to ${account}: ${String(detail).trim()}`)
+  }
+}
+
+/**
  * Copy apps/web/.env.local to a timestamped, owner-only file under the
  * git-ignored supabase/.local/ before a script rewrites it, and say where.
+ * If the copy cannot be made owner-only it is deleted and the rewrite stops.
  */
-export function backupWebEnv() {
+export function backupWebEnv({ restrict = restrictToOwner } = {}) {
   mkdirSync(webEnvBackupDir, { recursive: true, mode: 0o700 })
+  restrict(webEnvBackupDir)
   const stamp = new Date().toISOString().replace(/[:.]/g, "-")
   const backup = resolve(webEnvBackupDir, `web.env.local.${stamp}`)
-  copyFileSync(webEnvFile, backup, constants.COPYFILE_EXCL)
-  chmodSync(backup, 0o600)
+  // Created with 0600 so there is no window where POSIX readers can open it.
+  writeFileSync(backup, readFileSync(webEnvFile), { flag: "wx", mode: 0o600 })
+  try {
+    restrict(backup)
+  } catch (error) {
+    rmSync(backup, { force: true })
+    throw error
+  }
   console.log(`Backed up the previous apps/web/.env.local to ${relative(root, backup)}`)
   return backup
 }
