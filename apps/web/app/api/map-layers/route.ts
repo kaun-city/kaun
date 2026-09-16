@@ -4,6 +4,7 @@ import { publicSupabaseConfig } from "@/lib/supabase-config"
 import gbaCrosswalkJson from "@/public/bengaluru-gba-369-to-datameet-243.json"
 import sourceCrosswalkJson from "@/public/bengaluru-ward-crosswalk.json"
 import { constituencyKey } from "@/lib/bengaluru-constituencies"
+import { flaggedContractorCountsByCurrentWard, type CurrentWardRecordRow, type LegacySourceWardRow } from "@/lib/gba-crosswalk"
 
 export const runtime = "nodejs"
 
@@ -104,25 +105,25 @@ async function layerValues(supabase: SupabaseClient, layerId: string, cityId: st
         .select("wards,blacklist_flags")
         .neq("blacklist_flags", "{}")
         .limit(5000)
-      // Bengaluru's historical contractor profile table predates city_id;
-      // filtering that missing column makes the whole layer silently empty.
       if (cityId !== "bengaluru") query = query.eq("city_id", cityId)
       const { data } = await query
+      const profiles = (data ?? []) as Array<{ wards: number[] | null; blacklist_flags: unknown[] | null }>
+      if (cityId === "bengaluru") {
+        // Same attribution as the ward card: only materially overlapping former
+        // wards, bridged to BBMP-225 with the same threshold. Counts are whole
+        // contractors, never area-weighted fractions of a named business.
+        return flaggedContractorCountsByCurrentWard(
+          gbaCrosswalkJson.rows as CurrentWardRecordRow[],
+          sourceCrosswalkJson.rows as LegacySourceWardRow[],
+          profiles,
+        )
+      }
       const values: Values = {}
-      const legacyBySource = new Map<number, number[]>()
-      for (const row of sourceCrosswalkJson.rows) {
-        legacyBySource.set(row.bbmp225_no, row.shares.map(share => share.datameet243_no))
+      for (const profile of profiles) {
+        if (!Array.isArray(profile.blacklist_flags) || profile.blacklist_flags.length === 0) continue
+        for (const ward of new Set(profile.wards ?? [])) values[ward] = (values[ward] ?? 0) + 1
       }
-      for (const r of data ?? []) {
-        const flags = (r.blacklist_flags ?? []) as unknown[]
-        if (!Array.isArray(flags) || flags.length === 0) continue
-        const legacyWards = new Set<number>()
-        for (const w of (r.wards ?? []) as number[]) {
-          for (const legacyWard of legacyBySource.get(w) ?? []) legacyWards.add(legacyWard)
-        }
-        for (const legacyWard of legacyWards) values[legacyWard] = (values[legacyWard] ?? 0) + 1
-      }
-      return cityId === "bengaluru" ? currentizeLegacyValues(values) : values
+      return values
     }
 
     case "hospitals": {

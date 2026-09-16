@@ -127,6 +127,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   const choroplethRef = useRef<ChoroplethData | null>(choropleth)
   const currentWardAtRef = useRef<(lat: number, lng: number) => CurrentWardMeta | null>(() => null)
   const crosswalkReadyRef = useRef<Promise<void>>(Promise.resolve())
+  const boundariesReadyRef = useRef<Promise<void>>(Promise.resolve())
   const selectAtRef = useRef<(lat: number, lng: number) => Promise<void>>(async () => {})
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const reportLayerRef = useRef<any>(null)
@@ -403,11 +404,17 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
         : Promise.resolve()
       crosswalkReadyRef.current = crosswalkReady
 
+      // Clicks, search and "Find my ward" wait for the boundaries too: resolving
+      // a point before they exist would fall back to the historical lookup and
+      // present one former ward as if it were the whole current ward.
+      let resolveBoundaries: () => void = () => {}
+      boundariesReadyRef.current = new Promise<void>(resolve => { resolveBoundaries = resolve })
+
       // Load ward GeoJSON overlay (per-city)
       fetch(city.geojsonUrl, { signal: controller.signal })
         .then((r) => r.json())
         .then((data) => {
-          if (!active) return
+          if (!active) return resolveBoundaries()
           const wardFeatures = data.features as Feature[]
           currentWardAtRef.current = (lat, lng) => {
             const feature = wardFeatures.find(candidate => featureContains(candidate, lat, lng))
@@ -498,9 +505,11 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
           updateLabels()
 
           setLoading(false)
+          resolveBoundaries()
         })
         .catch(error => {
           if (active && error instanceof Error && error.name !== "AbortError") setLoading(false)
+          resolveBoundaries()
         }) // show map even if GeoJSON fails
 
       // Custom pin icon
@@ -523,7 +532,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
         // Never resolve a click against a half-loaded crosswalk (a click
         // during load would otherwise lose its historical vector). The
         // promise always settles, success or failure.
-        await crosswalkReadyRef.current
+        await Promise.all([crosswalkReadyRef.current, boundariesReadyRef.current])
         if (!active) return
         const currentWard = currentWardAtRef.current(lat, lng)
         // Report pick mode: capture coords and hand off — no ward lookup
@@ -567,6 +576,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       labelLayerRef.current = null
       currentWardAtRef.current = () => null
       crosswalkReadyRef.current = Promise.resolve()
+      boundariesReadyRef.current = Promise.resolve()
       selectAtRef.current = async () => {}
     }
   }, [city.center, city.geojsonUrl, city.zoom])

@@ -19,7 +19,6 @@ import { decodeMapState, encodeMapState } from "@/lib/india/map-url-state"
 import { markMapSeen, readMapView, saveMapView, type MapView } from "@/lib/india/map-view-store"
 import { indiaHref } from "@/lib/host-routing"
 import { LOK_SABHA_SEATS } from "@/lib/india/constants"
-import { NO_DATA_FILL } from "@/lib/india/viz"
 import { IndiaHeader } from "./IndiaHeader"
 import type { PcFeatureProps } from "./IndiaMapView"
 
@@ -351,6 +350,12 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                 <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
               </div>
             )}
+            {!panelOpen && layer && !layerLoading && (features.length || LOK_SABHA_SEATS) - painted > 0 && (
+              <p className="flex items-center gap-1.5 px-3 pb-2.5 -mt-1 text-[11px] text-ink/70">
+                <span aria-hidden="true" className="w-2.5 h-2.5 shrink-0 border border-dashed border-ink/60" />
+                {(features.length || LOK_SABHA_SEATS) - painted} seats have no value — not zero
+              </p>
+            )}
 
             {panelOpen && (
               <div id="india-layer-panel" className="border-t border-ink/15 p-3">
@@ -395,7 +400,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                       <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-ink/60 text-xs">
-                      <span className="w-2.5 h-2.5 shrink-0 border border-ink/20" style={{ backgroundColor: NO_DATA_FILL }} />
+                      <span aria-hidden="true" className="w-2.5 h-2.5 shrink-0 border border-dashed border-ink/60" />
                       <span>
                         {layerLoading
                           ? "loading…"

@@ -25,6 +25,8 @@ interface Props {
   waterQuality: WardWaterQuality[]
   wardNo: number
   wardName: string
+  /** Citation for letters (current GBA identity when there is one). */
+  wardLabel: string
   assemblyConstituency: string
   reportCount?: number
   signals?: CivicSignal[]
@@ -55,7 +57,7 @@ function Row({ label, tone = "text-ink", children }: { label: string; tone?: str
 
 const LEDGER = "grid grid-cols-2 gap-x-4"
 
-export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality, wardNo, wardName, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
+export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality, wardNo, wardName, wardLabel, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   return (
     <>
@@ -183,7 +185,7 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
                 {potholes.complaints > 0 && (
                   <button
                     type="button"
-                    onClick={() => setRtiRequest({ issue_type: "pothole_complaints", ward_no: wardNo, ward_name: wardName, assembly_constituency: assemblyConstituency, pothole_complaints: potholes.complaints })}
+                    onClick={() => setRtiRequest({ issue_type: "pothole_complaints", ward_no: wardNo, ward_label: wardLabel, ward_name: wardName, assembly_constituency: assemblyConstituency, pothole_complaints: potholes.complaints })}
                     className={`inline-flex min-h-11 shrink-0 items-center text-xs font-medium text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent ${FOCUS}`}
                   >
                     File RTI

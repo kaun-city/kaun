@@ -16,6 +16,8 @@ export interface RTIDraftRequest {
   issue_type: RTIIssueType
   ward_name: string
   ward_no: number
+  /** Human citation of the ward, e.g. "Bengaluru East corporation, ward 50". */
+  ward_label?: string
   assembly_constituency: string
   // Issue-specific context
   mla_name?: string
@@ -58,7 +60,7 @@ const ISSUE_CONFIG: Record<RTIIssueType, { subject: string; authority: string; a
 
 function buildContext(d: RTIDraftRequest): string {
   const lines = [
-    `Ward: ${d.ward_name} (Ward #${d.ward_no})`,
+    `Ward: ${d.ward_name} (${typeof d.ward_label === "string" && d.ward_label.trim() ? d.ward_label.trim().slice(0, 80) : `Ward #${d.ward_no}`})`,
     `Assembly Constituency: ${d.assembly_constituency}`,
   ]
   if (d.mla_name) lines.push(`MLA: ${d.mla_name} (${d.mla_party ?? "Unknown party"})`)

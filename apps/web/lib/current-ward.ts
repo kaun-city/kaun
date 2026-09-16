@@ -111,3 +111,15 @@ export function preferredElectedReps(
   if (profile.some(rep => rep.role === "MLA")) return [...profile]
   return [...profile, ...mla.filter(rep => rep.role === "MLA")]
 }
+
+/**
+ * How a ward is named in letters and citations. Current GBA wards restart
+ * their numbers in each corporation, so the corporation is part of the name;
+ * a historical 243-ward number must never be presented as a current ward's.
+ */
+export function wardCitation(result: Pick<PinResult, "gba_corporation" | "gba_ward_no" | "ward_no">): string {
+  if (result.gba_corporation && result.gba_ward_no != null) {
+    return `Bengaluru ${result.gba_corporation} corporation, ward ${result.gba_ward_no}`
+  }
+  return result.ward_no != null ? `Ward #${result.ward_no}` : "Ward number not recorded"
+}

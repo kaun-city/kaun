@@ -84,3 +84,18 @@ test("the bridge drops sub-threshold 225 wards (Manorayanapalya's flagged-contra
     [7],
   )
 })
+
+test("the flagged-contractors map layer attributes exactly like the ward card", async () => {
+  const { flaggedContractorCountsByCurrentWard, sourceWardNosForCurrentWard } = await import("../apps/web/lib/gba-crosswalk.ts")
+  // Manorayanapalya (2:51): its former wards map only to BBMP-225 wards 64 and 65.
+  const manorayanapalya = gbaRow(2, 51)
+  const sources = sourceWardNosForCurrentWard(manorayanapalya, legacy.rows)
+  assert.deepEqual([...sources].sort((a, b) => a - b), [64, 65])
+  // A flagged profile active only in slivers (225 wards 63 and 66) must not
+  // shade Manorayanapalya; one active in 65 must.
+  const sliver = { wards: [63, 66], blacklist_flags: ["debarred"] }
+  const inside = { wards: [65], blacklist_flags: ["debarred"] }
+  const clean = { wards: [64], blacklist_flags: [] }
+  assert.equal(flaggedContractorCountsByCurrentWard([manorayanapalya], legacy.rows, [sliver, clean])["2:51"], undefined)
+  assert.equal(flaggedContractorCountsByCurrentWard([manorayanapalya], legacy.rows, [sliver, inside, clean])["2:51"], 1)
+})

@@ -353,7 +353,11 @@ export default function HomePage({ host = "" }: { host?: string }) {
             setShowCard(false)
           }
         })
-        .catch(() => {})
+        .catch(() => {
+          // A missing boundary or crosswalk file must not leave a skeleton up.
+          setPinLoading(false)
+          setShowCard(false)
+        })
     } else if (Number.isInteger(gbaCorporationParam) && Number.isInteger(gbaWardParam)) {
       // The static boundary layer holds the published centre for each current
       // ward. Resolve that point through the server-backed lookup so a shared

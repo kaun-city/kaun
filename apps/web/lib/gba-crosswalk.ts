@@ -81,3 +81,48 @@ export function sourceWardNosForLegacyWard(rows: readonly LegacySourceWardRow[],
     )
     .map(row => row.bbmp225_no)
 }
+
+/** Minimal current-ward crosswalk row needed to attribute records. */
+export interface CurrentWardRecordRow {
+  corporation_id: number
+  ward_no: number
+  historical_wards: HistoricalWardRef[]
+}
+
+/**
+ * BBMP-225 source wards whose ward-tagged records belong to a current GBA
+ * ward: the attributable former 243 wards, bridged to 225 with the same
+ * material-overlap rule. This is exactly what the ward card queries, so any
+ * city-wide view (map layers) must use it too.
+ */
+export function sourceWardNosForCurrentWard(
+  row: CurrentWardRecordRow,
+  sourceRows: readonly LegacySourceWardRow[],
+): Set<number> {
+  const sources = new Set<number>()
+  for (const ref of attributableHistoricalWards(row.historical_wards)) {
+    for (const source of sourceWardNosForLegacyWard(sourceRows, ref.ward_no)) sources.add(source)
+  }
+  return sources
+}
+
+/**
+ * Count flagged contractor profiles per current ward ("corp:ward"), counting a
+ * profile once per ward when any of its BBMP-225 work-order wards is an
+ * attributable source for that ward.
+ */
+export function flaggedContractorCountsByCurrentWard(
+  currentRows: readonly CurrentWardRecordRow[],
+  sourceRows: readonly LegacySourceWardRow[],
+  profiles: ReadonlyArray<{ wards: readonly number[] | null; blacklist_flags: readonly unknown[] | null }>,
+): Record<string, number> {
+  const flagged = profiles.filter(profile => Array.isArray(profile.blacklist_flags) && profile.blacklist_flags.length > 0)
+  const counts: Record<string, number> = {}
+  for (const row of currentRows) {
+    const sources = sourceWardNosForCurrentWard(row, sourceRows)
+    if (!sources.size) continue
+    const count = flagged.filter(profile => (profile.wards ?? []).some(ward => sources.has(ward))).length
+    if (count > 0) counts[gbaWardKey(row.corporation_id, row.ward_no)] = count
+  }
+  return counts
+}

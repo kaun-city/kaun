@@ -402,8 +402,12 @@ export async function fetchWardGrievances(wardName: string, cityId = "bengaluru"
  * Fetch Sakala service-delivery performance for a BBMP assembly constituency.
  */
 export async function fetchSakalaPerformance(acName: string): Promise<SakalaPerformance | null> {
+  // sakala_performance spells some constituencies differently from
+  // elected_reps; accept either the current-ward name or the data name.
+  const names = [...new Set([acName, bengaluruDataConstituency(acName)])]
+    .map(name => `assembly_name.ilike.${name.replace(/[(),]/g, "")}`)
   const rows = await query<SakalaPerformance>("sakala_performance", {
-    "assembly_name": `ilike.${bengaluruDataConstituency(acName)}`,
+    "or": `(${names.join(",")})`,
     "department_code": "eq.BB",
     "select": "assembly_name,year,intime_pct,delayed_pct,pending,rank_intime,rank_overall",
     "order": "year.desc",

@@ -14,6 +14,7 @@ import { WardHeadline } from "@/components/WardHeadline"
 import { WardGrade } from "@/components/WardGrade"
 import { getCity } from "@/lib/cities"
 import { WardProjectSignal } from "@/components/projects/WardProjectSignal"
+import { wardCitation } from "@/lib/current-ward"
 
 interface Props {
   result: PinResult | null
@@ -77,7 +78,8 @@ function HistoricalNote({ wards, listWards }: { wards: HistoricalWardRef[]; list
   return (
     <p className="mt-2 text-xs leading-relaxed text-ink/60">
       Older records are estimated from former wards by map overlap: {shares}.
-      {omitted > 0 && <> Lists of contracts and complaints use only {listWards.map(ref => ref.ward_name).join(" and ")}.</>}
+      {omitted > 0 && <> Work orders, contractors and complaints use {listWards.map(ref => ref.ward_name).join(" and ")}.</>}
+      {wards.length > 1 && <> Tenders and officer contacts come from {wards[0].ward_name}, the largest overlap.</>}
       {" "}
       <a href="/how-it-works" className="text-accent underline decoration-accent/40 underline-offset-2">How this works</a>
     </p>
@@ -350,6 +352,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   waterQuality={ward.waterQuality ?? []}
                   wardNo={primaryHistoricalWard?.ward_no ?? 0}
                   wardName={result.gba_ward_name ?? result.ward_name ?? ""}
+                  wardLabel={wardCitation(result)}
                   assemblyConstituency={result.gba_ac ?? result.assembly_constituency ?? ""}
                   reportCount={ward.reportCount}
                   signals={ward.signals}
@@ -365,6 +368,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   sakala={ward.sakala}
                   wardNo={primaryHistoricalWard?.ward_no ?? 0}
                   wardName={result.gba_ward_name ?? result.ward_name ?? ""}
+                  wardLabel={wardCitation(result)}
                   assemblyConstituency={result.gba_ac ?? result.assembly_constituency ?? ""}
                 />
               )}

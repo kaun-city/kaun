@@ -46,6 +46,7 @@ import { PartyBadge } from "@/components/shared/PartyBadge"
 import { SkeletonCard, SkeletonRepCard, SkeletonScorecard } from "@/components/shared/Skeleton"
 import { TrustBadge } from "@/components/shared/TrustBadge"
 import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
+import { wardCitation } from "@/lib/current-ward"
 import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import type { WardInfraStats, WardPotholes } from "@/lib/types"
 
@@ -80,6 +81,7 @@ export function WhoTab({
     const historicalWard = result.historical_wards?.[0]
     return {
       ward_no: historicalWard?.ward_no ?? result.ward_no ?? 0,
+      ward_label: wardCitation(result),
       ward_name: result.gba_ward_name ?? result.ward_name ?? "",
       assembly_constituency: result.gba_ac ?? result.assembly_constituency ?? "",
       mla_name: electedReps.find(r => r.role === "MLA")?.name ?? undefined,

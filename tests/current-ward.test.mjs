@@ -75,3 +75,9 @@ test("the MLA-only list fills only a missing MLA role in the profile", () => {
   const mlaOnly = [rep("MLA", "Direct MLA")]
   assert.deepEqual(preferredElectedReps(profile, mlaOnly).map(r => r.name), ["Profile MP", "Profile Corporator", "Direct MLA"])
 })
+
+test("letters cite a current ward by corporation, never by its former ward number", async () => {
+  const { wardCitation } = await import("../apps/web/lib/current-ward.ts")
+  assert.equal(wardCitation({ gba_corporation: "East", gba_ward_no: 50, ward_no: null }), "Bengaluru East corporation, ward 50")
+  assert.equal(wardCitation({ gba_corporation: null, gba_ward_no: null, ward_no: 112 }), "Ward #112")
+})

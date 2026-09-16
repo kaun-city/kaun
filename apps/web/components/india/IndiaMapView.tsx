@@ -119,7 +119,9 @@ export default function IndiaMapView({
     if (value === undefined) {
       // No value is a fact, not a zero. Grey, and the legend explains why a
       // seat can legitimately be grey for this particular layer.
-      return { color: NO_DATA_STROKE, weight: 0.4, opacity: 0.3, fillColor: NO_DATA_FILL, fillOpacity: 0.18 }
+      // Drawn unfilled with a dashed edge so it can never be read as the
+      // palest ramp step; the legend shows the same dashed, empty swatch.
+      return { color: NO_DATA_STROKE, weight: 0.6, opacity: 0.9, dashArray: "2 2", fillColor: NO_DATA_FILL, fillOpacity: 0 }
     }
     return {
       color: INK,

@@ -7,7 +7,7 @@ and row-level security; a plain PostgreSQL container is not an equivalent test.
 
 ## One-time bootstrap
 
-Prerequisites: Node 20+, Docker Desktop, and a hosted Supabase PostgreSQL
+Prerequisites: Node 20.11+ (scripts use `import.meta.dirname`), Docker Desktop, and a hosted Supabase PostgreSQL
 connection string. Start Docker Desktop, then from the repository root:
 
 ```powershell

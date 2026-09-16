@@ -36,6 +36,8 @@ interface Props {
   sakala: SakalaPerformance | null
   wardNo: number
   wardName: string
+  /** Citation for letters (current GBA identity when there is one). */
+  wardLabel: string
   assemblyConstituency: string
 }
 
@@ -51,7 +53,7 @@ const EYEBROW = "text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60
 const FOCUS_RING = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
 const PHONE_LINK = `inline-flex min-h-11 shrink-0 items-center font-mono text-xs text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent ${FOCUS_RING}`
 
-export function ReachTab({ city, localOffices, departments, grievances, sakala, wardNo, wardName, assemblyConstituency }: Props) {
+export function ReachTab({ city, localOffices, departments, grievances, sakala, wardNo, wardName, wardLabel, assemblyConstituency }: Props) {
   const offices = localOffices.filter(o => o.boundary_type !== "gba_corporation")
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   const [showIssues, setShowIssues] = useState(false)
@@ -136,7 +138,7 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala, 
             {RTI_ISSUES.map(issue => (
               <button
                 key={issue.type}
-                onClick={() => { setRtiRequest({ issue_type: issue.type, ward_no: wardNo, ward_name: wardName, assembly_constituency: assemblyConstituency }); setShowIssues(false) }}
+                onClick={() => { setRtiRequest({ issue_type: issue.type, ward_no: wardNo, ward_label: wardLabel, ward_name: wardName, assembly_constituency: assemblyConstituency }); setShowIssues(false) }}
                 className={`w-full min-h-11 px-2 py-3 flex items-center justify-between gap-3 text-left hover:bg-ink/5 transition-colors ${FOCUS_RING}`}
               >
                 <div>
