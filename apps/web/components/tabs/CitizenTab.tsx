@@ -9,9 +9,12 @@ import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import { SkeletonCard, SkeletonStats } from "@/components/shared/Skeleton"
 import type { CivicSignal } from "@/lib/api"
 
-// City-wide averages for comparison (from ward_infra_stats materialized view)
+// City-wide averages for comparison, per DataMeet-243 ward.
+// Signals: ward_infra_stats (1,340 OSM signals / 243). Bus stops: ward_bus_stops
+// (1,813 deduplicated BMTC stops / 243). The old 155.6 came from a view that
+// counts each physical stop ~14 times, so it is not used.
 const CITY_AVG_SIGNALS  = 5.5
-const CITY_AVG_STOPS    = 155.6
+const CITY_AVG_STOPS    = 7.5
 
 interface Props {
   city: CityConfig
@@ -104,7 +107,6 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
               {[
                 { label: "Road length",    value: wardStats.total_road_length_km ? `${wardStats.total_road_length_km} km` : null },
                 { label: "Streetlights",   value: (wardStats.streetlights ?? wardStats.total_streetlights)?.toLocaleString("en-IN") },
-                { label: "Bus stops",      value: wardStats.total_bus_stops?.toLocaleString("en-IN") },
                 { label: "Bus routes",     value: wardStats.total_bus_routes?.toLocaleString("en-IN") },
                 { label: "Govt schools",   value: wardStats.total_govt_schools?.toLocaleString("en-IN") },
                 { label: "Police stn.",    value: wardStats.total_police_stations?.toLocaleString("en-IN") },
@@ -132,32 +134,18 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
             </section>
           )}
 
-          {/* Traffic Signals + Bus Stops */}
+          {/* Traffic signals (ward-level). The constituency ledger above is a
+              different scope; bus stops appear once, below, from BMTC. */}
           {infraStats && (
             <section className={SECTION}>
-              <p className={EYEBROW}>Road Infrastructure</p>
-              <div className="mt-1.5 grid grid-cols-2 gap-4">
-                <div className="min-w-0">
-                  <p className={`text-lg ${FIGURE} ${infraStats.signal_count === 0 ? "text-danger" : infraStats.signal_count < CITY_AVG_SIGNALS ? "text-warning" : "text-ink"}`}>
-                    {infraStats.signal_count}
-                  </p>
-                  <p className="text-xs text-ink/75">Traffic signals</p>
-                  <p className="font-mono text-[11px] tabular-nums text-ink/60">city avg {CITY_AVG_SIGNALS}</p>
-                </div>
-                <div className="min-w-0">
-                  <p className={`text-lg ${FIGURE} ${infraStats.bus_stop_count === 0 ? "text-danger" : infraStats.bus_stop_count < CITY_AVG_STOPS ? "text-warning" : "text-ink"}`}>
-                    {infraStats.bus_stop_count}
-                  </p>
-                  <p className="text-xs text-ink/75">Bus stops</p>
-                  <p className="font-mono text-[11px] tabular-nums text-ink/60">city avg {Math.round(CITY_AVG_STOPS)}</p>
-                </div>
-              </div>
-              {infraStats.daily_trips > 0 && (
-                <p className="mt-1.5 text-xs text-ink/70">
-                  <span className="font-mono tabular-nums text-ink">{infraStats.daily_trips.toLocaleString("en-IN")}</span> daily bus trips through this ward
+              <div className="flex items-baseline justify-between gap-4">
+                <p className={EYEBROW}>Traffic signals in this ward</p>
+                <p className={`text-lg ${FIGURE} ${infraStats.signal_count < CITY_AVG_SIGNALS ? "text-warning" : "text-ink"}`}>
+                  {infraStats.signal_count}
                 </p>
-              )}
-              <Provenance label="2026" source="OSM / BMTC" />
+              </div>
+              <p className="text-xs text-ink/70">Mapped signals · city average {CITY_AVG_SIGNALS} per ward</p>
+              <Provenance label="2026" source="OpenStreetMap" />
             </section>
           )}
 
@@ -170,7 +158,7 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
               </p>
             </div>
             <p className="text-xs text-ink/70">
-              {reportCount === 0 ? "No reports yet — be the first" : reportCount === 1 ? "1 issue reported by residents" : `issues reported by residents`}
+              {reportCount === 0 ? "No resident reports in the last 30 days" : reportCount === 1 ? "1 issue reported by residents" : `issues reported by residents`}
             </p>
           </section>
 
@@ -195,19 +183,21 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
             </section>
           )}
 
-          {/* Bus connectivity (BMTC 2026) */}
+          {/* Bus stops and service: the one ward-level bus figure (ward_bus_stops,
+              one row per physical BMTC stop inside the ward). */}
           {wardBusStats && wardBusStats.stop_count > 0 && (
             <section className={SECTION}>
               <div className="flex items-baseline justify-between gap-4">
-                <p className={EYEBROW}>Bus Connectivity</p>
-                <p className="text-xs text-ink/70">
-                  <span className={`text-lg text-ink ${FIGURE}`}>{wardBusStats.stop_count}</span> stops
-                </p>
+                <p className={EYEBROW}>BMTC bus stops in this ward</p>
+                <p className={`text-lg text-ink ${FIGURE}`}>{wardBusStats.stop_count.toLocaleString("en-IN")}</p>
               </div>
+              <p className="text-xs text-ink/70">City average {CITY_AVG_STOPS} stops per ward</p>
               {wardBusStats.total_trips > 0 && (
-                <p className="text-xs text-ink/70"><span className="font-mono tabular-nums text-ink">{wardBusStats.total_trips.toLocaleString("en-IN")}</span> daily trips through this ward</p>
+                <p className="mt-1 text-xs text-ink/70">
+                  <span className="font-mono tabular-nums text-ink">{wardBusStats.total_trips.toLocaleString("en-IN")}</span> scheduled bus arrivals a day across these stops (a bus that stops at two of them counts twice)
+                </p>
               )}
-              <p className={`mt-1.5 ${SOURCE}`}>BMTC 2026</p>
+              <Provenance label="2026" source="BMTC stops and timetable" />
             </section>
           )}
 
@@ -392,8 +382,8 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
               <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className={`group -mx-2 block px-2 py-2.5 hover:bg-ink/5 ${FOCUS}`}>
                 <div className="mb-1 flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em]">
                   <span className="font-semibold text-ink/75">{s.issue_type}</span>
-                  <span className="text-ink/60" aria-hidden="true">·</span>
-                  <span className="text-ink/60">{s.source}</span>
+                  <span className="text-ink/70" aria-hidden="true">·</span>
+                  <span className="text-ink/70">{s.source}</span>
                 </div>
                 <p className="line-clamp-2 text-sm leading-snug text-ink/85 group-hover:text-ink group-hover:underline group-hover:decoration-ink/30 group-hover:underline-offset-2">{s.title}</p>
                 <p className="mt-1 font-mono text-[11px] tabular-nums text-ink/60">+{s.upvotes} · {timeAgo(new Date(s.signal_at).getTime() / 1000)}</p>

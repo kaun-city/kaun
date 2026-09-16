@@ -22,15 +22,17 @@ function HistoricalSection({ label, children }: { label: string; children: React
       <button
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
-        className={`w-full min-h-11 flex items-center justify-between px-3 py-2.5 bg-paper-muted hover:bg-ink/10 transition-colors ${FOCUS_RING}`}
+        className={`w-full min-h-11 flex items-center justify-between px-3 py-2.5 bg-paper-muted hover:bg-ink/5 transition-colors ${FOCUS_RING}`}
       >
+        {/* ink/75 keeps these ≥ 7:1 on muted and on the hover tint; ink/60
+            fell to 4.38:1 once the header was tinted. */}
         <div className="flex items-center gap-2">
-          <span className={EYEBROW}>Historical</span>
-          <span className="font-mono text-[11px] text-ink/60">{label}</span>
+          <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/75">Historical</span>
+          <span className="font-mono text-[11px] text-ink/75">{label}</span>
         </div>
         <svg
           width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
-          className={`text-ink/50 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`text-ink/60 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         >
           <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
@@ -112,7 +114,10 @@ export function WhoTab({
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-2">
           <p className={EYEBROW}>Elected Representatives</p>
-          <FreshnessBadge label="Current term" source="GBA" />
+          {/* Name the roles actually listed (usually MLA and MP), not a body they don't belong to. */}
+          {electedReps.length > 0 && (
+            <FreshnessBadge label="Current term" source={[...new Set(electedReps.map(rep => rep.role))].join(" · ")} />
+          )}
         </div>
         {profileLoading && !profile ? (
           <><SkeletonRepCard /><SkeletonRepCard /></>
@@ -215,48 +220,36 @@ export function WhoTab({
         <SkeletonScorecard />
       ) : null}
 
-      {/* Ward Committee Meetings */}
+      {/* Ward Committee Meetings
+          The 2020-22 dataset counts meetings held; it states no window or
+          target, so there is no honest "of N possible" and no grade beyond
+          the zero. */}
       {committeeMeetings ? (() => {
         const count = committeeMeetings.meetings_count
-        const MAX = 56
-        const pct = Math.round((count / MAX) * 100)
-        const tones = {
-          danger:  { chip: "border-danger/35 bg-danger/[0.07] text-danger",    value: "text-danger",  bar: "bg-danger" },
-          warning: { chip: "border-warning/35 bg-warning/[0.07] text-warning", value: "text-warning", bar: "bg-ink/70" },
-          success: { chip: "border-success/35 bg-success/[0.07] text-success", value: "text-success", bar: "bg-ink/70" },
-        }
-        const grade = count === 0 ? { label: "Never met", tone: tones.danger }
-          : count < 10 ? { label: "Rarely meets", tone: tones.warning }
-          : count < 25 ? { label: "Meets sometimes", tone: tones.warning }
-          : { label: "Meets regularly", tone: tones.success }
+        const period = committeeMeetings.period || "2020-22"
         return (
-          <HistoricalSection label="2020-22">
+          <HistoricalSection label={period}>
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
               <p className={EYEBROW}>Ward Committee</p>
-              <span className={`inline-flex items-center border px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none ${grade.tone.chip}`}>{grade.label}</span>
-            </div>
-            <div className="flex justify-end -mt-1">
-              <FreshnessBadge label="2020-22" source="opencity.in" />
-            </div>
-            <div className="flex items-center gap-3">
-              <p className={`font-mono text-2xl font-semibold tabular-nums ${grade.tone.value}`}>{count}</p>
-              <p className="text-ink/80 text-xs">meetings held<br /><span className="text-ink/60">out of a possible ~48 over 2 years</span></p>
-            </div>
-            <div className="w-full h-1.5 bg-ink/10 overflow-hidden">
-              <div className={`h-full transition-all ${grade.tone.bar}`} style={{ width: `${pct}%` }} />
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-ink/60 text-xs">Ward committees are mandated to meet monthly</p>
-              {count < 25 && (
-                <button
-                  onClick={() => setRtiRequest({ ...rtiBase(), issue_type: "committee_meetings", committee_meetings: count })}
-                  className={`inline-flex min-h-11 shrink-0 items-center text-xs transition-colors ${TEXT_LINK}`}
-                >
-                  File RTI
-                </button>
+              {count === 0 && (
+                <span className="inline-flex items-center border border-danger/35 bg-danger/[0.07] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none text-danger">No meetings recorded</span>
               )}
             </div>
+            <div className="flex items-baseline gap-3">
+              <p className="font-mono text-2xl font-semibold tabular-nums text-ink">{count}</p>
+              <p className="text-ink/80 text-xs">meeting{count === 1 ? "" : "s"} recorded, {period}</p>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-ink/70 text-xs">Ward committees are meant to meet every month</p>
+              <button
+                onClick={() => setRtiRequest({ ...rtiBase(), issue_type: "committee_meetings" })}
+                className={`inline-flex min-h-11 shrink-0 items-center text-xs transition-colors ${TEXT_LINK}`}
+              >
+                Request minutes (RTI)
+              </button>
+            </div>
+            <p className={PROVENANCE}>BBMP via opencity.in · {period}</p>
           </div>
           </HistoricalSection>
         )
@@ -307,7 +300,7 @@ export function WhoTab({
               <p className={EYEBROW}>
                 {corpName.replace("Bengaluru ", "").replace(" City Corporation", "")} City Corporation
               </p>
-              <FreshnessBadge label="Dec 2025" source="BBMP" />
+              <FreshnessBadge label="Dec 2025" source="GBA" />
             </div>
             <div className="border-t border-ink/15">
               {corpContacts.filter(c => ["Commissioner", "Health Officer"].includes(c.role)).map(c => (

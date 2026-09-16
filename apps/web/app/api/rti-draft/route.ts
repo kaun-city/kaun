@@ -72,7 +72,7 @@ function buildContext(d: RTIDraftRequest): string {
       break
     case "committee_meetings":
       if (d.committee_meetings != null)
-        lines.push(`Ward committee meetings held 2020-2022: ${d.committee_meetings} out of a possible 56`)
+        lines.push(`Ward committee meetings recorded 2020-2022: ${d.committee_meetings}`)
       break
     case "pothole_complaints":
       if (d.pothole_complaints != null)

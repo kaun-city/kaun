@@ -16,6 +16,11 @@ interface Props {
    * Present only when the record is a historical-overlap estimate.
    */
   formerWards?: string[]
+  /**
+   * Every input the headline ranks has loaded. Until then a quiet placeholder
+   * holds the space, so the reader never sees one finding swap for another.
+   */
+  settled?: boolean
 }
 
 interface Headline {
@@ -32,22 +37,42 @@ function yearRange(values: Array<string | null | undefined>): string | null {
   return years[0] === years[years.length - 1] ? years[0] : `${years[0]} to ${years[years.length - 1]}`
 }
 
+function plural(count: number, one: string, many = `${one}s`): string {
+  return `${count.toLocaleString("en-IN")} ${count === 1 ? one : many}`
+}
+
 export function pickHeadline({ reportCard, committeeMeetings, infraStats, wardContractors, cityId, formerWards }: Props): Headline | null {
-  const flagged = wardContractors.filter(c => c.blacklist_flags.length > 0)
+  const flagged = wardContractors
+    .filter(c => c.blacklist_flags.length > 0)
+    .sort((a, b) => (Number(b.total_value_lakh) || 0) - (Number(a.total_value_lakh) || 0))
   const headlines: (Headline & { priority: number })[] = []
   const stateName = getCity(cityId).state
   const term = reportCard?.term ? ` · ${reportCard.term}` : ""
 
-  // Flagged contractors in this ward's work orders — most alarming
+  // Flagged contractors with work orders in this area — most alarming.
+  // contractor_profiles totals are each contractor's CITY-WIDE work orders,
+  // never this ward's share, so the money is named with its real scope.
   if (flagged.length > 0) {
-    const totalValue = flagged.reduce((s, c) => s + c.total_value_lakh, 0)
+    // One firm can carry several entity ids (KRIDL appears under two phones);
+    // count firms, not rows.
+    const firms = new Set(flagged.map(c => c.canonical_name.trim().toLowerCase())).size
+    const lead = flagged[0]
+    const others = firms - 1
     const years = yearRange(flagged.flatMap(c => [c.first_seen, c.last_seen]))
-    const scope = formerWards?.length ? "this area's" : "this ward's"
+    const place = formerWards?.length ? "this area" : "this ward"
+    const reach = lead.ward_count > 1
+      ? `across ${plural(lead.ward_count, "ward")} city-wide`
+      : "city-wide, in 1 ward"
     headlines.push({
       priority: 100,
       severity: "red",
-      text: `${flagged.length} flagged contractor${flagged.length > 1 ? "s" : ""} in ${scope} work orders`,
-      detail: `${formatLakh(totalValue)} in public money to entities on debarment lists`,
+      text: firms === 1
+        ? `A contractor on a debarment list has work orders in ${place}`
+        : `${firms} contractors on debarment lists have work orders in ${place}`,
+      detail: [
+        `${lead.canonical_name.trim()}: ${formatLakh(lead.total_value_lakh)} in ${plural(lead.total_contracts, "contract")} ${reach}`,
+        others > 0 ? `and ${plural(others, "other flagged firm")}` : null,
+      ].filter(Boolean).join(", "),
       source: [
         `BBMP work orders${years ? ` ${years}` : ""}`,
         formerWards?.length ? `former ward${formerWards.length > 1 ? "s" : ""} ${formerWards.join(", ")}` : null,
@@ -88,25 +113,27 @@ export function pickHeadline({ reportCard, committeeMeetings, infraStats, wardCo
     })
   }
 
-  // Ward committee never met
+  // No ward committee meetings on record. The 2020-22 dataset gives no
+  // denominator, so the finding is the zero itself, never "0 of N".
   if (committeeMeetings && committeeMeetings.meetings_count === 0) {
     headlines.push({
       priority: 75,
       severity: "red",
-      text: "Ward committee has never met",
-      detail: "0 of 56 mandated meetings held (2020-2022)",
-      source: `Ward committee records${committeeMeetings.period ? ` · ${committeeMeetings.period}` : ""}`,
+      text: `No ward committee meetings recorded${committeeMeetings.period ? ` in ${committeeMeetings.period}` : ""}`,
+      detail: "Ward committees are meant to meet every month",
+      source: `BBMP ward committee records via opencity.in${committeeMeetings.period ? ` · ${committeeMeetings.period}` : ""}`,
     })
   }
 
-  // Zero traffic signals
+  // No traffic signals mapped. OpenStreetMap coverage is incomplete, so the
+  // claim is about the map, not the street.
   if (infraStats && infraStats.signal_count === 0) {
     headlines.push({
       priority: 60,
       severity: "yellow",
-      text: "This ward has zero traffic signals",
-      detail: "City average: 5.5 signals per ward",
-      source: "Ward infrastructure records",
+      text: "No traffic signals mapped in this ward",
+      detail: "City average: 5.5 mapped signals per ward",
+      source: "OpenStreetMap traffic signals",
     })
   }
 
@@ -128,6 +155,17 @@ export function pickHeadline({ reportCard, committeeMeetings, infraStats, wardCo
 }
 
 export function WardHeadline(props: Props) {
+  if (props.settled === false) {
+    return (
+      <div aria-busy="true" className="mx-5 mb-3 h-[5.25rem] border border-ink/10 px-3.5 py-3">
+        <span className="sr-only">Loading the main finding for this ward</span>
+        <div aria-hidden="true" className="h-3.5 w-4/5 bg-ink/10 animate-pulse" />
+        <div aria-hidden="true" className="mt-2 h-2.5 w-3/5 bg-ink/10 animate-pulse" />
+        <div aria-hidden="true" className="mt-3 h-2 w-2/5 bg-ink/10 animate-pulse" />
+      </div>
+    )
+  }
+
   const headline = pickHeadline(props)
   if (!headline) return null
 

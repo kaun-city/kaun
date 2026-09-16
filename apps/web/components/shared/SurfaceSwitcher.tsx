@@ -26,9 +26,16 @@ import { surfaceLinks, type SurfaceId } from "@/lib/host-routing"
  * navigation across origins is not a thing — a <Link> to bengaluru.kaun.city
  * from kaun.city would try to fetch an RSC payload from another host. The
  * relative ones are this same Next app on this same host, so they get a Link
- * and prefetch. surfaceLinks() computes the flag and host-routing.test.mjs
- * asserts it agrees with the href on every host in every mode, so the question
- * is answered in one place, once.
+ * for a client-side transition. surfaceLinks() computes the flag and
+ * host-routing.test.mjs asserts it agrees with the href on every host in every
+ * mode, so the question is answered in one place, once.
+ *
+ * No prefetch. Every link here leaves the current surface, and a surface's
+ * page can carry heavy resource hints: /india preloads its 1.4 MB constituency
+ * outlines, so prefetching it from the Bengaluru map downloaded a file that
+ * page never uses. A cross-surface hop is rare enough to pay for on click.
+ *
+ * Every segment is at least 44px wide on phones ("IN" alone is 35px).
  */
 export function SurfaceSwitcher({
   current,
@@ -62,8 +69,8 @@ export function SurfaceSwitcher({
         // One label set on every surface; the full name stays in aria-label.
         const displayLabel = link.id === "india" ? "IN" : link.id === "city" ? "BLR" : "DATA"
         const cls = variant === "overlay"
-          ? "min-h-11 sm:min-h-9 px-2.5 py-1 font-mono text-[11px] tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center"
-          : "min-h-11 px-3 py-1 font-mono text-xs font-semibold tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center"
+          ? "min-h-11 min-w-11 sm:min-h-9 sm:min-w-9 px-2.5 py-1 font-mono text-[11px] tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center justify-center"
+          : "min-h-11 min-w-11 px-3 py-1 font-mono text-xs font-semibold tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center justify-center"
         if (link.id === current) {
           return (
             <span key={link.id} aria-current="page" aria-label={link.label} className={`${cls} bg-ink text-paper font-semibold`}>
@@ -75,7 +82,7 @@ export function SurfaceSwitcher({
         return link.external ? (
           <a key={link.id} href={link.href} aria-label={link.label} className={linkCls}>{displayLabel}</a>
         ) : (
-          <Link key={link.id} href={link.href} aria-label={link.label} className={linkCls}>{displayLabel}</Link>
+          <Link key={link.id} href={link.href} prefetch={false} aria-label={link.label} className={linkCls}>{displayLabel}</Link>
         )
       })}
     </nav>

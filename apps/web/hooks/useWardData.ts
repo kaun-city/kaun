@@ -3,18 +3,19 @@
 import { useEffect, useMemo, useState } from "react"
 import type {
   BudgetSummary, CommunityFact, ContractorProfile, Department, ElectedRep, GbaContact, LocalOffice,
-  MlaLadFunds, PinResult, PropertyTaxData, RedditPost, RepReportCard,
+  MlaLadFunds, PinResult, PropertyTaxData, RepReportCard,
   SakalaPerformance, WardAirQuality, WardAmenities, WardBusStats, WardCommitteeMeetings, WardGrievances, WardInfraStats, WardPotholes,
   WardProfile, WardRoadCrashes, WardSpendCategory, WardStats, WardTradeLicenses, WardWaterQuality, WorkOrder,
 } from "@/lib/types"
 import {
-  fetchBudgetSummary, fetchBuzz, fetchCorpContacts, fetchDepartments, fetchElectedReps,
+  fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchElectedReps,
   fetchMlaLadFunds, fetchPropertyTax, fetchRepReportCard, fetchSakalaPerformance,
   fetchTradeLicenses, fetchWardAirQuality, fetchWardAmenities, fetchWardBusStats, fetchWardCommitteeMeetings, fetchWardContractors, fetchWardGrievances, fetchWardInfraStats,
   fetchWardPotholes, fetchWardProfile, fetchWardReportCount, fetchWardRoadCrashes, fetchWardSignals, fetchWardSpend, fetchWardStats,
   fetchWardUnknowns, fetchWardWaterQuality, fetchWorkOrders, lookupLocalOffices, voteFact,
 } from "@/lib/api"
 import { getCity } from "@/lib/cities"
+import { BBMP_198_RECORDS_ATTRIBUTABLE } from "@/lib/ward-data-quality"
 import type { CityConfig } from "@/lib/cities"
 import { getVoterToken, groupOfficerFacts } from "@/lib/ward-utils"
 import { attributableHistoricalWards, type HistoricalWardRef } from "@/lib/gba-crosswalk"
@@ -42,6 +43,17 @@ function weightedNumber<T>(rows: Array<{ value: T; ref: HistoricalWardRef }>, re
 function uniqueBy<T>(values: T[], key: (value: T) => string | number): T[] {
   return [...new Map(values.map(value => [key(value), value])).values()]
 }
+
+export { BBMP_198_RECORDS_ATTRIBUTABLE } from "@/lib/ward-data-quality"
+
+/**
+ * ward_infra_stats.bus_stop_count and daily_trips are not used: bmtc_stops
+ * holds ~14 duplicate rows per physical stop (42,529 rows, 2,972 locations)
+ * and the view's traffic-signal join multiplies daily_trips by the signal
+ * count. ward_bus_stops matches a deduplicated spatial join exactly (237 of
+ * 243 wards), so bus figures come from there. signal_count is a DISTINCT
+ * count and stays correct.
+ */
 
 export function useWardData(result: PinResult | null) {
   // Resolve city config from result
@@ -84,8 +96,22 @@ export function useWardData(result: PinResult | null) {
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([])
   const [wardContractors, setWardContractors] = useState<ContractorProfile[]>([])
   const [tradeLicenses, setTradeLicenses] = useState<WardTradeLicenses[]>([])
-  const [buzz, setBuzz] = useState<RedditPost[] | null>(null)
-  const [buzzLoading, setBuzzLoading] = useState(false)
+  /** Ward spend has been fetched for this ward (rows or none). Until then the spend tab shows a skeleton, not "no data". */
+  const [wardSpendSettled, setWardSpendSettled] = useState(false)
+
+  // ── Settled flags for what the headline and snapshot rank ──
+  // A source is "settled" once its fetch has resolved (with or without a row)
+  // or once it is known not to apply. The headline waits for all of them so
+  // it never shows one finding and then swaps to another.
+  const [reportCardSettled, setReportCardSettled] = useState(false)
+  const [committeeSettled, setCommitteeSettled] = useState(false)
+  const [infraSettled, setInfraSettled] = useState(false)
+  const [contractorsSettled, setContractorsSettled] = useState(false)
+  const [potholesSettled, setPotholesSettled] = useState(false)
+  // The ward the flags above belong to. On the first render after a ward
+  // change the reset effect has not run yet, so the previous ward's flags (and
+  // data) are still in state; this keeps its headline from flashing.
+  const [settledIdentity, setSettledIdentity] = useState<string | null>(null)
 
   // ── STATS tab ─────────────────────────────────────────────
   const [wardStats, setWardStats] = useState<WardStats | null>(null)
@@ -128,8 +154,13 @@ export function useWardData(result: PinResult | null) {
     setWorkOrders([])
     setWardContractors([])
     setTradeLicenses([])
-    setBuzz(null)
-    setBuzzLoading(false)
+    setWardSpendSettled(false)
+    setSettledIdentity(wardIdentity)
+    setReportCardSettled(false)
+    setCommitteeSettled(false)
+    setInfraSettled(false)
+    setContractorsSettled(false)
+    setPotholesSettled(false)
     setWardStats(null)
     setGrievances([])
     setPotholes(null)
@@ -186,10 +217,14 @@ export function useWardData(result: PinResult | null) {
   useEffect(() => {
     let active = true
 
-    if (wardNo && city.features.wardCommitteeMeetings) {
+    if (wardNo && city.features.wardCommitteeMeetings && BBMP_198_RECORDS_ATTRIBUTABLE) {
       void fetchWardCommitteeMeetings(wardNo).then(value => {
-        if (active) setCommitteeMeetings(value)
+        if (!active) return
+        setCommitteeMeetings(value)
+        setCommitteeSettled(true)
       })
+    } else {
+      setCommitteeSettled(true)
     }
     if (assemblyConstituency && city.features.mlaLadFunds) {
       void fetchMlaLadFunds(assemblyConstituency).then(value => {
@@ -198,8 +233,12 @@ export function useWardData(result: PinResult | null) {
     }
     if (assemblyConstituency && city.features.repReportCards) {
       void fetchRepReportCard(assemblyConstituency).then(value => {
-        if (active) setReportCard(value)
+        if (!active) return
+        setReportCard(value)
+        setReportCardSettled(true)
       })
+    } else {
+      setReportCardSettled(true)
     }
 
     return () => { active = false }
@@ -248,9 +287,12 @@ export function useWardData(result: PinResult | null) {
     if (assemblyConstituency && city.features.propertyTax) {
       void fetchPropertyTax(assemblyConstituency, cityId).then(value => { if (active) setPropertyTax(value) })
     }
-    if (historicalWards.length && city.features.wardSpend) {
+    if (!historicalWards.length || !city.features.wardSpend || !BBMP_198_RECORDS_ATTRIBUTABLE) {
+      setWardSpendSettled(true)
+    } else {
       void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardSpend(ref.ward_no, cityId) }))).then(results => {
         if (!active) return
+        setWardSpendSettled(true)
         const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardSpendCategory } => !!row.value)
         if (!rows.length) return setWardSpend(null)
         const fields: Array<keyof WardSpendCategory> = ["buildings_facilities", "drainage", "roads_and_drains", "roads_and_infrastructure", "streetlighting", "waste_management", "water_and_sanitation", "grand_total"]
@@ -264,21 +306,14 @@ export function useWardData(result: PinResult | null) {
   }, [tab, wardNo, cityId, result?.ward_name, historicalWards, recordWards, currentWardName, assemblyConstituency, city.budgetYear, city.features.budget, city.features.workOrders, city.features.tradeLicenses, city.features.propertyTax, city.features.wardSpend])
 
   // ── CITIZEN tab ───────────────────────────────────────────
+  // Reddit "buzz" is not fetched: reddit.com blocks browser requests (CORS)
+  // and nothing renders it. Ward Pulse covers resident signals.
   useEffect(() => {
     if (tab !== "citizen") return
     let active = true
-    const wardName = result?.ward_name ?? historicalWards[0]?.ward_name
 
     if (assemblyConstituency) {
       void fetchWardStats(assemblyConstituency, cityId).then(value => { if (active) setWardStats(value) })
-    }
-    if (wardName && city.features.buzz) {
-      setBuzzLoading(true)
-      void fetchBuzz(wardName, city.subreddit).then(value => {
-        if (!active) return
-        setBuzz(value)
-        setBuzzLoading(false)
-      })
     }
     if (historicalWards.length) {
       void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardBusStats(ref.ward_no) }))).then(results => {
@@ -311,7 +346,7 @@ export function useWardData(result: PinResult | null) {
     }
 
     return () => { active = false }
-  }, [tab, wardNo, cityId, result?.ward_name, historicalWards, recordWards, assemblyConstituency, city.subreddit, city.features.buzz, city.features.wardAmenities, city.features.wardWaterQuality])
+  }, [tab, wardNo, cityId, historicalWards, recordWards, assemblyConstituency, city.features.wardAmenities, city.features.wardWaterQuality])
 
   // ── REACH tab ─────────────────────────────────────────────
   useEffect(() => {
@@ -333,12 +368,22 @@ export function useWardData(result: PinResult | null) {
 
   // ── Eager ward context used by the header and story card ─
   useEffect(() => {
-    if (!historicalWards.length) return
+    if (!historicalWards.length) {
+      // Current ward outside the older map: nothing ward-tagged to wait for.
+      setInfraSettled(true)
+      setContractorsSettled(true)
+      setPotholesSettled(true)
+      return
+    }
     let active = true
 
     void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardInfraStats(ref.ward_no, cityId) }))).then(results => {
+      if (!active) return
       const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardInfraStats } => !!row.value)
-      if (active && rows.length) setInfraStats({ ward_no: 0, ward_name: currentWardName, signal_count: Math.round(weightedNumber(rows, v => v.signal_count)), bus_stop_count: Math.round(weightedNumber(rows, v => v.bus_stop_count)), daily_trips: Math.round(weightedNumber(rows, v => v.daily_trips)) })
+      // bus_stop_count / daily_trips are inflated in the view (see note at
+      // the top); only signal_count is carried. Bus figures: wardBusStats.
+      if (rows.length) setInfraStats({ ward_no: 0, ward_name: currentWardName, signal_count: Math.round(weightedNumber(rows, v => v.signal_count)), bus_stop_count: 0, daily_trips: 0 })
+      setInfraSettled(true)
     })
     void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardReportCount(ref.ward_no, cityId) }))).then(rows => {
       if (active) setReportCount(Math.round(weightedNumber(rows, value => value)))
@@ -346,18 +391,25 @@ export function useWardData(result: PinResult | null) {
     void Promise.all(recordWards.map(ref => fetchWardSignals(ref.ward_no, cityId))).then(values => {
       if (active) setSignals(uniqueBy(values.flat(), row => row.id))
     })
-    if (city.features.wardPotholes) {
+    if (city.features.wardPotholes && BBMP_198_RECORDS_ATTRIBUTABLE) {
       void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardPotholes(ref.ward_no, cityId) }))).then(results => {
+        if (!active) return
         const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardPotholes } => !!row.value)
-        if (active && rows.length) setPotholes({ ward_no: 0, ward_name: currentWardName, complaints: Math.round(weightedNumber(rows, v => v.complaints)), data_year: rows[0].value.data_year })
+        if (rows.length) setPotholes({ ward_no: 0, ward_name: currentWardName, complaints: Math.round(weightedNumber(rows, v => v.complaints)), data_year: rows[0].value.data_year })
+        setPotholesSettled(true)
       })
+    } else {
+      setPotholesSettled(true)
     }
     if (city.features.workOrders) {
       void Promise.all(recordWards.map(ref => fetchWardContractors(ref.ward_no, cityId))).then(values => {
         if (!active) return
         const contractors = uniqueBy(values.flat(), row => row.entity_id)
         setWardContractors(contractors.sort((a, b) => (Number(b.total_value_lakh) || 0) - (Number(a.total_value_lakh) || 0)))
+        setContractorsSettled(true)
       })
+    } else {
+      setContractorsSettled(true)
     }
 
     return () => { active = false }
@@ -401,10 +453,16 @@ export function useWardData(result: PinResult | null) {
     allFacts, officerGroups,
     handleCorroborate, handleNewFact, refreshUnknowns,
     // expenses
-    budget, workOrders, wardContractors, tradeLicenses, buzz, buzzLoading,
+    budget, workOrders, wardContractors, tradeLicenses,
     // stats
     wardStats, grievances, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality,
-    wardSpend, propertyTax, sakala, reportCount, signals,
+    wardSpend, wardSpendSettled, propertyTax, sakala, reportCount, signals,
+    /** False while ward spend / potholes / committee meetings can't be matched to this ward (see BBMP_198_RECORDS_ATTRIBUTABLE). */
+    bbmp198Attributable: BBMP_198_RECORDS_ATTRIBUTABLE,
+    /** Every input the headline ranks has settled; render it only then so it never swaps. */
+    headlineReady: settledIdentity === wardIdentity && reportCardSettled && committeeSettled && infraSettled && contractorsSettled,
+    /** The headline inputs plus potholes: the evidence snapshot can draw without rows jumping in. */
+    snapshotReady: settledIdentity === wardIdentity && reportCardSettled && committeeSettled && infraSettled && contractorsSettled && potholesSettled,
     // report
     localOffices, departments,
   }

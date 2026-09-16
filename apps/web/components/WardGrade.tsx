@@ -10,14 +10,14 @@ interface Props {
   potholes: WardPotholes | null
   wardContractors: ContractorProfile[]
   cityId?: string
+  /** The measures below have loaded; until then rows are held as skeletons so they don't jump in. */
+  settled?: boolean
 }
 
 interface EvidenceItem {
   label: string
   value: string
   note: string
-  /** A count that is itself a warning sign, set in the danger colour. */
-  alarm?: boolean
 }
 
 function availableEvidence(props: Props): EvidenceItem[] {
@@ -38,17 +38,16 @@ function availableEvidence(props: Props): EvidenceItem[] {
     label: "Declared cases",
     value: String(reportCard.criminal_cases),
     note: "Candidate election affidavit",
-    alarm: reportCard.criminal_cases > 0,
   })
   if (committeeMeetings) items.push({
-    label: "Ward meetings",
+    label: "Ward committee meetings",
     value: String(committeeMeetings.meetings_count),
-    note: committeeMeetings.period,
+    note: `Recorded ${committeeMeetings.period}`,
   })
   if (infraStats?.signal_count != null) items.push({
     label: "Traffic signals",
     value: String(infraStats.signal_count),
-    note: "Mapped public infrastructure",
+    note: "Mapped in OpenStreetMap",
   })
   if (potholes) items.push({
     label: "Pothole reports",
@@ -58,10 +57,9 @@ function availableEvidence(props: Props): EvidenceItem[] {
   if (wardContractors.length > 0) {
     const flagged = wardContractors.filter(contractor => contractor.blacklist_flags.length > 0).length
     items.push({
-      label: "Contractor flags",
+      label: "Contractors on debarment lists",
       value: String(flagged),
-      note: `${wardContractors.length} contractor${wardContractors.length === 1 ? "" : "s"} checked`,
-      alarm: flagged > 0,
+      note: `Of ${wardContractors.length} with work orders in this area`,
     })
   }
   return items
@@ -76,6 +74,26 @@ const VISIBLE_ROWS = 4
  */
 export function WardGrade(props: Props) {
   const [open, setOpen] = useState(false)
+
+  if (props.settled === false) {
+    return (
+      <div aria-busy="true" className="mx-5 mb-3">
+        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Evidence snapshot</p>
+        <div className="mt-1.5 border-t border-ink/15">
+          {Array.from({ length: VISIBLE_ROWS }, (_, index) => (
+            <div key={index} aria-hidden="true" className="flex h-[3.5rem] items-center justify-between gap-4 border-b border-ink/15">
+              <div className="space-y-1.5">
+                <div className="h-3 w-28 bg-ink/10 animate-pulse" />
+                <div className="h-2.5 w-40 bg-ink/10 animate-pulse" />
+              </div>
+              <div className="h-4 w-10 bg-ink/10 animate-pulse" />
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   const evidence = availableEvidence(props)
   if (evidence.length === 0) return null
 
@@ -94,7 +112,8 @@ export function WardGrade(props: Props) {
               <span className="block text-sm text-ink/80">{item.label}</span>
               <span className="block text-xs leading-snug text-ink/60">{item.note}</span>
             </dt>
-            <dd className={`shrink-0 font-mono text-base font-semibold tabular-nums ${item.alarm ? "text-danger" : "text-ink"}`}>
+            {/* Values stay ink: the headline above is the record's one red. */}
+            <dd className="shrink-0 font-mono text-base font-semibold tabular-nums text-ink">
               {item.value}
             </dd>
           </div>

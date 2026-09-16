@@ -79,7 +79,7 @@ function HistoricalNote({ wards, listWards }: { wards: HistoricalWardRef[]; list
     <p className="mt-2 text-xs leading-relaxed text-ink/60">
       Older records are estimated from former wards by map overlap: {shares}.
       {omitted > 0 && <> Work orders, contractors and complaints use {listWards.map(ref => ref.ward_name).join(" and ")}.</>}
-      {wards.length > 1 && <> Tenders and officer contacts come from {wards[0].ward_name}, the largest overlap.</>}
+      {wards.length > 1 && <> Officer contacts come from {wards[0].ward_name}, the largest overlap.</>}
       {" "}
       <a href="/how-it-works" className="text-accent underline decoration-accent/40 underline-offset-2">How this works</a>
     </p>
@@ -92,7 +92,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
   const ward = useWardData(result)
   const primaryHistoricalWard = ward.historicalWards[0]
   const listWards = ward.recordWards ?? ward.historicalWards
-  const [copied, setCopied] = useState(false)
+  /** Share feedback: link copied, or the browser refused clipboard access. */
+  const [shareState, setShareState] = useState<"idle" | "copied" | "failed">("idle")
   /** Phones only: fold the sheet down to the ward's name so the map shows. */
   const [collapsed, setCollapsed] = useState(false)
   /** Ask Kaun opens over the record on request instead of always taking space. */
@@ -119,14 +120,22 @@ export default function WardCard({ result, loading, onClose }: Props) {
     if (navigator.share) {
       try {
         await navigator.share({ text, url })
-      } catch {
-        // user dismissed share sheet — no-op
+        return
+      } catch (error) {
+        // Dismissing the share sheet is a choice, not a failure.
+        if (error instanceof DOMException && error.name === "AbortError") return
+        // Anything else (e.g. NotAllowedError): fall back to copying.
       }
-    } else {
-      await navigator.clipboard.writeText(`${text}\n${url}`)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
     }
+    try {
+      if (!navigator.clipboard) throw new Error("Clipboard unavailable")
+      await navigator.clipboard.writeText(`${text}\n${url}`)
+      setShareState("copied")
+    } catch {
+      // Permissions policy, an insecure context or a denied prompt.
+      setShareState("failed")
+    }
+    setTimeout(() => setShareState("idle"), 3000)
   }, [result])
 
   // Tabs live in the footer, so a tab switch must bring its content into view
@@ -195,7 +204,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
               {loading || result?.found ? "Ward record" : "No ward"}
             </p>
             <div className="flex items-center gap-1.5">
-              {code && !loading && (
+              <span role="status" aria-live="polite" className={shareState === "idle" ? "sr-only" : "mr-1 font-mono text-[11px] tracking-[0.04em] text-ink/75"}>
+                {shareState === "copied" ? "Link copied" : shareState === "failed" ? "Couldn't copy link" : ""}
+              </span>
+              {code && !loading && shareState === "idle" && (
                 <span className="mr-1 hidden min-[400px]:inline font-mono text-[11px] tracking-[0.04em] text-ink/60">{code}</span>
               )}
               {result?.found && !loading && (
@@ -212,8 +224,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 </button>
               )}
               {result?.found && !loading && (
-                <button onClick={handleShare} aria-label={copied ? "Link copied" : "Share"} className={iconButton}>
-                  {copied ? (
+                <button onClick={handleShare} aria-label="Share this ward" className={iconButton}>
+                  {shareState === "copied" ? (
                     <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" className="text-success">
                       <path d="M2.5 8L6 11.5L12.5 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
@@ -245,7 +257,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               <h2 className="mt-1 text-2xl font-bold leading-tight tracking-[-0.02em] text-ink">
                 {result.gba_ward_name ?? result.ward_name}
               </h2>
-              <p className="mt-0.5 text-sm text-ink/60">
+              <p className="mt-0.5 text-sm text-ink/70">
                 {result.gba_corporation ? (
                   <>
                     Bengaluru {result.gba_corporation}
@@ -278,6 +290,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
           <div className={foldedAway}>
             {/* Most important finding, with its source */}
             <WardHeadline
+              settled={ward.headlineReady}
               reportCard={ward.reportCard}
               committeeMeetings={ward.committeeMeetings}
               infraStats={ward.infraStats}
@@ -287,6 +300,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
             />
 
             <WardGrade
+              settled={ward.snapshotReady}
               reportCard={ward.reportCard}
               committeeMeetings={ward.committeeMeetings}
               infraStats={ward.infraStats}
@@ -335,6 +349,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   wardContractors={ward.wardContractors ?? []}
                   tradeLicenses={ward.tradeLicenses}
                   wardSpend={ward.wardSpend}
+                  wardSpendSettled={ward.wardSpendSettled}
+                  wardSpendAttributable={ward.bbmp198Attributable}
                   propertyTax={ward.propertyTax}
                 />
               )}
@@ -413,7 +429,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 mla_criminal_cases: ward.reportCard?.criminal_cases ?? null,
                 committee_meetings: ward.committeeMeetings?.meetings_count ?? null,
                 signal_count: ward.infraStats?.signal_count ?? null,
-                bus_stop_count: ward.infraStats?.bus_stop_count ?? null,
+                // ward_infra_stats.bus_stop_count is inflated ~14x by duplicate
+                // stop rows, and the route compares against that inflated
+                // average; omit rather than feed Ask Kaun a wrong figure.
+                bus_stop_count: null,
                 pothole_complaints: ward.potholes?.complaints ?? null,
                 ward_spend_total_lakh: ward.wardSpend ? ward.wardSpend.grand_total / 100_000 : null,
                 ward_spend_roads_pct: ward.wardSpend

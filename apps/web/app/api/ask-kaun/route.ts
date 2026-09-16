@@ -3,6 +3,7 @@ import { generateText, tool, zodSchema, stepCountIs } from "ai"
 import { z } from "zod"
 import { createClient } from "@supabase/supabase-js"
 import { enforceRateLimit, makeAiLimiter } from "@/lib/ratelimit"
+import { BBMP_198_RECORDS_ATTRIBUTABLE, INFRA_BUS_COUNTS_RELIABLE } from "@/lib/ward-data-quality"
 import { publicSupabaseConfig } from "@/lib/supabase-config"
 import {
   attributableHistoricalWards, gbaWardKey, indexGbaCrosswalk, sourceWardNosForLegacyWard,
@@ -83,12 +84,12 @@ function buildContext(c: AskKaunRequest["ward_context"]): string {
   if (c.mla_questions_asked != null) lines.push(`MLA questions asked: ${c.mla_questions_asked}`)
   if (c.mla_lad_utilization_pct != null) lines.push(`MLA LAD fund utilization: ${c.mla_lad_utilization_pct}%`)
   if (c.mla_criminal_cases != null)  lines.push(`MLA criminal cases (EC affidavit): ${c.mla_criminal_cases}`)
-  if (c.committee_meetings != null)  lines.push(`Ward committee meetings (2020-22): ${c.committee_meetings}/56`)
+  if (c.committee_meetings != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`Ward committee meetings recorded (2020-22): ${c.committee_meetings}`)
   if (c.signal_count != null)        lines.push(`Traffic signals: ${c.signal_count} (city avg: 5.5)`)
-  if (c.bus_stop_count != null)      lines.push(`BMTC bus stops: ${c.bus_stop_count} (city avg: 155)`)
-  if (c.pothole_complaints != null)  lines.push(`Pothole complaints: ${c.pothole_complaints}`)
-  if (c.ward_spend_total_lakh != null) lines.push(`BBMP ward spend: Rs ${c.ward_spend_total_lakh} lakh (2018-2023)`)
-  if (c.ward_spend_roads_pct != null) lines.push(`Roads share of spend: ${c.ward_spend_roads_pct.toFixed(1)}%`)
+  if (c.bus_stop_count != null && INFRA_BUS_COUNTS_RELIABLE) lines.push(`BMTC bus stops: ${c.bus_stop_count}`)
+  if (c.pothole_complaints != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`Pothole complaints: ${c.pothole_complaints}`)
+  if (c.ward_spend_total_lakh != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`BBMP ward spend: ₹${c.ward_spend_total_lakh} lakh (2018-2023)`)
+  if (c.ward_spend_roads_pct != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`Roads share of spend: ${c.ward_spend_roads_pct.toFixed(1)}%`)
   if (c.grievance_count != null)     lines.push(`BBMP grievances: ${c.grievance_count}`)
   // Amenities (OSM)
   if (c.hospitals != null)           lines.push(`Hospitals: ${c.hospitals}`)
@@ -108,27 +109,19 @@ function makeTools(supabase: any) {
     rank_wards: tool({
       description: "Get top or bottom N wards across Bengaluru for a specific metric. Use for questions like 'which ward has the most signals', 'worst MLA attendance', 'where are the most potholes'.",
       inputSchema: zodSchema(z.object({
-        metric: z.enum(["signals", "bus_stops", "committee_meetings", "mla_attendance", "lad_utilization", "criminal_cases", "hospitals", "pharmacies", "atms", "public_toilets", "ev_charging", "metro_stations"]),
+        // bus_stops and committee_meetings are withdrawn: their tables are inflated or 198-ward keyed (lib/ward-data-quality.ts).
+        metric: z.enum(["signals", "mla_attendance", "lad_utilization", "criminal_cases", "hospitals", "pharmacies", "atms", "public_toilets", "ev_charging", "metro_stations"]),
         order: z.enum(["top", "bottom"]).describe("top = highest/best, bottom = lowest/worst"),
         limit: z.number().min(1).max(10).default(5),
       })),
       execute: async ({ metric, order, limit }): Promise<unknown> => {
         const asc = order === "bottom"
-        if (metric === "signals" || metric === "bus_stops") {
-          const col = metric === "signals" ? "signal_count" : "bus_stop_count"
+        if (metric === "signals") {
           const { data } = await supabase
             .from("ward_infra_stats")
-            .select("ward_no, ward_name, signal_count, bus_stop_count")
-            .not(col, "is", null)
-            .order(col, { ascending: asc })
-            .limit(limit)
-          return data ?? []
-        }
-        if (metric === "committee_meetings") {
-          const { data } = await supabase
-            .from("ward_committee_meetings")
-            .select("ward_no, ward_name, meetings_count")
-            .order("meetings_count", { ascending: asc })
+            .select("ward_no, ward_name, signal_count")
+            .not("signal_count", "is", null)
+            .order("signal_count", { ascending: asc })
             .limit(limit)
           return data ?? []
         }
@@ -191,11 +184,11 @@ function makeTools(supabase: any) {
             ward_no: ward.ward_no,
             assembly_constituency: ward.assembly_constituency,
             signal_count: i?.signal_count ?? null,
-            bus_stop_count: i?.bus_stop_count ?? null,
+            bus_stop_count: INFRA_BUS_COUNTS_RELIABLE ? i?.bus_stop_count ?? null : null,
             mla_attendance_pct: r?.attendance_pct ?? null,
             lad_utilization_pct: r?.lad_utilization_pct ?? null,
             criminal_cases: r?.criminal_cases ?? null,
-            committee_meetings: m?.meetings_count ?? null,
+            committee_meetings: BBMP_198_RECORDS_ATTRIBUTABLE ? m?.meetings_count ?? null : null,
             hospitals: a?.hospitals ?? null,
             clinics: a?.clinics ?? null,
             pharmacies: a?.pharmacies ?? null,

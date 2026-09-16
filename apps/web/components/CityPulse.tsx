@@ -10,7 +10,7 @@ import { getFallbackFacts, type FallbackFact } from "@/lib/cities/fallback-facts
  * One fact at a time, auto-rotates every 5 seconds. Tap to expand.
  *
  * Tone-aware:
- *   - Bengaluru (accountability) → red/yellow scams + missing money
+ *   - Bengaluru (accountability) → red/yellow markers: scams + missing money
  *   - Visakhapatnam (transparency) → green/yellow open-data + scheme delivery
  *
  * Tone is read from the city config; fallbacks live in lib/cities/fallback-facts.
@@ -35,6 +35,45 @@ export function decodeEntities(text: string): string {
     .replace(/&gt;/g, ">")
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
+}
+
+/**
+ * The headline as displayed: entities decoded, emoji and invisible joiners
+ * removed (voice rule: no emoji), whitespace collapsed. Arrows and the
+ * ©/®/™ marks are text, not decoration, so they stay.
+ */
+export function pulseHeadline(raw: string): string {
+  return decodeEntities(raw)
+    .replace(/(?![\u00A9\u00AE\u2122\u2190-\u21FF])[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}]/gu, "")
+    .replace(/[\u{FE0E}\u{FE0F}\u{200B}-\u{200D}\u{20E3}\u{1F3FB}-\u{1F3FF}]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+/**
+ * Where a pulse item came from, and what its link should say.
+ *
+ * Feed-ingested items carry the search that found them as their source name
+ * ("X/Pothole", "Google News BWSSB"), not a publisher, and that label lands on
+ * unrelated items (a POWER cut filed under "X/POTHOLE"). Those are never
+ * printed; the link's host names the source instead. The link label follows
+ * the host too: only an x.com/twitter.com link says "View on X".
+ */
+export function pulseSource(source: string, url: string | null): { label: string | null; linkLabel: string } {
+  let host = ""
+  if (url) {
+    try {
+      host = new URL(url).hostname.toLowerCase().replace(/^www\./, "")
+    } catch {
+      host = ""
+    }
+  }
+  const onX = /(^|\.)(x|twitter)\.com$/.test(host)
+  const name = decodeEntities(source).trim()
+  const searchLabel = /^(x\s*\/|google news\b)/i.test(name)
+  let label: string | null = name && !searchLabel ? name : null
+  if (!label && host) label = host === "news.google.com" ? "Google News" : onX ? "X" : host
+  return { label, linkLabel: onX ? "View on X" : "Read source" }
 }
 
 interface Props {
@@ -95,17 +134,13 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
   const fact = facts[index % facts.length]
   if (!fact) return null
 
-  const isTwitter = fact.source.startsWith("X/") || fact.url?.includes("x.com")
-
-  // Severity carries the alarm through a small square marker and a dark,
-  // paper-safe label colour; the strip itself stays neutral paper.
-  const sev = {
-    red: { mark: "bg-danger", cat: "text-danger", link: "text-danger decoration-danger/40" },
-    green: { mark: "bg-success", cat: "text-success", link: "text-success decoration-success/40" },
-    yellow: { mark: "bg-warning", cat: "text-warning", link: "text-warning decoration-warning/40" },
-  }[fact.severity]
-  const headline = decodeEntities(fact.headline)
-  const source = decodeEntities(fact.source)
+  // Severity is carried by the small square marker alone. Labels are ink and
+  // the link is accent: red is reserved for the one most alarming finding on
+  // a screen, and a rotating feed item is not that.
+  const mark = { red: "bg-danger", green: "bg-success", yellow: "bg-warning" }[fact.severity]
+  const headline = pulseHeadline(fact.headline)
+  const source = pulseSource(fact.source, fact.url)
+  const position = `${(index % facts.length) + 1}/${facts.length}`
 
   return (
     <div className="absolute top-[4.25rem] sm:top-14 left-3.5 right-16 md:right-auto md:max-w-[420px] z-[900] pointer-events-auto">
@@ -124,10 +159,10 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
         className="signal-ticker w-full text-left pl-3 pr-1 py-1.5 cursor-pointer bg-paper border-y border-ink/55 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
       >
         <div className="flex items-start gap-2">
-          <span aria-hidden="true" className={`mt-[0.4rem] h-2 w-2 shrink-0 ${sev.mark}`} />
+          <span aria-hidden="true" className={`mt-[0.4rem] h-2 w-2 shrink-0 ${mark}`} />
           <div className="flex-1 min-w-0 py-0.5">
             <p className={`text-[13px] leading-snug text-ink/85 ${expanded ? "" : "line-clamp-2 sm:line-clamp-1"}`}>
-              <span className={`mr-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] ${sev.cat}`}>
+              <span className="mr-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-ink">
                 {fact.category}
               </span>
               {headline}
@@ -146,7 +181,7 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
         {expanded && (
           <div className="flex items-center justify-between gap-3 mt-1.5 mb-0.5 pt-1.5 pr-2 border-t border-ink/15">
             <span className="min-w-0 truncate font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">
-              {source} · {(index % facts.length) + 1}/{facts.length}
+              {source.label ? `${source.label} · ${position}` : position}
             </span>
             <span className="flex shrink-0 items-center gap-3">
               {fact.url && (
@@ -155,14 +190,14 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
-                  className={`min-h-11 flex items-center text-xs font-medium underline underline-offset-2 ${sev.link}`}
+                  className="min-h-11 flex items-center text-xs font-medium text-accent underline decoration-accent/40 underline-offset-2"
                 >
-                  {isTwitter ? "View on X" : "Read source"} &rarr;
+                  {source.linkLabel} &rarr;
                 </a>
               )}
               <button
                 onClick={e => { e.stopPropagation(); handleNext() }}
-                className="min-h-11 px-1 text-xs text-ink/60 hover:text-ink"
+                className="min-h-11 min-w-11 px-2 flex items-center justify-center text-xs text-ink/60 hover:text-ink hover:bg-ink/5"
               >
                 Next &rsaquo;
               </button>

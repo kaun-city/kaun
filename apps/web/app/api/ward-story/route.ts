@@ -46,20 +46,20 @@ function buildPrompt(d: WardStoryRequest): string {
   }
 
   if (d.committee_meetings != null) {
-    lines.push(`Ward committee meetings held (2020-2022): ${d.committee_meetings} (max possible: 56)`)
+    lines.push(`Ward committee meetings recorded (2020-2022): ${d.committee_meetings}`)
   }
 
   if (d.signal_count != null) {
     lines.push(`Traffic signals in ward: ${d.signal_count} (city average: ${d.city_avg_signals ?? 5.5})`)
   }
   if (d.bus_stop_count != null) {
-    lines.push(`Bus stops in ward: ${d.bus_stop_count} (city average: ${d.city_avg_stops ?? 155})`)
+    lines.push(`Bus stops in ward: ${d.bus_stop_count}${d.city_avg_stops != null ? ` (city average: ${d.city_avg_stops})` : ""}`)
   }
   if (d.pothole_complaints != null) {
     lines.push(`Pothole complaints logged: ${d.pothole_complaints}`)
   }
   if (d.ward_spend_total_lakh != null) {
-    lines.push(`BBMP ward spend: Rs ${d.ward_spend_total_lakh.toLocaleString("en-IN")} lakh (2018-2023)`)
+    lines.push(`BBMP ward spend: ₹${d.ward_spend_total_lakh.toLocaleString("en-IN")} lakh (2018-2023)`)
     if (d.ward_spend_roads_pct != null) lines.push(`  - Roads & infrastructure share: ${d.ward_spend_roads_pct.toFixed(1)}%`)
   }
 

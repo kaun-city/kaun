@@ -43,7 +43,7 @@ interface Props {
 
 const RTI_ISSUES: { type: RTIIssueType; label: string; desc: string }[] = [
   { type: "lad_funds",          label: "MLA Fund Utilization",     desc: "Demand account of unspent LAD funds" },
-  { type: "committee_meetings", label: "Ward Committee Meetings",   desc: "Why hasn't your ward committee met?" },
+  { type: "committee_meetings", label: "Ward Committee Meetings",   desc: "Meeting dates and minutes of your ward committee" },
   { type: "pothole_complaints", label: "Pothole Resolution",        desc: "Status of logged road complaints" },
   { type: "ward_spend",         label: "BBMP Ward Expenditure",     desc: "Breakdown of ward budget spending" },
   { type: "work_orders",        label: "Work Order Status",         desc: "Completion status of BBMP work orders" },
@@ -52,6 +52,11 @@ const RTI_ISSUES: { type: RTIIssueType; label: string; desc: string }[] = [
 const EYEBROW = "text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60"
 const FOCUS_RING = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
 const PHONE_LINK = `inline-flex min-h-11 shrink-0 items-center font-mono text-xs text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent ${FOCUS_RING}`
+
+/** "1800-425-1663" -> "tel:18004251663". Digits and a leading + only. */
+function telHref(number: string): string {
+  return `tel:${number.replace(/[^\d+]/g, "")}`
+}
 
 export function ReachTab({ city, localOffices, departments, grievances, sakala, wardNo, wardName, wardLabel, assemblyConstituency }: Props) {
   const offices = localOffices.filter(o => o.boundary_type !== "gba_corporation")
@@ -151,17 +156,12 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala, 
           </div>
         )}
 
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-xs text-ink/60">RTI Act 2005 · ₹10 fee · 30-day response</p>
-          <a
-            href="https://rtionline.gov.in"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`inline-flex min-h-11 shrink-0 items-center text-xs text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent ${FOCUS_RING}`}
-          >
-            File online (Central Govt)
-          </a>
-        </div>
+        {/* No online-filing link: rtionline.gov.in only takes RTIs to central
+            government bodies, and every draft here goes to GBA or a Karnataka
+            office. */}
+        <p className="text-xs leading-snug text-ink/70">
+          RTI Act 2005 · ₹10 fee · 30-day response. Send the letter by post or by hand to the Public Information Officer named in the draft.
+        </p>
       </div>
 
       {/* Local Offices */}
@@ -197,32 +197,46 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala, 
         </div>
       )}
 
-      {/* Agencies & Helplines */}
+      {/* Agencies & Helplines
+          The number is a tel: link and the complaint form is its own link, so
+          tapping "100" dials instead of opening a website. */}
       {departments.length > 0 ? (
         <div className="space-y-2">
           <p className={EYEBROW}>Agencies &amp; Helplines</p>
           <div className="border-t border-ink/15">
-            {departments.filter(d => d.complaint_url || d.toll_free || d.helpline).map(dept => (
-              <a
-                key={dept.short}
-                href={dept.complaint_url || dept.website || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`group flex min-h-11 items-center justify-between border-b border-ink/15 py-2.5 hover:bg-ink/5 active:bg-ink/10 transition-colors ${FOCUS_RING}`}
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-ink group-hover:underline group-hover:decoration-ink/40 group-hover:underline-offset-2">{dept.short}</p>
-                  <p className="truncate text-xs text-ink/60">{dept.name}</p>
+            {departments.filter(d => d.complaint_url || d.toll_free || d.helpline).map(dept => {
+              const number = dept.toll_free || dept.helpline
+              return (
+                <div key={dept.short} className="flex min-h-11 items-center justify-between gap-3 border-b border-ink/15 py-1.5">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-ink">{dept.short}</p>
+                    <p className="truncate text-xs text-ink/60">{dept.name}</p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-3">
+                    {number && (
+                      <a
+                        href={telHref(number)}
+                        aria-label={`Call ${dept.short} on ${number}`}
+                        className={`inline-flex min-h-11 items-center font-mono text-sm font-semibold tabular-nums text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent ${FOCUS_RING}`}
+                      >
+                        {number}
+                      </a>
+                    )}
+                    {dept.complaint_url && (
+                      <a
+                        href={dept.complaint_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${dept.short} online complaint form`}
+                        className={`inline-flex min-h-11 items-center text-xs text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent ${FOCUS_RING}`}
+                      >
+                        Online
+                      </a>
+                    )}
+                  </div>
                 </div>
-                <div className="text-right shrink-0 ml-2">
-                  {dept.toll_free
-                    ? <span className="font-mono text-sm font-semibold tabular-nums text-accent">{dept.toll_free}</span>
-                    : dept.helpline
-                      ? <span className="font-mono text-xs tabular-nums text-accent">{dept.helpline}</span>
-                      : <span className="text-xs text-accent">File online &rarr;</span>}
-                </div>
-              </a>
-            ))}
+              )
+            })}
           </div>
         </div>
       ) : (

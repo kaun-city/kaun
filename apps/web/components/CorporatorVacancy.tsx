@@ -32,8 +32,12 @@ interface Props {
  * ribbon. An explicit width opts out of shrink-to-fit, and -translate-x-1/2
  * still centres it.
  *
- * At full width the card also reached under the "New ward?" pill, which is
- * 16px into its bottom edge on a phone, so below sm it sits a notch higher.
+ * At full width the card also reached under the "Old ward numbers" button,
+ * which is 16px into its bottom edge on a phone, so below sm it sits a notch
+ * higher.
+ *
+ * The count is ink, not danger: the sentence beside it carries the alarm, and
+ * red is kept for the single most alarming finding on a screen.
  */
 export function CorporatorVacancy({ cityId }: Props) {
   const [days, setDays] = useState(() => daysSince(VACANCY_START))
@@ -49,7 +53,7 @@ export function CorporatorVacancy({ cityId }: Props) {
     <div className="absolute bottom-[10.5rem] sm:bottom-40 left-1/2 -translate-x-1/2 z-[900] pointer-events-auto">
       <div className="flex items-stretch w-[min(360px,calc(100vw-2rem))] sm:w-[min(420px,90vw)] border border-ink/55 bg-paper">
         <div className="shrink-0 flex flex-col items-center justify-center min-w-[4.5rem] px-2 border-r border-ink/20">
-          <span className="font-mono text-lg sm:text-xl font-semibold leading-none tabular-nums text-danger">
+          <span className="font-mono text-lg sm:text-xl font-semibold leading-none tabular-nums text-ink">
             {formatNumber(days)}
           </span>
           <span className="mt-1 font-mono text-[11px] uppercase tracking-[0.1em] text-ink/60">days</span>

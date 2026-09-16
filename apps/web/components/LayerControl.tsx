@@ -1,13 +1,16 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { MAP_LAYERS, formatValue, type MapLayerMeta } from "@/lib/map-layers"
+import { MAP_LAYERS, formatLegendValue, wardsWithoutData, type MapLayerMeta } from "@/lib/map-layers"
 
 interface Props {
   activeId: string | null
   onSelect: (id: string | null) => void
-  /** Legend inputs for the active layer (null while loading / no layer) */
-  legend: { breaks: number[]; min: number; max: number; wardCount: number } | null
+  /**
+   * Legend inputs for the active layer (null while loading / no layer).
+   * `totalWards` is the city's ward count, so unpainted wards get a key.
+   */
+  legend: { breaks: number[]; min: number; max: number; wardCount: number; totalWards: number } | null
   loading: boolean
 }
 
@@ -18,6 +21,10 @@ interface Props {
  * every ward by that metric and shows a quantile legend with attribution.
  * The active layer is shareable via the ?layer= URL param (HomePage owns
  * the URL sync).
+ *
+ * On phones a folded ward sheet covers the bottom of the map, so the control
+ * rises above it. HomePage publishes the sheet's measured height as
+ * --ward-sheet-h on the map root; 10rem is the folded sheet's usual height.
  */
 export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
   const [open, setOpen] = useState(false)
@@ -47,7 +54,10 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
   }, [open])
 
   return (
-    <div ref={wrapRef} className="absolute bottom-4 left-4 z-[900] select-none">
+    <div
+      ref={wrapRef}
+      className="absolute bottom-4 left-4 z-[900] select-none max-lg:[.signal-map:has(.ward-sheet[data-sheet=collapsed])_&]:bottom-[calc(var(--ward-sheet-h,10rem)+0.75rem)]"
+    >
       {open && (
         <div className="mb-2 w-64 bg-paper border border-ink/55 overflow-hidden">
           <div className="px-3 py-2 border-b border-ink/15 flex items-center justify-between">
@@ -119,11 +129,20 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
                 ))}
               </div>
               <div className="flex justify-between mt-1">
-                <span className="font-mono tabular-nums text-ink/75 text-[11px]">{formatValue(legend.min, active.format)}</span>
-                <span className="font-mono tabular-nums text-ink/75 text-[11px]">{formatValue(legend.max, active.format)}</span>
+                <span className="font-mono tabular-nums text-ink/75 text-[11px]">{formatLegendValue(legend.min, active.format)}</span>
+                <span className="font-mono tabular-nums text-ink/75 text-[11px]">{formatLegendValue(legend.max, active.format)}</span>
               </div>
+              <p className="text-ink/70 text-[11px] mt-0.5 leading-snug">{active.unit}</p>
+              {wardsWithoutData(legend.totalWards, legend.wardCount) > 0 && (
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <span aria-hidden="true" className="h-2.5 w-4 shrink-0 bg-paper-stage border border-ink/25" />
+                  <span className="text-ink/70 text-[11px]">
+                    No data &middot; {wardsWithoutData(legend.totalWards, legend.wardCount).toLocaleString("en-IN")} wards
+                  </span>
+                </div>
+              )}
               <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60 mt-1.5 leading-snug">
-                {legend.wardCount} wards &middot; {active.source}
+                {legend.wardCount.toLocaleString("en-IN")} of {legend.totalWards.toLocaleString("en-IN")} wards &middot; {active.source}
               </p>
             </>
           ) : (

@@ -143,6 +143,15 @@ body {
   }
 }
 
+/* City map: the zoom buttons sit below the header strip at every width, never
+ * on it. The strip is top-3.5 (14px) plus a 44px row on phones and at sm, 36px
+ * from md, so it ends by 58px; 52px + Leaflet's 10px control margin puts the
+ * buttons at 62px. On phones the ticker below stops 64px from the right edge
+ * (right-16), clear of the buttons' 60px. */
+.city-map .leaflet-top.leaflet-right {
+  top: 52px !important;
+}
+
 /* An open ward sheet covers the map on phones; its zoom buttons would only
  * peek out above the sheet's top rule. They return when the sheet folds. */
 @media (max-width: 1023px) {

@@ -6,7 +6,7 @@
  * No separate API server.
  */
 
-import type { BudgetSummary, CommunityFact, ElectedRep, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "./types"
+import type { BudgetSummary, CommunityFact, ElectedRep, PinResult, PropertyTaxData, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "./types"
 import { rpc, query, insert } from "./supabase"
 import { wardQueryScope } from "./ward-query-scope"
 import { WARD_CROSSWALK_URL } from "./constants"
@@ -358,33 +358,6 @@ export async function fetchDepartments(cityId = "bengaluru") {
 }
 
 /**
- * Fetch recent subreddit posts for a ward (client-side, optional).
- */
-export async function fetchBuzz(wardName: string, subreddit = "bangalore"): Promise<RedditPost[]> {
-  try {
-    const q = encodeURIComponent(`${wardName} ${subreddit}`)
-    const res = await fetch(
-      `https://www.reddit.com/r/${subreddit}/search.json?q=${q}&restrict_sr=on&sort=new&limit=5`,
-      { headers: { "User-Agent": "kaun-civic/1.0" } }
-    )
-    if (!res.ok) return []
-    const data = await res.json()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (data?.data?.children ?? []).map((c: any) => ({
-      title: c.data.title,
-      url: `https://reddit.com${c.data.permalink}`,
-      score: c.data.score,
-      num_comments: c.data.num_comments,
-      created_utc: c.data.created_utc,
-      author: c.data.author ?? "",
-      flair: c.data.link_flair_text ?? null,
-    }))
-  } catch {
-    return []
-  }
-}
-
-/**
  * Fetch ward-level grievance aggregates (BBMP complaints, by ward name).
  */
 export async function fetchWardGrievances(wardName: string, cityId = "bengaluru"): Promise<WardGrievances[]> {
@@ -516,7 +489,9 @@ export async function fetchWardContractors(wardNo: number, cityId = "bengaluru")
     'city_id': `eq.${cityId}`,
     'select': 'entity_id,canonical_name,aliases,phone,total_contracts,total_value_lakh,total_paid_lakh,total_deduction_lakh,avg_deduction_pct,ward_count,wards,first_seen,last_seen,is_govt_entity,blacklist_flags',
     'order': 'total_value_lakh.desc',
-    'limit': '10',
+    // Not a top-N: the ward record counts debarment flags across every
+    // contractor here, and half of wards have more than 10 (the busiest ~56).
+    'limit': '500',
   })
 }
 
