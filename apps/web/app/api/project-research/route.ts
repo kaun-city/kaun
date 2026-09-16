@@ -10,7 +10,7 @@ import {
   type ResearchSource,
   type ReusableResearchResult,
 } from "@/lib/project-research"
-import { getIP, makeAiLimiter, rateLimitResponse } from "@/lib/ratelimit"
+import { getIP, reserveResearchSearch } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
@@ -105,12 +105,13 @@ export async function POST(request: Request) {
     const reusableAnswer = await findReusableProjectResearch(project.slug, question)
     if (reusableAnswer) return respond(project.slug, question, reusableAnswer)
 
-    const { success, reset } = await makeAiLimiter().limit(getIP(request))
-    if (!success) return rateLimitResponse(reset)
-
     if (!process.env.OPENAI_API_KEY) {
       return Response.json({ error: "Live research is not configured yet." }, { status: 503 })
     }
+
+    // Only a paid search spends the per-IP and site-wide daily caps; everything above is free.
+    const refused = await reserveResearchSearch(getIP(request))
+    if (refused) return refused
 
     const knownRecord = project.signals
       .map(signal => `${signal.label}: ${signal.value}. ${signal.explanation}`)

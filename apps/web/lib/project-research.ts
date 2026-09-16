@@ -32,6 +32,7 @@ const STOP_WORDS = new Set([
 const TERM_ALIASES: Record<string, string> = {
   builder: "contractor",
   company: "contractor",
+  complete: "deadline",
   construction: "progress",
   completed: "deadline",
   completion: "deadline",
@@ -43,17 +44,30 @@ const TERM_ALIASES: Record<string, string> = {
   costs: "cost",
   deadlines: "deadline",
   delays: "delay",
+  open: "deadline",
+  opening: "deadline",
   paid: "payment",
   payments: "payment",
+  penalise: "penalty",
+  penalised: "penalty",
+  penalize: "penalty",
+  penalized: "penalty",
   penalties: "penalty",
   petition: "court",
+  petitions: "court",
   price: "cost",
   properties: "property",
+  ready: "deadline",
   records: "record",
   responsible: "agency",
   spent: "cost",
   tender: "contractor",
   vendor: "contractor",
+}
+
+/** Own-property lookup, so words such as "constructor" never resolve to Object.prototype members. */
+function aliasOf(token: string): string {
+  return Object.hasOwn(TERM_ALIASES, token) ? TERM_ALIASES[token] : token
 }
 
 /**
@@ -87,7 +101,7 @@ const CLEARLY_OUT_OF_SCOPE = new Set([
   "stock", "stocks", "trades", "trading", "vacation", "weather",
 ])
 
-const OUT_OF_SCOPE_SUBJECT_PHRASES = ["share market", "share price", "stock market", "stock price"]
+const OUT_OF_SCOPE_SUBJECT_PHRASES = ["cost of living", "share market", "share price", "stock market", "stock price"]
 
 const PROMPT_ATTACK_PHRASES = [
   "ignore previous", "ignore your instructions", "reveal prompt", "system prompt", "developer message", "jailbreak",
@@ -112,7 +126,7 @@ export function questionTokens(value: string): string[] {
   return [...new Set(normalizeProjectQuestion(value)
     .split(/[\s-]+/)
     .filter(token => token.length > 1 && !STOP_WORDS.has(token))
-    .map(token => TERM_ALIASES[token] ?? token))]
+    .map(aliasOf))]
 }
 
 // ---------------------------------------------------------------------------
@@ -177,9 +191,113 @@ export function projectQuestionSimilarity(first: string, second: string): number
 }
 
 // ---------------------------------------------------------------------------
-// On-topic gate. Live research costs a paid web search, so a question must be
-// about this project: name it, or ask about a project-accountability topic.
+// Scope gate. Live research costs a paid web search and this page names
+// agencies and contractors, so a question must be about THIS project. It is in
+// scope when it
+//   1. names the project, its area, road or agency (Varthur, Gunjur, Kodi,
+//      SH-35, KRDCL, "the elevated corridor", "the flyover"), or
+//   2. points at the project ("the contractor", "this project", "the road",
+//      "the deadline", "deadline extensions", "land acquisition") while asking
+//      about an accountability topic.
+// A topic word alone is never enough. A question that names a politician,
+// party, or a person, place, company or project absent from the record is out
+// of scope even when it also uses project words: politicians' records belong
+// to other parts of Kaun, not to this desk.
 // ---------------------------------------------------------------------------
+
+const OFF_TOPIC_REASON = "Ask about this project’s work, agency, contractor, cost, deadlines, land, court record or public documents."
+
+/** Generic nouns that name this project on their own, unless an unfamiliar word qualifies them ("hebbal flyover"). */
+const PROJECT_NAME_NOUNS = new Set(["corridor", "flyover"])
+
+/** After "the", "this" or "its", these nouns point at this project. Compared after plural stemming. */
+const PROJECT_REFERENCE_NOUNS = new Set([
+  "acquisition", "agency", "bill", "budget", "compensation", "completion", "construction", "contract", "contractor",
+  "corridor", "cost", "court", "deadline", "delay", "dpr", "estimate", "extension", "flyover", "land", "milestone",
+  "payment", "petition", "progress", "project", "road", "scope", "stretch", "tender", "timeline", "widening", "work",
+])
+
+const DETERMINERS = new Set(["its", "that", "the", "these", "this", "those"])
+const ARTICLES = new Set(["a", "an", "its", "that", "the", "this"])
+
+/** Words that can sit between a determiner and its noun without changing which project is meant. */
+const PROJECT_DESCRIPTORS = new Set([
+  "approved", "civil", "completion", "construction", "current", "delayed", "elevated", "entire", "estimated", "extended",
+  "final", "high", "incomplete", "km", "lane", "latest", "main", "new", "official", "ongoing", "original", "overall",
+  "pending", "planned", "proposed", "public", "reported", "revised", "sanctioned", "shifting", "stalled", "supreme",
+  "total", "unfinished", "utility", "whole",
+])
+
+/** "the cost of living", "the deadline for filing taxes": after these, the reference only counts if the object is project vocabulary. */
+const QUALIFYING_PREPOSITIONS = new Set(["at", "for", "in", "near", "of"])
+
+/** People a project reference may be qualified by without leaving the project ("the cost for taxpayers"). */
+const PROJECT_AUDIENCE_WORDS = new Set(["citizen", "commuter", "owner", "resident", "taxpayer", "traffic"])
+
+/** Phrases that only make sense about a construction project, so they point at this one without a determiner. */
+const PROJECT_ONLY_PHRASES = [
+  "deadline extension", "deadline extensions", "detailed project report", "land acquisition", "tree felling",
+  "utility shifting", "work order",
+]
+
+/** "Penalties", with or without "the", point at this project only beside delay, deadline, contractor or work vocabulary. */
+const PENALTY_CONTEXT = new Set(["contractor", "deadline", "delay", "extension", "milestone", "work"])
+
+/** Politicians, parties, elections and personal criminal records: never this desk's business. */
+const POLITICAL_TERMS = new Set([
+  "aap", "bjp", "cm", "congress", "constituency", "corporator", "councillor", "councilor", "criminal", "dcm", "election",
+  "electoral", "jds", "legislator", "minister", "mla", "mlc", "mp", "mps", "neta", "party", "political", "politician", "vote",
+  "voter",
+])
+
+/** Civic phrases that contain a political word without being political. */
+const NON_POLITICAL_PHRASES = ["indian roads congress", "third party"]
+
+/**
+ * Lower-case backstop for names the capitalisation check cannot see (a
+ * question typed in lower case, or one that opens with the name): other
+ * cities and states, other Bengaluru projects, and companies not in the record.
+ */
+const OTHER_ENTITY_TERMS = new Set([
+  "adani", "ahmedabad", "ambani", "bmrcl", "bombay", "calcutta", "chennai", "delhi", "dubai", "ejipura", "expressway",
+  "goa", "gujarat", "hebbal", "hyderabad", "kerala", "kolkata", "london", "madras", "maharashtra", "mangalore",
+  "mangaluru", "metro", "mumbai", "mysore", "mysuru", "paris", "pune", "reliance", "singapore", "telangana",
+])
+
+const OTHER_ENTITY_PHRASES = [
+  "coastal road", "new york", "ring road", "silk board", "suburban rail", "tamil nadu", "tunnel road",
+]
+
+/** Everyday words a question may use or capitalise; none of them names a person, party, place or company. */
+const COMMON_WORDS = new Set([
+  ...STOP_WORDS,
+  "according", "after", "again", "all", "also", "any", "anyone", "anything", "apart", "before", "being", "besides",
+  "but", "by", "check", "compare", "dear", "describe", "does", "done", "even", "explain", "find", "first", "give", "had",
+  "hello", "one", "second", "third", "three", "two",
+  "hey", "hi", "if", "info", "information", "into", "its", "just", "kindly", "list", "long", "many", "may", "might",
+  "more", "much", "must", "my", "near", "news", "no", "nor", "not", "now", "ok", "okay", "over", "regarding", "s",
+  "sir", "so", "some", "status", "still", "summarise", "summarize", "thanks", "these", "those", "under", "update",
+  "updates", "whether", "whom", "whose", "will", "yes", "yet", "your",
+])
+
+/** Capitalised words that are ordinary in a Bengaluru civic question: months, public bodies, courts, units. */
+const CIVIC_CAPITALISED_WORDS = new Set([
+  "apr", "april", "aug", "august", "authority", "bangalore", "bbmp", "bda", "bengaluru", "bescom", "bwssb", "cabinet",
+  "cag", "chief", "commissioner", "corporation", "court", "cr", "crore", "dec", "december", "department", "deputy",
+  "director", "dpr", "engineer", "executive", "feb", "february", "fir", "friday", "gba", "government", "govt", "green",
+  "high", "india", "indian", "inr", "jan", "january", "jul", "july", "jun", "june", "karnataka", "kaun", "km", "lakh",
+  "limited", "lokayukta", "ltd", "managing", "mar", "march", "md", "monday", "national", "ngt", "nov", "november",
+  "oct", "october", "officer", "pil", "pwd", "rs", "rti", "saturday", "sep", "sept", "september", "sh", "state",
+  "sunday", "supreme", "tdr", "thursday", "tribunal", "tuesday", "wednesday",
+])
+
+function spacedPhraseText(normalized: string): string {
+  return ` ${normalized.replace(/-/g, " ")} `
+}
+
+function hasPhrase(spaced: string, phrase: string): boolean {
+  return spaced.includes(` ${phrase} `)
+}
 
 function compactCodes(normalized: string): string {
   // "SH-35" and "sh 35" both become "sh35".
@@ -203,6 +321,130 @@ export function projectReferenceTerms(project: CivicProject): Set<string> {
     word.length > 2 && !/^\d+$/.test(word) && !STOP_WORDS.has(word) && !GENERIC_PROJECT_WORDS.has(word)))
 }
 
+const projectVocabularies = new WeakMap<CivicProject, Set<string>>()
+
+/** Every word in the project record plus everyday civic words, used to tell ordinary capitals from unfamiliar names. */
+function projectVocabulary(project: CivicProject): Set<string> {
+  const cached = projectVocabularies.get(project)
+  if (cached) return cached
+  const recordText = [
+    project.title, project.shortTitle, project.routeName, project.projectType, project.road, project.statusNote,
+    project.ownerAgency, project.ownerAgencyShort, project.nextTarget, project.wardSignalNote, project.summary,
+    project.alert, ...project.affectedWardNames, ...project.affectedWardLabels, ...project.suggestedQuestions,
+    ...project.metrics.flatMap(metric => [metric.label, metric.value, metric.note]),
+    ...project.records.flatMap(record => [record.dateLabel, record.title, record.body]),
+    ...project.signals.flatMap(signal => [signal.label, signal.value, signal.explanation]),
+    ...project.sources.flatMap(source => [source.title, source.publisher]),
+  ].join(" ")
+  const vocabulary = new Set([
+    ...comparableWords(recordText).flatMap(word => [word, stemToken(word)]),
+    ...COMMON_WORDS, ...INTERROGATIVES, ...NEGATIONS, ...FILLER_WORDS, ...CIVIC_CAPITALISED_WORDS,
+    ...ACCOUNTABILITY_TERMS, ...PROJECT_REFERENCE_NOUNS, ...PROJECT_DESCRIPTORS, ...Object.keys(TERM_ALIASES),
+  ])
+  projectVocabularies.set(project, vocabulary)
+  return vocabulary
+}
+
+/**
+ * Capitalised words in the question that appear nowhere in the project record
+ * or everyday civic vocabulary: "Paris", "Adani", "Mahadevapura", "NHAI". The
+ * first word of a sentence counts too unless it looks like an ordinary opener
+ * ("Considering…", "Reportedly…"). Title Case and ALL-CAPS questions carry no
+ * capitalisation signal, so they rely on the lower-case lists instead.
+ */
+function unfamiliarNames(project: CivicProject, question: string): string[] {
+  const vocabulary = projectVocabulary(project)
+  const known = (word: string) => {
+    const lower = word.toLowerCase()
+    return vocabulary.has(lower) || vocabulary.has(stemToken(lower))
+  }
+  const names: string[] = []
+  let considered = 0
+  let capitalised = 0
+  for (const sentence of question.normalize("NFKD").split(/[.?!;:\n]+/)) {
+    const words = sentence.match(/[A-Za-z][A-Za-z0-9]*/g) ?? []
+    words.forEach((word, index) => {
+      if (word.length < 2) return
+      const isCapitalised = /^[A-Z]/.test(word)
+      if (index > 0) {
+        considered += 1
+        if (isCapitalised) capitalised += 1
+      }
+      if (!isCapitalised || known(word)) return
+      if (index === 0 && /(ing|ly|ed)$/i.test(word)) return
+      names.push(word)
+    })
+  }
+  if (considered >= 3 && capitalised / considered >= 0.6) return []
+  return names
+}
+
+function isFamiliarModifier(word: string, projectTerms: Set<string>): boolean {
+  const stem = stemToken(word)
+  return /\d/.test(word)
+    || COMMON_WORDS.has(word) || INTERROGATIVES.has(word) || NEGATIONS.has(word) || DETERMINERS.has(word)
+    || PROJECT_DESCRIPTORS.has(word) || projectTerms.has(word)
+    || PROJECT_REFERENCE_NOUNS.has(stem) || ACCOUNTABILITY_TERMS.has(aliasOf(word)) || ACCOUNTABILITY_TERMS.has(stem)
+}
+
+function isProjectContextWord(word: string, projectTerms: Set<string>): boolean {
+  const stem = stemToken(word)
+  return /\d/.test(word) || projectTerms.has(word) || PROJECT_DESCRIPTORS.has(word)
+    || PROJECT_NAME_NOUNS.has(stem) || PROJECT_REFERENCE_NOUNS.has(stem) || PROJECT_AUDIENCE_WORDS.has(stem)
+    || ACCOUNTABILITY_TERMS.has(aliasOf(word)) || ACCOUNTABILITY_TERMS.has(stem)
+}
+
+/** Rule 1: Varthur, Gunjur, Kodi, SH-35, KRDCL, or "corridor"/"flyover" not qualified by an unfamiliar word. */
+function namesThisProject(words: string[], compactWords: string[], projectTerms: Set<string>): boolean {
+  if ([...words, ...compactWords].some(word => projectTerms.has(word))) return true
+  return words.some((word, index) => PROJECT_NAME_NOUNS.has(stemToken(word))
+    && (index === 0 || isFamiliarModifier(words[index - 1], projectTerms)))
+}
+
+/** Rule 2's reference: "the contractor", "this project", "its deadline", "deadline extensions", "land acquisition". */
+function pointsAtThisProject(words: string[], spaced: string, tokens: string[], projectTerms: Set<string>): boolean {
+  if (PROJECT_ONLY_PHRASES.some(phrase => hasPhrase(spaced, phrase))) return true
+  const stems = words.map(stemToken)
+  if (tokens.includes("penalty") && [...tokens, ...stems].some(word => PENALTY_CONTEXT.has(word))) return true
+
+  return words.some((word, index) => {
+    if (!DETERMINERS.has(word)) return false
+    for (let next = index + 1; next < Math.min(words.length, index + 4); next += 1) {
+      if (PROJECT_REFERENCE_NOUNS.has(stems[next])) {
+        if (!QUALIFYING_PREPOSITIONS.has(words[next + 1] ?? "")) return true
+        let object = next + 2
+        while (ARTICLES.has(words[object] ?? "")) object += 1
+        return words[object] === undefined || isProjectContextWord(words[object], projectTerms)
+      }
+      const candidate = words[next]
+      const describesProject = PROJECT_DESCRIPTORS.has(candidate) || /\d/.test(candidate) || projectTerms.has(candidate)
+        || ACCOUNTABILITY_TERMS.has(aliasOf(candidate))
+      if (!describesProject) return false
+    }
+    return false
+  })
+}
+
+function asksAboutAccountability(tokens: string[], spaced: string): boolean {
+  return tokens.some(token => ACCOUNTABILITY_TERMS.has(token) || ACCOUNTABILITY_TERMS.has(stemToken(token)))
+    || ACCOUNTABILITY_PHRASES.some(phrase => hasPhrase(spaced, phrase))
+}
+
+/** Politicians and parties, or a person, place, company or project that is not in this record. */
+function namesSomeoneElse(project: CivicProject, question: string, spaced: string): boolean {
+  const withoutCivicPhrases = NON_POLITICAL_PHRASES.reduce((text, phrase) => text.split(` ${phrase} `).join(" "), spaced)
+  const words = withoutCivicPhrases.trim().split(/\s+/)
+  if (words.some(word => POLITICAL_TERMS.has(word) || POLITICAL_TERMS.has(stemToken(word)) || OTHER_ENTITY_TERMS.has(word))) {
+    return true
+  }
+  if (OTHER_ENTITY_PHRASES.some(phrase => hasPhrase(spaced, phrase))) return true
+  const questionWithoutCivicPhrases = NON_POLITICAL_PHRASES.reduce(
+    (text, phrase) => text.replace(new RegExp(`\\b${phrase.split(" ").join("[\\s-]+")}\\b`, "gi"), " "),
+    question.normalize("NFKD"),
+  )
+  return unfamiliarNames(project, questionWithoutCivicPhrases).length > 0
+}
+
 export function assessProjectQuestion(project: CivicProject, question: string): { relevant: boolean; reason?: string } {
   const normalized = normalizeProjectQuestion(question)
   if (PROMPT_ATTACK_PHRASES.some(phrase => normalized.includes(phrase))) {
@@ -213,25 +455,23 @@ export function assessProjectQuestion(project: CivicProject, question: string): 
   }
 
   const tokens = questionTokens(question)
-  const words = new Set([...tokens, ...compactCodes(normalized).split(/[\s-]+/)])
+  const spaced = spacedPhraseText(normalized)
+  const words = spaced.trim().split(/\s+/).filter(Boolean)
+  const compactWords = compactCodes(normalized).split(/[\s-]+/)
   if (
-    [...words].some(word => CLEARLY_OUT_OF_SCOPE.has(word))
-    || OUT_OF_SCOPE_SUBJECT_PHRASES.some(phrase => normalized.includes(phrase))
+    [...tokens, ...words].some(word => CLEARLY_OUT_OF_SCOPE.has(word))
+    || OUT_OF_SCOPE_SUBJECT_PHRASES.some(phrase => hasPhrase(spaced, phrase))
   ) {
     return { relevant: false, reason: "That question is outside this civic project record." }
   }
+  if (namesSomeoneElse(project, question, spaced)) return { relevant: false, reason: OFF_TOPIC_REASON }
 
   const projectTerms = projectReferenceTerms(project)
-  const namesProject = [...words].some(word => projectTerms.has(word))
-  const asksAccountability = tokens.some(token => ACCOUNTABILITY_TERMS.has(token))
-    || ACCOUNTABILITY_PHRASES.some(phrase => normalized.includes(phrase))
-  if (!namesProject && !asksAccountability) {
-    return {
-      relevant: false,
-      reason: "Ask about this project’s work, agency, contractor, cost, deadlines, land, court record or public documents.",
-    }
+  if (namesThisProject(words, compactWords, projectTerms)) return { relevant: true }
+  if (pointsAtThisProject(words, spaced, tokens, projectTerms) && asksAboutAccountability(tokens, spaced)) {
+    return { relevant: true }
   }
-  return { relevant: true }
+  return { relevant: false, reason: OFF_TOPIC_REASON }
 }
 
 // ---------------------------------------------------------------------------
@@ -309,23 +549,42 @@ interface LocalTopic {
   recordIds?: string[]
 }
 
+/**
+ * Record topics the desk may answer without a search. Terms are whole words or
+ * phrases about the topic itself; names of the project (Varthur, KRDCL,
+ * corridor) are deliberately absent, because naming the project says nothing
+ * about which part of its record a question needs.
+ */
 const LOCAL_TOPICS: LocalTopic[] = [
   { terms: ["contractor", "work order", "tender", "milestone", "payment", "penalty"], signalIds: ["contractor"] },
   { terms: ["cost", "budget", "crore", "estimate", "amount"], signalIds: ["cost"], metricLabels: ["Reported cost"] },
   { terms: ["court", "legal", "stay", "petition", "tdr"], signalIds: ["litigation"], metricLabels: ["Court stays found"], recordIds: ["court-order"] },
   { terms: ["deadline", "delay", "complete", "completion", "finish", "timeline", "target"], recordIds: ["original-deadline", "july-2025-target", "realistic-2027", "december-2026-target"] },
   { terms: ["progress", "construction", "land", "acquisition", "property", "properties"], metricLabels: ["Land acquisition", "Properties pending"], recordIds: ["december-2026-target"] },
-  { terms: ["agency", "authority", "responsible", "owner", "krdcl"], signalIds: ["responsible-agency"] },
-  { terms: ["scope", "elevated", "corridor", "extension"], recordIds: ["cabinet-expansion"] },
+  { terms: ["agency", "authority", "responsible", "owner"], signalIds: ["responsible-agency"] },
+  { terms: ["scope", "expansion", "extension"], recordIds: ["cabinet-expansion"] },
 ]
 
-function topicScore(question: string, topic: LocalTopic): number {
-  const normalized = normalizeProjectQuestion(question)
-  const tokens = new Set(questionTokens(question))
-  return topic.terms.reduce((score, term) => {
+/**
+ * Questions about people — politicians, officials, named individuals, criminal
+ * or corruption allegations — are never answered from the project record, even
+ * when a topic word matches: a record entry about the project must not be
+ * shown as an answer about a person.
+ */
+const PERSON_TERMS = new Set([
+  ...POLITICAL_TERMS, "accused", "arrest", "arrested", "bribe", "bribery", "chairman", "chairperson", "commissioner",
+  "corrupt", "corruption", "director", "engineer", "he", "her", "him", "his", "individual", "md", "officer", "official",
+  "person", "she",
+])
+
+/** Whether any of the topic's terms (whole words or phrases, after aliases and plurals) appears in the question. */
+function matchesTopic(question: string, topic: LocalTopic): boolean {
+  const spaced = spacedPhraseText(normalizeProjectQuestion(question))
+  const tokens = new Set(questionTokens(question).flatMap(token => [token, stemToken(token), aliasOf(stemToken(token))]))
+  return topic.terms.some(term => {
     const normalizedTerm = normalizeProjectQuestion(term)
-    return score + (normalized.includes(normalizedTerm) || tokens.has(TERM_ALIASES[normalizedTerm] ?? normalizedTerm) ? 1 : 0)
-  }, 0)
+    return hasPhrase(spaced, normalizedTerm) || tokens.has(aliasOf(normalizedTerm))
+  })
 }
 
 function signalSentence(signal: CivicProjectSignal): string {
@@ -340,20 +599,29 @@ function recordSentence(record: CivicProjectRecord): string {
   return `${record.title} (${record.dateLabel}): ${record.body}`
 }
 
+/**
+ * Answer from Kaun's own record only when the question is in scope, is not
+ * about a person, and matches exactly one record topic better than any other.
+ * Anything less clear goes on to cached research or a live search.
+ */
 export function findAnswerInProjectRecord(project: CivicProject, question: string): ReusableResearchResult | null {
+  if (!assessProjectQuestion(project, question).relevant) return null
   const normalizedQuestion = normalizeProjectQuestion(question)
+  const tokens = questionTokens(normalizedQuestion)
+  if (tokens.some(token => PERSON_TERMS.has(token) || PERSON_TERMS.has(stemToken(token)))) return null
   const asksForFreshness = ["after", "current", "latest", "newer", "now", "recent", "since", "today", "updated", "yet"]
-    .some(term => questionTokens(normalizedQuestion).includes(term))
+    .some(term => tokens.includes(term))
   if (asksForFreshness) return null
 
-  const topic = LOCAL_TOPICS
-    .map(candidate => ({ candidate, score: topicScore(question, candidate) }))
-    .sort((a, b) => b.score - a.score)[0]
-  if (!topic || topic.score === 0) return null
+  // A clear match is exactly one record topic: "penalties or deadline extensions"
+  // touches three and goes to research instead.
+  const matched = LOCAL_TOPICS.filter(candidate => matchesTopic(question, candidate))
+  if (matched.length !== 1) return null
+  const [topic] = matched
 
-  const signals = project.signals.filter(item => topic.candidate.signalIds?.includes(item.id))
-  const metrics = project.metrics.filter(item => topic.candidate.metricLabels?.includes(item.label))
-  const records = project.records.filter(item => topic.candidate.recordIds?.includes(item.id))
+  const signals = project.signals.filter(item => topic.signalIds?.includes(item.id))
+  const metrics = project.metrics.filter(item => topic.metricLabels?.includes(item.label))
+  const records = project.records.filter(item => topic.recordIds?.includes(item.id))
   const asksAboutKaunRecord = normalizedQuestion.includes("kaun") || normalizedQuestion.includes("existing record")
   if (!asksAboutKaunRecord && [...signals, ...metrics].some(item => item.evidence === "unknown" || item.evidence === "conflicting")) {
     return null

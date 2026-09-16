@@ -1,6 +1,6 @@
 import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
-import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { enforceRateLimit, makeAiLimiter } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
@@ -89,8 +89,8 @@ function buildContext(d: RTIDraftRequest): string {
 }
 
 export async function POST(req: Request) {
-  const { success, reset } = await makeAiLimiter().limit(getIP(req))
-  if (!success) return rateLimitResponse(reset)
+  const limited = await enforceRateLimit(makeAiLimiter, req, "RTI drafting")
+  if (limited) return limited
 
   try {
   const data: RTIDraftRequest = await req.json()

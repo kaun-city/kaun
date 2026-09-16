@@ -2,7 +2,7 @@ import { openai } from "@ai-sdk/openai"
 import { generateText, tool, zodSchema, stepCountIs } from "ai"
 import { z } from "zod"
 import { createClient } from "@supabase/supabase-js"
-import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { enforceRateLimit, makeAiLimiter } from "@/lib/ratelimit"
 import { publicSupabaseConfig } from "@/lib/supabase-config"
 import {
   attributableHistoricalWards, gbaWardKey, indexGbaCrosswalk, sourceWardNosForLegacyWard,
@@ -292,8 +292,8 @@ function makeTools(supabase: any) {
 }
 
 export async function POST(req: Request) {
-  const { success, reset } = await makeAiLimiter().limit(getIP(req))
-  if (!success) return rateLimitResponse(reset)
+  const limited = await enforceRateLimit(makeAiLimiter, req, "Ask Kaun")
+  if (limited) return limited
 
   try {
     const { url, anonKey } = publicSupabaseConfig()

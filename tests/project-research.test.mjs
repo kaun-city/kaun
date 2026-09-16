@@ -57,8 +57,17 @@ test("reuses an answer only for a near-identical question", () => {
   ), false)
 })
 
+// Reproduced by review: each of these used to pass the gate and start a paid web search.
+const REVIEWED_OFF_PROJECT_QUESTIONS = [
+  "What is the cost of living in Paris right now?",
+  "latest court news about Adani",
+  "Mumbai coastal road contractor",
+  "Who is the MLA of Mahadevapura and his criminal record in court?",
+]
+
 test("rejects questions that are not about this project", () => {
   for (const question of [
+    ...REVIEWED_OFF_PROJECT_QUESTIONS,
     "tell me the public record of Modi's stock trades",
     "Ward stock market tips please",
     "Tell me the public record of the Prime Minister",
@@ -69,6 +78,39 @@ test("rejects questions that are not about this project", () => {
   ]) {
     assert.equal(assessProjectQuestion(project, question).relevant, false, question)
   }
+})
+
+test("a topic word alone is not enough, and naming someone or somewhere else is out of scope", () => {
+  for (const question of [
+    // Topic words without any reference to this project.
+    "court case updates",
+    "How much has been spent?",
+    "What is the penalty for jumping a red light?",
+    "What is the deadline for filing taxes?",
+    "What is the best flyover in India?",
+    // Lower case, Title Case and ALL CAPS give no capitalisation signal.
+    "what is the cost of living in paris right now?",
+    "mumbai coastal road contractor",
+    "who is the mla of mahadevapura and his criminal record in court?",
+    "LATEST COURT NEWS ABOUT ADANI",
+    "What Is The Cost Of Living In Paris Right Now?",
+    // Project words, but also a politician, party, company, place or other project.
+    "Who is the Varthur MLA and does he have court cases?",
+    "Is the contractor linked to the BJP?",
+    "Which party's corporator approved the corridor?",
+    "Is Adani the contractor for the Varthur corridor?",
+    "What's the deadline for the Hebbal flyover?",
+    "the hebbal flyover deadline",
+    "When is the metro coming to Varthur?",
+    "Did NHAI fund the corridor?",
+    "Who is Ramesh Kumar?",
+  ]) {
+    assert.equal(assessProjectQuestion(project, question).relevant, false, question)
+  }
+  assert.match(
+    assessProjectQuestion(project, "Who is the MLA of Mahadevapura and his criminal record in court?").reason,
+    /Ask about this project/,
+  )
 })
 
 test("accepts the workbench's suggested questions and other project questions", () => {
@@ -83,6 +125,20 @@ test("accepts the workbench's suggested questions and other project questions", 
     "What is the completion deadline?",
     "Is the SH-35 widening finished?",
     "How is traffic near Gunjur?",
+    "When will the Varthur Gunjur road be finished?",
+    "Has the contractor been penalised for delays?",
+    "Why is the elevated corridor delayed?",
+    "Is there a court stay on the project?",
+    "What did the High Court say about TDR?",
+    "When was the tender floated?",
+    "Are there penalties for delays?",
+    "Has BBMP paid compensation for land acquisition?",
+    "Considering the delays, has the contractor been penalised?",
+    "Third-party audit of the corridor?",
+    "Does the corridor follow Indian Roads Congress norms?",
+    "HAS THE CONTRACTOR BEEN PENALISED?",
+    "Has The Contractor Been Penalised For Delays?",
+    "who is the contractor",
   ]) {
     assert.equal(assessProjectQuestion(project, question).relevant, true, question)
   }
@@ -96,6 +152,34 @@ test("answers known questions from Kaun without live research", () => {
   assert.ok((answer?.sources.length ?? 0) > 0)
   assert.equal(findAnswerInProjectRecord(project, "What is the latest completion deadline?"), null)
   assert.equal(findAnswerInProjectRecord(project, "Who is the contractor?"), null)
+  assert.equal(findAnswerInProjectRecord(project, "Is there a court stay on the project?")?.origin, "kaun_record")
+})
+
+test("never answers a person, politician or out-of-scope question from the project record", () => {
+  // The reported bug: this returned the Varthur High Court TDR order as "already addressed".
+  for (const question of [
+    ...REVIEWED_OFF_PROJECT_QUESTIONS,
+    "Who is the Varthur MLA and does he have court cases?",
+    "Has the KRDCL managing director faced court cases?",
+    "Is the engineer in charge of the corridor facing a court case?",
+    "Which politician is behind the court petition on the corridor?",
+    "latest court news",
+  ]) {
+    assert.equal(findAnswerInProjectRecord(project, question), null, question)
+  }
+})
+
+test("answers from the record only when exactly one record topic clearly matches", () => {
+  // Penalties, deadlines and extensions span three record topics: research it instead.
+  assert.equal(findAnswerInProjectRecord(project, "What do public records say about penalties or deadline extensions?"), null)
+  assert.equal(findAnswerInProjectRecord(project, "Has BBMP paid compensation for land acquisition?"), null)
+  // A project name is not a topic.
+  assert.equal(findAnswerInProjectRecord(project, "Who built the Varthur corridor?"), null)
+  // Topic terms match whole words only ("courtesy" is not "court", "stayed" is not "stay").
+  assert.equal(findAnswerInProjectRecord(project, "Has KRDCL stayed in touch with residents as a courtesy?"), null)
+  for (const question of project.suggestedQuestions) {
+    assert.equal(findAnswerInProjectRecord(project, question), null, question)
+  }
 })
 
 const signed = {

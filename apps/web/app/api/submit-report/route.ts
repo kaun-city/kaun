@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js"
-import { makeReportLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { enforceRateLimit, makeReportLimiter } from "@/lib/ratelimit"
 import { publicSupabaseConfig } from "@/lib/supabase-config"
 
 export const runtime = "nodejs"
@@ -93,8 +93,8 @@ function isMissingWardIdentityColumn(error: { code?: string; message?: string; d
 }
 
 export async function POST(req: Request) {
-  const { success, reset } = await makeReportLimiter().limit(getIP(req))
-  if (!success) return rateLimitResponse(reset)
+  const limited = await enforceRateLimit(makeReportLimiter, req, "Issue reporting")
+  if (limited) return limited
 
   try {
     const body: SubmitReportBody = await req.json()

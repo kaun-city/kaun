@@ -10,7 +10,7 @@ import {
   type ResearchOrigin,
   type ResearchSource,
 } from "@/lib/project-research"
-import { getIP, makeResearchSubmissionLimiter, rateLimitResponse } from "@/lib/ratelimit"
+import { enforceRateLimit, getIP, makeResearchSubmissionLimiter } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 export const maxDuration = 20
@@ -54,8 +54,8 @@ function parseSources(value: unknown): ResearchSource[] | null {
 
 export async function POST(request: Request) {
   const ip = getIP(request)
-  const { success, reset } = await makeResearchSubmissionLimiter().limit(ip)
-  if (!success) return rateLimitResponse(reset)
+  const limited = await enforceRateLimit(makeResearchSubmissionLimiter, request, "Research submissions")
+  if (limited) return limited
 
   let body: SubmissionBody
   try {

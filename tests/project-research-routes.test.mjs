@@ -13,6 +13,8 @@ const mocks = {
   supabase: () => ({ data: [], error: null }),
   supabaseCalls: [],
   limiters: [],
+  limitCalls: [],
+  limit: () => ({ success: true, reset: Date.now() + 60_000 }),
   openaiCalls: [],
   openaiResponse: null,
   revalidated: [],
@@ -49,8 +51,14 @@ const MOCK_SOURCES = {
   "@upstash/ratelimit": `
     export class Ratelimit {
       constructor(options) { this.options = options }
-      static slidingWindow(tokens, window) { return { tokens, window } }
-      async limit() { globalThis.__kaunMocks.limiters.push(this.options.prefix); return { success: true, reset: Date.now() } }
+      static slidingWindow(tokens, window) { return { kind: "sliding", tokens, window } }
+      static fixedWindow(tokens, window) { return { kind: "fixed", tokens, window } }
+      async limit(identifier) {
+        const mocks = globalThis.__kaunMocks
+        mocks.limiters.push(this.options.prefix)
+        mocks.limitCalls.push({ prefix: this.options.prefix, identifier, limiter: this.options.limiter })
+        return mocks.limit(this.options.prefix, identifier)
+      }
     }`,
   "@upstash/redis": "export class Redis { constructor() {} }",
   "openai": `
@@ -123,9 +131,13 @@ beforeEach(() => {
   mocks.supabase = () => ({ data: [], error: null })
   mocks.supabaseCalls = []
   mocks.limiters = []
+  mocks.limitCalls = []
+  mocks.limit = () => ({ success: true, reset: Date.now() + 60_000 })
   mocks.openaiCalls = []
   mocks.openaiResponse = null
   mocks.revalidated = []
+  process.env.UPSTASH_REDIS_REST_URL = "https://upstash.test"
+  process.env.UPSTASH_REDIS_REST_TOKEN = "upstash-test-token"
   process.env.NEXT_PUBLIC_SUPABASE_URL = "http://supabase.test"
   process.env.SUPABASE_SERVICE_ROLE_KEY = SERVICE_KEY
   process.env.OPENAI_API_KEY = "openai-test-key"
@@ -158,11 +170,120 @@ test("research keeps working when the research tables are not migrated", async (
 })
 
 test("off-project questions never reach the paid web search", async () => {
-  for (const question of ["tell me the public record of Modi's stock trades", "Ward stock market tips please"]) {
+  mocks.openaiResponse = openaiAnswer("This should never be produced.")
+  for (const question of [
+    "tell me the public record of Modi's stock trades",
+    "Ward stock market tips please",
+    "What is the cost of living in Paris right now?",
+    "latest court news about Adani",
+    "Mumbai coastal road contractor",
+    "Who is the MLA of Mahadevapura and his criminal record in court?",
+  ]) {
     const response = await research.POST(post({ project_slug: SLUG, question }))
-    assert.equal(response.status, 422)
+    assert.equal(response.status, 422, question)
+    const body = await response.json()
+    assert.equal(body.code, "OUT_OF_SCOPE")
+    assert.equal(body.answer, undefined, question)
   }
   assert.equal(mocks.openaiCalls.length, 0)
+  assert.deepEqual(mocks.limiters, [])
+})
+
+const DAY_RESET = () => Date.now() + 7 * 60 * 60 * 1000
+
+test("a live search spends one token from the per-IP and site-wide daily buckets", async () => {
+  await liveResult()
+  assert.deepEqual(mocks.limitCalls.map(({ prefix, identifier }) => [prefix, identifier]), [
+    ["kaun:research-search", "203.0.113.9"],
+    ["kaun:research-search-global", "all"],
+  ])
+  assert.deepEqual(mocks.limitCalls.map(call => call.limiter), [
+    { kind: "fixed", tokens: 5, window: "1 d" },
+    { kind: "fixed", tokens: 200, window: "1 d" },
+  ])
+  // Research no longer spends Ask Kaun's per-minute AI bucket.
+  assert.equal(mocks.limiters.includes("kaun:ai"), false)
+})
+
+test("record and cached answers do not count against the daily search caps", async () => {
+  mocks.limit = () => ({ success: false, reset: DAY_RESET() })
+
+  let response = await research.POST(post({ project_slug: SLUG, question: "What is the completion deadline?" }))
+  assert.equal(response.status, 200)
+  assert.equal((await response.json()).origin, "kaun_record")
+
+  mocks.supabase = op => op.table === "civic_project_research_cache" && op.action === "select"
+    ? { data: [{ id: 1, question: FRESH_QUESTION, answer: "Cached answer.", sources: [{ title: "Cached", url: "https://example.org/cached" }], searched_at: "2026-09-15T05:00:00+00:00" }], error: null }
+    : { data: [], error: null }
+  response = await research.POST(post({ project_slug: SLUG, question: FRESH_QUESTION }))
+  assert.equal(response.status, 200)
+  assert.equal((await response.json()).origin, "recent_research")
+
+  assert.deepEqual(mocks.limiters, [])
+  assert.equal(mocks.openaiCalls.length, 0)
+})
+
+test("an IP at its daily search cap gets a calm 429 without calling OpenAI", async () => {
+  mocks.openaiResponse = openaiAnswer("This should never be produced.")
+  mocks.limit = prefix => prefix === "kaun:research-search"
+    ? { success: false, reset: DAY_RESET() }
+    : { success: true, reset: DAY_RESET() }
+
+  const response = await research.POST(post({ project_slug: SLUG, question: FRESH_QUESTION }))
+  assert.equal(response.status, 429)
+  const body = await response.json()
+  assert.equal(body.code, "RESEARCH_SEARCH_LIMIT")
+  assert.match(body.error, /today’s limit of 5 new web searches/)
+  assert.match(body.error, /already answered still work/)
+  assert.match(body.error, /about 7 hours/)
+  assert.ok(Number(response.headers.get("Retry-After")) > 6 * 60 * 60)
+  assert.equal(mocks.openaiCalls.length, 0)
+  // A capped visitor does not spend the site-wide ceiling.
+  assert.deepEqual(mocks.limiters, ["kaun:research-search"])
+})
+
+test("the site-wide daily ceiling stops live searches for everyone", async () => {
+  mocks.openaiResponse = openaiAnswer("This should never be produced.")
+  mocks.limit = prefix => prefix === "kaun:research-search-global"
+    ? { success: false, reset: DAY_RESET() }
+    : { success: true, reset: DAY_RESET() }
+
+  const response = await research.POST(post({ project_slug: SLUG, question: FRESH_QUESTION }, { "x-real-ip": "198.51.100.4" }))
+  assert.equal(response.status, 429)
+  assert.match((await response.json()).error, /research desk has reached today’s limit/)
+  assert.equal(mocks.openaiCalls.length, 0)
+})
+
+test("a limiter timeout refuses the search instead of letting it through", async () => {
+  mocks.limit = () => ({ success: true, reset: 0, reason: "timeout" })
+  const response = await research.POST(post({ project_slug: SLUG, question: FRESH_QUESTION }))
+  assert.equal(response.status, 503)
+  assert.equal(mocks.openaiCalls.length, 0)
+})
+
+test("without Upstash, development searches uncapped and production refuses, logging once", async t => {
+  delete process.env.UPSTASH_REDIS_REST_URL
+  delete process.env.UPSTASH_REDIS_REST_TOKEN
+  const warn = t.mock.method(console, "warn", () => {})
+  const nodeEnv = process.env.NODE_ENV
+  try {
+    process.env.NODE_ENV = "development"
+    const body = await liveResult()
+    assert.equal(body.origin, "live_research")
+    await liveResult("Has KRDCL published any progress report after August 2026?")
+    assert.equal(mocks.openaiCalls.length, 2)
+    assert.deepEqual(mocks.limiters, [])
+
+    process.env.NODE_ENV = "production"
+    mocks.openaiCalls = []
+    const response = await research.POST(post({ project_slug: SLUG, question: FRESH_QUESTION }))
+    assert.equal(response.status, 503)
+    assert.equal(mocks.openaiCalls.length, 0)
+    assert.equal(warn.mock.callCount(), 1)
+  } finally {
+    if (nodeEnv === undefined) delete process.env.NODE_ENV
+    else process.env.NODE_ENV = nodeEnv
+  }
 })
 
 test("cached answers are reused only for a near-identical question, and labelled as unreviewed cache", async () => {
@@ -383,4 +504,26 @@ test("submit-report falls back when any ward-identity column is missing, and onl
   const response = await report.POST(post(validReport))
   assert.equal(response.status, 500)
   assert.equal(mocks.supabaseCalls.filter(op => op.action === "insert").length, 1)
+})
+
+test("rate-limited routes answer 503, not 500, on deployments without Upstash", async () => {
+  const { enforceRateLimit } = await import("../apps/web/lib/ratelimit.ts")
+  const saved = { url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN, env: process.env.NODE_ENV }
+  delete process.env.UPSTASH_REDIS_REST_URL
+  delete process.env.UPSTASH_REDIS_REST_TOKEN
+  let made = 0
+  const factory = () => { made += 1; throw new Error("limiter must not be built without credentials") }
+  try {
+    process.env.NODE_ENV = "production"
+    const deployed = await enforceRateLimit(factory, new Request("https://example.test"), "Ask Kaun")
+    assert.equal(deployed.status, 503)
+    assert.match((await deployed.json()).error, /isn't available on this deployment/)
+    process.env.NODE_ENV = "development"
+    assert.equal(await enforceRateLimit(factory, new Request("https://example.test"), "Ask Kaun"), null)
+    assert.equal(made, 0)
+  } finally {
+    if (saved.url === undefined) delete process.env.UPSTASH_REDIS_REST_URL; else process.env.UPSTASH_REDIS_REST_URL = saved.url
+    if (saved.token === undefined) delete process.env.UPSTASH_REDIS_REST_TOKEN; else process.env.UPSTASH_REDIS_REST_TOKEN = saved.token
+    process.env.NODE_ENV = saved.env
+  }
 })

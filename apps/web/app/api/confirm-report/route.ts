@@ -1,12 +1,12 @@
 import { createClient } from "@supabase/supabase-js"
-import { makeReportLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { enforceRateLimit, makeReportLimiter } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 
 export async function POST(req: Request) {
   // Reuse report limiter (5/hour/IP)
-  const { success, reset } = await makeReportLimiter().limit(getIP(req))
-  if (!success) return rateLimitResponse(reset)
+  const limited = await enforceRateLimit(makeReportLimiter, req, "Report confirmation")
+  if (limited) return limited
 
   try {
     const { id } = await req.json() as { id: number }
