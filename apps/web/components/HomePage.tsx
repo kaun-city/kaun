@@ -408,13 +408,11 @@ export default function HomePage({ host = "" }: { host?: string }) {
       ).slice(0, 8)
     : []
 
-  const currentWardNames = useMemo(
-    () => new Set(wardOptions.map(w => normalizeWardName(w.ward_name))),
-    [wardOptions],
-  )
+  const currentWardNames = new Set(wardOptions.map(w => normalizeWardName(w.ward_name)))
   // Former-ward hits, joined to the loaded search options so each current ward
   // they point at opens exactly as a normal search pick does.
-  const formerResults = useMemo(() => {
+  // Plain computation: the React compiler memoizes it.
+  const formerResults = (() => {
     if (trimmedQuery.length < 2 || gbaRows.length === 0 || wardOptions.length === 0) return []
     const byKey = new Map(wardOptions.map(w => [gbaWardKey(w.corporation_id ?? 0, w.ward_no), w]))
     return formerWardMatches(trimmedQuery, gbaRows, currentWardNames, MATERIAL_OVERLAP)
@@ -426,7 +424,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
         }),
       }))
       .filter(former => former.parts.length > 0)
-  }, [trimmedQuery, gbaRows, wardOptions, currentWardNames])
+  })()
 
   const projectResults = trimmedQuery.length >= 2 ? searchCivicProjects(trimmedQuery, activeCity.id) : []
   const hasProjects = CIVIC_PROJECTS.some(project => project.cityId === activeCity.id)
