@@ -84,28 +84,29 @@ rebasing the full schema, review the resulting diff, and never use
 
 ## Production rollout (PR #129)
 
-Production has no Supabase CLI migration history, so `supabase db push` would
-try to run every file, including the full schema dump. Never push before the
-history is repaired. `20260915` and `20260916` must be applied to production
-before PR #129 merges. Keep the password out of the command line:
+**Status (16 Sep 2026): done.** `20260915`, `20260916` and `20260917` were
+applied to production through the Supabase SQL editor, each file wrapped in
+one `BEGIN … COMMIT` transaction, and verified with read-only checks. The
+matching data backfills from [data-quality-2026-09.md](data-quality-2026-09.md)
+were applied the same day and re-ran with 0 pending changes.
 
-```powershell
-$env:PGPASSWORD = '<database password>'
-$url = '<Session pooler URI without the password>'
-npx supabase migration list --db-url $url      # read-only: expect no remote versions
-npx supabase migration repair --status applied 20260504 20260505 20260506 20260910 --db-url $url
-npx supabase db push --dry-run --db-url $url   # must list only 20260915 and 20260916
-npx supabase db push --db-url $url
-npx supabase migration list --db-url $url      # all six versions now remote
-Remove-Item Env:PGPASSWORD
+Production still has no Supabase CLI migration history, so `supabase db push`
+would try to run every file, including the full schema dump. Before any future
+push, record every already-live version first. Keep the password out of the
+command line:
+
+```bash
+export PGPASSWORD='<database password>'
+url='<Session pooler URI without the password>'
+npx supabase migration list --db-url "$url"      # read-only: expect no remote versions
+npx supabase migration repair --status applied 20260504 20260505 20260506 20260910 20260915 20260916 20260917 --db-url "$url"
+npx supabase db push --dry-run --db-url "$url"   # must list only versions added after 20260917
+unset PGPASSWORD
 ```
 
-`repair` only records the four already-live versions; it runs none of their SQL.
-
-`20260917_bmtc_stops_dedup.sql` uses the same path. Run its plan and
-rehearsal first ([bmtc-stops.md](bmtc-stops.md#rollout)). Once it is in the
-branch being deployed, `db push --dry-run` lists it after any versions still
-pending.
+`repair` only records versions that are already live; it runs none of their
+SQL. On Windows PowerShell use `$env:PGPASSWORD = '…'` and
+`Remove-Item Env:PGPASSWORD`.
 
 ## Switching back to hosted Supabase
 

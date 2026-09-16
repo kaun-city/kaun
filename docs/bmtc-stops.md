@@ -63,6 +63,11 @@ Run these steps in order. The first two never write to production.
    a view) and `wards_disagreeing` (rows the view serves differently from
    that copy). For a few seconds the run locks `bmtc_stops`,
    `ward_infra_stats` and `ward_bus_stops`, so reads of them wait.
+> **Applied to production on 16 Sep 2026** through the SQL editor in one
+> transaction: 39,557 duplicate rows removed (42,529 → 2,972 stops), 39,687
+> booth links kept, `ward_bus_stops` is now a view (237 wards, 1,813 stops,
+> 858,416 trips, matching `ward_infra_stats`), and the plan re-runs clean.
+
 3. **Apply** through the documented migration path in
    [local-database.md](local-database.md#production-rollout-pr-129):
    `migration repair` for versions that are already live, then
