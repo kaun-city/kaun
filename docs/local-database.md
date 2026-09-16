@@ -26,6 +26,15 @@ and analytics. Tables whose rows are inserted by migrations (`civic_projects`,
 The connection password is passed to the Supabase CLI through `PGPASSWORD`,
 not on the command line.
 
+Some migrations rewrite production rows instead of only changing schema. Until
+production runs one of these, a newly synced seed still has the old rows. They
+are listed in `seedReplayedMigrations` in `scripts/local-db/shared.mjs`. The
+seed load relaxes what each one adds, loads the seed, and replays the migration
+in the same transaction. A local reset then ends in the migrated shape whether
+the seed was synced before or after production ran the migration. So far the
+only such migration is `20260917_bmtc_stops_dedup.sql`; see
+[bmtc-stops.md](bmtc-stops.md).
+
 `db:start` starts the local Supabase services and writes local API credentials
 to `apps/web/.env.local`. Restart `npm run dev` after switching the database.
 Before `db:start`, `db:reset` or `db:use-hosted` changes that file, the previous
@@ -92,6 +101,11 @@ Remove-Item Env:PGPASSWORD
 ```
 
 `repair` only records the four already-live versions; it runs none of their SQL.
+
+`20260917_bmtc_stops_dedup.sql` uses the same path. Run its plan and
+rehearsal first ([bmtc-stops.md](bmtc-stops.md#rollout)). Once it is in the
+branch being deployed, `db push --dry-run` lists it after any versions still
+pending.
 
 ## Switching back to hosted Supabase
 

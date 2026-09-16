@@ -6,7 +6,15 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { CIVIC_PROJECTS } from "../apps/web/lib/civic-projects.ts"
-import { baseline, migrationSeededTables, privateTables, restrictToOwner } from "../scripts/local-db/shared.mjs"
+import {
+  baseline,
+  migrationSeededTables,
+  privateTables,
+  replayContainerPath,
+  restrictToOwner,
+  seedLoadArgs,
+  seedReplayedMigrations,
+} from "../scripts/local-db/shared.mjs"
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8")
 const rootPackage = JSON.parse(read("package.json"))
@@ -63,9 +71,58 @@ test("every excluded table exists in the migrated schema", () => {
 
 test("rows inserted by migrations are never duplicated by the data seed", () => {
   assert.ok(migrationInsertTargets.size > 0)
-  for (const table of migrationInsertTargets) {
-    assert.ok(migrationSeededTables.includes(table), `${table} is seeded by a migration and excluded from db:sync`)
+  const replayed = new Set(seedReplayedMigrations.map(({ file }) => file))
+  for (const [name, sql] of migrations) {
+    for (const insert of sql.match(/^INSERT INTO[\s\S]*?;/gm) ?? []) {
+      const table = qualified(insert.match(/^INSERT INTO ([\w."]+)/)[1])
+      if (replayed.has(name)) {
+        // Derived from rows the seed already holds and replayed after it loads,
+        // so production's copies must stay in the seed and the insert must
+        // tolerate them.
+        assert.match(insert, /\bSELECT\b/, `${name} derives ${table} rows from existing data`)
+        assert.match(insert, /ON CONFLICT[\s\S]*DO NOTHING/, `${name} tolerates ${table} rows the seed already loaded`)
+        assert.ok(!migrationSeededTables.includes(table), `${table} keeps production rows in the seed`)
+      } else {
+        assert.ok(migrationSeededTables.includes(table), `${table} is seeded by a migration and excluded from db:sync`)
+      }
+    }
   }
+})
+
+test("seeds synced before a data-rewriting migration still load and end up migrated", () => {
+  assert.ok(seedReplayedMigrations.length > 0)
+  for (const { file, beforeSeed } of seedReplayedMigrations) {
+    const sql = migrations.get(file)
+    assert.ok(sql, `${file} is a migration`)
+    assert.ok(file > baselineName, `${file} runs after the baseline`)
+    // It runs inside the seed's single transaction, so it must not end it.
+    assert.doesNotMatch(
+      stripSqlComments(sql).replace(/\$(\w*)\$[\s\S]*?\$\1\$/g, "").replace(/'(?:[^']|'')*'/g, ""),
+      /^\s*(?:BEGIN|COMMIT|END|ROLLBACK)\b/im,
+      `${file} has no transaction control`,
+    )
+    // beforeSeed may only drop indexes the replay recreates.
+    const dropped = [...beforeSeed.matchAll(/DROP INDEX IF EXISTS ([\w.]+);/g)].map(match => match[1])
+    assert.ok(dropped.length > 0)
+    assert.equal(beforeSeed.replace(/DROP INDEX IF EXISTS [\w.]+;/g, "").trim(), "", "beforeSeed only drops indexes")
+    for (const index of dropped) {
+      const name = index.replace(/^public\./, "")
+      assert.match(stripSqlComments(sql), new RegExp(`CREATE UNIQUE INDEX IF NOT EXISTS ${name}\\b`), `${file} recreates ${name}`)
+    }
+  }
+
+  const containerSeed = "/tmp/kaun-local-seed.sql"
+  const args = seedLoadArgs(containerSeed)
+  assert.deepEqual(args.slice(0, 3), ["--set", "ON_ERROR_STOP=on", "--single-transaction"])
+  const seedAt = args.indexOf(containerSeed)
+  const resetAt = args.indexOf("RESET ALL;")
+  for (const { file, beforeSeed } of seedReplayedMigrations) {
+    assert.ok(args.indexOf(beforeSeed) < seedAt, "constraints are relaxed before the seed loads")
+    assert.ok(args.indexOf(replayContainerPath(file)) > resetAt, "the migration replays after the seed, with session settings reset")
+  }
+  assert.ok(seedAt < resetAt)
+  assert.match(localSeeder, /seedLoadArgs\(containerSeed\)/)
+  assert.match(localSeeder, /replayContainerPath\(file\)/)
 })
 
 test("hosted network restrictions are never managed from the local config", () => {
@@ -164,8 +221,10 @@ test("every static civic project has a database row for research foreign keys", 
 })
 
 test("large civic seed bypasses the memory-heavy Supabase seed parser", () => {
-  assert.match(localSeeder, /--single-transaction/)
-  assert.match(localSeeder, /ON_ERROR_STOP=on/)
+  const args = seedLoadArgs("/tmp/kaun-local-seed.sql")
+  assert.ok(args.includes("--single-transaction"))
+  assert.ok(args.includes("ON_ERROR_STOP=on"))
+  assert.match(localSeeder, /"psql",\s*"--username", "postgres",\s*"--dbname", "postgres",\s*\.\.\.seedLoadArgs\(containerSeed\)/)
   assert.match(localSeeder, /kaun_local\.seed_state/)
 })
 

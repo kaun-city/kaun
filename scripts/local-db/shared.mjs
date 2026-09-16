@@ -30,6 +30,38 @@ export const migrationSeededTables = [
   "public.civic_project_areas",
 ]
 
+// Migrations that rewrite production rows, not only schema. Until production
+// has run one, a freshly synced seed still holds the old rows, and those can
+// violate what the migration adds: 20260917 adds a unique index that the
+// 42,529 pre-dedup bmtc_stops rows break. So the seed load runs each
+// `beforeSeed` statement, loads the seed, then replays the migration, all in
+// the seed's single transaction. A replayed migration must be a no-op on rows
+// it has already rewritten and must not contain BEGIN/COMMIT.
+export const seedReplayedMigrations = [
+  {
+    file: "20260917_bmtc_stops_dedup.sql",
+    beforeSeed: "DROP INDEX IF EXISTS public.bmtc_stops_physical_key;",
+  },
+]
+
+export const replayContainerPath = file => `/tmp/kaun-replay-${file}`
+
+/**
+ * psql arguments that load the seed and replay seed-replayed migrations as one
+ * transaction: a failure anywhere leaves the freshly migrated, empty database.
+ */
+export function seedLoadArgs(containerSeed) {
+  return [
+    "--set", "ON_ERROR_STOP=on",
+    "--single-transaction",
+    ...seedReplayedMigrations.flatMap(({ beforeSeed }) => ["--command", beforeSeed]),
+    "--file", containerSeed,
+    // Data dumps set session_replication_role and an empty search_path.
+    "--command", "RESET ALL;",
+    ...seedReplayedMigrations.flatMap(({ file }) => ["--file", replayContainerPath(file)]),
+  ]
+}
+
 export function hasNonEmptyFile(path) {
   return existsSync(path) && statSync(path).size > 0
 }
