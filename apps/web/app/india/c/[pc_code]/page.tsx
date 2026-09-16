@@ -132,7 +132,7 @@ export default async function ConstituencyPage({ params }: Props) {
   const profile = await fetchConstituencyProfile(pc_code)
   if (!profile) notFound()
 
-  const { constituency: c, mp, affidavit, activity, mplads, projects, projectsTotal } = profile
+  const { constituency: c, mp, affidavit, affidavitFiledByPredecessor, activity, mplads, projects, projectsTotal } = profile
   const reportMonth = projects[0]?.report_month ?? null
   /** Only a Hindi-speaking state's seat gets its Hindi name; see localSeatName. */
   const localName = localSeatName(c.st_code, c.pc_name_hi)
@@ -195,7 +195,7 @@ export default async function ConstituencyPage({ params }: Props) {
           )}
 
           <Section title="Who holds this seat">
-            <MpCard mp={mp} affidavit={affidavit} />
+            <MpCard mp={mp} affidavit={affidavit} affidavitFiledByPredecessor={affidavitFiledByPredecessor} />
           </Section>
 
           <Section title="In Parliament" note="components, not a score">

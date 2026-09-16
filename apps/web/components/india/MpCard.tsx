@@ -24,7 +24,12 @@ import { PartyBadge } from "@/components/shared/PartyBadge"
 import { formatRupees } from "@/lib/india/format"
 import type { Mp, MpAffidavit } from "@/lib/india/types"
 
-export function MpCard({ mp, affidavit }: { mp: Mp | null; affidavit: MpAffidavit | null }) {
+export function MpCard({ mp, affidavit, affidavitFiledByPredecessor = false }: {
+  mp: Mp | null
+  affidavit: MpAffidavit | null
+  /** The seat's 2024 affidavit exists but was filed by the member this one replaced. */
+  affidavitFiledByPredecessor?: boolean
+}) {
   if (!mp) {
     return (
       <div className="bg-paper border border-ink/15 p-4">
@@ -50,7 +55,6 @@ export function MpCard({ mp, affidavit }: { mp: Mp | null; affidavit: MpAffidavi
             {mp.no_of_terms ? `${mp.no_of_terms} term${mp.no_of_terms === 1 ? "" : "s"}` : null}
             {mp.no_of_terms && mp.age ? " · " : ""}
             {mp.age ? `age ${mp.age}` : null}
-            {mp.qualification ? ` · ${mp.qualification}` : null}
           </p>
           {mp.is_minister && (
             <p className="text-ink/75 text-xs mt-1.5 leading-snug">
@@ -80,7 +84,11 @@ export function MpCard({ mp, affidavit }: { mp: Mp | null; affidavit: MpAffidavi
               <p className="text-ink text-sm font-semibold font-mono tabular-nums">{formatRupees(affidavit.liabilities_inr)}</p>
             </div>
             <div className="space-y-0.5 col-span-2">
-              <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Education</p>
+              {/* The one education value on the card: the member's own affidavit
+                  (MyNeta's category and the declared detail). sansad.in's
+                  qualification label is not shown; it disagrees with the
+                  affidavit for many members. */}
+              <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Education (declared)</p>
               <p className="text-ink/85 text-sm">{affidavit.education_category ?? "Not stated"}</p>
               {affidavit.education_detail && (
                 <p className="text-ink/60 text-xs leading-snug">{affidavit.education_detail}</p>
@@ -89,7 +97,7 @@ export function MpCard({ mp, affidavit }: { mp: Mp | null; affidavit: MpAffidavi
           </div>
 
           <p className="text-ink/60 text-xs">
-            Assets and liabilities: self-declared in the EC nomination affidavit for {affidavit.election}.
+            Assets, liabilities and education: self-declared in the EC nomination affidavit for {affidavit.election}.
           </p>
 
           {/* Criminal cases — the city's treatment, nothing louder. */}
@@ -122,6 +130,15 @@ export function MpCard({ mp, affidavit }: { mp: Mp | null; affidavit: MpAffidavi
             </div>
           )}
         </>
+      ) : affidavitFiledByPredecessor ? (
+        <div className="bg-paper-muted border border-ink/15 px-3 py-2.5">
+          <p className="text-ink/75 text-xs">No affidavit on record for this member</p>
+          <p className="text-ink/60 text-xs mt-1 leading-snug">
+            This member won the seat at a by-election. The seat&apos;s 2024 nomination affidavit was filed by
+            the previous member, so it describes them, not this member. By-election affidavits are not loaded
+            yet.
+          </p>
+        </div>
       ) : (
         <div className="bg-paper-muted border border-ink/15 px-3 py-2.5">
           <p className="text-ink/75 text-xs">No affidavit matched to this seat yet</p>

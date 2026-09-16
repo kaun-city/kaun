@@ -29,6 +29,7 @@
  */
 import { query as rawQuery } from "../supabase"
 import { INDIA_REVALIDATE_SECONDS } from "./constants"
+import { affidavitOfSittingMember } from "./affidavit"
 import { monthsBetween } from "./format"
 import type { IndiaLayerId } from "./layers"
 import type {
@@ -93,8 +94,8 @@ export const PC_PROJECTS_LIMIT = 8
 export const TRACKER_LIMIT = 200
 
 const C_COLS = "pc_code,st_code,pc_no,state_name,pc_name,pc_name_hi,reserved_for,reserved_source,wikidata_qid,geom_source,data_source,updated_at"
-const MP_COLS = "id,mpsno,house,term_label,pc_code,state_name,constituency_label,name,party_abbr,party_full,gender,age,no_of_terms,qualification,profession,status,is_minister,minister_note,profile_url,data_source,updated_at"
-const AFF_COLS = "id,election,candidate_name,party_abbr,age,self_profession,education_category,education_detail,criminal_cases,total_assets_inr,liabilities_inr,declared_assets_history,profile_url,data_source,updated_at"
+const MP_COLS = "id,mpsno,house,term_label,pc_code,state_name,constituency_label,name,party_abbr,party_full,gender,age,no_of_terms,profession,status,is_minister,minister_note,profile_url,data_source,updated_at"
+const AFF_COLS = "id,mp_id,election,candidate_name,party_abbr,age,self_profession,education_category,education_detail,criminal_cases,total_assets_inr,liabilities_inr,declared_assets_history,profile_url,data_source,updated_at"
 const ACT_COLS = "id,period_kind,session_no,session_label,sittings_held,signed_days,attendance_pct,questions_asked,debates,private_member_bills,committees,metrics_excluded,metrics_excluded_reason,data_source"
 const MPLADS_COLS = "id,source,house,term_label,allocated_inr,expenditure_inr,unspent_inr,utilization_pct,works_recommended,works_sanctioned,works_completed,captured_at,data_source"
 const PROJ_COLS = "project_code,legacy_ocms_code,pmgid,project_name,ministry,sector,agency,state_raw,st_code,is_multi_state,first_seen_month,last_seen_month,is_ongoing"
@@ -135,6 +136,9 @@ export async function fetchSittingMp(pcCode: string): Promise<Mp | null> {
  * The winning candidate's affidavit for this seat.
  * is_winner=true + the one-winner-per-PC unique index means this is at most
  * one row. Losing candidates, if ever loaded, are not surfaced here.
+ *
+ * This is the general-election winner's declaration. Pass it through
+ * affidavitOfSittingMember() before presenting it as the sitting MP's.
  */
 export async function fetchAffidavit(pcCode: string): Promise<MpAffidavit | null> {
   if (isFixtureMode()) return FIXTURE_AFFIDAVITS[pcCode] ?? null
@@ -405,11 +409,12 @@ export async function fetchConstituencyProfile(pcCode: string): Promise<Constitu
   const constituency = await fetchConstituency(pcCode)
   if (!constituency) return null
 
-  const [mp, affidavit, mplads] = await Promise.all([
+  const [mp, seatAffidavit, mplads] = await Promise.all([
     fetchSittingMp(pcCode),
     fetchAffidavit(pcCode),
     fetchMplads(pcCode),
   ])
+  const affidavit = affidavitOfSittingMember(seatAffidavit, mp)
   const [activity, projects] = await Promise.all([
     mp ? fetchActivity(mp.id, pcCode) : Promise.resolve([] as MpActivity[]),
     fetchProjectsForConstituency(constituency.st_code),
@@ -419,6 +424,7 @@ export async function fetchConstituencyProfile(pcCode: string): Promise<Constitu
     constituency,
     mp,
     affidavit,
+    affidavitFiledByPredecessor: Boolean(mp && seatAffidavit && !affidavit && seatAffidavit.mp_id != null),
     activity,
     mplads,
     projects: projects.rows,
@@ -586,10 +592,21 @@ export async function fetchIndiaLayerValues(layerId: IndiaLayerId): Promise<Reco
       }
       return out
     }
-    const rows = await cachedQuery<{ pc_code: string | null; criminal_cases: number | null }>("in_mp_affidavits", {
-      is_winner: "eq.true", select: "pc_code,criminal_cases",
-    })
-    for (const r of rows) if (r.pc_code && r.criminal_cases !== null) out[r.pc_code] = r.criminal_cases
+    // Paint a seat only with its sitting member's own declaration: a seat
+    // won at a by-election must not show the previous winner's cases.
+    const [rows, sitting] = await Promise.all([
+      cachedQuery<{ pc_code: string | null; mp_id: number | null; criminal_cases: number | null }>("in_mp_affidavits", {
+        is_winner: "eq.true", select: "pc_code,mp_id,criminal_cases",
+      }),
+      cachedQuery<{ id: number; pc_code: string | null }>("in_mps", {
+        house: "eq.LS", status: "eq.Sitting", select: "id,pc_code",
+      }),
+    ])
+    const sittingAt = new Map(sitting.map(m => [m.pc_code, m]))
+    for (const r of rows) {
+      if (!r.pc_code || r.criminal_cases === null) continue
+      if (affidavitOfSittingMember(r, sittingAt.get(r.pc_code) ?? null)) out[r.pc_code] = r.criminal_cases
+    }
     return out
   }
 

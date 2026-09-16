@@ -30,6 +30,7 @@
 import { ImageResponse } from "next/og"
 import { OgFrame, OG_CARD, OG_DANGER, OG_INK, ogInk } from "@/components/india/OgFrame"
 import { fetchActivity, fetchAffidavit, fetchConstituency, fetchSittingMp } from "@/lib/india/api"
+import { affidavitOfSittingMember } from "@/lib/india/affidavit"
 import { buildConstituencyCard, fallbackConstituencyCard, OG_SIZE, type ConstituencyCard } from "@/lib/india/og"
 import { ogFonts } from "@/lib/india/og-fonts"
 import { isPcCode } from "@/lib/india/pc-code"
@@ -51,10 +52,12 @@ async function loadCard(pcCode: string): Promise<ConstituencyCard> {
     const constituency = await fetchConstituency(pcCode)
     if (!constituency) return fallbackConstituencyCard(pcCode)
 
-    const [mp, affidavit] = await Promise.all([
+    const [mp, seatAffidavit] = await Promise.all([
       fetchSittingMp(pcCode),
       fetchAffidavit(pcCode),
     ])
+    // The seat's affidavit is only this member's if they filed it (by-elections).
+    const affidavit = affidavitOfSittingMember(seatAffidavit, mp)
     // Only when there is no affidavit is attendance worth a fourth round trip.
     const activity: MpActivity[] = mp && !affidavit ? await fetchActivity(mp.id, pcCode) : []
 
