@@ -1,13 +1,25 @@
+import { createHash, createHmac, timingSafeEqual } from "node:crypto"
 import type { CivicProject, CivicProjectMetric, CivicProjectRecord, CivicProjectSignal } from "@/lib/civic-projects"
 
 export type ResearchOrigin = "kaun_record" | "published_research" | "recent_research" | "live_research"
 
+export interface ResearchSource {
+  title: string
+  url: string
+}
+
 export interface ReusableResearchResult {
   answer: string
-  sources: Array<{ title: string; url: string }>
+  sources: ResearchSource[]
   searched_at: string
   can_submit: boolean
   origin: ResearchOrigin
+}
+
+/** What the research endpoint returns: the result plus the exact question and, when proposable, a server signature. */
+export interface ResearchResponse extends ReusableResearchResult {
+  question: string
+  signature?: string
 }
 
 const STOP_WORDS = new Set([
@@ -44,19 +56,38 @@ const TERM_ALIASES: Record<string, string> = {
   vendor: "contractor",
 }
 
-const CIVIC_TERMS = new Set([
-  "acquisition", "agency", "authority", "bbmp", "budget", "cabinet", "compensation", "contractor", "corridor",
-  "cost", "court", "deadline", "delay", "elevated", "government", "infrastructure", "krdcl", "land", "legal",
-  "milestone", "official", "payment", "penalty", "progress", "property", "public", "record", "rti", "scope",
-  "sh35", "stay", "tdr", "timeline", "traffic", "ward",
+/**
+ * Project-accountability topics (compared after TERM_ALIASES). Generic civic
+ * words such as "public", "record", "ward" or "government" are deliberately
+ * absent: on their own they say nothing about this project.
+ */
+const ACCOUNTABILITY_TERMS = new Set([
+  "acquisition", "agency", "approval", "approved", "audit", "bill", "bills", "blacklist", "blacklisted", "budget",
+  "cabinet", "compensation", "contract", "contractor", "cost", "court", "crore", "deadline", "delay", "delayed",
+  "demolition", "dpr", "elevated", "engineer", "estimate", "eviction", "extension", "extensions", "flyover", "fund",
+  "funds", "inspection", "land", "legal", "litigation", "milestone", "milestones", "overrun", "payment", "penalty",
+  "progress", "property", "rti", "sanction", "sanctioned", "scope", "stay", "tdr", "timeline", "widening",
 ])
 
-const CIVIC_PHRASES = ["latest update", "project status", "public record", "road work", "work order"]
+const ACCOUNTABILITY_PHRASES = [
+  "detailed project report", "land acquisition", "latest update", "progress report", "project status", "status update",
+  "tree felling", "utility shifting", "work order",
+]
+
+/** Words in project names that do not identify a specific project on their own. */
+const GENERIC_PROJECT_WORDS = new Set([
+  "authority", "bangalore", "bengaluru", "board", "central", "city", "corporation", "corridor", "department",
+  "development", "east", "elevated", "greater", "karnataka", "limited", "ltd", "north", "south", "ward", "west",
+  "widening",
+])
 
 const CLEARLY_OUT_OF_SCOPE = new Set([
-  "astrology", "celebrity", "cricket", "dating", "essay", "football", "horoscope", "joke", "lyrics", "movie",
-  "recipe", "shopping", "stock", "vacation", "weather",
+  "astrology", "bitcoin", "celebrity", "cricket", "crypto", "cryptocurrency", "dating", "essay", "football",
+  "horoscope", "ipl", "joke", "jokes", "lottery", "lyrics", "movie", "movies", "poem", "recipe", "sensex", "shopping",
+  "stock", "stocks", "trades", "trading", "vacation", "weather",
 ])
+
+const OUT_OF_SCOPE_SUBJECT_PHRASES = ["share market", "share price", "stock market", "stock price"]
 
 const PROMPT_ATTACK_PHRASES = [
   "ignore previous", "ignore your instructions", "reveal prompt", "system prompt", "developer message", "jailbreak",
@@ -84,16 +115,92 @@ export function questionTokens(value: string): string[] {
     .map(token => TERM_ALIASES[token] ?? token))]
 }
 
+// ---------------------------------------------------------------------------
+// Reuse matching. A cached or published answer is only reused for a question
+// that is near-identical, never for one that merely shares a keyword.
+// ---------------------------------------------------------------------------
+
+export const PROJECT_QUESTION_REUSE_THRESHOLD = 0.8
+const MIN_SHARED_CONTENT_TOKENS = 3
+const INTERROGATIVES = new Set(["how", "what", "when", "where", "which", "who", "whom", "whose", "why"])
+const NEGATIONS = new Set(["never", "no", "nor", "not", "without"])
+const FILLER_WORDS = new Set(["a", "an", "are", "is", "kindly", "please", "s", "the"])
+
+function stemToken(token: string): string {
+  if (/\d/.test(token)) return token
+  if (token.length > 4 && token.endsWith("ies")) return `${token.slice(0, -3)}y`
+  if (token.length > 3 && token.endsWith("s") && !/(ss|us|is)$/.test(token)) return token.slice(0, -1)
+  return token
+}
+
+function comparableWords(value: string): string[] {
+  return normalizeProjectQuestion(value.replace(/n['’]t\b/gi, " not"))
+    .split(/[\s-]+/)
+    .filter(Boolean)
+}
+
+function sameSet(a: Set<string>, b: Set<string>): boolean {
+  return a.size === b.size && [...a].every(token => b.has(token))
+}
+
+/**
+ * 1 for the same question up to case, punctuation, articles and plurals; the
+ * token-set Jaccard score when two longer questions are near-identical; 0
+ * otherwise. Near-identical means at least three shared content words, a
+ * Jaccard score of at least 0.8, and the same question words, negations and
+ * numbers, so "who"/"why", "paid"/"not paid" and 2025/2026 never collapse.
+ */
 export function projectQuestionSimilarity(first: string, second: string): number {
-  const a = questionTokens(first)
-  const b = questionTokens(second)
+  const a = comparableWords(first)
+  const b = comparableWords(second)
   if (a.length === 0 || b.length === 0) return 0
-  if (normalizeProjectQuestion(first) === normalizeProjectQuestion(second)) return 1
-  const bSet = new Set(b)
-  const overlap = a.filter(token => bSet.has(token)).length
-  if (overlap === 1 && Math.min(a.length, b.length) === 1) return 1
-  if (overlap < 2) return 0
-  return overlap / Math.min(a.length, b.length)
+
+  const compact = (words: string[]) => words.filter(word => !FILLER_WORDS.has(word)).map(stemToken).join(" ")
+  if (compact(a) === compact(b)) return 1
+
+  const kind = (words: string[], set: Set<string>) => new Set(words.filter(word => set.has(word)))
+  if (!sameSet(kind(a, INTERROGATIVES), kind(b, INTERROGATIVES))) return 0
+  if (!sameSet(kind(a, NEGATIONS), kind(b, NEGATIONS))) return 0
+  const numbers = (words: string[]) => new Set(words.filter(word => /\d/.test(word)))
+  if (!sameSet(numbers(a), numbers(b))) return 0
+
+  const content = (words: string[]) => new Set(words
+    .filter(word => word.length > 1 && !STOP_WORDS.has(word) && !INTERROGATIVES.has(word) && !NEGATIONS.has(word))
+    .map(stemToken))
+  const contentA = content(a)
+  const contentB = content(b)
+  const shared = [...contentA].filter(word => contentB.has(word)).length
+  if (shared < MIN_SHARED_CONTENT_TOKENS) return 0
+  const union = new Set([...contentA, ...contentB]).size
+  const score = shared / union
+  return score >= PROJECT_QUESTION_REUSE_THRESHOLD ? score : 0
+}
+
+// ---------------------------------------------------------------------------
+// On-topic gate. Live research costs a paid web search, so a question must be
+// about this project: name it, or ask about a project-accountability topic.
+// ---------------------------------------------------------------------------
+
+function compactCodes(normalized: string): string {
+  // "SH-35" and "sh 35" both become "sh35".
+  return normalized.replace(/\b([a-z]{2,3})[\s-]+(\d{1,4})\b/g, "$1$2")
+}
+
+export function projectReferenceTerms(project: CivicProject): Set<string> {
+  const text = [
+    project.title,
+    project.shortTitle,
+    project.routeName,
+    project.road,
+    project.ownerAgency,
+    ...project.affectedWardNames,
+  ].join(" ")
+  const words = [
+    ...questionTokens(text),
+    ...compactCodes(normalizeProjectQuestion(text)).split(/[\s-]+/),
+  ]
+  return new Set(words.filter(word =>
+    word.length > 2 && !/^\d+$/.test(word) && !STOP_WORDS.has(word) && !GENERIC_PROJECT_WORDS.has(word)))
 }
 
 export function assessProjectQuestion(project: CivicProject, question: string): { relevant: boolean; reason?: string } {
@@ -106,29 +213,93 @@ export function assessProjectQuestion(project: CivicProject, question: string): 
   }
 
   const tokens = questionTokens(question)
-  const projectTerms = new Set(questionTokens([
-    project.title,
-    project.shortTitle,
-    project.routeName,
-    project.road,
-    project.ownerAgency,
-    ...project.affectedWardNames,
-  ].join(" ")))
-  const hasProjectTerm = tokens.some(token => projectTerms.has(token))
-  const civicMatches = tokens.filter(token => CIVIC_TERMS.has(token)).length
-    + CIVIC_PHRASES.filter(phrase => normalized.includes(phrase)).length
-  const offTopicMatches = tokens.filter(token => CLEARLY_OUT_OF_SCOPE.has(token)).length
-
-  if (offTopicMatches > 0 && civicMatches === 0) {
+  const words = new Set([...tokens, ...compactCodes(normalized).split(/[\s-]+/)])
+  if (
+    [...words].some(word => CLEARLY_OUT_OF_SCOPE.has(word))
+    || OUT_OF_SCOPE_SUBJECT_PHRASES.some(phrase => normalized.includes(phrase))
+  ) {
     return { relevant: false, reason: "That question is outside this civic project record." }
   }
-  if (!hasProjectTerm && civicMatches === 0) {
+
+  const projectTerms = projectReferenceTerms(project)
+  const namesProject = [...words].some(word => projectTerms.has(word))
+  const asksAccountability = tokens.some(token => ACCOUNTABILITY_TERMS.has(token))
+    || ACCOUNTABILITY_PHRASES.some(phrase => normalized.includes(phrase))
+  if (!namesProject && !asksAccountability) {
     return {
       relevant: false,
       reason: "Ask about this project’s work, agency, contractor, cost, deadlines, land, court record or public documents.",
     }
   }
   return { relevant: true }
+}
+
+// ---------------------------------------------------------------------------
+// Server signatures. Only research this server produced can enter the review
+// queue; the signature binds the exact answer, sources and search time.
+// ---------------------------------------------------------------------------
+
+export interface SignedResearchFields {
+  slug: string
+  question: string
+  answer: string
+  sources: ResearchSource[]
+  searched_at: string
+  origin: ResearchOrigin
+}
+
+const SIGNATURE_VERSION = "v1"
+const SIGNATURE_CONTEXT = "kaun.project-research.v1"
+
+/** PROJECT_RESEARCH_SIGNING_SECRET, falling back to the service-role key; null when neither is set. */
+export function projectResearchSigningSecret(env: Record<string, string | undefined> = process.env): string | null {
+  return env.PROJECT_RESEARCH_SIGNING_SECRET?.trim() || env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null
+}
+
+/** Canonical JSON: fixed key order, sources reduced to { title, url } in their given order. */
+export function canonicalResearchPayload(fields: SignedResearchFields): string {
+  return JSON.stringify({
+    answer: fields.answer,
+    origin: fields.origin,
+    question: fields.question,
+    searched_at: fields.searched_at,
+    slug: fields.slug,
+    sources: fields.sources.map(source => ({ title: source.title, url: source.url })),
+  })
+}
+
+export function signProjectResearch(fields: SignedResearchFields, secret: string): string {
+  const digest = createHmac("sha256", secret)
+    .update(`${SIGNATURE_CONTEXT}\n${canonicalResearchPayload(fields)}`)
+    .digest("base64url")
+  return `${SIGNATURE_VERSION}.${digest}`
+}
+
+/** Constant-time comparison that also hides length differences. */
+export function timingSafeStringEqual(actual: string, expected: string): boolean {
+  const a = createHash("sha256").update(actual).digest()
+  const b = createHash("sha256").update(expected).digest()
+  return timingSafeEqual(a, b)
+}
+
+export function verifyProjectResearchSignature(fields: SignedResearchFields, signature: unknown, secret: string): boolean {
+  if (typeof signature !== "string" || signature.length > 200) return false
+  return timingSafeStringEqual(signature, signProjectResearch(fields, secret))
+}
+
+/** Salted SHA-256 of the client IP, or null when the IP is unknown. */
+export function hashSubmitterIp(ip: string, secret: string): string | null {
+  const value = ip.trim()
+  if (!value || value === "unknown") return null
+  return createHash("sha256").update(`kaun.research-submitter.v1:${secret}:${value}`).digest("hex")
+}
+
+/** True when PostgREST/Postgres reports that a table does not exist (e.g. migration not applied). */
+export function isMissingRelationError(error: { code?: string | null; message?: string | null } | null | undefined): boolean {
+  if (!error) return false
+  if (error.code === "PGRST205" || error.code === "42P01") return true
+  const message = error.message ?? ""
+  return /could not find the table/i.test(message) || /relation .* does not exist/i.test(message)
 }
 
 interface LocalTopic {

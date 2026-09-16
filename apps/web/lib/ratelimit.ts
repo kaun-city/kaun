@@ -29,6 +29,16 @@ export function makeReportLimiter() {
   })
 }
 
+/** Project research proposals: 10 per IP per hour, separate from issue reports */
+export function makeResearchSubmissionLimiter() {
+  return new Ratelimit({
+    redis: makeRedis(),
+    limiter: Ratelimit.slidingWindow(10, "1 h"),
+    analytics: false,
+    prefix: "kaun:research-submit",
+  })
+}
+
 /** Extract best available IP from Vercel/Cloudflare headers */
 export function getIP(req: Request): string {
   return (

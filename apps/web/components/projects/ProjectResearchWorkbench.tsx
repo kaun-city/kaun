@@ -13,6 +13,10 @@ interface ResearchResult {
   searched_at: string
   can_submit: boolean
   origin: "kaun_record" | "published_research" | "recent_research" | "live_research"
+  /** The exact question the server answered. */
+  question: string
+  /** Server signature; sent back unchanged when proposing to the record. */
+  signature?: string
 }
 
 type SubmissionState = "idle" | "saving" | "queued"
@@ -24,11 +28,12 @@ export function ProjectResearchWorkbench({
   projectSlug: string
   suggestedQuestions: string[]
 }) {
+  // Only reviewer-approved research may be called reviewed. AI answers are labelled as such.
   const originLabel: Record<ResearchResult["origin"], string> = {
     kaun_record: "From Kaun’s record",
-    published_research: "Reviewed Kaun research",
-    recent_research: "Recent cited research",
-    live_research: "New live research",
+    published_research: "Reviewer-approved research",
+    recent_research: "AI-generated · cached · not reviewed",
+    live_research: "AI-generated · not reviewed",
   }
   const [question, setQuestion] = useState("")
   const [result, setResult] = useState<ResearchResult | null>(null)
@@ -43,16 +48,17 @@ export function ProjectResearchWorkbench({
     setError(null)
     setResult(null)
     setSubmission("idle")
+    const asked = question.trim()
 
     try {
       const response = await fetch("/api/project-research", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ project_slug: projectSlug, question: question.trim() }),
+        body: JSON.stringify({ project_slug: projectSlug, question: asked }),
       })
       const body = await response.json()
       if (!response.ok) throw new Error(body.error || "Research failed.")
-      setResult(body as ResearchResult)
+      setResult({ ...body, question: typeof body.question === "string" ? body.question : asked } as ResearchResult)
     } catch (cause: unknown) {
       setError(cause instanceof Error ? cause.message : "Research failed.")
     } finally {
@@ -61,19 +67,22 @@ export function ProjectResearchWorkbench({
   }
 
   async function submitToRecord() {
-    if (!result?.can_submit || submission !== "idle") return
+    if (!result?.can_submit || !result.signature || submission !== "idle") return
     setSubmission("saving")
     setError(null)
     try {
       const response = await fetch("/api/project-research/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        // Everything is echoed exactly as the server signed it; any change is rejected.
         body: JSON.stringify({
           project_slug: projectSlug,
-          question: question.trim(),
+          question: result.question,
           answer: result.answer,
           sources: result.sources,
           searched_at: result.searched_at,
+          origin: result.origin,
+          signature: result.signature,
         }),
       })
       const body = await response.json()
@@ -85,6 +94,9 @@ export function ProjectResearchWorkbench({
     }
   }
 
+  const isAi = result?.origin === "live_research" || result?.origin === "recent_research"
+  const canPropose = Boolean(isAi && result?.can_submit && result?.signature)
+
   return (
     <section aria-labelledby="research-heading" className="border-2 border-[#101828] bg-white">
       <div className="border-b border-[#101828]/20 px-4 py-3 sm:px-5">
@@ -92,10 +104,10 @@ export function ProjectResearchWorkbench({
           <h2 id="research-heading" className="text-sm font-bold uppercase tracking-[0.12em] text-[#101828]">
             Live research desk
           </h2>
-          <span className="font-mono text-xs text-[#101828]/60">PUBLIC SOURCES</span>
+          <span className="font-mono text-xs text-[#101828]/60">AI WEB SEARCH</span>
         </div>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#101828]/70 sm:text-base">
-          Ask one narrow question about this project. Kaun checks its existing record first and searches the public web only when the answer is genuinely new.
+          Ask one narrow question about this project. Kaun checks its record first, then runs an AI web search. AI answers are labelled, are not reviewed, and may be shown to other visitors who ask the same question for up to seven days.
         </p>
       </div>
 
@@ -153,6 +165,14 @@ export function ProjectResearchWorkbench({
               {new Date(result.searched_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
             </time>
           </div>
+          {isAi && (
+            <p className="mt-4 border-l-4 border-[#b54708] bg-[#b54708]/5 px-3 py-2 text-sm leading-relaxed text-[#101828]">
+              <strong>AI-generated. Verify important claims before acting.</strong>{" "}
+              {result.origin === "recent_research"
+                ? "Cached from an earlier search for the same question. Kaun has not reviewed it."
+                : "Kaun has not reviewed this answer."}
+            </p>
+          )}
           <p className="mt-4 whitespace-pre-wrap text-base leading-7 text-[#101828]/85">{result.answer}</p>
 
           <div className="mt-5">
@@ -169,27 +189,37 @@ export function ProjectResearchWorkbench({
                 ))}
               </ol>
             ) : (
-              <p className="mt-2 text-sm text-[#b42318]">No citable source was returned, so this result cannot be proposed for publication.</p>
+              <p className="mt-2 text-sm text-[#b42318]">No citable source was returned.</p>
             )}
           </div>
 
           <div className="mt-5 border-t border-[#101828]/20 pt-4">
-            {!result.can_submit ? (
+            {result.origin === "kaun_record" ? (
               <p className="text-sm leading-relaxed text-[#101828]/60">
-                This answer already belongs to Kaun’s reviewed record, so no new search or submission is needed.
+                This answer comes from Kaun’s existing project record, so no new search was run.
+              </p>
+            ) : result.origin === "published_research" ? (
+              <p className="text-sm leading-relaxed text-[#101828]/60">
+                A Kaun reviewer approved this finding for the project record, so no new search was run.
+              </p>
+            ) : !canPropose ? (
+              <p className="text-sm leading-relaxed text-[#101828]/60">
+                {result.sources.length === 0
+                  ? "Without a citable source, this answer cannot be proposed for the project record."
+                  : "Proposals to the project record are not open yet."}
               </p>
             ) : submission === "queued" ? (
               <p className="border border-[#027a48]/30 bg-[#027a48]/5 px-3 py-3 text-sm font-semibold text-[#067647]">
-                Added to Kaun’s evidence-review queue. If the claims and sources check out, this becomes a dated entry in the permanent record.
+                Added to Kaun’s review queue. If a reviewer confirms the claims and sources, it becomes a dated entry in the project record.
               </p>
             ) : (
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <p className="max-w-xl text-sm leading-relaxed text-[#101828]/60">
-                  AI research is never published automatically. Kaun preserves the question, answer, search time and sources for human evidence review.
+                  Nothing joins the project record until a reviewer checks the question, answer, search time and sources.
                 </p>
                 <button
                   type="button"
-                  disabled={!result.can_submit || submission === "saving"}
+                  disabled={!canPropose || submission === "saving"}
                   onClick={submitToRecord}
                   className="min-h-12 shrink-0 border-2 border-[#101828] bg-transparent px-4 py-3 text-sm font-bold uppercase tracking-[0.07em] text-[#101828] hover:bg-[#101828] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45"
                 >

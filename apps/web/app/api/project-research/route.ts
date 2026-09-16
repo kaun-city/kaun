@@ -1,7 +1,15 @@
 import OpenAI from "openai"
 import { getCivicProject } from "@/lib/civic-projects"
 import { cacheProjectResearch, findReusableProjectResearch } from "@/lib/civic-projects-server"
-import { assessProjectQuestion, findAnswerInProjectRecord } from "@/lib/project-research"
+import {
+  assessProjectQuestion,
+  findAnswerInProjectRecord,
+  projectResearchSigningSecret,
+  signProjectResearch,
+  type ResearchResponse,
+  type ResearchSource,
+  type ReusableResearchResult,
+} from "@/lib/project-research"
 import { getIP, makeAiLimiter, rateLimitResponse } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
@@ -10,11 +18,6 @@ export const maxDuration = 60
 interface ResearchBody {
   project_slug?: string
   question?: string
-}
-
-interface ResearchSource {
-  title: string
-  url: string
 }
 
 function isWebUrl(value: string): boolean {
@@ -45,11 +48,43 @@ function citedSources(response: OpenAI.Responses.Response): ResearchSource[] {
   return sources.slice(0, 10)
 }
 
+/**
+ * Attach the exact question and, for proposable AI research, a server signature
+ * over { slug, question, answer, sources, searched_at, origin }. The submit
+ * route only accepts results carrying a valid signature, so nobody can put
+ * invented "research" into the review queue.
+ */
+function respond(slug: string, question: string, result: ReusableResearchResult): Response {
+  const sources = result.sources.map(source => ({ title: source.title, url: source.url }))
+  const body: ResearchResponse = { ...result, sources, question }
+  const secret = projectResearchSigningSecret()
+  const proposable = result.can_submit
+    && sources.length > 0
+    && (result.origin === "live_research" || result.origin === "recent_research")
+  if (proposable && secret) {
+    body.signature = signProjectResearch({
+      slug,
+      question,
+      answer: result.answer,
+      sources,
+      searched_at: result.searched_at,
+      origin: result.origin,
+    }, secret)
+  }
+  return Response.json(body)
+}
+
 export async function POST(request: Request) {
+  let body: ResearchBody
   try {
-    const body = await request.json() as ResearchBody
-    const project = getCivicProject(body.project_slug ?? "")
-    const question = body.question?.trim() ?? ""
+    body = await request.json() as ResearchBody
+  } catch {
+    return Response.json({ error: "Send a JSON body with project_slug and question." }, { status: 400 })
+  }
+
+  try {
+    const project = getCivicProject(typeof body?.project_slug === "string" ? body.project_slug : "")
+    const question = typeof body?.question === "string" ? body.question.trim() : ""
 
     if (!project) return Response.json({ error: "Unknown civic project." }, { status: 404 })
     if (question.length < 8 || question.length > 300) {
@@ -65,10 +100,10 @@ export async function POST(request: Request) {
     }
 
     const localAnswer = findAnswerInProjectRecord(project, question)
-    if (localAnswer) return Response.json(localAnswer)
+    if (localAnswer) return respond(project.slug, question, localAnswer)
 
     const reusableAnswer = await findReusableProjectResearch(project.slug, question)
-    if (reusableAnswer) return Response.json(reusableAnswer)
+    if (reusableAnswer) return respond(project.slug, question, reusableAnswer)
 
     const { success, reset } = await makeAiLimiter().limit(getIP(request))
     if (!success) return rateLimitResponse(reset)
@@ -117,15 +152,15 @@ Citizen's question: ${question}`,
     const sources = citedSources(response)
     if (!answer) return Response.json({ error: "No research result was produced." }, { status: 502 })
 
-    const result = {
+    const result: ReusableResearchResult = {
       answer,
       sources,
       searched_at: new Date().toISOString(),
       can_submit: sources.length > 0,
-      origin: "live_research" as const,
+      origin: "live_research",
     }
     await cacheProjectResearch(project.slug, question, result)
-    return Response.json(result)
+    return respond(project.slug, question, result)
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error)
     console.error("project-research error:", message)

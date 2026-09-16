@@ -1,6 +1,13 @@
 import { createHash } from "node:crypto"
 import { createClient } from "@supabase/supabase-js"
-import { normalizeProjectQuestion, projectQuestionSimilarity, type ReusableResearchResult } from "@/lib/project-research"
+import {
+  isMissingRelationError,
+  normalizeProjectQuestion,
+  PROJECT_QUESTION_REUSE_THRESHOLD,
+  projectQuestionSimilarity,
+  type ResearchSource,
+  type ReusableResearchResult,
+} from "@/lib/project-research"
 
 export interface PublishedProjectResearch {
   id: number
@@ -19,16 +26,34 @@ interface StoredResearchRow {
   searched_at: string
 }
 
+/** Unreviewed AI answers are reused for the same question for at most this long (stated on /how-it-works). */
+export const PROJECT_RESEARCH_CACHE_DAYS = 7
+
 export function projectQuestionKey(question: string): string {
   return createHash("sha256").update(normalizeProjectQuestion(question)).digest("hex")
 }
 
+/** Only a near-identical earlier question may reuse its answer (see projectQuestionSimilarity). */
 function bestQuestionMatch<T extends StoredResearchRow>(question: string, rows: T[]): T | null {
   const matches = rows
     .map(row => ({ row, score: projectQuestionSimilarity(question, row.question) }))
-    .filter(match => match.score >= 0.72)
+    .filter(match => match.score >= PROJECT_QUESTION_REUSE_THRESHOLD)
     .sort((a, b) => b.score - a.score)
   return matches[0]?.row ?? null
+}
+
+function storedSources(value: unknown): ResearchSource[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((item): item is ResearchSource =>
+      Boolean(item) && typeof item.title === "string" && typeof item.url === "string")
+    .map(item => ({ title: item.title, url: item.url }))
+}
+
+function logStorageError(context: string, error: { code?: string | null; message?: string | null } | null) {
+  // The research tables ship in a migration that may not be applied yet; that is expected, not an error.
+  if (!error || isMissingRelationError(error)) return
+  console.error(`${context}:`, error.message)
 }
 
 export async function findReusableProjectResearch(
@@ -38,45 +63,54 @@ export async function findReusableProjectResearch(
   const endpoint = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!endpoint || !serviceKey) return null
-  const supabase = createClient(endpoint, serviceKey)
-  const now = new Date().toISOString()
 
-  const [published, cached] = await Promise.all([
-    supabase
-      .from("civic_project_research_submissions")
-      .select("id,question,answer,sources,searched_at")
-      .eq("project_slug", projectSlug)
-      .eq("status", "published")
-      .order("reviewed_at", { ascending: false })
-      .limit(40),
-    supabase
-      .from("civic_project_research_cache")
-      .select("id,question,answer,sources,searched_at")
-      .eq("project_slug", projectSlug)
-      .gt("expires_at", now)
-      .order("searched_at", { ascending: false })
-      .limit(40),
-  ])
+  try {
+    const supabase = createClient(endpoint, serviceKey)
+    const now = new Date().toISOString()
 
-  const publishedMatch = bestQuestionMatch(question, (published.data ?? []) as StoredResearchRow[])
-  if (publishedMatch) {
-    return {
-      answer: publishedMatch.answer,
-      sources: publishedMatch.sources,
-      searched_at: publishedMatch.searched_at,
-      can_submit: false,
-      origin: "published_research",
+    const [published, cached] = await Promise.all([
+      supabase
+        .from("civic_project_research_submissions")
+        .select("id,question,answer,sources,searched_at")
+        .eq("project_slug", projectSlug)
+        .eq("status", "published")
+        .order("reviewed_at", { ascending: false })
+        .limit(40),
+      supabase
+        .from("civic_project_research_cache")
+        .select("id,question,answer,sources,searched_at")
+        .eq("project_slug", projectSlug)
+        .gt("expires_at", now)
+        .order("searched_at", { ascending: false })
+        .limit(40),
+    ])
+    logStorageError("project-research published lookup error", published.error)
+    logStorageError("project-research cache lookup error", cached.error)
+
+    const publishedMatch = bestQuestionMatch(question, (published.data ?? []) as StoredResearchRow[])
+    if (publishedMatch) {
+      return {
+        answer: publishedMatch.answer,
+        sources: storedSources(publishedMatch.sources),
+        searched_at: publishedMatch.searched_at,
+        can_submit: false,
+        origin: "published_research",
+      }
     }
-  }
 
-  const cachedMatch = bestQuestionMatch(question, (cached.data ?? []) as StoredResearchRow[])
-  if (!cachedMatch) return null
-  return {
-    answer: cachedMatch.answer,
-    sources: cachedMatch.sources,
-    searched_at: cachedMatch.searched_at,
-    can_submit: cachedMatch.sources.length > 0,
-    origin: "recent_research",
+    const cachedMatch = bestQuestionMatch(question, (cached.data ?? []) as StoredResearchRow[])
+    if (!cachedMatch) return null
+    const sources = storedSources(cachedMatch.sources)
+    return {
+      answer: cachedMatch.answer,
+      sources,
+      searched_at: cachedMatch.searched_at,
+      can_submit: sources.length > 0,
+      origin: "recent_research",
+    }
+  } catch (error: unknown) {
+    console.error("project-research lookup error:", error instanceof Error ? error.message : String(error))
+    return null
   }
 }
 
@@ -88,20 +122,24 @@ export async function cacheProjectResearch(
   const endpoint = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!endpoint || !serviceKey || result.sources.length === 0) return
-  const supabase = createClient(endpoint, serviceKey)
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-  const { error } = await supabase
-    .from("civic_project_research_cache")
-    .upsert({
-      project_slug: projectSlug,
-      question,
-      question_key: projectQuestionKey(question),
-      answer: result.answer,
-      sources: result.sources,
-      searched_at: result.searched_at,
-      expires_at: expiresAt,
-    }, { onConflict: "project_slug,question_key" })
-  if (error) console.error("project-research cache error:", error.message)
+  try {
+    const supabase = createClient(endpoint, serviceKey)
+    const expiresAt = new Date(Date.now() + PROJECT_RESEARCH_CACHE_DAYS * 24 * 60 * 60 * 1000).toISOString()
+    const { error } = await supabase
+      .from("civic_project_research_cache")
+      .upsert({
+        project_slug: projectSlug,
+        question,
+        question_key: projectQuestionKey(question),
+        answer: result.answer,
+        sources: result.sources,
+        searched_at: result.searched_at,
+        expires_at: expiresAt,
+      }, { onConflict: "project_slug,question_key" })
+    logStorageError("project-research cache error", error)
+  } catch (error: unknown) {
+    console.error("project-research cache error:", error instanceof Error ? error.message : String(error))
+  }
 }
 
 /**

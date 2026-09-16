@@ -8,9 +8,9 @@ const ENDPOINTS = [
   {
     name: "Wards",
     path: "/api/data/wards",
-    description: "All 369 current GBA wards, with corporation, assembly constituency and zone mapping where available.",
+    description: "The 243 historical Bengaluru wards (2022 KGIS/DataMeet delimitation) with assembly constituency and zone mapping. These are not the current 369 GBA wards, and the ward numbers differ.",
     params: [
-      { name: "ward", description: "Ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality)" },
+      { name: "ward", description: "Historical 243-ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality)" },
     ],
     examples: [
       { label: "All wards", url: `${API_BASE}/wards` },

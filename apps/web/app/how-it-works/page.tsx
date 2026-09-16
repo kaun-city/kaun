@@ -148,9 +148,20 @@ export default function HowItWorksPage() {
           </div>
         </Section>
 
+        <Section title="AI and project research">
+          <p>
+            Kaun&apos;s data records are not generated or gap-filled by AI.
+          </p>
+          <p>
+            The project research desk runs an AI web search when you ask it a question. Its answers are
+            labelled AI-generated and are not reviewed. They may be cached for up to seven days and shown to
+            other visitors who ask the same question. Only findings a reviewer approves join the project record.
+          </p>
+        </Section>
+
         <Section title="What we don't do">
           <ul className="list-disc list-inside space-y-2">
-            <li>We do not publish AI research automatically; cited findings enter human review</li>
+            <li>We do not use AI to generate or fill gaps in Kaun&apos;s data records</li>
             <li>We do not rank wards using a composite score</li>
             <li>We do not make editorial judgments about individuals or parties</li>
             <li>We do not accept payments from government bodies, contractors, or political parties</li>
