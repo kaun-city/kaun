@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import { dedupKey } from "@/lib/pulse-dedup"
+import { buildPulseFact, parseRssItems } from "@/lib/pulse-ingest"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
@@ -16,7 +17,9 @@ function isAuthorized(req: Request): boolean {
   return false
 }
 
-// ─── RSS parsing ────────────────────────────────────────────────
+// ─── Feeds ──────────────────────────────────────────────────────
+// `name` identifies the search in error logs only. What an item is labelled
+// with (category, source_name) comes from @/lib/pulse-ingest, never from here.
 const RSS_FEEDS = [
   { name: "Google News BBMP",  url: "https://news.google.com/rss/search?q=BBMP+bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Google News BDA",   url: "https://news.google.com/rss/search?q=BDA+bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
@@ -24,63 +27,11 @@ const RSS_FEEDS = [
   { name: "The News Minute",   url: "https://www.thenewsminute.com/feed" },
   { name: "Citizen Matters",   url: "https://citizenmatters.in/feed" },
   // Twitter/X civic signals via Google News RSS
-  { name: "X/BBMP",            url: "https://news.google.com/rss/search?q=site:x.com+BBMP+Bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "X/Pothole",         url: "https://news.google.com/rss/search?q=site:x.com+pothole+Bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "X/BWSSB",           url: "https://news.google.com/rss/search?q=site:x.com+BWSSB+water+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "X/BESCOM",          url: "https://news.google.com/rss/search?q=site:x.com+BESCOM+power+cut+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "X search BBMP",     url: "https://news.google.com/rss/search?q=site:x.com+BBMP+Bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "X search pothole",  url: "https://news.google.com/rss/search?q=site:x.com+pothole+Bengaluru+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "X search BWSSB",    url: "https://news.google.com/rss/search?q=site:x.com+BWSSB+water+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "X search BESCOM",   url: "https://news.google.com/rss/search?q=site:x.com+BESCOM+power+cut+when:7d&hl=en-IN&gl=IN&ceid=IN:en" },
 ]
-
-const CIVIC_KEYWORDS: Record<string, string[]> = {
-  "PUBLIC MONEY": ["bbmp scam", "bbmp fraud", "crore misuse", "crore irregularit", "siphon", "fake bill", "ghost worker", "pourakarmika scam", "embezzl", "misappropriat", "lokayukta raid", "acb raid", "ed raid bbmp", "corruption bbmp", "gba scam"],
-  "ROAD SAFETY": ["pothole", "road death", "road accident", "pedestrian death", "pedestrian killed", "road fatality", "road crash", "cave in", "cave-in", "road damage", "footpath broken", "signal broken"],
-  "CONTRACTORS": ["kridl", "blacklisted contractor", "contractor scam", "tender scam", "4(g)", "without tender", "contractor fraud", "bbmp contractor"],
-  "ENVIRONMENT": ["lake encroach", "lake pollut", "sewage", "untreated sewage", "lake dead fish", "bellandur foam", "kspcb action", "ngt bengaluru", "tree fell", "tree cut illegal", "sewage overflow"],
-  "BUDGET": ["bbmp budget", "gba budget", "fund unutilized", "budget allocation", "unspent fund"],
-  "ELECTED REPS": ["mla criminal", "mla arrested", "corporator arrested", "mla assets", "mla attendance", "corporator complaint"],
-  "WATER": ["bwssb", "water shortage", "water crisis", "cauvery water", "borewell dry", "water tanker", "water supply", "water problem", "water cut"],
-  "WASTE": ["garbage", "waste management", "landfill", "solid waste", "garbage contractor", "waste pickup", "trash"],
-  "POWER": ["bescom", "power cut", "power outage", "electricity", "transformer"],
-}
-
-const RED_CATEGORIES = new Set(["PUBLIC MONEY", "ROAD SAFETY", "CONTRACTORS", "ELECTED REPS", "POWER"])
-
-function parseRss(xml: string): { title: string; description: string; link: string; pubDate: string }[] {
-  const items: { title: string; description: string; link: string; pubDate: string }[] = []
-  const itemRegex = /<item>([\s\S]*?)<\/item>/g
-  let match
-  while ((match = itemRegex.exec(xml)) !== null) {
-    const block = match[1]
-    const title = (block.match(/<title><!\[CDATA\[(.*?)\]\]>/)?.[1] || block.match(/<title>(.*?)<\/title>/)?.[1] || "").replace(/<[^>]+>/g, "").trim()
-    const desc = (block.match(/<description><!\[CDATA\[(.*?)\]\]>/)?.[1] || block.match(/<description>(.*?)<\/description>/)?.[1] || "").replace(/<[^>]+>/g, "").trim()
-    const link = block.match(/<link>(.*?)<\/link>/)?.[1]?.trim() || ""
-    const pubDate = block.match(/<pubDate>(.*?)<\/pubDate>/)?.[1]?.trim() || ""
-    if (title) items.push({ title, description: desc, link, pubDate })
-  }
-  return items
-}
-
-function classifyArticle(title: string, description: string): string | null {
-  const text = `${title} ${description}`.toLowerCase()
-  let bestCategory: string | null = null
-  let bestScore = 0
-  for (const [category, keywords] of Object.entries(CIVIC_KEYWORDS)) {
-    let score = 0
-    for (const kw of keywords) if (text.includes(kw)) score++
-    if (score > bestScore) { bestScore = score; bestCategory = category }
-  }
-  return bestScore > 0 ? bestCategory : null
-}
-
-// ─── Headline cleanup ──────────────────────────────────────────
-function cleanHeadline(raw: string): string {
-  return raw
-    .replace(/\s*[-|]\s*(MSN|x\.com|Deccan Herald|The Hindu|Asianet Newsable|Times of India|NDTV|Hindustan Times|Economic Times|The News Minute|Citizen Matters|New Indian Express|Bangalore Mirror|India Today).*$/i, "")
-    .replace(/\s*[-|]\s*$/, "")
-    .replace(/#\w+/g, "")           // strip hashtags
-    .replace(/@\w+/g, "")           // strip @mentions
-    .replace(/\s{2,}/g, " ")        // collapse whitespace
-    .trim()
-}
 
 // dedup_key normalization is the shared single source of truth
 // (apps/web/lib/pulse-dedup.mjs) — identical to what the migration
@@ -121,34 +72,27 @@ export async function GET(req: Request) {
       if (!res.ok) { errors.push(`${feed.name}: HTTP ${res.status}`); continue }
 
       const xml = await res.text()
-      const items = parseRss(xml)
+      const items = parseRssItems(xml)
 
       for (const item of items) {
-        const category = classifyArticle(item.title, item.description)
-        if (!category) continue
-
-        const headline = cleanHeadline(item.title).substring(0, 200)
-
-        // Skip junk: too short or just an account name
-        if (headline.length < 30) { skipped++; continue }
+        const built = buildPulseFact(item)
+        if (built.skip === "not-civic") continue
+        // No link, or too short to be more than an account name
+        if (built.skip) { skipped++; continue }
+        const { fact } = built
 
         // Skip if a syndicated variant of this story already exists
-        const key = dedupKey(headline)
+        const key = dedupKey(fact.headline)
         if (seenKeys.has(key)) { skipped++; continue }
         seenKeys.add(key)
 
-        const severity = RED_CATEGORIES.has(category) ? "red" : "yellow"
+        const published = new Date(item.pubDate)
 
         const { error } = await supabase.from("city_pulse_facts").upsert({
           city_id: "bengaluru",
-          category,
-          severity,
-          headline,
+          ...fact,
           dedup_key: key,
-          detail: item.description?.substring(0, 500) || null,
-          source_name: feed.name,
-          source_url: item.link || null,
-          published_at: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
+          published_at: (Number.isNaN(published.getTime()) ? new Date() : published).toISOString(),
           is_active: true,
           is_editorial: false,
           expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
