@@ -25,22 +25,22 @@ export function ObjectPageSkeleton({
 }: {
   sections?: number
   /**
-   * Render the "Map" control in the skeleton too. On by default for seats,
-   * because a seat page HAS one: leaving it out would make the real page push
-   * everything down by a chip's height the moment it arrived (on md and up,
-   * where the control is in flow), which is the jump this component exists to
-   * avoid. It also means a slow first render can be abandoned rather than
-   * waited out. Project pages have no such control, so they pass nothing.
+   * Render the "Map" control in the skeleton too. On for seats, because a
+   * seat page HAS one: leaving it out would make the real page push everything
+   * down by a chip's height the moment it arrived, which is the jump this
+   * component exists to avoid. It also means a slow first render can be
+   * abandoned rather than waited out. Project pages have no such control, so
+   * they pass nothing.
    */
   backToMap?: boolean
 }) {
   return (
     <div className="signal-page h-full overflow-y-auto" aria-busy="true" aria-label="Loading">
-      <div className={`max-w-3xl mx-auto px-5 py-6 ${backToMap ? "pb-28 md:pb-6" : ""}`}>
+      <div className="max-w-3xl mx-auto px-5 py-6">
         {/* Live, not a grey bar: it is the one thing here that works. */}
         {backToMap && <BackToMap href={indiaHref("/")} />}
 
-        <IndiaHeader />
+        <IndiaHeader current={backToMap ? "seat" : "project"} />
 
         <div className="mt-6" aria-hidden="true">
           {/* identity block: eyebrow, title, subtitle, chips — matched to

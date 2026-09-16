@@ -60,8 +60,9 @@ export function MpCard({ mp, affidavit }: { mp: Mp | null; affidavit: MpAffidavi
         </div>
         {mp.profile_url && (
           <a href={mp.profile_url} target="_blank" rel="noopener noreferrer"
-            className="text-accent text-xs underline decoration-accent/40 underline-offset-2 hover:decoration-accent
-              transition-colors whitespace-nowrap mt-1">
+            className="inline-flex min-h-11 items-center -mt-2.5 -mr-2 px-2 shrink-0
+              text-accent text-xs underline decoration-accent/40 underline-offset-2 hover:decoration-accent
+              transition-colors whitespace-nowrap">
             sansad.in &rarr;
           </a>
         )}
@@ -108,7 +109,7 @@ export function MpCard({ mp, affidavit }: { mp: Mp | null; affidavit: MpAffidavi
                 Self-declared in Election Commission nomination affidavit
                 {affidavit.profile_url && (
                   <> · <a href={affidavit.profile_url} target="_blank" rel="noopener noreferrer"
-                    className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">see the declaration</a></>
+                    className="inline-flex min-h-11 items-center text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">see the declaration</a></>
                 )}
               </span>
             </div>

@@ -6,7 +6,7 @@ import { Section } from "@/components/india/ObjectHeader"
 import { ProjectRow } from "@/components/india/ProjectRow"
 import { TrackerControls } from "@/components/india/TrackerControls"
 import { SourcesFooter } from "@/components/india/SourcesFooter"
-import { fetchProjectStates, fetchTrackedProjects, type TrackerSort } from "@/lib/india/api"
+import { TRACKER_LIMIT, fetchProjectStates, fetchTrackedProjects, type TrackerSort } from "@/lib/india/api"
 import { formatCrore, formatMonth } from "@/lib/india/format"
 import { SOURCE_MOSPI } from "@/lib/india/constants"
 
@@ -57,10 +57,36 @@ export default async function ProjectsPage({ searchParams }: Props) {
   const stateName = stateParam ? states.find(s => s.st_code === stateParam)?.name : null
   const totalOverrun = rows.reduce((sum, r) => sum + (r.cost_overrun_cr ?? 0), 0)
 
+  /**
+   * Two different counts, each named for what it counts, because they differ
+   * and a reader who meets both unexplained reasonably assumes one is wrong.
+   *
+   *   total        projects Kaun's record marks ongoing in this scope — the
+   *                number the constituency page links through with.
+   *   rows.length  those that appear in the latest monthly report, capped at
+   *                TRACKER_LIMIT. A project can be marked ongoing yet be absent
+   *                from the newest report (MoSPI drops and re-adds rows), and
+   *                those have no current figures to list.
+   */
+  const month = reportMonth ? formatMonth(reportMonth) : null
+  const capped = rows.length >= TRACKER_LIMIT
+  const notInReport = total - rows.length
+  const countLine = [
+    `${total.toLocaleString("en-IN")} ongoing project${total === 1 ? "" : "s"} on record`,
+    capped
+      ? `the first ${rows.length.toLocaleString("en-IN")} listed, in the order set below`
+      : notInReport > 0
+        ? `${rows.length.toLocaleString("en-IN")} in the ${month ?? "latest"} report, all listed below; ${notInReport.toLocaleString("en-IN")} not in that report`
+        : "all listed below",
+    ...(totalOverrun > 0
+      ? [`${formatCrore(totalOverrun)} above sanctioned cost across the ${rows.length.toLocaleString("en-IN")} listed`]
+      : []),
+  ].join(" · ")
+
   return (
     <div className="signal-page h-full overflow-y-auto">
       <div className="max-w-4xl mx-auto px-5 py-6">
-        <IndiaHeader host={host} />
+        <IndiaHeader host={host} current="projects" />
 
         <div className="mt-6">
           <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">
@@ -74,11 +100,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
             it now costs, and how far its completion date has moved. Kaun keeps each monthly report, so
             these are changes over time rather than a snapshot.
           </p>
-          <p className="text-ink/70 text-xs mt-2">
-            {total.toLocaleString("en-IN")} ongoing project{total === 1 ? "" : "s"}
-            {rows.length < total ? ` · showing the top ${rows.length}` : ""}
-            {totalOverrun > 0 ? ` · ${formatCrore(totalOverrun)} above sanctioned cost across the rows shown` : ""}
-          </p>
+          {total > 0 && <p className="text-ink/70 text-xs mt-2">{countLine}</p>}
         </div>
 
         <div className="mt-5">

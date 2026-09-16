@@ -68,6 +68,25 @@ function cachedQuery<T = unknown>(
   return rawQuery<T>(table, params, { revalidate: INDIA_REVALIDATE_SECONDS })
 }
 
+/** PostgREST returns at most this many rows per request (Supabase max-rows). */
+const PAGE_ROWS = 1000
+
+/**
+ * Read every row of a query in PAGE_ROWS pages. A single request silently
+ * stops at 1,000 rows, which made the all-India tracker count 1,000 of 2,033
+ * ongoing projects and the state list undercount (Telangana showed 10 of 72).
+ * `params.order` must give a stable order.
+ */
+async function cachedQueryAll<T = unknown>(table: string, params: Record<string, string>): Promise<T[]> {
+  const rows: T[] = []
+  for (let offset = 0; offset < 100 * PAGE_ROWS; offset += PAGE_ROWS) {
+    const page = await cachedQuery<T>(table, { ...params, limit: String(PAGE_ROWS), offset: String(offset) })
+    rows.push(...page)
+    if (page.length < PAGE_ROWS) break
+  }
+  return rows
+}
+
 /** How many state projects the constituency page lists before "see all". */
 export const PC_PROJECTS_LIMIT = 8
 /** How many rows the tracker requests. Sorting happens in Postgres. */
@@ -214,15 +233,27 @@ export async function fetchTrackedProjects(opts: {
     select: PROJ_COLS, is_ongoing: "eq.true", order: "project_code.asc",
   }
   if (opts.stCode != null) identityParams["st_code"] = `eq.${opts.stCode}`
-  const projects = await cachedQuery<CentralProject>("in_central_projects", identityParams)
+  const projects = await cachedQueryAll<CentralProject>("in_central_projects", identityParams)
   if (projects.length === 0) return { rows: [], reportMonth, total: 0 }
 
-  // 2. latest month's change row for those projects, ordered by the metric
-  const codeList = `(${projects.map(p => p.project_code).join(",")})`
-  const latest = await cachedQuery<CentralProjectChange>("v_in_central_project_changes", {
-    report_month: `eq.${reportMonth}`, project_code: `in.${codeList}`,
-    select: CHANGE_COLS, order: SORT_ORDER[sort], limit: String(limit),
-  })
+  // 2. latest month's change row for those projects, ordered by the metric.
+  //    A state's code list is short enough for an in.() filter; all of India's
+  //    ~2,000 codes would overflow the request URL, so that scope reads the
+  //    ordered month and keeps rows for ongoing projects.
+  let latest: CentralProjectChange[]
+  if (opts.stCode != null) {
+    const codeList = `(${projects.map(p => p.project_code).join(",")})`
+    latest = await cachedQuery<CentralProjectChange>("v_in_central_project_changes", {
+      report_month: `eq.${reportMonth}`, project_code: `in.${codeList}`,
+      select: CHANGE_COLS, order: SORT_ORDER[sort], limit: String(limit),
+    })
+  } else {
+    const ongoing = new Set(projects.map(p => p.project_code))
+    const ordered = await cachedQueryAll<CentralProjectChange>("v_in_central_project_changes", {
+      report_month: `eq.${reportMonth}`, select: CHANGE_COLS, order: `${SORT_ORDER[sort]},project_code.asc`,
+    })
+    latest = ordered.filter(row => ongoing.has(row.project_code)).slice(0, limit)
+  }
 
   // 3. every month in which those projects actually moved, for "months since
   //    last change". Only the two boolean flags are filtered on, so this stays
@@ -405,8 +436,8 @@ export async function fetchConstituencyProfile(pcCode: string): Promise<Constitu
 export async function fetchProjectStates(): Promise<Array<{ st_code: number; name: string; count: number }>> {
   const rows = isFixtureMode()
     ? FIXTURE_PROJECTS.map(p => ({ st_code: p.st_code, state_raw: p.state_raw }))
-    : await cachedQuery<{ st_code: number | null; state_raw: string | null }>("in_central_projects", {
-      is_ongoing: "eq.true", select: "st_code,state_raw",
+    : await cachedQueryAll<{ st_code: number | null; state_raw: string | null }>("in_central_projects", {
+      is_ongoing: "eq.true", select: "st_code,state_raw,project_code", order: "project_code.asc",
     })
 
   const byState = new Map<number, { st_code: number; name: string; count: number }>()

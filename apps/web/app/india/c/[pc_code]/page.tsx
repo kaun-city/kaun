@@ -15,7 +15,7 @@ import { isPcCode } from "@/lib/india/pc-code"
 import { mapHrefForSeat } from "@/lib/india/map-url-state"
 import { indiaHref } from "@/lib/host-routing"
 import { FIXTURE_ACTIVITY_BENCHMARKS, isFixtureMode } from "@/lib/india/fixtures"
-import { formatMonth } from "@/lib/india/format"
+import { formatMonth, localSeatName } from "@/lib/india/format"
 import {
   MOSPI_STATE_LEVEL_NOTE, SOURCE_ACTIVITY, SOURCE_AFFIDAVITS, SOURCE_MOSPI,
   SOURCE_MPLADS, SOURCE_PC_BOUNDARIES, SOURCE_ROSTER,
@@ -64,6 +64,19 @@ export function generateStaticParams() {
 }
 
 type Props = { params: Promise<{ pc_code: string }> }
+
+/** Reader-facing names for the boundary builder's geom_source keys. */
+const BOUNDARY_SOURCE_LABELS: Record<string, string> = {
+  "datameet": "DataMeet 2019",
+  "shijithpk-2024": "shijithpk 2024",
+}
+
+/**
+ * The MPLADS fixture rows carry a developer note as their data_source. The
+ * caveat a reader needs is the same fact in plain words.
+ */
+const MPLADS_FIXTURE_CAVEAT =
+  "Illustrative sample figures, not this MP's real MPLADS numbers — no per-MP figures were available when the preview set was built."
 
 /**
  * Metadata is the other half of the share card.
@@ -121,6 +134,8 @@ export default async function ConstituencyPage({ params }: Props) {
 
   const { constituency: c, mp, affidavit, activity, mplads, projects, projectsTotal } = profile
   const reportMonth = projects[0]?.report_month ?? null
+  /** Only a Hindi-speaking state's seat gets its Hindi name; see localSeatName. */
+  const localName = localSeatName(c.st_code, c.pc_name_hi)
 
   /**
    * The map, with this seat already selected. Used by both ways back — the
@@ -135,23 +150,19 @@ export default async function ConstituencyPage({ params }: Props) {
     SOURCE_ROSTER,
     ...(affidavit ? [SOURCE_AFFIDAVITS] : []),
     ...(activity.length ? [SOURCE_ACTIVITY] : []),
-    ...(mplads.length ? [{ ...SOURCE_MPLADS, caveat: mplads[0].data_source.startsWith("FIXTURE") ? mplads[0].data_source : undefined }] : []),
+    ...(mplads.length ? [{ ...SOURCE_MPLADS, caveat: mplads[0].data_source.startsWith("FIXTURE") ? MPLADS_FIXTURE_CAVEAT : undefined }] : []),
     ...(projects.length ? [SOURCE_MOSPI] : []),
   ]
 
   return (
     <div className="signal-page h-full overflow-y-auto">
-      {/* pb-28 on phones clears the fixed back control; from md up it is an
-          in-flow chip and the ordinary padding is enough again. */}
-      <div className="max-w-3xl mx-auto px-5 py-6 pb-28 md:pb-6">
+      <div className="max-w-3xl mx-auto px-5 py-6">
         <BackToMap href={mapHref} />
 
-        {/* The entry animation lives on this wrapper and not on the container
-            above, because a transform makes an element the containing block for
-            every fixed descendant — animating the container would peel the back
-            control off the viewport and slide it with the page. */}
+        {/* The entry animation lives on this wrapper, below the back control,
+            so the one way out of the page is still before it slides in. */}
         <div className="kaun-page-enter">
-          <IndiaHeader />
+          <IndiaHeader current="seat" />
 
           <div className="mt-6">
             <ObjectHeader
@@ -159,8 +170,8 @@ export default async function ConstituencyPage({ params }: Props) {
               title={c.pc_name}
               subtitle={
                 <>
-                  {c.pc_name_hi && <span className="text-ink/70">{c.pc_name_hi} · </span>}
-                  <Link href={mapHref} className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">see on the map</Link>
+                  {localName && <span lang="hi" className="text-ink/70">{localName} · </span>}
+                  <Link href={mapHref} className="inline-flex min-h-11 items-center text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">see on the map</Link>
                 </>
               }
               chips={[
@@ -169,7 +180,9 @@ export default async function ConstituencyPage({ params }: Props) {
                   ? [{ label: "reserved", value: c.reserved_for, title: `Source: ${c.reserved_source}` }]
                   : []),
                 ...(mp ? [{ label: "term", value: mp.term_label }] : []),
-                ...(c.geom_source ? [{ label: "boundary", value: c.geom_source }] : []),
+                ...(c.geom_source
+                  ? [{ label: "boundary", value: BOUNDARY_SOURCE_LABELS[c.geom_source] ?? c.geom_source }]
+                  : []),
               ]}
               /* presence slot intentionally empty in v1 — see ObjectHeader */
             />
@@ -215,6 +228,12 @@ export default async function ConstituencyPage({ params }: Props) {
               </div>
             ) : (
               <>
+                {/* The count is the one the tracker leads with for this state:
+                    ongoing projects on Kaun's record. The rows are a slice of
+                    them, so the slice says what it is. */}
+                <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60 mb-2">
+                  {projects.length} of {projectsTotal.toLocaleString("en-IN")} ongoing · largest cost overrun first
+                </p>
                 <div className="space-y-2">
                   {projects.map(p => <ProjectRow key={p.project_code} p={p} />)}
                 </div>
@@ -222,7 +241,7 @@ export default async function ConstituencyPage({ params }: Props) {
                   href={indiaHref(`/projects?state=${c.st_code}`)}
                   className="inline-flex items-center min-h-11 mt-1 text-sm text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent"
                 >
-                  All {projectsTotal.toLocaleString("en-IN")} central projects in {c.state_name} &rarr;
+                  All {projectsTotal.toLocaleString("en-IN")} ongoing central projects in {c.state_name} &rarr;
                 </Link>
               </>
             )}

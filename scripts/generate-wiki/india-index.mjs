@@ -187,7 +187,6 @@ export function formatCrore(cr) {
   if (cr === null || cr === undefined || !Number.isFinite(Number(cr))) return "—"
   const v = Number(cr)
   const abs = Math.abs(v)
-  if (abs >= 1e5) return `₹${(v / 1e5).toFixed(2)} L Cr`
   if (abs >= 100) return `₹${groupIndian(v)} Cr`
   return `₹${v.toFixed(2)} Cr`
 }

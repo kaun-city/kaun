@@ -35,11 +35,13 @@ import { hasSeenMap } from "@/lib/india/map-view-store"
  * during render would either break the build or desync hydration. The first
  * paint is therefore always the plain link — which is the safe answer.
  *
- * PLACEMENT. Fixed to the bottom-left on phones, where a thumb is, because
- * these pages are long and the top of the document is not reachable after a
- * scroll. From md up it collapses into an ordinary chip above the page title.
- * It is deliberately labelled, not a bare chevron: a lone "<" next to a seat
- * name reads as "previous constituency".
+ * PLACEMENT. An ordinary in-flow chip above the page header, at every width.
+ * It used to float at the bottom-left on phones, where a thumb is, but a
+ * floating button on a long page of prose sits on top of whatever text is
+ * scrolling past it, and clearance at the end of the page does nothing for the
+ * middle. The header's own "Map" nav item is there for a reader who has
+ * scrolled. It is deliberately labelled, not a bare chevron: a lone "<" next
+ * to a seat name reads as "previous constituency".
  */
 export function BackToMap({ href }: { href: string }) {
   const router = useRouter()
@@ -60,13 +62,11 @@ export function BackToMap({ href }: { href: string }) {
       onClick={onClick}
       aria-label="Back to the map"
       data-testid="back-to-map"
-      className="fixed left-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-[60]
-        inline-flex items-center gap-2 min-h-11 px-4
-        bg-paper border border-ink/55 text-ink
+      className="mb-4 inline-flex items-center gap-2 min-h-11 px-3
+        bg-paper border border-ink/20 text-ink
         font-mono text-[11px] font-semibold uppercase tracking-[0.08em]
         hover:bg-paper-muted transition-colors
-        focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent
-        md:static md:mb-4 md:px-3 md:border-ink/20"
+        focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
     >
       <span aria-hidden="true" className="text-accent">&larr;</span>
       Map

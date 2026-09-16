@@ -156,7 +156,9 @@ test("a member with only session rows gets no attendance fact on the card at all
 test("a seat with an affidavit shows exactly two component facts and no score", () => {
   const card = cardFor("29-25")
   assert.equal(card.title, "Bangalore Central")
-  assert.equal(card.hindi, "बंगलौर सेंट्रल")
+  // Karnataka's language is Kannada, so the Hindi seat name is not shown
+  // (localSeatName in lib/india/format.ts).
+  assert.equal(card.hindi, null)
   assert.equal(card.eyebrow, "Karnataka · Lok Sabha seat 25")
   assert.equal(card.mpName, "P C Mohan")
   assert.equal(card.party, "BJP")

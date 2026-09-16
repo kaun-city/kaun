@@ -79,7 +79,9 @@ export function ProjectRow({ p }: { p: TrackedProject }) {
         </div>
         <div>
           <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Progress</p>
-          <p className="text-ink text-sm font-semibold font-mono tabular-nums">{formatPct(p.physical_progress_pct)}</p>
+          {p.physical_progress_pct == null
+            ? <p className="text-ink/60 text-xs italic">not reported</p>
+            : <p className="text-ink text-sm font-semibold font-mono tabular-nums">{formatPct(p.physical_progress_pct)}</p>}
         </div>
       </div>
 

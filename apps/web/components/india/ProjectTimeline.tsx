@@ -11,7 +11,7 @@
  * nothing moved are shown too, greyed — a project sitting untouched for a year
  * is itself the finding, and hiding those rows would hide it.
  */
-import { formatCrore, formatMonth, formatPct } from "@/lib/india/format"
+import { formatCrore, formatMonth, formatProgress } from "@/lib/india/format"
 import type { CentralProjectChange } from "@/lib/india/types"
 
 export function ProjectTimeline({ history }: { history: CentralProjectChange[] }) {
@@ -47,7 +47,8 @@ export function ProjectTimeline({ history }: { history: CentralProjectChange[] }
                     {formatMonth(h.report_month)} report
                   </p>
                   <p className="text-ink/70 font-mono tabular-nums text-[11px] shrink-0">
-                    {formatCrore(h.revised_cost_cr)} · {formatPct(h.physical_progress_pct)} complete
+                    {h.revised_cost_cr === null ? "cost not reported" : formatCrore(h.revised_cost_cr)}
+                    {" · "}{formatProgress(h.physical_progress_pct)}
                   </p>
                 </div>
 

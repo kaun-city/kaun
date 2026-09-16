@@ -92,7 +92,18 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
    * is ssr:false, so this value never reaches server HTML and cannot desync
    * hydration.
    */
-  const [initialView] = useState<MapView | null>(() => readMapView())
+  const [initialView] = useState<MapView | null>(() => {
+    // Only a return trip restores a viewport. The map writes its seat, layer
+    // and state filter into the URL (below), so coming back to it — history
+    // back, or BackToMap's ?seat= fallback — always carries at least one of
+    // them. A bare /india is someone asking for the map itself: the header's
+    // Map link, a reload, a fresh visit. Restoring a stale zoom there opened
+    // the page on a corner of the country while the filter said "All India".
+    if (typeof window === "undefined") return null
+    const url = decodeMapState(window.location.search)
+    if (!url.seat && !url.layer && url.stateFilter === null) return null
+    return readMapView()
+  })
 
   const layer = getIndiaLayer(layerId)
 
@@ -219,67 +230,84 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   return (
     <main className="signal-map flex flex-col h-full bg-paper-canvas overflow-hidden">
       <div className="relative flex-1 min-h-0">
-        <IndiaHeader variant="overlay" />
+        {/* The top stack — header, search, state filter — is ONE flow column.
+            They used to be three absolutely positioned rows at guessed
+            offsets, and on a 375px phone the header wrapped to two rows and
+            the search input landed on top of its nav, making the tracker
+            unreachable. In flow, nothing can overlap whatever wraps.
 
-        {/* Search — seat name, seat code, or MP name. Phones stack it above the
-            state filter below the wrapped header; sm+ puts them side by side.
-            z sits above the filter so the results list can drop over it. */}
-        <div className="absolute top-[4.5rem] sm:top-16 left-4 right-4 z-[910] sm:right-auto sm:w-[min(22rem,calc(100vw-2rem))]">
-          <input
-            value={q}
-            onChange={e => setQ(e.target.value)}
-            placeholder="Search a constituency or MP…"
-            className="w-full min-h-11 bg-paper-bright border border-ink/55 px-3 py-2
-              text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:border-ink
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-          />
-          {results.length > 0 && (
-            <div className="mt-1 bg-paper border border-ink/55 divide-y divide-ink/10 max-h-72 overflow-y-auto">
-              {results.map(f => {
-                const mp = mpBySeat.get(f.pc_code)
-                return (
-                  <button
-                    key={f.pc_code}
-                    onMouseDown={e => e.preventDefault()}
-                    onClick={e => {
-                      e.stopPropagation()
-                      setQ("")
-                      selectSeat(f)
-                      setStateFilter(f.st_code)
-                      focusRef.current?.focus(f.pc_code)
-                    }}
-                    className="w-full min-h-11 text-left px-3 py-2 hover:bg-ink/5 transition-colors
-                      focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-ink text-sm">{f.pc_name}</span>
-                      <span className="text-ink/60 text-[11px] font-mono tabular-nums">{f.pc_code}</span>
-                    </div>
-                    <div className="text-ink/60 text-xs mt-0.5">
-                      {f.state_name}{mp ? ` · ${mp.name}` : ""}
-                    </div>
-                  </button>
-                )
-              })}
+            Phones: header (two rows), search, then the state filter under it,
+            left-aligned and at most 13rem wide so it ends well short of the
+            Leaflet zoom control, which globals.css parks at top: 172px on the
+            right — below the header and search, beside the filter. sm and up:
+            search and filter share a row on the left, leaving the top-right
+            corner to the zoom control.
+
+            z-[1010] puts the stack, and the search results that drop out of
+            it, above Leaflet's controls (z-1000) and above the bottom rail. */}
+        <div className="absolute top-4 inset-x-4 z-[1010] flex flex-col items-start gap-2 pointer-events-none">
+          <IndiaHeader variant="overlay" current="map" />
+
+          <div className="flex w-full flex-col items-start gap-2 sm:flex-row">
+            {/* Search — seat name, seat code, or MP name. */}
+            <div className="relative w-full pointer-events-auto sm:w-[min(22rem,calc(100vw-2rem))]">
+              <input
+                value={q}
+                onChange={e => setQ(e.target.value)}
+                placeholder="Search a constituency or MP…"
+                aria-label="Search a constituency or MP"
+                className="w-full min-h-11 bg-paper-bright border border-ink/55 px-3 py-2
+                  text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:border-ink
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              />
+              {results.length > 0 && (
+                <div className="absolute inset-x-0 top-full mt-1 bg-paper border border-ink/55 divide-y divide-ink/10 max-h-72 overflow-y-auto">
+                  {results.map(f => {
+                    const mp = mpBySeat.get(f.pc_code)
+                    return (
+                      <button
+                        key={f.pc_code}
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={e => {
+                          e.stopPropagation()
+                          setQ("")
+                          selectSeat(f)
+                          setStateFilter(f.st_code)
+                          focusRef.current?.focus(f.pc_code)
+                        }}
+                        className="w-full min-h-11 text-left px-3 py-2 hover:bg-ink/5 transition-colors
+                          focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-ink text-sm">{f.pc_name}</span>
+                          <span className="text-ink/60 text-[11px] font-mono tabular-nums">{f.pc_code}</span>
+                        </div>
+                        <div className="text-ink/60 text-xs mt-0.5">
+                          {f.state_name}{mp ? ` · ${mp.name}` : ""}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* State filter — below the search on phones, beside it from sm up */}
-        <div className="absolute top-[7.5rem] right-4 z-[900] sm:top-16 sm:right-4">
-          <select
-            value={stateFilter ?? ""}
-            onChange={e => setStateFilter(e.target.value === "" ? null : Number(e.target.value))}
-            aria-label="Filter constituencies by state"
-            className="min-h-11 bg-paper border border-ink/55 px-2.5 py-2
-              text-xs text-ink focus:outline-none focus:border-ink
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent max-w-[13rem]"
-          >
-            <option value="">All India · {features.length || LOK_SABHA_SEATS} seats</option>
-            {states.map(s => (
-              <option key={s.st_code} value={s.st_code}>{s.name} · {s.seats}</option>
-            ))}
-          </select>
+            {/* State filter. Each option counts SEATS — the tracker's state
+                filter counts projects, so the unit is spelled out. */}
+            <select
+              value={stateFilter ?? ""}
+              onChange={e => setStateFilter(e.target.value === "" ? null : Number(e.target.value))}
+              aria-label="Filter constituencies by state"
+              className="pointer-events-auto min-h-11 max-w-[13rem] bg-paper border border-ink/55 px-2.5 py-2
+                text-xs text-ink focus:outline-none focus:border-ink
+                focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            >
+              <option value="">All India · {features.length || LOK_SABHA_SEATS} seats</option>
+              {states.map(s => (
+                <option key={s.st_code} value={s.st_code}>{s.name} · {s.seats} seat{s.seats === 1 ? "" : "s"}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <IndiaMapView
@@ -303,17 +331,24 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
             The rail is pointer-events-none and only as tall as its content, so
             the map underneath still pans; the panels re-enable pointers.
             `pb-11` clears Leaflet's attribution bar, which is two lines tall at
-            phone widths and sits at z-1000, above both panels.
+            phone widths.
+            z-[1005] sits above Leaflet's controls (z-1000): with "Color by"
+            open the rail is tall enough to reach the zoom buttons, and the zoom
+            control used to sit on top of the preview's close button. The rail
+            also stops at top-56, below the top stack, and the layer panel's
+            body scrolls inside what is left — so however tall the panels get,
+            they neither run under the search box nor push its own close button
+            off screen.
             From md up the rail stops generating a box (`md:contents`) and each
             panel returns to its own corner, unchanged. md, not sm: at 640 two
             20rem panels still overlap by 2rem. */}
-        <div className="absolute inset-x-0 bottom-0 z-[900] flex flex-col-reverse gap-2 p-4 pb-11
+        <div className="absolute inset-x-0 top-56 bottom-0 z-[1005] flex flex-col-reverse gap-2 p-4 pb-11
           pointer-events-none md:contents">
 
           {/* Layer switcher + legend. Folded, it is one line naming the
               layer plus the colour key, so the map stays readable; the full
               legend (description, missing-seat count, source) is one tap away. */}
-          <div className="pointer-events-auto w-full
+          <div className="pointer-events-auto w-full min-h-0 flex flex-col
             md:absolute md:bottom-4 md:left-4 md:z-[900] md:w-[min(20rem,calc(100vw-2rem))]
             bg-paper border border-ink/55">
             <button
@@ -321,7 +356,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
               onClick={() => setPanelOpen(open => !open)}
               aria-expanded={panelOpen}
               aria-controls="india-layer-panel"
-              className="flex w-full min-h-11 items-center justify-between gap-3 px-3 py-1.5 text-left
+              className="flex w-full min-h-11 shrink-0 items-center justify-between gap-3 px-3 py-1.5 text-left
                 hover:bg-ink/5 transition-colors
                 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
             >
@@ -358,7 +393,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
             )}
 
             {panelOpen && (
-              <div id="india-layer-panel" className="border-t border-ink/15 p-3">
+              <div id="india-layer-panel" className="min-h-0 overflow-y-auto border-t border-ink/15 p-3">
                 <div className="grid grid-cols-2 gap-1.5 md:flex md:flex-wrap">
                   <button
                     onClick={() => chooseLayer(null)}
@@ -419,7 +454,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
 
           {/* Seat preview — a doorway to the seat's own page, never a substitute */}
           {selected && (
-            <div className="pointer-events-auto w-full
+            <div className="pointer-events-auto w-full shrink-0
               md:absolute md:bottom-4 md:right-4 md:z-[950] md:w-[min(20rem,calc(100vw-2rem))]
               bg-paper border border-ink/55 border-t-2 border-t-ink p-4">
               <div className="flex items-start justify-between gap-2">

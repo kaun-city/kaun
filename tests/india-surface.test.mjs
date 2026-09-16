@@ -141,7 +141,7 @@ test("rupee amounts step through crore and lakh at the right thresholds", () => 
 test("crore amounts keep MoSPI's unit and group Indian-style", () => {
   assert.equal(formatCrore(30695.1), "₹30,695 Cr")
   assert.equal(formatCrore(4.5), "₹4.50 Cr")
-  assert.equal(formatCrore(150000), "₹1.50 L Cr")
+  assert.equal(formatCrore(150000), "₹1,50,000 Cr")
 })
 
 test("a cost delta names its direction, and zero says so in words", () => {

@@ -55,16 +55,22 @@ export function TrackerControls({
         ))}
       </div>
 
+      {/* State names only, no per-state count. fetchProjectStates() reads
+          one unpaginated PostgREST page, which the server caps at 1,000 rows
+          of the ~2,000 ongoing projects, so every count it produces is an
+          undercount (it printed "Telangana · 10" for a state with 72). The
+          page header states the real count once a state is chosen. */}
       <select
         value={activeState ?? ""}
         onChange={e => go({ state: e.target.value === "" ? null : e.target.value })}
+        aria-label="Filter projects by state"
         className="min-h-11 bg-paper-bright border border-ink/25 px-2.5
           text-xs text-ink focus:outline-none focus:border-ink/60
           focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent max-w-[14rem]"
       >
         <option value="">All states</option>
         {states.map(s => (
-          <option key={s.st_code} value={s.st_code}>{s.name} · {s.count}</option>
+          <option key={s.st_code} value={s.st_code}>{s.name}</option>
         ))}
       </select>
     </div>

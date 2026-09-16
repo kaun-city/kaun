@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useRef, useState, type MutableRefObject } from "react"
-import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON, PathOptions } from "leaflet"
+import type { FitBoundsOptions, LatLngBoundsExpression, Map as LeafletMap, GeoJSON as LeafletGeoJSON, PathOptions } from "leaflet"
 import type { Feature } from "geojson"
 import { BASE_TILE_OPTIONS, BASE_TILE_URL } from "@/lib/base-map"
 import { INK, PAPER } from "@/lib/design-tokens"
@@ -37,6 +37,27 @@ export interface PcFeatureProps {
   geom_source: string
   /** Representative point [lng, lat], precomputed by the builder. */
   c: [number, number] | null
+}
+
+/**
+ * The whole country, Kutch to Arunachal and Ladakh to Indira Point, so the
+ * Andaman & Nicobar and Lakshadweep seats are in frame too. The map opens
+ * fitted to this rather than to a fixed centre and zoom: a fixed zoom is only
+ * right for one window shape, and on a phone it cut off the north-east.
+ */
+const INDIA_BOUNDS: LatLngBoundsExpression = [[6.5, 68.0], [37.2, 97.5]]
+
+/**
+ * Fit padding, so the country lands in the part of the map the overlays leave
+ * uncovered. Phones (< sm) carry a two-row header, the search box and the
+ * state filter over the top ~14rem and the folded layer rail over the bottom;
+ * sm and up the top stack is one row plus the search row, and from md the
+ * layer panel moves to a corner.
+ */
+function indiaFitOptions(width: number): FitBoundsOptions {
+  if (width < 640) return { paddingTopLeft: [12, 230], paddingBottomRight: [12, 120] }
+  if (width < 768) return { paddingTopLeft: [16, 130], paddingBottomRight: [16, 120] }
+  return { paddingTopLeft: [24, 130], paddingBottomRight: [24, 32] }
 }
 
 /** Flat style when no layer is active — quiet ink on the paper basemap. */
@@ -87,6 +108,15 @@ export default function IndiaMapView({
   const onSelectRef = useRef(onSelect)
   const onViewChangeRef = useRef(onViewChange)
   const resizeCleanupRef = useRef<(() => void) | null>(null)
+  /**
+   * True while the view is the automatic whole-country fit and the visitor
+   * has not touched the map since. While it holds, a container resize re-fits
+   * the country instead of keeping a centre chosen for a different size — the
+   * difference between a rotated phone showing India and showing a corner.
+   */
+  const autoFitRef = useRef(false)
+  /** The filter the fit effect last saw, to tell "All India" chosen from "boundaries loaded". */
+  const prevFilterRef = useRef<number | null>(null)
   const [loading, setLoading] = useState(true)
 
   /**
@@ -142,16 +172,37 @@ export default function IndiaMapView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values, breaks, layer, stateFilter, loading])
 
+  /**
+   * Fit the whole country. Needs a measured container: fitting a 0×0 map
+   * computes a meaningless zoom, and a map built while its container had no
+   * size (a hidden tab or pane, a flex column still settling) used to open
+   * with India's centre in its top-left corner — the peninsula and the Bay of
+   * Bengal, nothing north. Unsized, this only arms the flag, and the resize
+   * observer below performs the fit the moment the container has a size.
+   */
+  function fitIndia(map: LeafletMap, animate: boolean) {
+    autoFitRef.current = true
+    const size = map.getSize()
+    if (size.x === 0 || size.y === 0) return
+    map.fitBounds(INDIA_BOUNDS, { ...indiaFitOptions(size.x), animate })
+  }
+
   // Zoom to the filtered state, or back out to the whole country.
   useEffect(() => {
     const map = mapRef.current
     const gj = geojsonRef.current
     if (!map || !gj) return
+    const previous = prevFilterRef.current
+    prevFilterRef.current = stateFilter
     if (restoredViewRef.current) { restoredViewRef.current = false; return }
     if (stateFilter === null) {
-      map.setView(INDIA_CENTER, INDIA_ZOOM, { animate: true })
+      // Choosing "All India" re-fits the country. The boundaries merely
+      // finishing their download does not: that would undo a pan or zoom the
+      // visitor made while they loaded.
+      if (previous !== null || autoFitRef.current) fitIndia(map, true)
       return
     }
+    autoFitRef.current = false
     let bounds: ReturnType<LeafletGeoJSON["getBounds"]> | null = null
     gj.eachLayer((l) => {
       const p = propsOf((l as unknown as { feature?: Feature }).feature)
@@ -174,6 +225,7 @@ export default function IndiaMapView({
           const p = propsOf((l as unknown as { feature?: Feature }).feature)
           if (p?.pc_code !== pcCode) return
           const b = (l as unknown as { getBounds: () => ReturnType<LeafletGeoJSON["getBounds"]> }).getBounds()
+          autoFitRef.current = false
           map.fitBounds(b, { padding: [60, 60], animate: true })
         })
       },
@@ -203,14 +255,15 @@ export default function IndiaMapView({
       const map = L.map(containerRef.current!, {
         // Coming back from a seat page: open where the visitor left off rather
         // than snapping to the whole country and making them find it again.
+        // Otherwise these are only a starting point for the fit just below.
         center: restored ? restored.center : INDIA_CENTER,
         zoom: restored ? restored.zoom : INDIA_ZOOM,
         minZoom: INDIA_MIN_ZOOM,
         maxZoom: INDIA_MAX_ZOOM,
-        // India needs a fractional default zoom to fit Kashmir and Kanyakumari
-        // on one laptop screen. Leaflet only honours fractional zoom when
-        // zoomSnap is loosened; left at its default of 1 it rounds, and the
-        // country either overflows or sits tiny in the middle.
+        // Fitting India needs a fractional zoom to get Kashmir and Kanyakumari
+        // onto one screen at a readable size. Leaflet only honours fractional
+        // zoom when zoomSnap is loosened; left at its default of 1 it rounds,
+        // and the country either overflows or sits tiny in the middle.
         zoomSnap: 0.25,
         zoomDelta: 0.5,
         zoomControl: false,
@@ -218,13 +271,35 @@ export default function IndiaMapView({
       })
       mapRef.current = map
 
+      // Coming back with a remembered viewport keeps it; anything else opens on
+      // the whole country, fitted to this container rather than a fixed zoom.
+      if (!restored) fitIndia(map, false)
+
+      // Any direct handling of the map ends the automatic fit, so a resize
+      // never yanks away a view the visitor chose. Programmatic moves (state
+      // filter, search) clear it where they happen.
+      const container = containerRef.current!
+      const stopAutoFit = () => { autoFitRef.current = false }
+      const interactions = ["pointerdown", "wheel", "keydown"] as const
+      for (const type of interactions) container.addEventListener(type, stopAutoFit, { passive: true })
+
       // The map mounts inside a flex column that is still settling, so Leaflet
       // can measure a container that has not reached its final height and then
       // request tiles for the wrong viewport. Re-measure once after paint, and
-      // again whenever the window changes size.
-      const remeasure = () => map.invalidateSize()
+      // whenever the CONTAINER changes size — observed directly, because a
+      // container can go from hidden to sized without the window resizing.
+      let frame = 0
+      const remeasure = () => {
+        cancelAnimationFrame(frame)
+        frame = requestAnimationFrame(() => {
+          map.invalidateSize()
+          if (autoFitRef.current) fitIndia(map, false)
+        })
+      }
       const t = setTimeout(remeasure, 60)
-      window.addEventListener("resize", remeasure)
+      const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(remeasure)
+      if (observer) observer.observe(container)
+      else window.addEventListener("resize", remeasure)
 
       // Report the viewport after it settles, never during the gesture — this
       // writes to sessionStorage and Leaflet fires `move` on every frame.
@@ -237,7 +312,10 @@ export default function IndiaMapView({
 
       resizeCleanupRef.current = () => {
         clearTimeout(t)
+        cancelAnimationFrame(frame)
+        observer?.disconnect()
         window.removeEventListener("resize", remeasure)
+        for (const type of interactions) container.removeEventListener(type, stopAutoFit)
         map.off("moveend", reportView)
         map.off("zoomend", reportView)
       }

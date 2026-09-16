@@ -67,7 +67,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <div className="signal-page h-full overflow-y-auto">
       <div className="max-w-3xl mx-auto px-5 py-6">
-        <IndiaHeader />
+        <IndiaHeader current="project" />
 
         <div className="mt-6">
           <ObjectHeader
@@ -79,7 +79,7 @@ export default async function ProjectPage({ params }: Props) {
                 {project.state_raw ?? "state not stated"}
                 {project.st_code !== null && (
                   <> · <Link href={indiaHref(`/projects?state=${project.st_code}`)}
-                    className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">other projects in this state</Link></>
+                    className="inline-flex min-h-11 items-center text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">other projects in this state</Link></>
                 )}
               </>
             }
@@ -127,7 +127,11 @@ export default async function ProjectPage({ params }: Props) {
                   </SignedValue>
                 }
               />
-              <Stat label="Physical progress" value={formatPct(latest?.physical_progress_pct ?? null)} />
+              <Stat
+                label="Physical progress"
+                value={latest?.physical_progress_pct == null ? "not reported" : formatPct(latest.physical_progress_pct)}
+                muted={latest?.physical_progress_pct == null}
+              />
               <Stat
                 label="Last change"
                 value={monthsSinceLastChange === null
