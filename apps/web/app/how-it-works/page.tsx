@@ -15,11 +15,11 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 
 export default function HowItWorksPage() {
   return (
-    <div className="bg-zinc-950 text-white fixed inset-0 overflow-y-auto" style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+    <div className="signal-page bg-zinc-950 text-white fixed inset-0 overflow-y-auto" style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
       <div className="max-w-2xl mx-auto px-5 py-12">
 
         {/* Header */}
-        <div className="mb-10">
+        <div className="signal-page-header mb-10">
           <Link href="/" className="text-white/30 text-sm hover:text-white/60 transition-colors mb-6 inline-block">&larr; Back</Link>
           <h1 className="text-2xl font-bold text-white mb-2">How Kaun Works</h1>
           <p className="text-white/40 text-sm">How we source data, what we show, and what we don&apos;t.</p>
@@ -131,73 +131,27 @@ export default function HowItWorksPage() {
           </div>
         </Section>
 
-        <Section title="The accountability score">
+        <Section title="Evidence, not a score">
           <p>
-            Each ward shows an accountability score from 0 to 100. This is a number, not a letter grade.
-            It is a weighted average of available data points about the ward&apos;s MLA and BBMP contractors.
+            Kaun shows the underlying public measures directly: attendance, fund use, declared cases,
+            ward meetings, infrastructure, complaints and contractor flags. It does not collapse unlike
+            facts into one apparently precise ranking.
           </p>
-          <p>
-            The score is only shown when at least two data dimensions are available. A ward with insufficient
-            data shows no score rather than a misleading one.
-          </p>
-          <div className="rounded-lg bg-white/5 border border-white/10 p-4 space-y-3">
-            <p className="text-white/70 font-medium">How the score is calculated</p>
-            <p className="text-white/40 text-xs mb-2">Each dimension is scored 0-100, then weighted and averaged.</p>
-            <div className="space-y-3">
-              <div className="rounded bg-white/5 p-3">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-white/60 text-sm font-medium">MLA assembly attendance</span>
-                  <span className="text-white/40 text-xs">weight: 2.0</span>
-                </div>
-                <p className="text-white/30 text-xs">Percentage of legislative sessions attended. Source: Karnataka Legislative Assembly records, Myneta.info. 100% attendance = 100 points.</p>
-              </div>
-              <div className="rounded bg-white/5 p-3">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-white/60 text-sm font-medium">LAD fund utilisation</span>
-                  <span className="text-white/40 text-xs">weight: 2.0</span>
-                </div>
-                <p className="text-white/30 text-xs">Percentage of Local Area Development funds spent. Source: Karnataka Assembly records. 100% utilised = 100 points.</p>
-              </div>
-              <div className="rounded bg-white/5 p-3">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-white/60 text-sm font-medium">Declared criminal cases</span>
-                  <span className="text-white/40 text-xs">weight: 1.5</span>
-                </div>
-                <p className="text-white/30 text-xs">Cases self-declared in Election Commission nomination affidavits. Source: Myneta.info. 0 cases = 100 points; each case subtracts 20 points (minimum 0).</p>
-              </div>
-              <div className="rounded bg-white/5 p-3">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-white/60 text-sm font-medium">Contractor blacklist flags</span>
-                  <span className="text-white/40 text-xs">weight: 1.5</span>
-                </div>
-                <p className="text-white/30 text-xs">Contractors with official blacklist records on ward work orders. Source: KPPP tender portal, BBMP work order data. 0 flagged = 100 points; each flagged contractor subtracts 40 points (minimum 0).</p>
-              </div>
-            </div>
-            <p className="text-white/30 text-xs pt-2 border-t border-white/10">
-              Formula: weighted score = sum(score x weight) / sum(weights). Example: a ward with 80% attendance (weight 2), 60% LAD utilisation (weight 2), 0 criminal cases (weight 1.5) = (80x2 + 60x2 + 100x1.5) / (2+2+1.5) = 76/100.
-            </p>
-          </div>
           <div className="rounded-lg bg-white/5 border border-white/10 p-4 space-y-2">
-            <p className="text-white/70 font-medium">What&apos;s NOT included (and why)</p>
+            <p className="text-white/70 font-medium">Why the change matters</p>
             <ul className="list-disc list-inside space-y-1 text-white/40 text-sm">
-              <li>Road or drainage quality — reliable ward-level delivery data is not publicly available</li>
-              <li>Corporator performance — not yet available for all current GBA wards</li>
-              <li>Pothole complaint counts — reflects reporting behaviour, not actual road condition</li>
-              <li>Grievance resolution time — BBMP does not publish ward-level resolution metrics</li>
-              <li>Any AI-generated or inferred data — we do not use AI to fill gaps</li>
+              <li>Every displayed measure can be traced to its source and period</li>
+              <li>Missing data remains visibly missing instead of silently changing a score</li>
+              <li>People can disagree with an interpretation without losing the underlying fact</li>
+              <li>Complaint volume is not treated as proof that one ward is governed better or worse</li>
             </ul>
           </div>
-          <p className="text-white/40 text-xs">
-            The score reflects the data we have. As more official data becomes available, the score will expand to include it.
-            A high score does not mean the ward is well-governed — it means the available data points are favourable.
-            Always check the breakdown to understand what&apos;s driving the number.
-          </p>
         </Section>
 
         <Section title="What we don't do">
           <ul className="list-disc list-inside space-y-2">
-            <li>We do not generate or infer data using AI</li>
-            <li>We do not rank wards against each other (scores are absolute, not relative)</li>
+            <li>We do not publish AI research automatically; cited findings enter human review</li>
+            <li>We do not rank wards using a composite score</li>
             <li>We do not make editorial judgments about individuals or parties</li>
             <li>We do not accept payments from government bodies, contractors, or political parties</li>
             <li>We do not sell user data. Pin drops are anonymised.</li>

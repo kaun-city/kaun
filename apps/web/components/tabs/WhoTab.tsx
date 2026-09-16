@@ -4,7 +4,7 @@ import { useState } from "react"
 import { OFFICER_SUBJECTS } from "@/lib/constants"
 import type { CityConfig } from "@/lib/cities"
 import type {
-  CommunityFact, GbaContact, MlaLadFunds, PinResult,
+  CommunityFact, ElectedRep, GbaContact, MlaLadFunds, PinResult,
   RepReportCard, WardCommitteeMeetings, WardProfile,
 } from "@/lib/types"
 
@@ -47,6 +47,7 @@ interface Props {
   city: CityConfig
   profile: WardProfile | null
   profileLoading: boolean
+  electedReps: ElectedRep[]
   committeeMeetings: WardCommitteeMeetings | null
   reportCard: RepReportCard | null
   ladFunds: MlaLadFunds[]
@@ -61,7 +62,7 @@ interface Props {
 }
 
 export function WhoTab({
-  result, city, profile, profileLoading,
+  result, city, profile, profileLoading, electedReps,
   committeeMeetings, reportCard, ladFunds, corpContacts, corpName,
   allFacts, officerGroups, onCorroborate, onNewFact,
   infraStats, potholes,
@@ -69,12 +70,13 @@ export function WhoTab({
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
 
   function rtiBase(): Omit<RTIDraftRequest, "issue_type"> {
+    const historicalWard = result.historical_wards?.[0]
     return {
-      ward_no: result.ward_no ?? 0,
-      ward_name: result.ward_name ?? "",
-      assembly_constituency: result.assembly_constituency ?? "",
-      mla_name: profile?.elected_reps?.find(r => r.role === "MLA")?.name ?? undefined,
-      mla_party: profile?.elected_reps?.find(r => r.role === "MLA")?.party ?? undefined,
+      ward_no: historicalWard?.ward_no ?? result.ward_no ?? 0,
+      ward_name: result.gba_ward_name ?? result.ward_name ?? "",
+      assembly_constituency: result.gba_ac ?? result.assembly_constituency ?? "",
+      mla_name: electedReps.find(r => r.role === "MLA")?.name ?? undefined,
+      mla_party: electedReps.find(r => r.role === "MLA")?.party ?? undefined,
     }
   }
 
@@ -105,8 +107,8 @@ export function WhoTab({
         </div>
         {profileLoading && !profile ? (
           <><SkeletonRepCard /><SkeletonRepCard /></>
-        ) : profile && profile.elected_reps.length > 0 ? (
-          profile.elected_reps.map(rep => (
+        ) : electedReps.length > 0 ? (
+          electedReps.map(rep => (
             <div key={rep.id} className="p-3 rounded-xl bg-white/5">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">

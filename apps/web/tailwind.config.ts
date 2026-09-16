@@ -11,6 +11,9 @@ const config: Config = {
       colors: {
         saffron: "#FF9933",
       },
+      fontFamily: {
+        mono: ["var(--font-plex-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
+      },
       animation: {
         "slide-up": "slide-up 0.25s ease-out forwards",
       },

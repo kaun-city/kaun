@@ -38,17 +38,17 @@ export interface PcFeatureProps {
   c: [number, number] | null
 }
 
-/** Flat style when no layer is active — the ward map's saffron outline. */
+/** Flat style when no layer is active — quiet ink on the paper basemap. */
 const SEAT_STYLE: PathOptions = {
-  color: "#FF9933",
+  color: "#16130E",
   weight: 0.5,
-  opacity: 0.55,
-  fillColor: "#FF9933",
-  fillOpacity: 0.06,
+  opacity: 0.45,
+  fillColor: "#16130E",
+  fillOpacity: 0.025,
 }
 const SEAT_HOVER_STYLE: PathOptions = { fillOpacity: 0.22, weight: 1.4 }
 const DIMMED_STYLE: PathOptions = {
-  color: "#333", weight: 0.4, opacity: 0.3, fillColor: "#1a1a1a", fillOpacity: 0.25,
+  color: "#8f887d", weight: 0.4, opacity: 0.35, fillColor: "#d6d0c5", fillOpacity: 0.2,
 }
 
 interface Props {
@@ -291,7 +291,7 @@ export default function IndiaMapView({
           Loading 543 constituencies...
         </div>
       )}
-      <div ref={containerRef} className="w-full h-full" style={{ background: "#0A0A0A" }} />
+      <div ref={containerRef} className="w-full h-full" style={{ background: "#F2EDE4" }} />
     </div>
   )
 }

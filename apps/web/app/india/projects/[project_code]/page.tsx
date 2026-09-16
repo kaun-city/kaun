@@ -65,7 +65,7 @@ export default async function ProjectPage({ params }: Props) {
     : null
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="signal-page h-full overflow-y-auto">
       <div className="max-w-3xl mx-auto px-5 py-6">
         <IndiaHeader />
 

@@ -15,8 +15,8 @@ import { isFixtureMode } from "@/lib/india/fixtures"
 export function FixtureBanner() {
   if (!isFixtureMode()) return null
   return (
-    <div className="w-full bg-amber-500/10 border-b border-amber-500/25 px-4 py-2">
-      <p className="max-w-5xl mx-auto text-amber-300/90 text-[11px] leading-snug">
+    <div className="w-full bg-[#fff4d6] border-b-2 border-[#a05d00] px-4 py-2 text-[#6f4100]">
+      <p className="max-w-5xl mx-auto text-sm leading-snug">
         <span className="font-semibold uppercase tracking-widest text-[10px] mr-2">Preview data</span>
         These pages are running on a committed fixture set of four Karnataka seats — real rows from
         public sources, but a sample, not the live national dataset

@@ -56,6 +56,9 @@ nav:
       - Ghost Workers Scam (Rs 934 Cr): bengaluru/findings/ghost-workers-scam.md
       - KRIDL 4(g) Exemption (Rs 4,700 Cr): bengaluru/findings/kridl-4g-exemption.md
       - Add new finding: bengaluru/findings/_template.md
+    - Civic Projects:
+      - Overview: bengaluru/projects/index.md
+      - Varthur–Gunjur Road: bengaluru/projects/varthur-gunjur-road.md
     - Data Sources:
       - BBMP IFMS: bengaluru/sources/bbmp-ifms.md
       - KPPP: bengaluru/sources/kppp.md
@@ -86,6 +89,7 @@ nav:
 markdown_extensions:
   - admonition
   - attr_list
+  - footnotes
   - md_in_html
   - tables
   - pymdownx.details

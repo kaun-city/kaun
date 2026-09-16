@@ -28,7 +28,7 @@ import { SkeletonLine } from "@/components/shared/Skeleton"
  */
 export default function Loading() {
   return (
-    <div className="h-full overflow-y-auto" aria-busy="true" aria-label="Loading">
+    <div className="signal-page h-full overflow-y-auto" aria-busy="true" aria-label="Loading">
       <div className="max-w-4xl mx-auto px-5 py-6">
         <IndiaHeader />
 

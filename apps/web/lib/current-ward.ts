@@ -1,4 +1,6 @@
 import type { Feature } from "geojson"
+import type { PinResult } from "./types"
+import type { GbaCrosswalkRow, HistoricalWardRef } from "./gba-crosswalk"
 
 type Ring = number[][]
 type PolygonCoordinates = Ring[]
@@ -14,6 +16,9 @@ export interface CurrentWardMeta {
   gba_zone: string | null
   gba_zone_name: string | null
   gba_population: number | null
+  historical_wards: HistoricalWardRef[]
+  historical_crosswalk_tier: GbaCrosswalkRow["tier"] | null
+  historical_crosswalk_version: string | null
 }
 
 function pointInRing(lng: number, lat: number, ring: Ring): boolean {
@@ -40,7 +45,11 @@ export function featureContains(feature: Feature, lat: number, lng: number): boo
   return false
 }
 
-export function currentWardMeta(feature: Feature): CurrentWardMeta | null {
+export function currentWardMeta(
+  feature: Feature,
+  crosswalk?: GbaCrosswalkRow,
+  crosswalkVersion?: string,
+): CurrentWardMeta | null {
   const p = feature.properties as Record<string, unknown> | null
   if (!p || p.boundary_system !== "gba-369-2025") return null
   const number = (value: unknown) => value == null ? null : Number(value)
@@ -56,5 +65,33 @@ export function currentWardMeta(feature: Feature): CurrentWardMeta | null {
     gba_zone: string(p.zone),
     gba_zone_name: string(p.zone_name),
     gba_population: number(p.population),
+    historical_wards: crosswalk?.historical_wards ?? [],
+    historical_crosswalk_tier: crosswalk?.tier ?? null,
+    historical_crosswalk_version: crosswalkVersion ?? null,
+  }
+}
+
+/**
+ * Combine the authoritative, already-loaded current boundary with optional
+ * server enrichment. A missing enrichment service must never make an inside-
+ * city point look out of bounds.
+ */
+export function currentWardPinResult(
+  currentWard: CurrentWardMeta,
+  remoteResult: PinResult | null,
+  cityId: string,
+): PinResult {
+  return {
+    found: true,
+    city_id: cityId,
+    // A current GBA ward is not a historical 243 ward. Keep the legacy scalar
+    // identity empty and expose the full overlap vector separately.
+    ward_no: null,
+    ward_name: null,
+    zone: currentWard.gba_zone_name ?? currentWard.gba_zone,
+    assembly_constituency: currentWard.gba_ac,
+    agencies: remoteResult?.found ? remoteResult.agencies : [],
+    primary_agency: remoteResult?.found ? remoteResult.primary_agency : null,
+    ...currentWard,
   }
 }

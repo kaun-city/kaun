@@ -58,7 +58,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
   const totalOverrun = rows.reduce((sum, r) => sum + (r.cost_overrun_cr ?? 0), 0)
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="signal-page h-full overflow-y-auto">
       <div className="max-w-4xl mx-auto px-5 py-6">
         <IndiaHeader host={host} />
 

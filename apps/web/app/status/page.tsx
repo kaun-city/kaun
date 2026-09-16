@@ -79,7 +79,7 @@ function StatusDot({ status }: { status: string }) {
     : status === "stale" || status === "degraded" || status === "empty"
       ? "bg-yellow-500"
       : "bg-red-500"
-  return <span className={`inline-block w-2 h-2 rounded-full ${color}`} />
+  return <span role="img" aria-label={`Status: ${status}`} className={`inline-block w-2 h-2 rounded-full ${color}`} />
 }
 
 function CovStat({ label, value, target, pct }: { label: string; value: number | null; target?: number; pct?: number }) {
@@ -142,11 +142,11 @@ export default function StatusPage() {
   ]
 
   return (
-    <div className="fixed inset-0 overflow-y-auto bg-[#0A0A0A] text-white">
+    <div className="signal-page fixed inset-0 overflow-y-auto bg-[#0A0A0A] text-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="signal-page-header flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">
               <Link href="/" className="hover:text-[#FF9933] transition-colors">KAUN<span className="text-[#FF9933]">?</span></Link>

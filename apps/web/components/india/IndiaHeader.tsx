@@ -34,10 +34,10 @@ export function IndiaHeader({
       overlay
         // Wraps rather than overflows: on a phone the map's top strip is only
         // about 280px wide once the zoom control is accounted for.
-        ? "absolute top-4 left-4 right-16 z-[900] flex flex-wrap items-center gap-x-3 gap-y-1.5 select-none pointer-events-none"
-        : "flex items-center gap-3 flex-wrap"
+        ? "signal-map-header absolute top-4 left-4 right-16 z-[900] flex flex-wrap items-center gap-x-3 gap-y-1.5 select-none pointer-events-none md:right-auto"
+        : "signal-page-header flex items-center gap-3 flex-wrap"
     }>
-      <Link href={indiaHref("/")} className={`shrink-0 ${overlay ? "pointer-events-auto" : ""}`}>
+      <Link href={indiaHref("/")} className={`shrink-0 ${overlay ? "signal-wordmark pointer-events-auto" : ""}`}>
         <span className="text-white font-bold text-xl tracking-tight">
           KAUN<span className="text-[#FF9933]">?</span>
         </span>
@@ -46,7 +46,7 @@ export function IndiaHeader({
 
       <SurfaceSwitcher current="india" host={host} variant={overlay ? "overlay" : "inline"} />
 
-      <nav className={`flex items-center gap-3 text-xs ${overlay ? "pointer-events-auto" : ""}`}>
+      <nav className={`flex items-center gap-3 text-xs ${overlay ? "signal-map-control min-h-9 px-3 pointer-events-auto" : ""}`}>
         <Link href={indiaHref("/")} className="text-white/40 hover:text-white/80 transition-colors">Map</Link>
         <span className="text-white/10">·</span>
         <Link href={indiaHref("/projects")} className="text-white/40 hover:text-white/80 transition-colors">

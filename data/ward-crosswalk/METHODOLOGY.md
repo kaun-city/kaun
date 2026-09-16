@@ -52,3 +52,29 @@ in this file's history.
 - `wiki/docs/bengaluru/ward-crosswalk/*.{csv,json}` — public download copies,
   **auto-written by the builder; never hand-edit** (kept in lockstep so a
   correction can't leave the published files stale).
+
+## Current GBA-369 → historical DataMeet-243
+
+Kaun's live Bengaluru map uses the December 2025 GBA boundary: 369 wards
+whose ward numbers restart in each of five corporations. Most ward-level
+historical datasets are still keyed to the older DataMeet 243-ward geography.
+The two systems must therefore never be joined on ward number.
+
+`scripts/wardmap/build-gba-crosswalk.mjs` classifies deterministic interior
+points in both directions on 40×40 grids. It emits two weights for each
+overlap:
+
+- `current_share` explains how much of the current ward lies in each old ward;
+  the UI uses this to disclose provenance and boundary ambiguity.
+- `legacy_share` explains how much of an old ward lies in the current ward;
+  additive historical totals use this allocation weight.
+
+The current crosswalk is version `gba369-dm243-2026.09`. It contains every one
+of the 369 composite `corporation_id:ward_no` identities. One current ward
+falls outside the historical layer; split wards retain the complete material
+overlap vector rather than being forced into a misleading one-to-one match.
+
+Generated files:
+
+- `apps/web/public/bengaluru-gba-369-to-datameet-243.json` — runtime asset.
+- `data/ward-crosswalk/gba2025_369_to_datameet_243.json` — source-controlled data copy.

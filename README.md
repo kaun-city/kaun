@@ -29,7 +29,7 @@ Civic accountability for Indian cities — drop a pin anywhere in Bengaluru and 
 | **Citizen** | Demographics, infrastructure (road length, streetlights, schools, police/fire stations, clinics). Traffic signals + bus stops vs city average. Neighbourhood amenities (hospitals, pharmacies, ATMs, public toilets, EV charging, metro stations — from OSM). Water body health (pH, BOD, DO, coliform — from KSPCB). Road crashes. Air quality. Pothole complaints. Civic reports. Reddit community buzz. |
 | **Reach** | Civic agency helplines (GBA, BWSSB, BESCOM, BTP, BDA). Local offices (BESCOM division, police station, SRO). RTI draft generator for 5 civic issues. Service delivery performance (Sakala). Grievance trends. |
 
-**Ask Kaun** — AI assistant (GPT-4o with tool use) for Bengaluru civic records. Compare historical ward data, find who has the worst attendance, look up contractors, and check if someone is blacklisted.
+**Ask Kaun** — AI assistant (GPT-4.1 mini by default, configurable with `OPENAI_ASK_KAUN_MODEL`) for Bengaluru civic records. Compare historical ward data, find who has the worst attendance, look up contractors, and check if someone is blacklisted.
 
 ---
 
@@ -78,7 +78,7 @@ All data is sourced from public records and open datasets.
 | Wiki — data.kaun.city | MkDocs Material, hosted on GitHub Pages |
 | Public JSON APIs | Next.js route handlers under `apps/web/app/api/data/*`, CORS-open, 1-hour cache |
 | Database | Supabase (PostgreSQL + PostGIS) |
-| AI | OpenAI GPT-4o (Ask Kaun tools) |
+| AI | OpenAI GPT-4.1 mini by default (Ask Kaun tools) |
 | DNS / Protection | Cloudflare (Bot Fight Mode + WAF) |
 | Monitoring | [kaun.city/status](https://kaun.city/status) |
 
@@ -135,6 +135,10 @@ cp .env.example .env.local
 npm install
 npm run dev
 ```
+
+For migration and integration testing, use the Docker-backed local Supabase
+clone described in [`docs/local-database.md`](docs/local-database.md). Its
+privacy-filtered data snapshot is kept outside git.
 
 ---
 

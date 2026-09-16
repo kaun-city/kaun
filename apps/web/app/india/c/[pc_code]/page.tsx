@@ -140,7 +140,7 @@ export default async function ConstituencyPage({ params }: Props) {
   ]
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="signal-page h-full overflow-y-auto">
       {/* pb-28 on phones clears the fixed back control; from md up it is an
           in-flow chip and the ordinary padding is enough again. */}
       <div className="max-w-3xl mx-auto px-5 py-6 pb-28 md:pb-6">

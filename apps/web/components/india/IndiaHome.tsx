@@ -193,7 +193,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   const legendNums = values ? Object.values(values) : []
 
   return (
-    <main className="flex flex-col h-full bg-[#0A0A0A] overflow-hidden">
+    <main className="signal-map flex flex-col h-full bg-[#0A0A0A] overflow-hidden">
       <div className="relative flex-1 min-h-0">
         <IndiaHeader variant="overlay" />
 

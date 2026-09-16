@@ -24,3 +24,6 @@ test_*.py
 .cache/
 .claude/settings.local.json
 .mcp.json
+
+# Local Supabase clone: generated civic data and web credentials never commit.
+supabase/.local/

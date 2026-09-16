@@ -35,7 +35,7 @@ export function ObjectPageSkeleton({
   backToMap?: boolean
 }) {
   return (
-    <div className="h-full overflow-y-auto" aria-busy="true" aria-label="Loading">
+    <div className="signal-page h-full overflow-y-auto" aria-busy="true" aria-label="Loading">
       <div className={`max-w-3xl mx-auto px-5 py-6 ${backToMap ? "pb-28 md:pb-6" : ""}`}>
         {/* Live, not a grey bar: it is the one thing here that works. */}
         {backToMap && <BackToMap href={indiaHref("/")} />}

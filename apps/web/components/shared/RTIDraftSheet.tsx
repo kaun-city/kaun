@@ -42,6 +42,13 @@ export function RTIDraftSheet({ request, onClose }: Props) {
       .finally(() => setLoading(false))
   }, [request])
 
+  useEffect(() => {
+    if (!request) return
+    const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && onClose()
+    document.addEventListener("keydown", closeOnEscape)
+    return () => document.removeEventListener("keydown", closeOnEscape)
+  }, [request, onClose])
+
   if (!request) return null
 
   const finalDraft = draft
@@ -57,24 +64,24 @@ export function RTIDraftSheet({ request, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end lg:items-center justify-center">
+    <div className="fixed inset-0 z-[1200] flex items-end lg:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="rti-sheet-title">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="signal-backdrop absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Sheet */}
-      <div className="relative w-full max-w-lg bg-[#1a1a2e] rounded-t-2xl lg:rounded-2xl border border-white/10 flex flex-col max-h-[90vh]">
+      <div className="signal-panel relative w-full max-w-lg bg-[#1a1a2e] rounded-t-2xl lg:rounded-2xl border border-white/10 flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="px-5 pt-4 pb-3 border-b border-white/10 shrink-0">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-0.5">
                 <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#FF9933]/20 text-[#FF9933] uppercase tracking-wider">RTI</span>
-                <span className="text-white/70 text-sm font-medium">{ISSUE_LABELS[request.issue_type]}</span>
+                <span id="rti-sheet-title" className="text-white/70 text-sm font-medium">{ISSUE_LABELS[request.issue_type]}</span>
               </div>
               <p className="text-white/30 text-xs">{request.ward_name} Ward</p>
             </div>
-            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white/50 hover:text-white">
-              x
+            <button onClick={onClose} aria-label="Close RTI draft" className="w-11 h-11 flex items-center justify-center rounded-full bg-white/10 text-white/50 hover:text-white">
+              &times;
             </button>
           </div>
         </div>
@@ -83,19 +90,25 @@ export function RTIDraftSheet({ request, onClose }: Props) {
         <div className="px-5 py-3 border-b border-white/5 shrink-0">
           <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Your details (fills the draft)</p>
           <div className="grid grid-cols-2 gap-2">
+            <label htmlFor="rti-applicant-name" className="sr-only">Your full name</label>
             <input
+              id="rti-applicant-name"
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="Your full name"
               className="col-span-2 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-white/30"
             />
+            <label htmlFor="rti-applicant-address" className="sr-only">Your address</label>
             <input
+              id="rti-applicant-address"
               value={address}
               onChange={e => setAddress(e.target.value)}
               placeholder="Your address"
               className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-white/30"
             />
+            <label htmlFor="rti-applicant-phone" className="sr-only">Phone number, optional</label>
             <input
+              id="rti-applicant-phone"
               value={phone}
               onChange={e => setPhone(e.target.value)}
               placeholder="Phone (optional)"

@@ -3,6 +3,7 @@ import { generateText, tool, zodSchema, stepCountIs } from "ai"
 import { z } from "zod"
 import { createClient } from "@supabase/supabase-js"
 import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { publicSupabaseConfig } from "@/lib/supabase-config"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
@@ -10,9 +11,13 @@ export const maxDuration = 60
 export interface AskKaunRequest {
   question: string
   ward_context: {
-    ward_no: number
+    ward_no: number | null
     ward_name: string
     assembly_constituency: string
+    boundary_system?: "gba-369-2025" | "datameet-243"
+    gba_corporation_id?: number | null
+    gba_ward_no?: number | null
+    historical_wards?: Array<{ ward_no: number; ward_name: string; current_share: number }>
     corporator_name?: string | null
     corporator_party?: string | null
     mla_name?: string | null
@@ -43,7 +48,13 @@ export interface AskKaunRequest {
 }
 
 function buildContext(c: AskKaunRequest["ward_context"]): string {
-  const lines = [`Ward: ${c.ward_name} (Ward #${c.ward_no}), Assembly Constituency: ${c.assembly_constituency}`]
+  const currentIdentity = c.boundary_system === "gba-369-2025"
+    ? `${c.ward_name} (current GBA ward ${c.gba_corporation_id}:${c.gba_ward_no})`
+    : `${c.ward_name} (historical ward #${c.ward_no})`
+  const lines = [`Ward: ${currentIdentity}, Assembly Constituency: ${c.assembly_constituency}`]
+  if (c.historical_wards?.length) {
+    lines.push(`Historical data provenance: ${c.historical_wards.map(ref => `${ref.ward_name} #${ref.ward_no} (${Math.round(ref.current_share * 100)}% of current ward area)`).join(", ")}`)
+  }
   if (c.corporator_name)             lines.push(`Corporator: ${c.corporator_name}${c.corporator_party ? ` (${c.corporator_party})` : ""}`)
   if (c.mla_name)                    lines.push(`MLA: ${c.mla_name}${c.mla_party ? ` (${c.mla_party})` : ""}`)
   if (c.mla_attendance_pct != null)  lines.push(`MLA attendance: ${c.mla_attendance_pct}%`)
@@ -257,9 +268,10 @@ export async function POST(req: Request) {
   if (!success) return rateLimitResponse(reset)
 
   try {
+    const { url, anonKey } = publicSupabaseConfig()
     const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+      url,
+      process.env.SUPABASE_SERVICE_ROLE_KEY ?? anonKey
     )
 
     const body = await req.json()
@@ -271,11 +283,11 @@ export async function POST(req: Request) {
     const context = buildContext(ward_context)
 
     const { text } = await generateText({
-      model: openai("gpt-4o"),
+      model: openai(process.env.OPENAI_ASK_KAUN_MODEL ?? "gpt-4.1-mini"),
       tools: makeTools(supabase),
       stopWhen: stepCountIs(4),
       system: `You are Kaun, a civic accountability assistant for Bengaluru, India.
-You have real data about the user's selected location AND tools to query all 243 historical Bengaluru data wards.
+You have current GBA ward identity plus explicitly-labelled estimates derived from historical 243-ward records. Never describe an historical estimate as a current-ward measurement.
 
 Bengaluru civic structure:
 - Roads/potholes: BBMP (ward Corporator is the elected contact) — call 1533 or bbmp.gov.in

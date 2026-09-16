@@ -9,13 +9,15 @@ import WardCard from "@/components/WardCard"
 import { CityPulse } from "@/components/CityPulse"
 import { CitySwitcher } from "@/components/CitySwitcher"
 import { LayerControl } from "@/components/LayerControl"
-import { CorporatorVacancy } from "@/components/CorporatorVacancy"
 import { WardFinder } from "@/components/WardFinder"
 import ReportSheet from "@/components/shared/ReportSheet"
 import { SurfaceSwitcher } from "@/components/shared/SurfaceSwitcher"
 import { getCity } from "@/lib/cities"
 import { getLayer } from "@/lib/map-layers"
 import type { ChoroplethData } from "@/components/MapView"
+import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
+import { GBA_CROSSWALK_URL, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact } from "@/lib/gba-crosswalk"
+import { publicSupabaseConfig } from "@/lib/supabase-config"
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -42,7 +44,8 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
           </div>
           <button
             onClick={onClose}
-            className="text-white/40 hover:text-white/80 text-xl leading-none w-8 h-8 flex items-center justify-center"
+            aria-label="Close city coverage message"
+            className="text-white/40 hover:text-white/80 text-xl leading-none w-11 h-11 flex items-center justify-center"
           >
             x
           </button>
@@ -125,10 +128,14 @@ export default function HomePage({ host = "" }: { host?: string }) {
   const [reportPickMode, setReportPickMode] = useState(false)
   const [reportLat, setReportLat]       = useState<number | null>(null)
   const [reportLng, setReportLng]       = useState<number | null>(null)
+  const [reportWard, setReportWard]     = useState<CurrentWardMeta | null>(null)
   const [reportRefresh, setReportRefresh] = useState(0)
   const [wardFinderOpen, setWardFinderOpen] = useState(false)
   const [actionsOpen, setActionsOpen] = useState(false)
-  const mapViewRef = useRef<{ panTo: (lat: number, lng: number) => void } | null>(null)
+  const mapViewRef = useRef<{
+    panTo: (lat: number, lng: number) => void
+    selectAt: (lat: number, lng: number) => Promise<void>
+  } | null>(null)
   const deepLinkHandled = useRef(false)
 
   // Ward search state
@@ -151,7 +158,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
   const [activeLayer, setActiveLayer] = useState<string | null>(
     () => getLayer(searchParams.get("layer"))?.id ?? null
   )
-  const [layerValues, setLayerValues] = useState<{ values: Record<number, number>; breaks: number[] } | null>(null)
+  const [layerValues, setLayerValues] = useState<{ values: Record<string, number>; breaks: number[] } | null>(null)
   const [layerLoading, setLayerLoading] = useState(false)
 
   // Fetch per-ward values when a layer is picked; keep the URL shareable
@@ -250,6 +257,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
     setSearchOpen(false)
     setSearchQuery("")
     mapViewRef.current?.panTo(ward.lat, ward.lng)
+    if (mapViewRef.current) {
+      await mapViewRef.current.selectAt(ward.lat, ward.lng)
+      return
+    }
     setPinLoading(true)
     setShowCard(true)
     setOutOfBounds(false)
@@ -297,11 +308,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
 
     if (reportParam) {
       // Fetch report location and pan to it
-      const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      const { url: supabaseUrl, anonKey: supabaseAnon } = publicSupabaseConfig()
       fetch(
-        `${SUPABASE_URL}/rest/v1/ward_reports?id=eq.${reportParam}&status=eq.approved&select=lat,lng,ward_no,ward_name,issue_type,ai_label,ai_person&limit=1`,
-        { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
+        `${supabaseUrl}/rest/v1/ward_reports?id=eq.${reportParam}&status=eq.approved&select=lat,lng,ward_no,ward_name,issue_type,ai_label,ai_person&limit=1`,
+        { headers: { apikey: supabaseAnon, Authorization: `Bearer ${supabaseAnon}` } }
       )
         .then(r => r.json())
         .then(async (rows) => {
@@ -310,11 +320,26 @@ export default function HomePage({ host = "" }: { host?: string }) {
           const { lat, lng } = report
           // Pan map to report location
           setTimeout(() => mapViewRef.current?.panTo(lat, lng), 500)
-          // Also look up the ward
+          // Resolve the report against the authoritative current boundary.
+          // The old point endpoint is enrichment only and must not replace the
+          // GBA identity with whichever historical polygon contains the point.
           setPinLoading(true)
           setShowCard(true)
-          const result = await pinLookup(lat, lng)
-          if (result) {
+          const [collection, crosswalk, remoteResult] = await Promise.all([
+            fetch(activeCity.geojsonUrl).then(r => r.json()),
+            fetch(GBA_CROSSWALK_URL).then(r => r.json() as Promise<GbaCrosswalkArtifact>),
+            pinLookup(lat, lng),
+          ])
+          const feature = collection.features?.find((candidate: GeoJSON.Feature) => featureContains(candidate, lat, lng))
+          const properties = feature?.properties as Record<string, unknown> | null | undefined
+          const corporationId = Number(properties?.corporation_id)
+          const wardNo = Number(properties?.ward_no)
+          const row = Number.isFinite(corporationId) && Number.isFinite(wardNo)
+            ? indexGbaCrosswalk(crosswalk).get(gbaWardKey(corporationId, wardNo))
+            : undefined
+          const meta = feature ? currentWardMeta(feature, row, crosswalk.version) : null
+          const result = meta ? currentWardPinResult(meta, remoteResult, activeCity.id) : remoteResult
+          if (result?.found) {
             setPinResult({ ...result, lat, lng })
             setPinLoading(false)
           } else {
@@ -327,9 +352,11 @@ export default function HomePage({ host = "" }: { host?: string }) {
       // The static boundary layer holds the published centre for each current
       // ward. Resolve that point through the server-backed lookup so a shared
       // GBA link works even when the visitor cannot reach Supabase directly.
-      fetch(activeCity.geojsonUrl)
-        .then(r => r.json())
-        .then(async (collection) => {
+      Promise.all([
+        fetch(activeCity.geojsonUrl).then(r => r.json()),
+        fetch(GBA_CROSSWALK_URL).then(r => r.json() as Promise<GbaCrosswalkArtifact>),
+      ])
+        .then(async ([collection, crosswalk]) => {
           const feature = collection.features?.find((f: { properties?: Record<string, unknown> }) =>
             Number(f.properties?.corporation_id) === gbaCorporationParam &&
             Number(f.properties?.ward_no) === gbaWardParam
@@ -340,14 +367,15 @@ export default function HomePage({ host = "" }: { host?: string }) {
           mapViewRef.current?.panTo(lat, lng)
           setPinLoading(true)
           setShowCard(true)
-          const result = await pinLookup(lat, lng)
-          if (!result?.found) {
+          const row = indexGbaCrosswalk(crosswalk).get(gbaWardKey(gbaCorporationParam, gbaWardParam))
+          const meta = currentWardMeta(feature, row, crosswalk.version)
+          if (!meta) {
             setPinLoading(false)
             setShowCard(false)
             setOutOfBounds(true)
             return
           }
-          setPinResult({ ...result, lat, lng })
+          setPinResult({ ...currentWardPinResult(meta, null, activeCity.id), lat, lng })
           setPinLoading(false)
         })
         .catch(() => {})
@@ -421,6 +449,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
         setShowCard(true)
         setOutOfBounds(false)
         setGeoLoading(false)
+        if (mapViewRef.current) {
+          await mapViewRef.current.selectAt(lat, lng)
+          return
+        }
         const result = await pinLookup(lat, lng)
         if (!result?.found) {
           setPinLoading(false)
@@ -441,20 +473,20 @@ export default function HomePage({ host = "" }: { host?: string }) {
   }, [])
 
   return (
-    <main className="flex h-screen bg-[#0A0A0A] overflow-hidden">
+    <main className="signal-map flex h-screen bg-[#F2EDE4] overflow-hidden">
 
       <div className="relative flex-1 min-w-0 h-full transition-all duration-300">
 
         {/* Wordmark + Search */}
-        <div className="absolute top-4 left-4 right-16 z-[900] select-none flex items-center gap-2 md:gap-3">
+        <div className="signal-map-header absolute top-3.5 left-3.5 right-3.5 z-[900] select-none flex items-center gap-2">
           {!searchOpen && (
             <>
-              <span className="text-white font-bold text-xl tracking-tight pointer-events-none shrink-0">
+              <span className="signal-wordmark text-white font-bold text-base tracking-tight pointer-events-none shrink-0">
                 KAUN<span className="text-[#FF9933]">?</span>
               </span>
               <a
                 href="/how-it-works"
-                className="flex items-center justify-center w-11 h-11 md:w-6 md:h-6 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white/60 hover:text-white text-xs font-bold shrink-0"
+                className="signal-map-control flex items-center justify-center w-9 h-9 text-xs font-bold shrink-0"
                 aria-label="How Kaun works and where its data comes from"
                 title="How it works & data sources"
               >
@@ -462,7 +494,9 @@ export default function HomePage({ host = "" }: { host?: string }) {
               </a>
 
               <SurfaceSwitcher current="city" host={host} variant="overlay" />
-              <CitySwitcher activeCityId={activeCity.id} />
+              <div className="hidden sm:block">
+                <CitySwitcher activeCityId={activeCity.id} />
+              </div>
             </>
           )}
 
@@ -484,7 +518,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
                   onBlur={() => setTimeout(() => { setSearchOpen(false); setSearchQuery("") }, 200)}
                   placeholder="Search ward..."
                   autoFocus
-                  className="w-full md:w-56 h-11 md:h-8 bg-black/80 backdrop-blur-xl border border-white/20 rounded-lg px-3 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#FF9933]/40"
+                  className="w-full md:w-64 h-11 bg-[#F8F5EF] border border-[#16130e]/55 px-3 text-sm text-[#16130e] placeholder:text-[#16130e]/40 focus:outline-none focus:border-[#C25400]"
                 />
                 {searchResults.length > 0 && (
                   <div className="absolute top-full mt-1 left-0 right-0 bg-[#111] border border-white/10 rounded-lg overflow-hidden shadow-xl max-h-60 overflow-y-auto z-[1000]">
@@ -510,11 +544,11 @@ export default function HomePage({ host = "" }: { host?: string }) {
             ) : (
               <button
                 onClick={() => setSearchOpen(true)}
-                className="flex items-center justify-center w-11 h-11 md:w-7 md:h-7 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                className="signal-map-control flex items-center justify-center w-11 h-11 md:w-9 md:h-9 transition-colors"
                 aria-label="Search wards"
                 title="Search wards"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5" strokeLinecap="round">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(22,19,14,0.70)" strokeWidth="2.5" strokeLinecap="round">
                   <circle cx="10.5" cy="10.5" r="7" />
                   <line x1="15.5" y1="15.5" x2="21" y2="21" />
                 </svg>
@@ -526,9 +560,6 @@ export default function HomePage({ host = "" }: { host?: string }) {
         {/* City Pulse — accountability headlines before pin drop */}
         {!showCard && !outOfBounds && !searchOpen && <CityPulse cityId={activeCity.id} />}
 
-        {/* Corporator vacancy counter — Bengaluru's most brutal stat */}
-        {!showCard && !outOfBounds && !searchOpen && <CorporatorVacancy cityId={activeCity.id} />}
-
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
           <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[900]">
@@ -539,10 +570,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
                 onClick={handleFindMyWard}
                 disabled={geoLoading}
                 className="
-                  flex items-center gap-1.5 min-h-11 px-4 py-2 rounded-full
+                  signal-primary-action flex items-center gap-1.5 h-9 px-3 py-1.5
                   bg-[#FF9933]/15 hover:bg-[#FF9933]/25 active:scale-95
                   border border-[#FF9933]/40
-                  text-[#FF9933] font-medium text-xs tracking-wide
+                  text-[#FF9933] font-medium text-[10px] tracking-wide
                   backdrop-blur-sm
                   transition-all duration-150 disabled:opacity-50
                 "
@@ -554,13 +585,13 @@ export default function HomePage({ host = "" }: { host?: string }) {
                   </>
                 ) : (
                   <>
-                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="3" fill="#FF9933"/>
-                      <circle cx="8" cy="8" r="6.5" stroke="#FF9933" strokeWidth="1.5"/>
-                      <line x1="8" y1="0" x2="8" y2="3" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="8" y1="13" x2="8" y2="16" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="0" y1="8" x2="3" y2="8" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="13" y1="8" x2="16" y2="8" stroke="#FF9933" strokeWidth="1.5" strokeLinecap="round"/>
+                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="3" fill="#C25400"/>
+                      <circle cx="8" cy="8" r="6.5" stroke="#C25400" strokeWidth="1.5"/>
+                      <line x1="8" y1="0" x2="8" y2="3" stroke="#C25400" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="8" y1="13" x2="8" y2="16" stroke="#C25400" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="0" y1="8" x2="3" y2="8" stroke="#C25400" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="13" y1="8" x2="16" y2="8" stroke="#C25400" strokeWidth="1.5" strokeLinecap="round"/>
                     </svg>
                     Find my ward
                   </>
@@ -656,7 +687,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
               onClick={() => setReportPickMode(false)}
               aria-label="Cancel report location selection"
               className="ml-1 w-11 h-11 flex items-center justify-center text-black/50 hover:text-black font-bold text-base leading-none"
-            >x</button>
+            >&times;</button>
           </div>
         )}
 
@@ -668,9 +699,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
           reportRefresh={reportRefresh}
           reportPickMode={reportPickMode}
           choropleth={choropleth}
-          onReportPin={(lat, lng) => {
+          onReportPin={(lat, lng, currentWard) => {
             setReportLat(lat)
             setReportLng(lng)
+            setReportWard(currentWard)
             setReportPickMode(false)
             setShowReport(true)
           }}
@@ -701,15 +733,14 @@ export default function HomePage({ host = "" }: { host?: string }) {
         <ReportSheet
           lat={reportLat}
           lng={reportLng}
-          wardNo={pinResult?.ward_no ?? undefined}
-          wardName={pinResult?.ward_name ?? undefined}
-          onClose={() => { setShowReport(false); setReportLat(null); setReportLng(null) }}
-          onSubmitted={() => {
-            setShowReport(false)
-            setReportLat(null)
-            setReportLng(null)
-            setReportRefresh(r => r + 1)
-          }}
+          wardNo={reportWard?.historical_wards[0]?.ward_no ?? undefined}
+          wardName={reportWard?.gba_ward_name ?? undefined}
+          boundarySystem={reportWard ? "gba-369-2025" : undefined}
+          corporationId={reportWard?.gba_corporation_id ?? undefined}
+          gbaWardNo={reportWard?.gba_ward_no ?? undefined}
+          historicalWards={reportWard?.historical_wards ?? []}
+          onClose={() => { setShowReport(false); setReportLat(null); setReportLng(null); setReportWard(null) }}
+          onSubmitted={() => setReportRefresh(r => r + 1)}
         />
       )}
     </main>

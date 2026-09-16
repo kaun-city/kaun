@@ -1,6 +1,7 @@
 "use client"
 
-import { useRef, useState, useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
+import type { HistoricalWardRef } from "@/lib/gba-crosswalk"
 
 const ISSUE_TYPES = [
   { value: "hoarding",      label: "Illegal banner / hoarding",    icon: "!" },
@@ -39,13 +40,17 @@ interface ReportSheetProps {
   lng: number
   wardNo?: number
   wardName?: string
+  boundarySystem?: string
+  corporationId?: number
+  gbaWardNo?: number
+  historicalWards?: HistoricalWardRef[]
   onClose: () => void
   onSubmitted?: (report: SubmittedReport) => void
 }
 
 type Stage = "form" | "uploading" | "saving" | "success" | "error"
 
-export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSubmitted }: ReportSheetProps) {
+export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem, corporationId, gbaWardNo, historicalWards = [], onClose, onSubmitted }: ReportSheetProps) {
   const [issueType, setIssueType]       = useState<IssueValue | null>(null)
   const [description, setDescription]   = useState("")
 
@@ -54,16 +59,13 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
   const [stage, setStage]               = useState<Stage>("form")
   const [errorMsg, setErrorMsg]         = useState("")
   const [reportId, setReportId]         = useState<number | null>(null)
-  const [autoClose, setAutoClose]       = useState(5)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  // Auto-close countdown on success
   useEffect(() => {
-    if (stage !== "success") return
-    if (autoClose <= 0) { onClose(); return }
-    const t = setTimeout(() => setAutoClose(c => c - 1), 1000)
-    return () => clearTimeout(t)
-  }, [stage, autoClose, onClose])
+    const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && onClose()
+    document.addEventListener("keydown", closeOnEscape)
+    return () => document.removeEventListener("keydown", closeOnEscape)
+  }, [onClose])
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -100,6 +102,10 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
           lat, lng,
           ward_no:     wardNo,
           ward_name:   wardName,
+          boundary_system: boundarySystem,
+          gba_corporation_id: corporationId,
+          gba_ward_no: gbaWardNo,
+          historical_wards: historicalWards,
           issue_type:  issueType,
           description: description.trim() || undefined,
           photo_base64,
@@ -128,18 +134,18 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
   const authority = issueType ? COMPLAINT_AUTHORITY[issueType] : null
 
   return (
-    <div className="fixed inset-0 z-[1100] flex items-end md:items-center justify-center">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+    <div className="fixed inset-0 z-[1100] flex items-end md:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="report-sheet-title">
+      <div className="signal-backdrop absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative w-full md:w-[480px] bg-[#111] border border-white/10 rounded-t-2xl md:rounded-2xl p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
+      <div className="signal-panel relative w-full md:w-[480px] bg-[#111] border border-white/10 rounded-t-2xl md:rounded-2xl p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-white font-semibold text-base">Report a civic issue</p>
+            <p id="report-sheet-title" className="text-white font-semibold text-base">Report a civic issue</p>
             {wardName && <p className="text-white/40 text-sm mt-0.5">{wardName} ward</p>}
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-white/80 text-lg">x</button>
+          <button onClick={onClose} aria-label="Close report form" className="w-11 h-11 flex items-center justify-center text-white/40 hover:text-white/80 text-lg">&times;</button>
         </div>
 
         {stage === "form" && (
@@ -187,8 +193,9 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
                   <img src={photoPreview} alt="Preview" className="w-full h-48 object-cover" />
                   <button
                     onClick={() => { setPhotoFile(null); setPhotoPreview(null) }}
+                    aria-label="Remove selected photo"
                     className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 text-white/80 text-sm flex items-center justify-center"
-                  >x</button>
+                  >&times;</button>
                 </div>
               ) : (
                 <button
@@ -204,8 +211,9 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
 
             {/* Description */}
             <div>
-              <p className="text-white/50 text-xs uppercase tracking-wider mb-3">Description (optional)</p>
+              <label htmlFor="report-description" className="block text-white/50 text-xs uppercase tracking-wider mb-3">Description (optional)</label>
               <textarea
+                id="report-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Brief description of the issue..."
@@ -263,7 +271,7 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
               </div>
               <div>
                 <p className="text-white font-semibold">Report queued for review</p>
-                <p className="text-white/40 text-sm mt-0.5">We will review it and post it on the map. Closes in {autoClose}s.</p>
+                <p className="text-white/40 text-sm mt-0.5">We will review it before it becomes part of Kaun’s public record.</p>
               </div>
             </div>
 
@@ -310,6 +318,13 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, onClose, onSub
                 Share this report
               </button>
             )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full border-2 border-[#16130e] px-4 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#16130e]"
+            >
+              Close
+            </button>
           </div>
         )}
 

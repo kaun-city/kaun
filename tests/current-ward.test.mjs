@@ -1,39 +1,57 @@
-import { test } from "node:test"
+import test from "node:test"
 import assert from "node:assert/strict"
-import { currentWardMeta, featureContains } from "../apps/web/lib/current-ward.ts"
 
-const feature = {
-  type: "Feature",
-  properties: {
-    boundary_system: "gba-369-2025",
-    ward_no: 7,
-    ward_name: "Example Ward",
-    corporation: "East",
-    corporation_id: 3,
-    population: 20000,
-  },
-  geometry: {
-    type: "Polygon",
-    coordinates: [[[77, 12], [78, 12], [78, 13], [77, 13], [77, 12]]],
-  },
+import { currentWardPinResult } from "../apps/web/lib/current-ward.ts"
+
+const currentWard = {
+  gba_ward_no: 4,
+  gba_ward_name: "Sampangirama Nagar",
+  gba_ward_name_kn: null,
+  gba_corporation: "Central",
+  gba_corporation_id: 1,
+  gba_ac: "Shivajinagar",
+  gba_ac_no: 162,
+  gba_zone: null,
+  gba_zone_name: null,
+  gba_population: 31_200,
+  historical_wards: [{ ward_no: 129, ward_name: "Sampangiram Nagar", current_share: 0.46, legacy_share: 0.42 }],
+  historical_crosswalk_tier: "split-primary",
+  historical_crosswalk_version: "test",
 }
 
-test("current GBA metadata is attached from the visible boundary feature", () => {
-  assert.deepEqual(currentWardMeta(feature), {
-    gba_ward_no: 7,
-    gba_ward_name: "Example Ward",
+test("a local Bengaluru boundary remains found when enrichment is unavailable", () => {
+  const result = currentWardPinResult(currentWard, null, "bengaluru")
+
+  assert.equal(result.found, true)
+  assert.equal(result.city_id, "bengaluru")
+  assert.equal(result.gba_ward_no, 4)
+  assert.equal(result.gba_ward_name, "Sampangirama Nagar")
+  assert.equal(result.assembly_constituency, "Shivajinagar")
+})
+
+test("point enrichment cannot masquerade as the current ward's historical identity", () => {
+  const result = currentWardPinResult({ ...currentWard, gba_ward_no: 5 }, {
+    found: true,
+    city_id: "bengaluru",
+    ward_no: 111,
+    ward_name: "Legacy ward",
+    zone: "East",
+    assembly_constituency: "Legacy AC",
+    gba_ward_no: 999,
+    gba_ward_name: "Wrong current ward",
     gba_ward_name_kn: null,
-    gba_corporation: "East",
-    gba_corporation_id: 3,
+    gba_corporation: null,
+    gba_corporation_id: null,
     gba_ac: null,
     gba_ac_no: null,
     gba_zone: null,
     gba_zone_name: null,
-    gba_population: 20000,
-  })
-})
+    gba_population: null,
+  }, "bengaluru")
 
-test("point containment accepts inside points and rejects outside points", () => {
-  assert.equal(featureContains(feature, 12.5, 77.5), true)
-  assert.equal(featureContains(feature, 11.5, 77.5), false)
+  assert.equal(result.ward_no, null)
+  assert.equal(result.ward_name, null)
+  assert.equal(result.gba_ward_no, 5)
+  assert.equal(result.gba_ward_name, "Sampangirama Nagar")
+  assert.equal(result.historical_wards[0].ward_no, 129)
 })

@@ -7,6 +7,13 @@
 export const WARD_CROSSWALK_VERSION = "2023f-2026.05"
 export const WARD_CROSSWALK_URL = `/bengaluru-ward-crosswalk.json?v=${WARD_CROSSWALK_VERSION}`
 
+/**
+ * Current GBA-369 -> historical DataMeet-243 overlap asset. This version is
+ * part of the URL because the public file is served with an immutable cache.
+ */
+export const GBA_CROSSWALK_VERSION = "gba369-dm243-2026.09"
+export const GBA_CROSSWALK_URL = `/bengaluru-gba-369-to-datameet-243.json?v=${GBA_CROSSWALK_VERSION}`
+
 export const PARTY_COLORS: Record<string, string> = {
   INC: "#19AAED",
   BJP: "#FF6B00",

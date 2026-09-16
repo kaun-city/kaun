@@ -8,7 +8,7 @@ const ENDPOINTS = [
   {
     name: "Wards",
     path: "/api/data/wards",
-    description: "All 243 Bengaluru wards with assembly constituency and zone mapping.",
+    description: "All 369 current GBA wards, with corporation, assembly constituency and zone mapping where available.",
     params: [
       { name: "ward", description: "Ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality)" },
     ],
@@ -91,10 +91,10 @@ const DATA_SOURCES = [
 
 export default function DataCatalog() {
   return (
-    <div className="fixed inset-0 overflow-y-auto bg-[#0A0A0A] text-white">
+    <div className="signal-page fixed inset-0 overflow-y-auto bg-[#0A0A0A] text-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
 
-        <div className="mb-8">
+        <div className="signal-page-header mb-8">
           <h1 className="text-2xl font-bold tracking-tight">
             <Link href="/" className="hover:text-[#FF9933] transition-colors">KAUN<span className="text-[#FF9933]">?</span></Link>
             <span className="text-white/30 font-normal ml-3 text-lg">Open Data</span>

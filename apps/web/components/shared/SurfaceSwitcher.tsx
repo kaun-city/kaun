@@ -52,25 +52,31 @@ export function SurfaceSwitcher({
   return (
     <nav
       aria-label="Kaun surfaces"
-      className={`inline-flex items-center shrink-0 overflow-hidden rounded-full
-        border border-white/12 divide-x divide-white/10
-        ${variant === "overlay" ? "bg-black/60 backdrop-blur-md shadow-lg pointer-events-auto" : "bg-white/5"}
+      className={`inline-flex items-center shrink-0 overflow-hidden
+        ${variant === "overlay"
+          ? "border border-[#16130e]/55 divide-x divide-[#16130e]/15 bg-[#F8F5EF] pointer-events-auto"
+          : "border border-[#16130e]/55 divide-x divide-[#16130e]/15 bg-[#F8F5EF]"}
         ${className}`}
     >
       {links.map(link => {
-        const cls = "min-h-11 sm:min-h-0 px-2 py-1 text-[10px] sm:text-[11px] leading-none whitespace-nowrap transition-colors flex items-center"
+        const displayLabel = variant === "overlay"
+          ? (link.id === "india" ? "IN" : link.id === "city" ? "BLR" : "DATA")
+          : link.label
+        const cls = variant === "overlay"
+          ? "min-h-9 px-2.5 py-1 font-mono text-[10px] tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center"
+          : "min-h-11 px-2.5 py-1 text-xs leading-none whitespace-nowrap transition-colors flex items-center"
         if (link.id === current) {
           return (
-            <span key={link.id} aria-current="page" className={`${cls} bg-[#FF9933]/10 text-[#FF9933] font-medium`}>
-              {link.label}
+            <span key={link.id} aria-current="page" aria-label={link.label} className={`${cls} bg-[#16130e] text-[#F8F5EF] font-semibold`}>
+              {displayLabel}
             </span>
           )
         }
-        const linkCls = `${cls} text-white/45 hover:text-white/85 hover:bg-white/5`
+        const linkCls = `${cls} text-[#16130e]/55 hover:text-[#16130e] hover:bg-[#16130e]/5`
         return link.external ? (
-          <a key={link.id} href={link.href} className={linkCls}>{link.label}</a>
+          <a key={link.id} href={link.href} aria-label={link.label} className={linkCls}>{displayLabel}</a>
         ) : (
-          <Link key={link.id} href={link.href} className={linkCls}>{link.label}</Link>
+          <Link key={link.id} href={link.href} aria-label={link.label} className={linkCls}>{displayLabel}</Link>
         )
       })}
     </nav>

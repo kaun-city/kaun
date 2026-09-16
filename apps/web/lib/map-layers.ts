@@ -60,7 +60,7 @@ export const MAP_LAYERS: MapLayerMeta[] = [
   {
     id: "potholes",
     label: "Pothole complaints",
-    description: "Complaints filed per ward on BBMP's Fix My Street (2022)",
+    description: "Estimated from historical ward overlaps · Fix My Street (2022)",
     source: "BBMP Fix My Street",
     format: "count",
     ramp: RED_ASC,
@@ -68,7 +68,7 @@ export const MAP_LAYERS: MapLayerMeta[] = [
   {
     id: "flagged_contractors",
     label: "Flagged contractors",
-    description: "Contractors with debarment-list flags active in each ward",
+    description: "Estimated from crosswalked historical work-order wards",
     source: "KPPP tenders × GeM / World Bank / CPPP / KPCL blacklists",
     format: "count",
     ramp: RED_ASC,
@@ -76,7 +76,7 @@ export const MAP_LAYERS: MapLayerMeta[] = [
   {
     id: "ward_spend",
     label: "Ward works spend",
-    description: "Total recorded spend on ward-level works",
+    description: "Historical ward spend allocated by geographic overlap",
     source: "BBMP work orders via OpenCity",
     format: "inr_lakh",
     ramp: SAFFRON,
@@ -84,7 +84,7 @@ export const MAP_LAYERS: MapLayerMeta[] = [
   {
     id: "hospitals",
     label: "Hospitals",
-    description: "Hospitals mapped within each ward",
+    description: "Historical OSM ward counts allocated by geographic overlap",
     source: "OpenStreetMap",
     format: "count",
     ramp: GREEN,

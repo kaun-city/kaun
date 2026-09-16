@@ -22,17 +22,16 @@ interface Props {
 }
 
 /**
- * WardFinder — modal that answers "Which new ward am I in?"
+ * WardFinder — historical boundary reference for older records.
  *
  * Uses the 225→243 crosswalk (bbmp2023_225_to_datameet_243.json) embedded
  * in the wiki/ data layer. Search by name (English or Kannada) or ward
  * number in either scheme. Shows the crosswalk with overlap confidence,
  * AC, population, and a "show on map" action.
  *
- * Why this matters: the 243-ward delimitation is what the site uses, but
- * the GBA election (whenever it's announced) will use the 225-ward scheme.
- * Millions of voters will search "which ward am I in now" — this feature
- * answers that before the question goes mainstream.
+ * The live map uses the current GBA-369 boundary. This separate reference is
+ * retained only to explain how 2023 BBMP work-order wards relate to the older
+ * DataMeet-243 data layer; neither number is presented as a current ward ID.
  */
 export function WardFinder({ open, onClose, onPanTo }: Props) {
   const [rows, setRows] = useState<CrosswalkRow[]>([])
@@ -65,6 +64,13 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
     if (open) setTimeout(() => inputRef.current?.focus(), 100)
   }, [open])
 
+  useEffect(() => {
+    if (!open) return
+    const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && onClose()
+    document.addEventListener("keydown", closeOnEscape)
+    return () => document.removeEventListener("keydown", closeOnEscape)
+  }, [open, onClose])
+
   const results = useMemo(() => {
     if (!query || query.length < 2) return rows.slice(0, 20)
     const q = query.toLowerCase().trim()
@@ -81,9 +87,9 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-[2000] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
+    <div className="signal-backdrop fixed inset-0 z-[2000] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="ward-finder-title">
       <div
-        className="
+        className="signal-panel
           w-full md:w-[520px] max-h-[85vh] bg-[#111] border border-white/10
           rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden
         "
@@ -93,14 +99,16 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
         <div className="px-5 pt-5 pb-3 border-b border-white/10 shrink-0">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h2 className="text-white font-semibold text-base">Historical ward crosswalk</h2>
+              <h2 id="ward-finder-title" className="text-white font-semibold text-base">Older-record crosswalk</h2>
               <p className="text-white/40 text-xs mt-0.5">
-                BBMP 225 ↔ KGIS/DataMeet 243 — for tracing older civic records
+                BBMP 2023 (225) ↔ KGIS/DataMeet (243). Current map: GBA 369.
               </p>
             </div>
-            <button onClick={onClose} className="text-white/40 hover:text-white/80 text-xl leading-none w-8 h-8 flex items-center justify-center shrink-0">&times;</button>
+            <button onClick={onClose} aria-label="Close ward crosswalk" className="text-white/40 hover:text-white/80 text-xl leading-none w-11 h-11 flex items-center justify-center shrink-0">&times;</button>
           </div>
+          <label htmlFor="ward-crosswalk-search" className="sr-only">Search ward name, number, or constituency</label>
           <input
+            id="ward-crosswalk-search"
             ref={inputRef}
             type="text"
             value={query}

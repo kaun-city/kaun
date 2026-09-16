@@ -54,7 +54,7 @@ export default function IndiaLayout({ children }: { children: React.ReactNode })
    * scroll (object pages) or not (the map).
    */
   return (
-    <div className="fixed inset-0 flex flex-col bg-[#0A0A0A] text-white">
+    <div className="fixed inset-0 flex flex-col bg-[var(--signal-canvas)] text-[var(--signal-ink)]">
       <FixtureBanner />
       <div className="flex-1 min-h-0">{children}</div>
     </div>

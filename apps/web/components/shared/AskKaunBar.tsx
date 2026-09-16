@@ -42,7 +42,7 @@ export function AskKaunBar({ wardContext }: Props) {
   useEffect(() => {
     setMessages([])
     setExpanded(false)
-  }, [wardContext?.ward_no])
+  }, [wardContext?.ward_no, wardContext?.gba_corporation_id, wardContext?.gba_ward_no])
 
   async function ask(question: string) {
     if (!wardContext || !question.trim() || loading) return

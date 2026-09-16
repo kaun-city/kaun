@@ -43,7 +43,7 @@ export function ObjectHeader({
   presence?: ReactNode
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 flex-wrap">
+    <div className="flex items-start justify-between gap-4 flex-wrap border-2 border-[#16130e] bg-[#fffdf8] p-4 shadow-[6px_6px_0_rgba(22,19,14,0.16)]">
       <div className="min-w-0 flex-1">
         <p className="text-white/30 text-[10px] uppercase tracking-widest">{eyebrow}</p>
         <h1 className="text-white font-bold text-2xl tracking-tight mt-1 leading-tight">{title}</h1>
@@ -75,7 +75,7 @@ export function Section({
 }: { title: string; note?: string; children: ReactNode }) {
   return (
     <section className="mt-8">
-      <div className="flex items-baseline justify-between gap-3 flex-wrap mb-2.5">
+      <div className="flex items-baseline justify-between gap-3 flex-wrap mb-3 border-b border-[#16130e]/25 pb-2">
         <h2 className="text-white/30 text-xs uppercase tracking-wider">{title}</h2>
         {note && <p className="text-white/20 text-[11px]">{note}</p>}
       </div>

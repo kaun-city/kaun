@@ -6,9 +6,24 @@
  * No separate API server.
  */
 
-import type { BudgetSummary, CommunityFact, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "./types"
+import type { BudgetSummary, CommunityFact, ElectedRep, PinResult, PropertyTaxData, RedditPost, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "./types"
 import { rpc, query, insert } from "./supabase"
 import { wardQueryScope } from "./ward-query-scope"
+import { WARD_CROSSWALK_URL } from "./constants"
+import { bengaluruDataConstituency } from "./bengaluru-constituencies"
+
+let sourceWardCrosswalk: Promise<Array<{ bbmp225_no: number; shares: Array<{ datameet243_no: number }> }>> | null = null
+
+async function sourceWardNosForHistoricalWard(wardNo: number): Promise<number[]> {
+  sourceWardCrosswalk ??= fetch(WARD_CROSSWALK_URL)
+    .then(response => response.ok ? response.json() : { rows: [] })
+    .then(data => data.rows ?? [])
+    .catch(() => [])
+  const rows = await sourceWardCrosswalk
+  return rows
+    .filter(row => row.shares?.some(share => share.datameet243_no === wardNo))
+    .map(row => row.bbmp225_no)
+}
 
 /**
  * Pin lookup  reverse geocode a lat/lng to a ward.
@@ -132,9 +147,27 @@ export async function fetchWardProfile(
   const data = await rpc<WardProfile>("ward_profile", {
     p_ward_no: wardNo,
     p_city_id: cityId,
-    p_assembly_constituency: assemblyConstituency ?? null,
+    p_assembly_constituency: assemblyConstituency ? bengaluruDataConstituency(assemblyConstituency) : null,
   })
   return data
+}
+
+/**
+ * Fetch the current MLA independently of the large ward_profile payload. This
+ * keeps representative identity available when optional ward enrichment is
+ * slow or fails, and joins current GBA wards by their published AC name.
+ */
+export async function fetchElectedReps(
+  assemblyConstituency: string,
+  cityId = "bengaluru",
+): Promise<ElectedRep[]> {
+  return query<ElectedRep>("elected_reps", {
+    city_id: `eq.${cityId}`,
+    role: "eq.MLA",
+    constituency: `ilike.${cityId === "bengaluru" ? bengaluruDataConstituency(assemblyConstituency) : assemblyConstituency}`,
+  }, {
+    order: "name",
+  })
 }
 
 /**
@@ -245,7 +278,7 @@ export async function voteFact(
  */
 export async function fetchWardStats(assemblyConstituency: string, cityId = "bengaluru"): Promise<WardStats | null> {
   const data = await rpc<WardStats>("ward_stats_by_ac", {
-    p_assembly_constituency: assemblyConstituency,
+    p_assembly_constituency: cityId === "bengaluru" ? bengaluruDataConstituency(assemblyConstituency) : assemblyConstituency,
     ...(cityId !== "bengaluru" ? { p_city_id: cityId } : {}),
   })
   return data
@@ -293,7 +326,7 @@ export async function fetchRecentActivity(limit = 20) {
  */
 export async function fetchPropertyTax(assemblyConstituency: string, cityId = "bengaluru"): Promise<PropertyTaxData | null> {
   return await rpc<PropertyTaxData>("property_tax_by_ac", {
-    p_assembly_constituency: assemblyConstituency,
+    p_assembly_constituency: cityId === "bengaluru" ? bengaluruDataConstituency(assemblyConstituency) : assemblyConstituency,
     ...(cityId !== "bengaluru" ? { p_city_id: cityId } : {}),
   })
 }
@@ -360,7 +393,7 @@ export async function fetchWardGrievances(wardName: string, cityId = "bengaluru"
  */
 export async function fetchSakalaPerformance(acName: string): Promise<SakalaPerformance | null> {
   const rows = await query<SakalaPerformance>("sakala_performance", {
-    "assembly_name": `ilike.${acName}`,
+    "assembly_name": `ilike.${bengaluruDataConstituency(acName)}`,
     "department_code": "eq.BB",
     "select": "assembly_name,year,intime_pct,delayed_pct,pending,rank_intime,rank_overall",
     "order": "year.desc",
@@ -459,8 +492,12 @@ export async function fetchFlaggedContractors(): Promise<import('./types').Contr
  * Fetch contractors active in a specific ward.
  */
 export async function fetchWardContractors(wardNo: number, cityId = "bengaluru"): Promise<import('./types').ContractorProfile[]> {
+  const sourceWardNos = cityId === "bengaluru" ? await sourceWardNosForHistoricalWard(wardNo) : [wardNo]
+  if (!sourceWardNos.length) return []
   return await query<import('./types').ContractorProfile>('contractor_profiles', {
-    'wards': `cs.{${wardNo}}`,
+    // contractor_profiles.wards stores the original BBMP-Final-225 work-order
+    // keys, not DataMeet-243 keys. Array overlap performs the evidenced bridge.
+    'wards': `ov.{${sourceWardNos.join(',')}}`,
     'city_id': `eq.${cityId}`,
     'select': 'entity_id,canonical_name,aliases,phone,total_contracts,total_value_lakh,total_paid_lakh,total_deduction_lakh,avg_deduction_pct,ward_count,wards,first_seen,last_seen,is_govt_entity,blacklist_flags',
     'order': 'total_value_lakh.desc',
@@ -485,7 +522,7 @@ export async function fetchWardPotholes(wardNo: number, cityId = "bengaluru"): P
  */
 export async function fetchRepReportCard(constituency: string, role: string = 'MLA'): Promise<import('./types').RepReportCard | null> {
   const rows = await query<import('./types').RepReportCard>('rep_report_cards', {
-    'constituency': `ilike.${constituency}`,
+    'constituency': `ilike.${bengaluruDataConstituency(constituency)}`,
     'role': `eq.${role}`,
     'select': 'role,constituency,attendance_pct,questions_asked,debates,bills_introduced,committees,lad_utilization_pct,net_worth_growth_pct,criminal_cases,term',
     'limit': '1',
@@ -510,7 +547,7 @@ export async function fetchWardCommitteeMeetings(wardNo: number): Promise<import
  */
 export async function fetchMlaLadFunds(assemblyConstituency: string): Promise<import('./types').MlaLadFunds[]> {
   return await query<import('./types').MlaLadFunds>('mla_lad_funds', {
-    'assembly_constituency': `ilike.${assemblyConstituency}`,
+    'assembly_constituency': `ilike.${bengaluruDataConstituency(assemblyConstituency)}`,
     'select': 'assembly_constituency,financial_year,total_lakh,project_count,term',
     'order': 'financial_year.asc',
   })

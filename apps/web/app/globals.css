@@ -4,7 +4,17 @@
 
 :root {
   --saffron: #FF9933;
-  --bg: #0A0A0A;
+  --bg: #F2EDE4;
+  --signal-canvas: #f2ede4;
+  --signal-paper: #f8f5ef;
+  --signal-paper-bright: #fffdf8;
+  --signal-paper-muted: #efe9de;
+  --signal-ink: #16130e;
+  --signal-accent: #b35400;
+  --signal-danger: #b42318;
+  --signal-success: #24643c;
+  --signal-line: rgba(22, 19, 14, 0.55);
+  --signal-hairline: rgba(22, 19, 14, 0.16);
 }
 
 * {
@@ -18,7 +28,7 @@ body {
   max-width: 100vw;
   overflow: hidden;
   background: var(--bg);
-  color: white;
+  color: var(--signal-ink);
   /* Prevent elastic overscroll on iOS at the body level */
   overscroll-behavior: none;
 }
@@ -133,3 +143,329 @@ body {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
 }
+
+/* Signal on Paper ---------------------------------------------------------
+ * The live basemap, controls and records share one warm paper material. Ink
+ * carries structure; burnt saffron is rationed to actions and identity.
+ */
+.signal-page {
+  background: var(--signal-canvas) !important;
+  color: var(--signal-ink) !important;
+}
+
+.signal-page ::selection,
+.signal-map ::selection {
+  background: rgba(194, 84, 0, 0.2);
+}
+
+.signal-page :is(a, button, input, textarea, select):focus-visible,
+.signal-map :is(a, button, input, textarea, select):focus-visible {
+  outline: 2px solid var(--signal-accent);
+  outline-offset: 3px;
+}
+
+.signal-page [class*="bg-zinc-950"],
+.signal-page [class*="bg-[#0A0A0A]"],
+.signal-page [class*="bg-[#111111]"],
+.signal-page [class*="bg-[#111]"],
+.signal-page [class*="bg-white/5"],
+.signal-page [class*="bg-white/[0.03]"] {
+  background-color: var(--signal-paper) !important;
+}
+
+.signal-page [class*="bg-white/5"],
+.signal-page [class*="bg-white/[0.03]"] {
+  border: 1px solid rgba(22, 19, 14, 0.18);
+}
+
+.signal-page [class*="bg-black/30"],
+.signal-page [class*="bg-white/10"] {
+  background-color: var(--signal-paper-muted) !important;
+}
+
+.signal-page [class*="border-white"],
+.signal-page [class*="divide-white"] {
+  border-color: rgba(22, 19, 14, 0.2) !important;
+}
+
+.signal-page [class*="text-white"] { color: var(--signal-ink) !important; }
+.signal-page [class*="text-white/10"],
+.signal-page [class*="text-white/15"],
+.signal-page [class*="text-white/20"],
+.signal-page [class*="text-white/25"],
+.signal-page [class*="text-white/30"] { color: rgba(22, 19, 14, 0.52) !important; }
+.signal-page [class*="text-white/40"],
+.signal-page [class*="text-white/50"] { color: rgba(22, 19, 14, 0.68) !important; }
+.signal-page [class*="text-white/60"],
+.signal-page [class*="text-white/70"],
+.signal-page [class*="text-white/80"] { color: rgba(22, 19, 14, 0.86) !important; }
+
+.signal-page [class*="text-[#FF9933]"],
+.signal-page [class*="text-blue-400"] { color: var(--signal-accent) !important; }
+.signal-page [class*="text-green-400"] { color: var(--signal-success) !important; }
+.signal-page [class*="text-yellow-400"],
+.signal-page [class*="text-amber-300"] { color: #754500 !important; }
+.signal-page [class*="text-red-400"] { color: var(--signal-danger) !important; }
+.signal-page [class*="border-[#FF9933]"] { border-color: var(--signal-accent) !important; }
+.signal-page [class*="bg-[#FF9933]"] { background-color: var(--signal-accent) !important; }
+.signal-page [class*="bg-[#FF9933]"][class*="text-black"] { color: var(--signal-paper-bright) !important; }
+
+.signal-page [class*="rounded-"]:not([class*="rounded-full"]),
+.signal-page [class~="rounded"] {
+  border-radius: 0 !important;
+}
+
+.signal-page [class*="shadow-"] {
+  box-shadow: 4px 4px 0 rgba(22, 19, 14, 0.12) !important;
+}
+
+.signal-page :is(h1, h2, h3),
+.signal-panel :is(h1, h2, h3) {
+  text-wrap: balance;
+}
+
+.signal-page section > h2 {
+  border-bottom: 1px solid rgba(22, 19, 14, 0.22);
+  padding-bottom: 0.55rem;
+  font-size: 0.875rem !important;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.signal-page :is(input, textarea, select),
+.signal-panel :is(input, textarea, select) {
+  background: var(--signal-paper-bright) !important;
+  border-color: rgba(22, 19, 14, 0.32) !important;
+  color: var(--signal-ink) !important;
+}
+
+.signal-page :is(input, textarea)::placeholder,
+.signal-panel :is(input, textarea)::placeholder {
+  color: rgba(22, 19, 14, 0.42) !important;
+}
+
+/* The reference design is one material: the map and its controls are paper. */
+.signal-map {
+  background: var(--signal-canvas) !important;
+  color: var(--signal-ink);
+}
+
+.signal-map .leaflet-container,
+.signal-map .leaflet-tile-pane {
+  background: var(--signal-canvas) !important;
+}
+
+.signal-map [class*="bg-black/60"]:not(.signal-backdrop) {
+  background: rgba(242, 237, 228, 0.92) !important;
+  color: var(--signal-accent) !important;
+}
+
+.signal-map .kaun-base-map-tiles {
+  filter: grayscale(1) sepia(0.16) saturate(0.55) brightness(1.15) contrast(0.68) !important;
+  opacity: 0.78 !important;
+  mix-blend-mode: multiply;
+}
+
+.signal-map .leaflet-control-zoom {
+  border: 1px solid var(--signal-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.signal-map .leaflet-control-zoom a {
+  background: var(--signal-paper) !important;
+  border-color: var(--signal-hairline) !important;
+  color: var(--signal-ink) !important;
+}
+
+.signal-map .leaflet-control-zoom a:hover {
+  background: var(--signal-paper-muted) !important;
+}
+
+.signal-map .leaflet-control-attribution {
+  background: rgba(248, 245, 239, 0.9) !important;
+  color: rgba(22, 19, 14, 0.42) !important;
+}
+
+.signal-map .leaflet-control-attribution a {
+  color: rgba(22, 19, 14, 0.62) !important;
+}
+
+.signal-map .leaflet-popup-content-wrapper,
+.signal-map .leaflet-popup-tip,
+.signal-map .leaflet-tooltip {
+  background: var(--signal-paper) !important;
+  color: var(--signal-ink) !important;
+  border-color: var(--signal-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.signal-map .leaflet-popup-close-button { color: rgba(22, 19, 14, 0.55) !important; }
+
+/* Paper sheets floating over the Bengaluru and India maps. */
+.signal-panel,
+.signal-map [class*="backdrop-blur"],
+.signal-map [class*="bg-[#111111]"],
+.signal-map [class*="bg-[#111]"] {
+  background-color: rgba(248, 245, 239, 0.98) !important;
+  border-color: var(--signal-hairline) !important;
+  color: var(--signal-ink) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.signal-panel [class*="text-white"],
+.signal-map [class*="backdrop-blur"] [class*="text-white"],
+.signal-map [class*="bg-[#111111]"] [class*="text-white"],
+.signal-map [class*="bg-[#111]"] [class*="text-white"] {
+  color: rgba(22, 19, 14, 0.82) !important;
+}
+
+.signal-panel [class*="text-white/10"],
+.signal-panel [class*="text-white/15"],
+.signal-panel [class*="text-white/20"],
+.signal-panel [class*="text-white/25"],
+.signal-panel [class*="text-white/30"],
+.signal-map [class*="backdrop-blur"] [class*="text-white/30"] {
+  color: rgba(22, 19, 14, 0.5) !important;
+}
+.signal-panel [class*="text-white/35"],
+.signal-panel [class*="text-white/40"],
+.signal-panel [class*="text-white/45"],
+.signal-panel [class*="text-white/50"] {
+  color: rgba(22, 19, 14, 0.64) !important;
+}
+
+.signal-panel [class*="border-white"],
+.signal-panel [class*="divide-white"],
+.signal-map [class*="backdrop-blur"] [class*="border-white"],
+.signal-map [class*="bg-[#111]"] [class*="border-white"] {
+  border-color: var(--signal-hairline) !important;
+}
+
+.signal-panel [class*="bg-white/5"],
+.signal-panel [class*="bg-white/10"],
+.signal-panel [class*="bg-white/[0.02]"],
+.signal-panel [class*="bg-white/[0.03]"],
+.signal-panel [class*="bg-white/[0.06]"],
+.signal-panel [class*="bg-zinc-900"],
+.signal-map [class*="backdrop-blur"] [class*="bg-white/5"],
+.signal-map [class*="bg-[#111]"] [class*="bg-white/5"] {
+  background-color: rgba(22, 19, 14, 0.05) !important;
+}
+
+.signal-panel [class*="rounded-"]:not([class*="rounded-full"]),
+.signal-panel [class~="rounded"] {
+  border-radius: 0 !important;
+}
+
+.signal-panel [class*="text-[#FF9933]"],
+.signal-map [class*="backdrop-blur"] [class*="text-[#FF9933]"] {
+  color: var(--signal-accent) !important;
+}
+.signal-panel [class*="text-green-400"] { color: var(--signal-success) !important; }
+.signal-panel [class*="text-yellow-400"] { color: #754500 !important; }
+.signal-panel [class*="text-red-400"] { color: var(--signal-danger) !important; }
+
+.signal-map-header {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: var(--signal-ink);
+  padding: 0;
+}
+
+.signal-map-header [class*="text-white"] { color: rgba(22, 19, 14, 0.76) !important; }
+.signal-map-header [class*="text-[#FF9933]"] { color: var(--signal-accent) !important; }
+
+.signal-map .signal-wordmark,
+.signal-map .signal-map-control {
+  background: var(--signal-paper) !important;
+  border: 1px solid var(--signal-line) !important;
+  border-radius: 0 !important;
+  color: var(--signal-ink) !important;
+  box-shadow: none !important;
+}
+
+.signal-map .signal-wordmark {
+  border-width: 0 0 2px !important;
+  padding: 0.45rem 0.7rem;
+  line-height: 1;
+}
+
+.signal-map .signal-primary-action {
+  background: var(--signal-ink) !important;
+  border: 1px solid var(--signal-ink) !important;
+  border-radius: 0 !important;
+  color: var(--signal-paper) !important;
+  font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.signal-map .signal-primary-action:hover { background: #302a22 !important; }
+
+.signal-ticker {
+  background: var(--signal-paper) !important;
+  border: 0 !important;
+  border-top: 1px solid var(--signal-line) !important;
+  border-bottom: 1px solid var(--signal-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.signal-page-header {
+  border-bottom: 2px solid var(--signal-ink);
+  padding-bottom: 1rem;
+}
+
+.signal-map .signal-backdrop {
+  background: rgba(0, 0, 0, 0.62) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(4px);
+}
+
+.signal-page [class*="text-[9px]"],
+.signal-page [class*="text-[10px]"],
+.signal-panel [class*="text-[9px]"],
+.signal-panel [class*="text-[10px]"],
+.signal-map-header [class*="text-[10px]"] { font-size: 0.75rem !important; }
+.signal-page [class*="text-[11px]"],
+.signal-panel [class*="text-[11px]"] { font-size: 0.8125rem !important; }
+
+/* Civic records keep their editorial structure with a cleaner, cooler palette. */
+.signal-record {
+  background: var(--signal-canvas) !important;
+  color: var(--signal-ink) !important;
+}
+
+.signal-record [class*="bg-[#e5dfd3]"] { background-color: var(--signal-canvas) !important; }
+.signal-record [class*="bg-[#f8f5ef]"],
+.signal-record [class*="bg-[#fffdf8]"] { background-color: var(--signal-paper) !important; }
+.signal-record [class*="bg-[#efe9de]"] { background-color: var(--signal-paper-muted) !important; }
+.signal-record [class*="bg-[#16130e]"] { background-color: var(--signal-ink) !important; }
+.signal-record [class*="text-[#16130e]"] { color: var(--signal-ink) !important; }
+.signal-record [class*="text-[#f8f5ef]"],
+.signal-record [class*="text-[#fffaf1]"] { color: #ffffff !important; }
+.signal-record [class*="text-[#c25400]"] { color: var(--signal-accent) !important; }
+.signal-record [class*="border-[#16130e]"] { border-color: rgba(22, 19, 14, 0.72) !important; }
+.signal-record [class*="border-[#c25400]"] { border-color: var(--signal-accent) !important; }
+.signal-record [class*="decoration-[#c25400]"] { text-decoration-color: rgba(194, 84, 0, 0.55) !important; }
+.signal-record [class*="ring-[#c25400]"] { --tw-ring-color: rgba(194, 84, 0, 0.4) !important; }
+
+/* Normalize the research workbench after the palette became shared. */
+.signal-record [class*="bg-white"],
+.signal-record [class*="bg-[#f8fafc]"] { background-color: var(--signal-paper) !important; }
+.signal-record [class*="bg-[#101828]"] { background-color: var(--signal-ink) !important; }
+.signal-record [class*="text-[#101828]"] { color: var(--signal-ink) !important; }
+.signal-record [class*="text-[#2563eb]"] { color: var(--signal-accent) !important; }
+.signal-record [class*="border-[#101828]"] { border-color: rgba(22, 19, 14, 0.72) !important; }
+.signal-record [class*="border-[#2563eb]"] { border-color: var(--signal-accent) !important; }
+.signal-record [class*="decoration-[#2563eb]"] { text-decoration-color: rgba(194, 84, 0, 0.55) !important; }
+.signal-record [class*="ring-[#2563eb]"] { --tw-ring-color: rgba(194, 84, 0, 0.4) !important; }
+.signal-record [class*="shadow-"] { box-shadow: 4px 4px 0 rgba(22, 19, 14, 0.12) !important; }

@@ -19,7 +19,7 @@ BNP is a civic political party in Bengaluru that has been systematically documen
 The map-first citizen interface. Contributions to the commons:
 
 - **Entity-resolved contractor profiles** — 1,305 contractors unified across aliases, phone numbers, and ward footprints
-- **Cross-ward analytics** — spending patterns, blacklist cross-references, WardGrade scoring
+- **Cross-ward analytics** — spending patterns, blacklist cross-references, and source-level evidence snapshots
 - **Public JSON APIs** — four CORS-enabled endpoints serving ward, contractor, rep, and spending data
 - **Citizen reporting** — photo-verified ward reports with AI moderation
 

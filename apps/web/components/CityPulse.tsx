@@ -120,7 +120,7 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
         }}
         role="button"
         tabIndex={0}
-        className={`w-full text-left rounded-xl backdrop-blur-xl px-4 py-2.5 shadow-lg border transition-all duration-300 cursor-pointer ${sev.bg}`}
+        className={`signal-ticker w-full text-left backdrop-blur-xl px-3 py-2 transition-all duration-300 cursor-pointer ${sev.bg}`}
       >
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">

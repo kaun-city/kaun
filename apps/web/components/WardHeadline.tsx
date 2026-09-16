@@ -105,14 +105,14 @@ export function WardHeadline(props: Props) {
   if (!headline) return null
 
   const colors = {
-    red: { bg: "bg-red-500/10", border: "border-red-500/20", icon: "text-red-400", text: "text-red-300", detail: "text-red-400/60" },
-    yellow: { bg: "bg-yellow-500/10", border: "border-yellow-500/20", icon: "text-yellow-400", text: "text-yellow-300", detail: "text-yellow-400/60" },
-    info: { bg: "bg-blue-500/10", border: "border-blue-500/20", icon: "text-blue-400", text: "text-blue-300", detail: "text-blue-400/60" },
+    red: { bg: "bg-[#b42318]/5", border: "border-[#b42318]/35", icon: "text-[#b42318]", text: "text-[#8f1c13]", detail: "text-[#8f1c13]/70" },
+    yellow: { bg: "bg-[#a05d00]/5", border: "border-[#a05d00]/35", icon: "text-[#a05d00]", text: "text-[#754500]", detail: "text-[#754500]/70" },
+    info: { bg: "bg-[#255c86]/5", border: "border-[#255c86]/35", icon: "text-[#255c86]", text: "text-[#214f73]", detail: "text-[#214f73]/70" },
   }
   const c = colors[headline.severity]
 
   return (
-    <div className={`mx-5 mt-3 flex gap-2.5 p-3 rounded-xl ${c.bg} border ${c.border}`}>
+    <div className={`mx-5 mt-3 flex gap-2.5 border-l-4 p-3 ${c.bg} border ${c.border}`}>
       <span className={`${c.icon} text-base mt-0.5 shrink-0`}>!</span>
       <div className="min-w-0">
         <p className={`${c.text} text-xs font-semibold leading-snug`}>{headline.text}</p>

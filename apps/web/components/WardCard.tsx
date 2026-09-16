@@ -12,6 +12,7 @@ import { AskKaunBar } from "@/components/shared/AskKaunBar"
 import { WardHeadline } from "@/components/WardHeadline"
 import { WardGrade } from "@/components/WardGrade"
 import { getCity } from "@/lib/cities"
+import { WardProjectSignal } from "@/components/projects/WardProjectSignal"
 
 interface Props {
   result: PinResult | null
@@ -52,6 +53,7 @@ function buildShareText(result: PinResult): string {
 
 export default function WardCard({ result, loading, onClose }: Props) {
   const ward = useWardData(result)
+  const primaryHistoricalWard = ward.historicalWards[0]
   const [copied, setCopied] = useState(false)
 
   const handleShare = useCallback(async () => {
@@ -90,7 +92,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
      */
     <div
       ref={cardRef}
-      className="
+      className="signal-panel
       fixed bottom-0 left-0 right-0 z-[1000]
       flex flex-col
       bg-[#111111] border-t border-white/10
@@ -107,6 +109,21 @@ export default function WardCard({ result, loading, onClose }: Props) {
         <div className="w-10 h-1 rounded-full bg-white/25" />
       </div>
 
+      {!loading && result?.found && result.gba_ward_name && (
+        <div className="border-b border-[#16130e]/20 bg-[#efe9de] px-5 py-3 text-[11px] leading-relaxed text-[#16130e]/70">
+          {ward.historicalWards.length ? (
+            <>
+              <strong className="font-mono uppercase tracking-[0.08em] text-[#16130e]">Historical-data estimate</strong>
+              <span className="ml-2">
+                Older records are allocated from {ward.historicalWards.length} former ward{ward.historicalWards.length === 1 ? "" : "s"} by geographic overlap: {ward.historicalWards.map(ref => `${ref.ward_name} ${Math.round(ref.current_share * 100)}%`).join(" · ")}.
+              </span>
+            </>
+          ) : (
+            <><strong className="font-mono uppercase tracking-[0.08em] text-[#16130e]">Current-boundary data only</strong><span className="ml-2">This ward falls outside the historical 243-ward layer.</span></>
+          )}
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between px-5 pt-4 pb-3 border-b border-white/10 shrink-0">
         {loading ? (
@@ -116,8 +133,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
           </div>
         ) : result?.found ? (
           <div className="flex-1 min-w-0">
+            <p className="font-mono text-xs font-bold uppercase tracking-[0.1em] text-[#FF9933]">Ward record</p>
             {/* GBA ward name (primary), falls back to legacy BBMP name */}
-            <h2 className="text-white font-semibold text-base leading-snug truncate">
+            <h2 className="mt-1 text-white font-semibold text-lg leading-snug truncate">
               {result.gba_ward_name ?? result.ward_name}
             </h2>
             <p className="text-white/40 text-xs mt-0.5 truncate">
@@ -195,17 +213,20 @@ export default function WardCard({ result, loading, onClose }: Props) {
         />
       )}
 
+      {/* Multi-ward civic projects are durable records, not transient news. */}
+      {!loading && result?.found && <WardProjectSignal result={result} />}
+
       {/* Tabs */}
       {!loading && result?.found && (
-        <div className="flex border-b border-white/10 shrink-0">
+        <div className="flex border-y border-white/10 shrink-0">
           {TABS.map(t => (
             <button
               key={t.id}
               onClick={() => ward.setTab(t.id)}
-              className={`flex-1 min-h-11 py-3 lg:py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors
+              className={`flex-1 min-h-11 py-3 lg:py-2.5 text-[10px] font-semibold uppercase tracking-[0.1em] transition-colors
                 ${ward.tab === t.id
-                  ? "text-[#FF9933] border-b-2 border-[#FF9933]"
-                  : "text-white/30 hover:text-white/60 active:text-white/60"
+                  ? "bg-[#16130e] text-[#f8f5ef]"
+                  : "border-l border-white/10 text-white/40 hover:text-white/70 active:text-white/70"
                 }`}
             >
               {t.label}
@@ -224,6 +245,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               city={ward.city}
               profile={ward.profile}
               profileLoading={ward.profileLoading}
+              electedReps={ward.electedReps}
 
               committeeMeetings={ward.committeeMeetings}
               reportCard={ward.reportCard}
@@ -266,9 +288,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
               airQuality={ward.airQuality ?? null}
               amenities={ward.amenities ?? null}
               waterQuality={ward.waterQuality ?? []}
-              wardNo={result.ward_no ?? 0}
-              wardName={result.ward_name ?? ""}
-              assemblyConstituency={result.assembly_constituency ?? ""}
+              wardNo={primaryHistoricalWard?.ward_no ?? 0}
+              wardName={result.gba_ward_name ?? result.ward_name ?? ""}
+              assemblyConstituency={result.gba_ac ?? result.assembly_constituency ?? ""}
               reportCount={ward.reportCount}
               signals={ward.signals}
             />
@@ -281,23 +303,27 @@ export default function WardCard({ result, loading, onClose }: Props) {
               departments={ward.departments}
               grievances={ward.grievances}
               sakala={ward.sakala}
-              wardNo={result.ward_no ?? 0}
-              wardName={result.ward_name ?? ""}
-              assemblyConstituency={result.assembly_constituency ?? ""}
+              wardNo={primaryHistoricalWard?.ward_no ?? 0}
+              wardName={result.gba_ward_name ?? result.ward_name ?? ""}
+              assemblyConstituency={result.gba_ac ?? result.assembly_constituency ?? ""}
             />
           )}
         </div>
 
         {/* Ask Kaun bar — Bengaluru-only until the AI tools/prompt are city-scoped */}
         {getCity(result.city_id).features.askKaun && <AskKaunBar
-            wardContext={result.ward_no ? {
-              ward_no: result.ward_no,
-              ward_name: result.ward_name ?? "",
-              assembly_constituency: result.assembly_constituency ?? "",
-              corporator_name: ward.profile?.elected_reps?.find(r => r.role === "CORPORATOR")?.name ?? null,
-              corporator_party: ward.profile?.elected_reps?.find(r => r.role === "CORPORATOR")?.party ?? null,
-              mla_name: ward.profile?.elected_reps?.find(r => r.role === "MLA")?.name ?? null,
-              mla_party: ward.profile?.elected_reps?.find(r => r.role === "MLA")?.party ?? null,
+            wardContext={result.found ? {
+              ward_no: primaryHistoricalWard?.ward_no ?? null,
+              ward_name: result.gba_ward_name ?? result.ward_name ?? "",
+              assembly_constituency: result.gba_ac ?? result.assembly_constituency ?? "",
+              boundary_system: result.gba_ward_name ? "gba-369-2025" : "datameet-243",
+              gba_corporation_id: result.gba_corporation_id,
+              gba_ward_no: result.gba_ward_no,
+              historical_wards: ward.historicalWards.map(ref => ({ ward_no: ref.ward_no, ward_name: ref.ward_name, current_share: ref.current_share })),
+              corporator_name: ward.electedReps.find(r => r.role === "CORPORATOR")?.name ?? null,
+              corporator_party: ward.electedReps.find(r => r.role === "CORPORATOR")?.party ?? null,
+              mla_name: ward.electedReps.find(r => r.role === "MLA")?.name ?? null,
+              mla_party: ward.electedReps.find(r => r.role === "MLA")?.party ?? null,
               mla_attendance_pct: ward.reportCard?.attendance_pct ?? null,
               mla_questions_asked: ward.reportCard?.questions_asked ?? null,
               mla_lad_utilization_pct: ward.reportCard?.lad_utilization_pct ?? null,
@@ -306,7 +332,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
               signal_count: ward.infraStats?.signal_count ?? null,
               bus_stop_count: ward.infraStats?.bus_stop_count ?? null,
               pothole_complaints: ward.potholes?.complaints ?? null,
-              ward_spend_total_lakh: ward.wardSpend?.grand_total ?? null,
+              ward_spend_total_lakh: ward.wardSpend ? ward.wardSpend.grand_total / 100_000 : null,
               ward_spend_roads_pct: ward.wardSpend
                 ? ((ward.wardSpend.roads_and_drains + ward.wardSpend.roads_and_infrastructure) / ward.wardSpend.grand_total) * 100
                 : null,

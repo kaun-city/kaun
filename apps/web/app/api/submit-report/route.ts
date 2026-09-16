@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import { makeReportLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
+import { publicSupabaseConfig } from "@/lib/supabase-config"
 
 export const runtime = "nodejs"
 export const maxDuration = 20
@@ -12,6 +13,10 @@ interface SubmitReportBody {
   lng: number
   ward_no?: number
   ward_name?: string
+  boundary_system?: string
+  gba_corporation_id?: number
+  gba_ward_no?: number
+  historical_wards?: Array<{ ward_no: number; current_share: number; legacy_share: number }>
   issue_type: IssueType
   description?: string
   location_text?: string
@@ -25,16 +30,14 @@ export async function POST(req: Request) {
 
   try {
     const body: SubmitReportBody = await req.json()
-    const { lat, lng, ward_no, ward_name, issue_type, description, location_text, photo_base64, photo_mime } = body
+    const { lat, lng, ward_no, ward_name, boundary_system, gba_corporation_id, gba_ward_no, historical_wards, issue_type, description, location_text, photo_base64, photo_mime } = body
 
     if (!lat || !lng || !issue_type || !ISSUE_TYPES.includes(issue_type)) {
       return Response.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const { url: supabaseUrl, anonKey } = publicSupabaseConfig()
+    const supabase = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY ?? anonKey)
 
     let photo_url: string | null = null
 
@@ -61,29 +64,46 @@ export async function POST(req: Request) {
     }
 
     // Insert immediately as pending — AI moderation runs in daily cron
-    const { data: report, error: dbError } = await supabase
+    const insertRow = {
+      ward_no:       ward_no ?? null,
+      ward_name:     ward_name ?? null,
+      boundary_system: boundary_system ?? null,
+      gba_corporation_id: gba_corporation_id ?? null,
+      gba_ward_no: gba_ward_no ?? null,
+      historical_wards: historical_wards ?? [],
+      lat,
+      lng,
+      issue_type,
+      description:   description ?? null,
+      location_text: location_text ?? null,
+      photo_url,
+      status:        "pending",
+      source:        "web",
+    }
+    let { data: report, error: dbError } = await supabase
       .from("ward_reports")
-      .insert({
-        ward_no:       ward_no ?? null,
-        ward_name:     ward_name ?? null,
-        lat,
-        lng,
-        issue_type,
-        description:   description ?? null,
-        location_text: location_text ?? null,
-        photo_url,
-        status:        "pending",
-        source:        "web",
-      })
+      .insert(insertRow)
       .select("id")
       .single()
+
+    // Deployments can receive the application before the additive migration.
+    // Preserve reporting while making the loss of current identity temporary.
+    if (dbError && /boundary_system|gba_corporation_id|historical_wards/i.test(dbError.message)) {
+      const fallback = await supabase.from("ward_reports").insert({
+        ward_no: ward_no ?? null, ward_name: ward_name ?? null, lat, lng,
+        issue_type, description: description ?? null, location_text: location_text ?? null,
+        photo_url, status: "pending", source: "web",
+      }).select("id").single()
+      report = fallback.data
+      dbError = fallback.error
+    }
 
     if (dbError) {
       console.error("DB error:", dbError)
       return Response.json({ error: "Failed to save report" }, { status: 500 })
     }
 
-    return Response.json({ ok: true, id: report.id })
+    return Response.json({ ok: true, id: report?.id ?? null })
 
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err)
