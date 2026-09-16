@@ -14,6 +14,14 @@ export const WARD_CROSSWALK_URL = `/bengaluru-ward-crosswalk.json?v=${WARD_CROSS
 export const GBA_CROSSWALK_VERSION = "gba369-dm243-2026.09"
 export const GBA_CROSSWALK_URL = `/bengaluru-gba-369-to-datameet-243.json?v=${GBA_CROSSWALK_VERSION}`
 
+/**
+ * BBMP-198 (2010 delimitation) -> DataMeet-243 overlap asset. The spend,
+ * pothole and ward committee tables are keyed on the 198-ward map and reach
+ * a ward only through it. Versioned URL: the file is served immutable.
+ */
+export const BBMP198_CROSSWALK_VERSION = "bbmp198-dm243-2026.09"
+export const BBMP198_CROSSWALK_URL = `/bengaluru-bbmp-198-to-datameet-243.json?v=${BBMP198_CROSSWALK_VERSION}`
+
 export const PARTY_COLORS: Record<string, string> = {
   INC: "#19AAED",
   BJP: "#FF6B00",

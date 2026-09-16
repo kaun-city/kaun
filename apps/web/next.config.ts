@@ -22,6 +22,7 @@ const IMMUTABLE_ASSETS = [
   "/india-pc.geojson",
   "/bengaluru-ward-crosswalk.json",
   "/bengaluru-gba-369-to-datameet-243.json",
+  "/bengaluru-bbmp-198-to-datameet-243.json",
 ]
 const BUILD_SHA = process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? "local"
 const BUILD_REF = process.env.VERCEL_GIT_COMMIT_REF ?? process.env.GITHUB_REF_NAME ?? "local"

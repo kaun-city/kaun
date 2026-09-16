@@ -1,0 +1,1025 @@
+bbmp198_no,bbmp198_name,datameet243_no,datameet243_name,bbmp198_share,dm243_share,material,is_primary_for_243
+1,Kempegowda Ward,1,Kempegowda Ward,0.90777,0.85787,true,true
+1,Kempegowda Ward,11,Byatarayanapura,0.02913,0.03222,false,false
+1,Kempegowda Ward,5,Yelahanka Satellite Town,0.0085,0.02261,false,false
+1,Kempegowda Ward,2,Chowdeswari Ward,0.00607,0.00762,false,false
+1,Kempegowda Ward,6,Kogilu,0,0.00108,false,false
+2,Chowdeswari Ward,2,Chowdeswari Ward,0.752,0.82774,true,true
+2,Chowdeswari Ward,3,Someshwara Ward,0.076,0.15473,false,false
+2,Chowdeswari Ward,5,Yelahanka Satellite Town,0.05067,0.09866,false,false
+2,Chowdeswari Ward,1,Kempegowda Ward,0.032,0.02658,false,false
+3,Atturu,4,Atturu Layout,0.48527,0.92297,true,true
+3,Atturu,3,Someshwara Ward,0.22184,0.57736,true,true
+3,Atturu,2,Chowdeswari Ward,0.10745,0.16159,true,false
+3,Atturu,15,Kuvempunagar,0.01386,0.02118,false,false
+3,Atturu,16,Kammagondanahalli,0.00347,0.01207,false,false
+4,Yelahanka Satellite Town,5,Yelahanka Satellite Town,0.72401,0.87359,true,true
+4,Yelahanka Satellite Town,3,Someshwara Ward,0.21411,0.26648,true,false
+4,Yelahanka Satellite Town,11,Byatarayanapura,0.06064,0.02964,false,false
+4,Yelahanka Satellite Town,4,Atturu Layout,0.00124,0,false,false
+5,Jakkuru,6,Kogilu,0.66904,0.98593,true,true
+5,Jakkuru,8,Jakkuru,0.23829,0.50308,true,true
+5,Jakkuru,1,Kempegowda Ward,0.05397,0.11452,false,false
+5,Jakkuru,7,Thanisandra,0.01527,0.09019,false,false
+6,Thanisandra,8,Jakkuru,0.47967,0.41574,true,false
+6,Thanisandra,7,Thanisandra,0.31359,0.75648,true,true
+6,Thanisandra,9,Amrutahalli,0.20441,0.52109,true,true
+6,Thanisandra,10,Kempapura,0.00232,0.00366,false,false
+7,Byatarayanapura,10,Kempapura,0.4296,0.70244,true,true
+7,Byatarayanapura,11,Byatarayanapura,0.26955,0.2616,true,false
+7,Byatarayanapura,9,Amrutahalli,0.19615,0.47891,true,false
+7,Byatarayanapura,8,Jakkuru,0.10229,0.08118,false,false
+7,Byatarayanapura,68,Vishwanath Nagenahalli,0.00241,0.0034,false,false
+7,Byatarayanapura,5,Yelahanka Satellite Town,0,0.00206,false,false
+8,Kodigehalli,12,Kodigehalli,0.54961,0.86556,true,true
+8,Kodigehalli,10,Kempapura,0.44648,0.2939,true,false
+8,Kodigehalli,67,Sanjaya Nagar,0.00261,0.00341,false,false
+8,Kodigehalli,11,Byatarayanapura,0.00131,0,false,false
+8,Kodigehalli,13,Dodda Bommasandra,0,0.00121,false,false
+9,Vidyaranyapura,11,Byatarayanapura,0.66887,0.67655,true,true
+9,Vidyaranyapura,14,Vidyaranyapura,0.16491,0.7511,true,true
+9,Vidyaranyapura,13,Dodda Bommasandra,0.08575,0.19203,false,false
+9,Vidyaranyapura,4,Atturu Layout,0.03562,0.0729,false,false
+9,Vidyaranyapura,12,Kodigehalli,0.03034,0.12676,false,false
+9,Vidyaranyapura,15,Kuvempunagar,0.01319,0.02118,false,false
+9,Vidyaranyapura,3,Someshwara Ward,0.00132,0.00143,false,false
+9,Vidyaranyapura,5,Yelahanka Satellite Town,0,0.00308,false,false
+10,Dodda Bommasandra,13,Dodda Bommasandra,0.83887,0.80072,true,true
+10,Dodda Bommasandra,14,Vidyaranyapura,0.12915,0.2489,true,false
+10,Dodda Bommasandra,15,Kuvempunagar,0.02829,0.01561,false,false
+10,Dodda Bommasandra,39,Kanneshwara Rama,0.00369,0.00226,false,false
+10,Dodda Bommasandra,12,Kodigehalli,0,0.00384,false,false
+11,Kuvempu Nagar,15,Kuvempunagar,0.91566,0.93311,true,true
+11,Kuvempu Nagar,16,Kammagondanahalli,0.07996,0.14027,false,false
+11,Kuvempu Nagar,13,Dodda Bommasandra,0.00219,0.00604,false,false
+11,Kuvempu Nagar,4,Atturu Layout,0.0011,0.00413,false,false
+12,Shettihalli,17,Shettihalli,0.59476,0.83058,true,true
+12,Shettihalli,16,Kammagondanahalli,0.30424,0.62745,true,true
+12,Shettihalli,15,Kuvempunagar,0.00623,0.00892,false,false
+12,Shettihalli,20,Mallasandra,0.00249,0.00341,false,false
+12,Shettihalli,40,Veeramadakari,0.00125,0,false,false
+13,Mallasandra,20,Mallasandra,0.909,0.98864,true,true
+13,Mallasandra,19,Defence Colony,0.07963,0.06477,false,false
+13,Mallasandra,17,Shettihalli,0.01138,0.0015,false,false
+14,Bagalakunte,18,Bagalakunte,0.43565,0.99277,true,true
+14,Bagalakunte,19,Defence Colony,0.25,0.69036,true,true
+14,Bagalakunte,17,Shettihalli,0.24789,0.16792,true,false
+14,Bagalakunte,28,Dodda Bidarakallu,0.0116,0.00588,false,false
+14,Bagalakunte,20,Mallasandra,0.00105,0.00795,false,false
+14,Bagalakunte,21,T Dasarahalli,0,0.00501,false,false
+15,T Dasarahalli,21,T Dasarahalli,0.99465,0.80702,true,true
+15,T Dasarahalli,19,Defence Colony,0.00402,0.00158,false,false
+15,T Dasarahalli,22,Chokkasandra,0.00134,0,false,false
+16,Jalahalli,40,Veeramadakari,0.6835,0.63716,true,true
+16,Jalahalli,39,Kanneshwara Rama,0.3165,0.71332,true,true
+17,J P Park,38,J P Park,0.6314,0.9368,true,true
+17,J P Park,39,Kanneshwara Rama,0.31737,0.28442,true,false
+17,J P Park,36,Chatrapati Shivaji,0.02784,0.02841,false,false
+17,J P Park,37,Chanakya,0.02227,0.09148,false,false
+17,J P Park,13,Dodda Bommasandra,0.00111,0,false,false
+17,J P Park,59,Mattikere,0,0.00137,false,false
+18,Radhakrishna Temple Ward,66,Radhakrishna Temple Ward,0.9928,0.99565,true,true
+18,Radhakrishna Temple Ward,67,Sanjaya Nagar,0.00288,0,false,false
+18,Radhakrishna Temple Ward,12,Kodigehalli,0.00144,0.00384,false,false
+18,Radhakrishna Temple Ward,59,Mattikere,0.00144,0.00137,false,false
+18,Radhakrishna Temple Ward,60,Aramane Nagara,0.00144,0,false,false
+19,Sanjaya Nagar,67,Sanjaya Nagar,0.99697,0.49716,true,true
+19,Sanjaya Nagar,66,Radhakrishna Temple Ward,0.00303,0.00435,false,false
+20,Ganga Nagar,67,Sanjaya Nagar,0.68487,0.49716,true,false
+20,Ganga Nagar,72,Ganga Nagar,0.18768,0.47469,true,false
+20,Ganga Nagar,70,Hebbala,0.07423,0.12963,false,false
+20,Ganga Nagar,68,Vishwanath Nagenahalli,0.05182,0.11885,false,false
+20,Ganga Nagar,66,Radhakrishna Temple Ward,0.0014,0,false,false
+20,Ganga Nagar,71,Chamundi Nagara,0,0.00192,false,false
+21,Hebbala,70,Hebbala,0.92569,0.85948,true,true
+21,Hebbala,69,Manorayanapalya,0.0466,0.07258,false,false
+21,Hebbala,68,Vishwanath Nagenahalli,0.02393,0.02886,false,false
+21,Hebbala,67,Sanjaya Nagar,0.00378,0.00227,false,false
+22,Vishwanath Nagenahalli,68,Vishwanath Nagenahalli,0.56619,0.81834,true,true
+22,Vishwanath Nagenahalli,69,Manorayanapalya,0.43279,0.79032,true,true
+22,Vishwanath Nagenahalli,71,Chamundi Nagara,0.00102,0.00192,false,false
+22,Vishwanath Nagenahalli,70,Hebbala,0,0.00109,false,false
+23,Nagavara,95,Nagavara,0.37116,0.79233,true,true
+23,Nagavara,94,Hennur,0.32025,0.19041,true,false
+23,Nagavara,96,Kadugondanahalli,0.30753,0.48889,true,true
+23,Nagavara,10,Kempapura,0.00106,0,false,false
+23,Nagavara,75,Kushal Nagar,0,0.00344,false,false
+24,HBR Layout,94,Hennur,0.62092,0.80699,true,true
+24,HBR Layout,98,Kacharkanahalli,0.20109,0.5739,true,true
+24,HBR Layout,96,Kadugondanahalli,0.125,0.4366,true,false
+24,HBR Layout,95,Nagavara,0.04076,0.20767,false,false
+24,HBR Layout,81,Horamavu,0.00679,0.00269,false,false
+24,HBR Layout,7,Thanisandra,0.00408,0.00564,false,false
+24,HBR Layout,8,Jakkuru,0.00136,0,false,false
+25,Horamavu,81,Horamavu,0.63225,0.93943,true,true
+25,Horamavu,82,Babusab Palya,0.14851,0.99824,true,true
+25,Horamavu,83,Kalkere,0.09477,0.20935,false,false
+25,Horamavu,84,Ramamurthy Nagara,0.05941,0.55,true,true
+25,Horamavu,7,Thanisandra,0.03536,0.14769,false,false
+25,Horamavu,99,HRBR Layout,0.00141,0.00461,false,false
+25,Horamavu,100,Banasavadi,0.00141,0.00513,false,false
+25,Horamavu,94,Hennur,0,0.00259,false,false
+26,Ramamurthy Nagar,83,Kalkere,0.77704,0.74976,true,true
+26,Ramamurthy Nagar,87,Medahalli,0.11214,0.26452,true,false
+26,Ramamurthy Nagar,84,Ramamurthy Nagara,0.04354,0.17692,false,false
+26,Ramamurthy Nagar,81,Horamavu,0.02243,0.01615,false,false
+26,Ramamurthy Nagar,86,K R Puram,0,0.00154,false,false
+27,Banasavadi,100,Banasavadi,0.75532,0.99385,true,true
+27,Banasavadi,99,HRBR Layout,0.21277,0.3441,true,false
+27,Banasavadi,101,Kammanahalli,0.02979,0.12586,false,false
+27,Banasavadi,82,Babusab Palya,0.00213,0.00176,false,false
+28,Kammanahalli,101,Kammanahalli,0.68625,0.87021,true,true
+28,Kammanahalli,98,Kacharkanahalli,0.11973,0.07457,false,false
+28,Kammanahalli,103,Maruthi Seva Nagar,0.11863,0.06667,false,false
+28,Kammanahalli,102,Lingarajapura,0.07206,0.05365,false,false
+28,Kammanahalli,99,HRBR Layout,0.00333,0.00185,false,false
+29,Kacharkanahalli,99,HRBR Layout,0.80497,0.64945,true,true
+29,Kacharkanahalli,98,Kacharkanahalli,0.19503,0.20905,true,false
+30,Kadugondanahalli,97,Venkateshpura,0.84411,0.99533,true,true
+30,Kadugondanahalli,96,Kadugondanahalli,0.14665,0.0732,false,false
+30,Kadugondanahalli,75,Kushal Nagar,0.00693,0.00859,false,false
+30,Kadugondanahalli,76,Muneshwara Nagar,0.00231,0.00532,false,false
+31,Kushal Nagar,75,Kushal Nagar,0.61708,0.43814,true,false
+31,Kushal Nagar,76,Muneshwara Nagar,0.30303,0.38298,true,false
+31,Kushal Nagar,79,Sagayarapuram,0.03994,0.03463,false,false
+31,Kushal Nagar,78,S K Garden,0.03719,0.02515,false,false
+31,Kushal Nagar,96,Kadugondanahalli,0.00275,0.00131,false,false
+32,Kaval Bairasandra,74,Kaval Bairasandra,0.68189,0.52075,true,true
+32,Kaval Bairasandra,75,Kushal Nagar,0.31202,0.54983,true,true
+32,Kaval Bairasandra,68,Vishwanath Nagenahalli,0.00152,0.0034,false,false
+32,Kaval Bairasandra,71,Chamundi Nagara,0.00152,0,false,false
+32,Kaval Bairasandra,73,Jayachamarajendra  Nagar,0.00152,0,false,false
+32,Kaval Bairasandra,95,Nagavara,0.00152,0,false,false
+32,Kaval Bairasandra,69,Manorayanapalya,0,0.00672,false,false
+33,Manorayanapalya,71,Chamundi Nagara,0.79888,0.99231,true,true
+33,Manorayanapalya,69,Manorayanapalya,0.13128,0.13038,true,false
+33,Manorayanapalya,68,Vishwanath Nagenahalli,0.04749,0.02716,false,false
+33,Manorayanapalya,70,Hebbala,0.01397,0.0098,false,false
+33,Manorayanapalya,73,Jayachamarajendra  Nagar,0.00559,0,false,false
+33,Manorayanapalya,72,Ganga Nagar,0.00279,0.00112,false,false
+34,Gangenahalli,73,Jayachamarajendra  Nagar,0.57749,0.41779,true,false
+34,Gangenahalli,72,Ganga Nagar,0.42038,0.52418,true,true
+34,Gangenahalli,60,Aramane Nagara,0.00212,0,false,false
+35,Aramane Nagara,60,Aramane Nagara,0.99843,0.99843,true,true
+35,Aramane Nagara,65,Rajamahal Guttahalli,0.00157,0.00114,false,false
+35,Aramane Nagara,59,Mattikere,0,0.00822,false,false
+35,Aramane Nagara,61,Malleswaram,0,0.00294,false,false
+35,Aramane Nagara,128,Vasanth Nagar,0,0.00112,false,false
+36,Mattikere,59,Mattikere,0.93878,0.98904,true,true
+36,Mattikere,61,Malleswaram,0.05485,0.03088,false,false
+36,Mattikere,38,J P Park,0.00255,0.0014,false,false
+36,Mattikere,39,Kanneshwara Rama,0.00255,0,false,false
+36,Mattikere,13,Dodda Bommasandra,0.00128,0,false,false
+37,Yeshwanthpura,37,Chanakya,0.60727,0.89117,true,true
+37,Yeshwanthpura,36,Chatrapati Shivaji,0.29212,0.13258,true,false
+37,Yeshwanthpura,38,J P Park,0.10061,0.06039,false,false
+37,Yeshwanthpura,61,Malleswaram,0,0.00147,false,false
+38,HMT Ward,41,Peenya,0.44868,0.82528,true,true
+38,HMT Ward,40,Veeramadakari,0.37583,0.36284,true,false
+38,HMT Ward,36,Chatrapati Shivaji,0.16556,0.50568,true,true
+38,HMT Ward,22,Chokkasandra,0.00497,0,false,false
+38,HMT Ward,24,Rajagopal Nagar,0.00166,0.00323,false,false
+38,HMT Ward,37,Chanakya,0.00166,0.01262,false,false
+38,HMT Ward,50,Marappana Palya,0.00166,0.00293,false,false
+38,HMT Ward,21,T Dasarahalli,0,0.00125,false,false
+38,HMT Ward,38,J P Park,0,0.0014,false,false
+38,HMT Ward,42,Lakshmi Devi Nagar,0,0.00132,false,false
+39,Chokkasandra,22,Chokkasandra,0.54305,0.99504,true,true
+39,Chokkasandra,24,Rajagopal Nagar,0.12583,0.26979,true,false
+39,Chokkasandra,23,Nelagadderanahalli,0.1181,0.10424,true,false
+39,Chokkasandra,19,Defence Colony,0.09934,0.24329,false,false
+39,Chokkasandra,28,Dodda Bidarakallu,0.0596,0.02706,false,false
+39,Chokkasandra,21,T Dasarahalli,0.05408,0.18672,false,false
+40,Dodda Bidarakallu,28,Dodda Bidarakallu,0.59324,0.95882,true,true
+40,Dodda Bidarakallu,29,Vidyamanyanagar,0.26158,0.68734,true,true
+40,Dodda Bidarakallu,31,Doddagollarahatti,0.05507,0.0979,false,false
+40,Dodda Bidarakallu,22,Chokkasandra,0.00125,0.00496,false,false
+40,Dodda Bidarakallu,23,Nelagadderanahalli,0,0.00115,false,false
+41,Peenya Industrial Area,23,Nelagadderanahalli,0.72387,0.874,true,true
+41,Peenya Industrial Area,24,Rajagopal Nagar,0.22222,0.67205,true,true
+41,Peenya Industrial Area,25,Rajeshwari Nagar,0.0319,0.14472,false,false
+41,Peenya Industrial Area,26,Hegganahalli,0.0088,0.02941,false,false
+41,Peenya Industrial Area,29,Vidyamanyanagar,0.0088,0.01292,false,false
+41,Peenya Industrial Area,28,Dodda Bidarakallu,0.0022,0.00118,false,false
+41,Peenya Industrial Area,22,Chokkasandra,0.0011,0,false,false
+41,Peenya Industrial Area,42,Lakshmi Devi Nagar,0.0011,0.00661,false,false
+42,Lakshmi Devi Nagar,36,Chatrapati Shivaji,0.37654,0.33333,true,false
+42,Lakshmi Devi Nagar,41,Peenya,0.33128,0.17348,true,false
+42,Lakshmi Devi Nagar,42,Lakshmi Devi Nagar,0.28395,0.52513,true,true
+42,Lakshmi Devi Nagar,50,Marappana Palya,0.00412,0,false,false
+42,Lakshmi Devi Nagar,53,Nandini Layout,0.00206,0.00105,false,false
+42,Lakshmi Devi Nagar,54,Jai Maruthinagara,0.00206,0,false,false
+43,Nandini Layout,53,Nandini Layout,0.63808,0.94316,true,true
+43,Nandini Layout,54,Jai Maruthinagara,0.26281,0.63429,true,true
+43,Nandini Layout,52,Mahalakshimpuram,0.09577,0.14265,false,false
+43,Nandini Layout,41,Peenya,0.00111,0.00124,false,false
+43,Nandini Layout,42,Lakshmi Devi Nagar,0.00111,0,false,false
+43,Nandini Layout,50,Marappana Palya,0.00111,0,false,false
+43,Nandini Layout,43,Ranadheera Kanteerava,0,0.00124,false,false
+44,Marappana Palya,50,Marappana Palya,0.92581,0.99609,true,true
+44,Marappana Palya,52,Mahalakshimpuram,0.04675,0.08734,false,false
+44,Marappana Palya,53,Nandini Layout,0.02541,0.05579,false,false
+44,Marappana Palya,51,Nagapura,0.00203,0.00198,false,false
+45,Malleswaram,61,Malleswaram,0.99715,0.96324,true,true
+45,Malleswaram,37,Chanakya,0.00142,0.00473,false,false
+45,Malleswaram,59,Mattikere,0.00142,0,false,false
+45,Malleswaram,60,Aramane Nagara,0,0.00157,false,false
+45,Malleswaram,64,Kadu Malleshwara,0,0.00123,false,false
+46,Jayachamarajendra Nagar,73,Jayachamarajendra  Nagar,0.98962,0.57886,true,true
+46,Jayachamarajendra Nagar,71,Chamundi Nagara,0.00692,0.00385,false,false
+46,Jayachamarajendra Nagar,74,Kaval Bairasandra,0.00173,0,false,false
+46,Jayachamarajendra Nagar,127,Jayamahal,0.00173,0,false,false
+47,Devara Jeevanahalli,74,Kaval Bairasandra,0.73134,0.47358,true,false
+47,Devara Jeevanahalli,77,Devara Jeevanahalli,0.26406,0.87093,true,true
+47,Devara Jeevanahalli,73,Jayachamarajendra  Nagar,0.00344,0.00168,false,false
+47,Devara Jeevanahalli,76,Muneshwara Nagar,0.00115,0,false,false
+48,Muneshwara Nagar,76,Muneshwara Nagar,0.65602,0.6117,true,true
+48,Muneshwara Nagar,78,S K Garden,0.23584,0.11617,true,false
+48,Muneshwara Nagar,77,Devara Jeevanahalli,0.10402,0.12791,true,false
+48,Muneshwara Nagar,74,Kaval Bairasandra,0.00206,0,false,false
+48,Muneshwara Nagar,75,Kushal Nagar,0.00206,0,false,false
+49,Lingarajapura,102,Lingarajapura,0.7369,0.44977,true,false
+49,Lingarajapura,98,Kacharkanahalli,0.2621,0.14248,true,false
+49,Lingarajapura,97,Venkateshpura,0.00101,0.00234,false,false
+49,Lingarajapura,79,Sagayarapuram,0,0.00108,false,false
+49,Lingarajapura,103,Maruthi Seva Nagar,0,0.00115,false,false
+50,Benniganahalli,118,Lal Bahadur Nagar,0.76099,0.99902,true,true
+50,Benniganahalli,117,C V Raman Nagar,0.22937,0.36756,true,false
+50,Benniganahalli,100,Banasavadi,0.00536,0.00103,false,false
+50,Benniganahalli,103,Maruthi Seva Nagar,0.00322,0.01149,false,false
+50,Benniganahalli,119,New Bayappanahalli,0.00107,0,false,false
+50,Benniganahalli,101,Kammanahalli,0,0.00393,false,false
+51,Vijnanapura,85,Vijinapura,0.7161,0.99693,true,true
+51,Vijnanapura,84,Ramamurthy Nagara,0.26695,0.27308,true,false
+51,Vijnanapura,86,K R Puram,0.01589,0.01229,false,false
+51,Vijnanapura,82,Babusab Palya,0.00106,0,false,false
+52,K R Puram,86,K R Puram,0.67092,0.77727,true,true
+52,K R Puram,87,Medahalli,0.2584,0.40645,true,true
+52,K R Puram,88,Basavanapura,0.00232,0.00543,false,false
+53,Basavanapura,88,Basavanapura,0.73117,0.94701,true,true
+53,Basavanapura,87,Medahalli,0.17134,0.32903,true,false
+53,Basavanapura,86,K R Puram,0.03545,0.05376,false,false
+53,Basavanapura,89,Devasandra,0.00295,0.00867,false,false
+53,Basavanapura,106,Hudi,0,0.00298,false,false
+54,Hudi,106,Hudi,0.40782,0.67694,true,true
+54,Hudi,105,Belathur,0.14525,0.27758,true,false
+54,Hudi,81,Horamavu,0.03352,0.04038,false,false
+54,Hudi,88,Basavanapura,0.01676,0.03533,false,false
+54,Hudi,104,Kadugodi,0.01676,0.04531,false,false
+54,Hudi,83,Kalkere,0.00559,0.02532,false,false
+54,Hudi,107,Garudachar Playa,0,0.009,false,false
+55,Devasandra,89,Devasandra,0.7949,0.97026,true,true
+55,Devasandra,86,K R Puram,0.20255,0.15515,true,false
+55,Devasandra,84,Ramamurthy Nagara,0.00127,0,false,false
+55,Devasandra,107,Garudachar Playa,0.00127,0.0015,false,false
+56,A Narayanapura,91,A Narayanapura,0.7763,0.99005,true,true
+56,A Narayanapura,90,Mahadevapura,0.21927,0.12295,true,false
+56,A Narayanapura,85,Vijinapura,0.00221,0.00307,false,false
+56,A Narayanapura,89,Devasandra,0.00111,0.00248,false,false
+56,A Narayanapura,117,C V Raman Nagar,0.00111,0.00411,false,false
+57,C V Raman Nagar,117,C V Raman Nagar,0.52423,0.62423,true,true
+57,C V Raman Nagar,123,Jalakanteshwara Nagara,0.41116,0.98969,true,true
+57,C V Raman Nagar,122,New Thippasandra,0.06021,0.08408,false,false
+57,C V Raman Nagar,91,A Narayanapura,0.00294,0.00896,false,false
+57,C V Raman Nagar,90,Mahadevapura,0.00147,0,false,false
+58,New Tippasandara,122,New Thippasandra,0.71709,0.91465,true,true
+58,New Tippasandara,121,Old Thippasandra,0.27598,0.44668,true,true
+58,New Tippasandara,117,C V Raman Nagar,0.00462,0.00205,false,false
+58,New Tippasandara,120,Hoysala Nagar,0.00115,0,false,false
+58,New Tippasandara,123,Jalakanteshwara Nagara,0.00115,0.00344,false,false
+58,New Tippasandara,93,HAL Airport,0,0.00115,false,false
+58,New Tippasandara,119,New Bayappanahalli,0,0.00119,false,false
+59,Maruthi Seva Nagar,103,Maruthi Seva Nagar,0.69694,0.91839,true,true
+59,Maruthi Seva Nagar,102,Lingarajapura,0.29739,0.49543,true,true
+59,Maruthi Seva Nagar,79,Sagayarapuram,0.00341,0.00541,false,false
+59,Maruthi Seva Nagar,118,Lal Bahadur Nagar,0.00227,0.00098,false,false
+60,Sagayarapuram,79,Sagayarapuram,0.98945,0.95671,true,true
+60,Sagayarapuram,78,S K Garden,0.00422,0.00359,false,false
+60,Sagayarapuram,97,Venkateshpura,0.00316,0.00234,false,false
+60,Sagayarapuram,102,Lingarajapura,0.00316,0.00114,false,false
+61,S K Garden,78,S K Garden,0.6204,0.8515,true,true
+61,S K Garden,80,Pulikeshinagar,0.37645,0.21646,true,false
+61,S K Garden,126,Ramaswamy Palya,0.0021,0.00813,false,false
+61,S K Garden,74,Kaval Bairasandra,0.00105,0.00189,false,false
+61,S K Garden,77,Devara Jeevanahalli,0,0.00116,false,false
+62,Ramaswamy Palya,126,Ramaswamy Palya,0.64207,0.55285,true,true
+62,Ramaswamy Palya,127,Jayamahal,0.34802,0.21495,true,false
+62,Ramaswamy Palya,74,Kaval Bairasandra,0.00441,0.00377,false,false
+62,Ramaswamy Palya,78,S K Garden,0.0033,0.00359,false,false
+62,Ramaswamy Palya,73,Jayachamarajendra  Nagar,0.0022,0.00168,false,false
+63,Jayamahal,127,Jayamahal,0.52552,0.57243,true,true
+63,Jayamahal,126,Ramaswamy Palya,0.27977,0.43577,true,false
+63,Jayamahal,128,Vasanth Nagar,0.17769,0.05817,false,false
+63,Jayamahal,80,Pulikeshinagar,0.01323,0.00457,false,false
+63,Jayamahal,60,Aramane Nagara,0.00378,0,false,false
+64,Rajamahal Guttahalli,65,Rajamahal Guttahalli,0.97069,0.99205,true,true
+64,Rajamahal Guttahalli,64,Kadu Malleshwara,0.01353,0,false,false
+64,Rajamahal Guttahalli,132,Dattatreya Temple,0.01015,0.00298,false,false
+64,Rajamahal Guttahalli,60,Aramane Nagara,0.00564,0,false,false
+65,Kadu Malleshwar Ward,64,Kadu Malleshwara,0.99149,0.99387,true,true
+65,Kadu Malleshwar Ward,62,Subramanya Nagar,0.00243,0.00401,false,false
+65,Kadu Malleshwar Ward,132,Dattatreya Temple,0.00243,0,false,false
+65,Kadu Malleshwar Ward,60,Aramane Nagara,0.00122,0,false,false
+65,Kadu Malleshwar Ward,63,Gayithri Nagar,0.00122,0.00308,false,false
+65,Kadu Malleshwar Ward,65,Rajamahal Guttahalli,0.00122,0,false,false
+66,Subramanya Nagar,62,Subramanya Nagar,0.99603,0.99299,true,true
+66,Subramanya Nagar,51,Nagapura,0.00199,0.00099,false,false
+66,Subramanya Nagar,36,Chatrapati Shivaji,0.00099,0,false,false
+66,Subramanya Nagar,61,Malleswaram,0.00099,0.00147,false,false
+66,Subramanya Nagar,63,Gayithri Nagar,0,0.00154,false,false
+67,Nagapura,51,Nagapura,0.95302,0.99504,true,true
+67,Nagapura,52,Mahalakshimpuram,0.04602,0.08734,false,false
+67,Nagapura,55,Puneet Rajkumar,0.00096,0.00132,false,false
+67,Nagapura,62,Subramanya Nagar,0,0.001,false,false
+67,Nagapura,144,Basaveshwara Nagar,0,0.00098,false,false
+68,Mahalakshimpuram,52,Mahalakshimpuram,0.67538,0.68268,true,true
+68,Mahalakshimpuram,54,Jai Maruthinagara,0.22558,0.36267,true,false
+68,Mahalakshimpuram,55,Puneet Rajkumar,0.09629,0.13642,false,false
+68,Mahalakshimpuram,50,Marappana Palya,0.00138,0.00098,false,false
+68,Mahalakshimpuram,51,Nagapura,0.00138,0.00099,false,false
+69,Laggere,43,Ranadheera Kanteerava,0.65962,0.99753,true,true
+69,Laggere,42,Lakshmi Devi Nagar,0.24169,0.46693,true,false
+69,Laggere,44,Veera Sindhura Lakshamana,0.09668,0.10405,false,false
+69,Laggere,25,Rajeshwari Nagar,0.00201,0.00905,false,false
+69,Laggere,24,Rajagopal Nagar,0,0.00162,false,false
+69,Laggere,55,Puneet Rajkumar,0,0.00132,false,false
+70,Rajagopal Nagar,26,Hegganahalli,0.47928,0.68984,true,true
+70,Rajagopal Nagar,25,Rajeshwari Nagar,0.47081,0.84623,true,true
+70,Rajagopal Nagar,24,Rajagopal Nagar,0.0452,0.05331,false,false
+70,Rajagopal Nagar,44,Veera Sindhura Lakshamana,0.00282,0,false,false
+70,Rajagopal Nagar,27,Sunkadakatte,0.00188,0.00146,false,false
+71,Hegganahalli,27,Sunkadakatte,0.59623,0.93013,true,true
+71,Hegganahalli,26,Hegganahalli,0.20377,0.26738,true,false
+71,Hegganahalli,29,Vidyamanyanagar,0.12201,0.04651,false,false
+71,Hegganahalli,23,Nelagadderanahalli,0.05912,0.02062,false,false
+71,Hegganahalli,30,Herohalli,0.01635,0.01181,false,false
+71,Hegganahalli,46,Sir M. Vishweshwaraiah,0.00252,0,false,false
+72,Herohalli,31,Doddagollarahatti,0.45298,0.48427,true,true
+72,Herohalli,30,Herohalli,0.35665,0.95144,true,true
+72,Herohalli,29,Vidyamanyanagar,0.16399,0.25323,true,false
+72,Herohalli,27,Sunkadakatte,0.00917,0.0655,false,false
+72,Herohalli,47,Nalvadi Krishnaraja Wadior Park,0.00115,0.00234,false,false
+73,Kottegepalya,45,Vijayanagara Krishnadevaraya,0.49932,0.99528,true,true
+73,Kottegepalya,48,Jnana Bharathi,0.28317,0.16541,true,false
+73,Kottegepalya,44,Veera Sindhura Lakshamana,0.20793,0.89595,true,true
+73,Kottegepalya,153,Nagarabhavi,0.0041,0.00435,false,false
+73,Kottegepalya,26,Hegganahalli,0.00274,0.01337,false,false
+73,Kottegepalya,46,Sir M. Vishweshwaraiah,0.00137,0,false,false
+73,Kottegepalya,152,Mudalapalya,0.00137,0.01506,false,false
+73,Kottegepalya,27,Sunkadakatte,0,0.00146,false,false
+73,Kottegepalya,43,Ranadheera Kanteerava,0,0.00124,false,false
+73,Kottegepalya,57,Shakthi Ganapathi Nagar,0,0.00119,false,false
+73,Kottegepalya,58,Vrisabhavathi Nagar,0,0.00201,false,false
+73,Kottegepalya,149,Kaveripura,0,0.00101,false,false
+74,Shakthi Ganapathi Nagar,57,Shakthi Ganapathi Nagar,0.66195,0.69322,true,true
+74,Shakthi Ganapathi Nagar,56,Shankar Matt,0.3329,0.31388,true,false
+74,Shakthi Ganapathi Nagar,44,Veera Sindhura Lakshamana,0.00386,0,false,false
+74,Shakthi Ganapathi Nagar,145,Kamakshipalya,0.00129,0.00206,false,false
+75,Shankar Matt,55,Puneet Rajkumar,0.52128,0.86093,true,true
+75,Shankar Matt,56,Shankar Matt,0.47766,0.68172,true,true
+75,Shankar Matt,43,Ranadheera Kanteerava,0.00106,0,false,false
+75,Shankar Matt,54,Jai Maruthinagara,0,0.00303,false,false
+76,Gayithri Nagar,63,Gayithri Nagar,0.98767,0.99231,true,true
+76,Gayithri Nagar,140,Prakash Nagar,0.00616,0.00372,false,false
+76,Gayithri Nagar,51,Nagapura,0.00154,0,false,false
+76,Gayithri Nagar,62,Subramanya Nagar,0.00154,0.002,false,false
+76,Gayithri Nagar,64,Kadu Malleshwara,0.00154,0.00245,false,false
+76,Gayithri Nagar,134,Subhash Nagar,0.00154,0.00132,false,false
+76,Gayithri Nagar,139,Dayananda Nagar,0,0.00077,false,false
+77,Dattatreya Temple,132,Dattatreya Temple,0.99556,0.99404,true,true
+77,Dattatreya Temple,65,Rajamahal Guttahalli,0.00296,0.00341,false,false
+77,Dattatreya Temple,133,Gandhinagar,0.00148,0,false,false
+77,Dattatreya Temple,64,Kadu Malleshwara,0,0.00123,false,false
+78,Pulikeshinagar,80,Pulikeshinagar,0.98928,0.77439,true,true
+78,Pulikeshinagar,127,Jayamahal,0.00459,0,false,false
+78,Pulikeshinagar,79,Sagayarapuram,0.00306,0.00216,false,false
+78,Pulikeshinagar,126,Ramaswamy Palya,0.00306,0.00325,false,false
+78,Pulikeshinagar,130,Bharathi Nagar,0,0.0035,false,false
+79,Sarvagna Nagar,119,New Bayappanahalli,0.99283,0.99522,true,true
+79,Sarvagna Nagar,80,Pulikeshinagar,0.00478,0.00457,false,false
+79,Sarvagna Nagar,103,Maruthi Seva Nagar,0.00119,0.0023,false,false
+79,Sarvagna Nagar,117,C V Raman Nagar,0.00119,0.00205,false,false
+80,Hoysala Nagar,120,Hoysala Nagar,0.75262,0.9987,true,true
+80,Hoysala Nagar,121,Old Thippasandra,0.23953,0.24341,true,false
+80,Hoysala Nagar,119,New Bayappanahalli,0.00654,0.00239,false,false
+80,Hoysala Nagar,131,Ulsoor,0.00131,0,false,false
+80,Hoysala Nagar,179,Jogupalya,0,0.00121,false,false
+81,Vijnana Nagar,90,Mahadevapura,0.54972,0.87588,true,true
+81,Vijnana Nagar,92,Vijnana Nagar,0.32873,0.91617,true,true
+81,Vijnana Nagar,93,HAL Airport,0.10912,0.08976,false,false
+81,Vijnana Nagar,108,Dodda Nekkundi,0.01105,0.00581,false,false
+81,Vijnana Nagar,123,Jalakanteshwara Nagara,0.00138,0.00687,false,false
+81,Vijnana Nagar,91,A Narayanapura,0,0.001,false,false
+81,Vijnana Nagar,122,New Thippasandra,0,0.00127,false,false
+82,Garudachar Playa,106,Hudi,0.41339,0.30517,true,false
+82,Garudachar Playa,107,Garudachar Playa,0.33188,0.98201,true,true
+82,Garudachar Playa,105,Belathur,0.24017,0.19396,true,false
+82,Garudachar Playa,89,Devasandra,0.01164,0.01859,false,false
+82,Garudachar Playa,108,Dodda Nekkundi,0.00146,0.00233,false,false
+82,Garudachar Playa,110,Whitefield,0.00146,0.00113,false,false
+82,Garudachar Playa,90,Mahadevapura,0,0.00117,false,false
+83,Kadugodi,105,Belathur,0.39119,0.52033,true,true
+83,Kadugodi,104,Kadugodi,0.37824,0.80937,true,true
+83,Kadugodi,111,Hagadur,0.12306,0.2196,true,false
+83,Kadugodi,110,Whitefield,0.07383,0.07345,false,false
+83,Kadugodi,106,Hudi,0.00259,0.00398,false,false
+84,Hagadur,110,Whitefield,0.53644,0.6226,true,true
+84,Hagadur,111,Hagadur,0.39665,0.76179,true,true
+84,Hagadur,104,Kadugodi,0.05615,0.13906,false,false
+84,Hagadur,112,Varthuru,0.00597,0.00126,false,false
+84,Hagadur,105,Belathur,0,0.00348,false,false
+85,Dodda Nekkundi,108,Dodda Nekkundi,0.4372,0.90349,true,true
+85,Dodda Nekkundi,110,Whitefield,0.27174,0.29831,true,false
+85,Dodda Nekkundi,109,AECS Layout,0.18961,0.95061,true,true
+85,Dodda Nekkundi,113,Munnekollala,0.09058,0.11468,false,false
+85,Dodda Nekkundi,106,Hudi,0.00845,0.01093,false,false
+85,Dodda Nekkundi,92,Vijnana Nagar,0.00121,0.001,false,false
+85,Dodda Nekkundi,107,Garudachar Playa,0.00121,0.0075,false,false
+85,Dodda Nekkundi,93,HAL Airport,0,0.00115,false,false
+86,Marathahalli,115,Bellanduru,0.43716,0.1418,true,false
+86,Marathahalli,114,Marathahalli,0.36066,0.27249,true,false
+86,Marathahalli,108,Dodda Nekkundi,0.16211,0.08837,false,false
+86,Marathahalli,109,AECS Layout,0.03643,0.04567,false,false
+86,Marathahalli,93,HAL Airport,0.00364,0.0023,false,false
+87,HAL Airport,93,HAL Airport,0.96782,0.90449,true,true
+87,HAL Airport,92,Vijnana Nagar,0.02599,0.08283,false,false
+87,HAL Airport,108,Dodda Nekkundi,0.00495,0,false,false
+87,HAL Airport,114,Marathahalli,0.00124,0.0013,false,false
+87,HAL Airport,125,Konena Agrahara,0,0.00296,false,false
+88,Jeevanbhima Nagar,124,Jeevanbhima Nagar,0.65055,0.49718,true,false
+88,Jeevanbhima Nagar,121,Old Thippasandra,0.34307,0.30991,true,false
+88,Jeevanbhima Nagar,125,Konena Agrahara,0.00547,0.01085,false,false
+88,Jeevanbhima Nagar,93,HAL Airport,0.00091,0.00115,false,false
+88,Jeevanbhima Nagar,178,Domlur,0,0.00137,false,false
+89,Jogupalya,179,Jogupalya,0.96033,0.74182,true,true
+89,Jogupalya,178,Domlur,0.03617,0.01231,false,false
+89,Jogupalya,120,Hoysala Nagar,0.00233,0.0013,false,false
+89,Jogupalya,131,Ulsoor,0.00117,0,false,false
+90,Halsoor,131,Ulsoor,0.99443,0.90024,true,true
+90,Halsoor,181,Shantala Nagar,0.00223,0.00109,false,false
+90,Halsoor,119,New Bayappanahalli,0.00111,0.00119,false,false
+90,Halsoor,129,Sampangiram Nagar,0.00111,0,false,false
+90,Halsoor,130,Bharathi Nagar,0.00111,0.00467,false,false
+91,Bharathi Nagar,130,Bharathi Nagar,0.5842,0.68341,true,true
+91,Bharathi Nagar,129,Sampangiram Nagar,0.30402,0.06742,false,false
+91,Bharathi Nagar,127,Jayamahal,0.11028,0.05607,false,false
+91,Bharathi Nagar,131,Ulsoor,0.00149,0,false,false
+92,Shivaji Nagar,127,Jayamahal,0.49937,0.15187,true,false
+92,Shivaji Nagar,130,Bharathi Nagar,0.49182,0.30841,true,false
+92,Shivaji Nagar,128,Vasanth Nagar,0.00503,0.00112,false,false
+92,Shivaji Nagar,80,Pulikeshinagar,0.00377,0,false,false
+93,Vasanth Nagar,128,Vasanth Nagar,0.99237,0.71477,true,true
+93,Vasanth Nagar,133,Gandhinagar,0.00509,0.00525,false,false
+93,Vasanth Nagar,60,Aramane Nagara,0.00254,0,false,false
+93,Vasanth Nagar,65,Rajamahal Guttahalli,0,0.00341,false,false
+93,Vasanth Nagar,127,Jayamahal,0,0.00234,false,false
+93,Vasanth Nagar,132,Dattatreya Temple,0,0.00149,false,false
+94,Gandhinagar,133,Gandhinagar,0.97919,0.95144,true,true
+94,Gandhinagar,134,Subhash Nagar,0.01821,0.03289,false,false
+94,Gandhinagar,132,Dattatreya Temple,0.0013,0.00149,false,false
+94,Gandhinagar,138,Chickpete,0.0013,0.00104,false,false
+94,Gandhinagar,128,Vasanth Nagar,0,0.00112,false,false
+95,Subhash Nagar,134,Subhash Nagar,0.99098,0.96053,true,true
+95,Subhash Nagar,135,Okalipuram,0.00515,0.01047,false,false
+95,Subhash Nagar,139,Dayananda Nagar,0.00258,0.00536,false,false
+95,Subhash Nagar,63,Gayithri Nagar,0.00129,0,false,false
+95,Subhash Nagar,64,Kadu Malleshwara,0,0.00123,false,false
+95,Subhash Nagar,133,Gandhinagar,0,0.00262,false,false
+95,Subhash Nagar,137,Cottonpete,0,0.00409,false,false
+96,Okalipuram,135,Okalipuram,0.98846,0.98639,true,true
+96,Okalipuram,136,Binnipete,0.00735,0.00579,false,false
+96,Okalipuram,142,Sriramamandir,0.0021,0.00126,false,false
+96,Okalipuram,139,Dayananda Nagar,0.00105,0.00077,false,false
+96,Okalipuram,140,Prakash Nagar,0.00105,0,false,false
+97,Dayananda Nagar,139,Dayananda Nagar,0.98409,0.99158,true,true
+97,Dayananda Nagar,140,Prakash Nagar,0.00909,0.01117,false,false
+97,Dayananda Nagar,63,Gayithri Nagar,0.00682,0.00308,false,false
+98,Prakash Nagar,140,Prakash Nagar,0.97774,0.9851,true,true
+98,Prakash Nagar,142,Sriramamandir,0.01299,0.00253,false,false
+98,Prakash Nagar,63,Gayithri Nagar,0.00557,0,false,false
+98,Prakash Nagar,139,Dayananda Nagar,0.00186,0.00153,false,false
+98,Prakash Nagar,141,Rajaji Nagar,0.00186,0.00232,false,false
+99,Rajaji Nagar,141,Rajaji Nagar,0.90634,0.93627,true,true
+99,Rajaji Nagar,144,Basaveshwara Nagar,0.0879,0.0957,false,false
+99,Rajaji Nagar,51,Nagapura,0.00432,0.00099,false,false
+99,Rajaji Nagar,56,Shankar Matt,0.00144,0.0022,false,false
+100,Basaveshwara Nagar,144,Basaveshwara Nagar,0.90454,0.90039,true,true
+100,Basaveshwara Nagar,145,Kamakshipalya,0.09263,0.08041,false,false
+100,Basaveshwara Nagar,57,Shakthi Ganapathi Nagar,0.00189,0.00119,false,false
+100,Basaveshwara Nagar,146,Dr. Raj Kumar Ward,0.00095,0,false,false
+100,Basaveshwara Nagar,56,Shankar Matt,0,0.0011,false,false
+100,Basaveshwara Nagar,147,Agrahara Dasarahalli,0,0.00091,false,false
+101,Kamakshipalya,145,Kamakshipalya,1,0.91134,true,true
+101,Kamakshipalya,58,Vrisabhavathi Nagar,0,0.00403,false,false
+101,Kamakshipalya,149,Kaveripura,0,0.00101,false,false
+102,Vrisabhavathi Nagar,58,Vrisabhavathi Nagar,0.78892,0.99396,true,true
+102,Vrisabhavathi Nagar,57,Shakthi Ganapathi Nagar,0.20899,0.3044,true,false
+102,Vrisabhavathi Nagar,145,Kamakshipalya,0.00104,0,false,false
+102,Vrisabhavathi Nagar,149,Kaveripura,0.00104,0,false,false
+102,Vrisabhavathi Nagar,45,Vijayanagara Krishnadevaraya,0,0.00157,false,false
+102,Vrisabhavathi Nagar,56,Shankar Matt,0,0.0011,false,false
+103,Kaveripura,149,Kaveripura,0.67526,0.99798,true,true
+103,Kaveripura,150,Marenahalli,0.13849,0.27591,true,false
+103,Kaveripura,148,Govindaraja Nagar,0.12512,0.2512,true,false
+103,Kaveripura,152,Mudalapalya,0.0554,0.14178,false,false
+103,Kaveripura,45,Vijayanagara Krishnadevaraya,0.00478,0,false,false
+103,Kaveripura,58,Vrisabhavathi Nagar,0.00096,0,false,false
+103,Kaveripura,145,Kamakshipalya,0,0.00103,false,false
+104,Govindaraja Nagar,148,Govindaraja Nagar,0.69828,0.65909,true,true
+104,Govindaraja Nagar,147,Agrahara Dasarahalli,0.19732,0.21668,true,false
+104,Govindaraja Nagar,146,Dr. Raj Kumar Ward,0.10057,0.06091,false,false
+104,Govindaraja Nagar,145,Kamakshipalya,0.00287,0.00103,false,false
+104,Govindaraja Nagar,157,Vijayanagar,0.00096,0,false,false
+105,Agrahara Dasarahalli,147,Agrahara Dasarahalli,0.65586,0.75793,true,true
+105,Agrahara Dasarahalli,146,Dr. Raj Kumar Ward,0.33796,0.20939,true,false
+105,Agrahara Dasarahalli,145,Kamakshipalya,0.00617,0.00412,false,false
+105,Agrahara Dasarahalli,144,Basaveshwara Nagar,0,0.00098,false,false
+106,Dr. Raj Kumar Ward,146,Dr. Raj Kumar Ward,0.97912,0.72716,true,true
+106,Dr. Raj Kumar Ward,147,Agrahara Dasarahalli,0.01351,0.02448,false,false
+106,Dr. Raj Kumar Ward,157,Vijayanagar,0.00369,0.00155,false,false
+106,Dr. Raj Kumar Ward,142,Sriramamandir,0.00246,0.00505,false,false
+106,Dr. Raj Kumar Ward,136,Binnipete,0.00123,0,false,false
+106,Dr. Raj Kumar Ward,144,Basaveshwara Nagar,0,0.00098,false,false
+107,Shivanagara,143,Shivanagara,0.93598,0.99311,true,true
+107,Shivanagara,141,Rajaji Nagar,0.05916,0.05446,false,false
+107,Shivanagara,144,Basaveshwara Nagar,0.00324,0.00098,false,false
+107,Shivanagara,146,Dr. Raj Kumar Ward,0.00162,0,false,false
+108,Sriramamandir,142,Sriramamandir,0.98994,0.99116,true,true
+108,Sriramamandir,143,Shivanagara,0.00629,0.00689,false,false
+108,Sriramamandir,141,Rajaji Nagar,0.00252,0.00695,false,false
+108,Sriramamandir,136,Binnipete,0.00126,0.00145,false,false
+108,Sriramamandir,135,Okalipuram,0,0.00105,false,false
+109,Chickpete,138,Chickpete,0.92219,0.98339,true,true
+109,Chickpete,133,Gandhinagar,0.07589,0.02887,false,false
+109,Chickpete,129,Sampangiram Nagar,0.00192,0,false,false
+110,Sampangiram Nagar,129,Sampangiram Nagar,0.73269,0.92322,true,true
+110,Sampangiram Nagar,128,Vasanth Nagar,0.22222,0.22371,true,false
+110,Sampangiram Nagar,131,Ulsoor,0.04187,0.09495,false,false
+110,Sampangiram Nagar,133,Gandhinagar,0.00161,0.01181,false,false
+110,Sampangiram Nagar,138,Chickpete,0.00161,0,false,false
+110,Sampangiram Nagar,127,Jayamahal,0,0.00234,false,false
+110,Sampangiram Nagar,172,Dharmaraya Swamy Temple Ward,0,0.0013,false,false
+111,Shantala Nagar,181,Shantala Nagar,0.98006,0.94766,true,true
+111,Shantala Nagar,183,Neelasandra,0.01259,0.02552,false,false
+111,Shantala Nagar,129,Sampangiram Nagar,0.00735,0.00749,false,false
+111,Shantala Nagar,131,Ulsoor,0,0.00361,false,false
+111,Shantala Nagar,182,Shanthi Nagar,0,0.00131,false,false
+112,Domlur,178,Domlur,0.95135,0.73461,true,true
+112,Domlur,179,Jogupalya,0.0473,0.07273,false,false
+112,Domlur,124,Jeevanbhima Nagar,0.00135,0.00141,false,false
+113,Konena Agrahara,124,Jeevanbhima Nagar,0.58172,0.49859,true,true
+113,Konena Agrahara,125,Konena Agrahara,0.40997,0.98619,true,true
+113,Konena Agrahara,93,HAL Airport,0.00693,0,false,false
+113,Konena Agrahara,115,Bellanduru,0.00139,0,false,false
+114,Agaram,180,Agaram,0.8629,0.95726,true,true
+114,Agaram,178,Domlur,0.0504,0.25171,false,false
+114,Agaram,186,Koramangala,0.02419,0.08228,false,false
+114,Agaram,179,Jogupalya,0.02016,0.18424,false,false
+114,Agaram,181,Shantala Nagar,0.01815,0.04907,false,false
+114,Agaram,184,Vannarapete,0.01815,0.28135,false,false
+114,Agaram,115,Bellanduru,0.00202,0.00739,false,false
+114,Agaram,229,Ibluru,0.00202,0.00471,false,false
+114,Agaram,230,Agara,0.00202,0.00085,false,false
+114,Agaram,131,Ulsoor,0,0.0012,false,false
+115,Vannarpet,184,Vannarapete,0.65072,0.71865,true,true
+115,Vannarpet,180,Agaram,0.28389,0.01709,false,false
+115,Vannarpet,183,Neelasandra,0.06539,0.02436,false,false
+116,Nilasandra,183,Neelasandra,0.59443,0.16937,true,false
+116,Nilasandra,180,Agaram,0.39628,0.02137,false,false
+116,Nilasandra,188,Lakkasandra,0.00464,0,false,false
+116,Nilasandra,184,Vannarapete,0.0031,0,false,false
+116,Nilasandra,186,Koramangala,0.00155,0,false,false
+116,Nilasandra,182,Shanthi Nagar,0,0.00131,false,false
+117,Shanthi Nagar,183,Neelasandra,0.53926,0.78074,true,true
+117,Shanthi Nagar,182,Shanthi Nagar,0.45885,0.98691,true,true
+117,Shanthi Nagar,181,Shantala Nagar,0.00189,0.00218,false,false
+117,Shanthi Nagar,171,Sudham Nagara,0,0.00497,false,false
+117,Shanthi Nagar,177,Hombegowda Nagara,0,0.00155,false,false
+117,Shanthi Nagar,188,Lakkasandra,0,0.0013,false,false
+118,Sudham Nagara,171,Sudham Nagara,0.62853,0.5894,true,true
+118,Sudham Nagara,172,Dharmaraya Swamy Temple Ward,0.37147,0.27308,true,false
+119,Dharmaraya Swamy Temple,172,Dharmaraya Swamy Temple Ward,0.89403,0.72562,true,true
+119,Dharmaraya Swamy Temple,171,Sudham Nagara,0.10149,0.10099,true,false
+119,Dharmaraya Swamy Temple,138,Chickpete,0.00299,0.01558,false,false
+119,Dharmaraya Swamy Temple,129,Sampangiram Nagar,0.00149,0.00187,false,false
+120,Cottonpete,137,Cottonpete,0.981,0.98365,true,true
+120,Cottonpete,136,Binnipete,0.00678,0.00145,false,false
+120,Cottonpete,134,Subhash Nagar,0.00543,0.00526,false,false
+120,Cottonpete,133,Gandhinagar,0.00136,0,false,false
+120,Cottonpete,135,Okalipuram,0.00136,0.00209,false,false
+120,Cottonpete,138,Chickpete,0.00136,0,false,false
+120,Cottonpete,165,Chamrajapet,0.00136,0,false,false
+120,Cottonpete,166,Chalavadipalya,0.00136,0.0011,false,false
+121,Binnipete,136,Binnipete,0.9738,0.98553,true,true
+121,Binnipete,167,Jagajivanaram Nagar,0.01456,0.01615,false,false
+121,Binnipete,137,Cottonpete,0.00582,0.00545,false,false
+121,Binnipete,156,Kempapura Agrahara,0.00582,0.00618,false,false
+122,Kempapura Agrahara,156,Kempapura Agrahara,0.95124,0.9897,true,true
+122,Kempapura Agrahara,158,Hosahalli,0.04772,0.02137,false,false
+122,Kempapura Agrahara,136,Binnipete,0.00104,0,false,false
+123,Vijayanagar,157,Vijayanagar,0.74407,0.99689,true,true
+123,Vijayanagar,158,Hosahalli,0.25468,0.26211,true,false
+123,Vijayanagar,146,Dr. Raj Kumar Ward,0.00125,0.00254,false,false
+123,Vijayanagar,156,Kempapura Agrahara,0,0.00309,false,false
+124,Hosahalli,158,Hosahalli,0.57635,0.7151,true,true
+124,Hosahalli,159,Hampi Nagar,0.41995,0.30835,true,false
+124,Hosahalli,157,Vijayanagar,0.00246,0.00155,false,false
+124,Hosahalli,167,Jagajivanaram Nagar,0.00123,0,false,false
+125,Marenahalli,150,Marenahalli,0.89452,0.71989,true,true
+125,Marenahalli,148,Govindaraja Nagar,0.10445,0.08971,false,false
+125,Marenahalli,152,Mudalapalya,0.00103,0.00125,false,false
+126,Maruthi Mandir ward,151,Maruthi Mandir ward,0.99109,0.97174,true,true
+126,Maruthi Mandir ward,161,Attiguppe,0.00636,0,false,false
+126,Maruthi Mandir ward,150,Marenahalli,0.00127,0.0014,false,false
+126,Maruthi Mandir ward,152,Mudalapalya,0.00127,0.00376,false,false
+127,Mudalapalya,152,Mudalapalya,0.55569,0.83814,true,true
+127,Mudalapalya,153,Nagarabhavi,0.42438,0.29608,true,false
+127,Mudalapalya,151,Maruthi Mandir ward,0.01993,0.02557,false,false
+127,Mudalapalya,45,Vijayanagara Krishnadevaraya,0,0.00157,false,false
+127,Mudalapalya,150,Marenahalli,0,0.0028,false,false
+128,Nagarabhavi,153,Nagarabhavi,0.60719,0.68795,true,true
+128,Nagarabhavi,154,Chandra Layout,0.38683,0.37764,true,false
+128,Nagarabhavi,155,Nayandahalli,0.00359,0.00183,false,false
+128,Nagarabhavi,161,Attiguppe,0.0024,0,false,false
+129,Jnana Bharathi ward,48,Jnana Bharathi,0.3987,0.4812,true,true
+129,Jnana Bharathi ward,46,Sir M. Vishweshwaraiah,0.2974,1,true,true
+129,Jnana Bharathi ward,47,Nalvadi Krishnaraja Wadior Park,0.27143,0.9918,true,true
+129,Jnana Bharathi ward,31,Doddagollarahatti,0.02338,0.04021,false,false
+129,Jnana Bharathi ward,30,Herohalli,0.00779,0.03675,false,false
+129,Jnana Bharathi ward,154,Chandra Layout,0.0013,0.01208,false,false
+129,Jnana Bharathi ward,27,Sunkadakatte,0,0.00146,false,false
+129,Jnana Bharathi ward,32,Ullal,0,0.00556,false,false
+129,Jnana Bharathi ward,45,Vijayanagara Krishnadevaraya,0,0.00157,false,false
+129,Jnana Bharathi ward,153,Nagarabhavi,0,0.01161,false,false
+129,Jnana Bharathi ward,155,Nayandahalli,0,0.01099,false,false
+130,Ullalu,32,Ullal,0.56757,0.99444,true,true
+130,Ullalu,31,Doddagollarahatti,0.31818,0.37587,true,false
+130,Ullalu,33,Kengeri,0.07125,0.23917,false,false
+130,Ullalu,47,Nalvadi Krishnaraja Wadior Park,0.00246,0.00585,false,false
+130,Ullalu,48,Jnana Bharathi,0.00246,0,false,false
+130,Ullalu,34,Bande Mutt,0,0.0018,false,false
+131,Nayandahalli,155,Nayandahalli,0.51606,0.98718,true,true
+131,Nayandahalli,154,Chandra Layout,0.4805,0.61027,true,true
+131,Nayandahalli,163,Veerabhadranagar,0.00229,0.0014,false,false
+131,Nayandahalli,48,Jnana Bharathi,0.00115,0,false,false
+131,Nayandahalli,161,Attiguppe,0,0.00156,false,false
+132,Attiguppe,161,Attiguppe,0.81034,0.79688,true,true
+132,Attiguppe,162,Gali Anjenaya Temple ward,0.16034,0.19309,true,false
+132,Attiguppe,163,Veerabhadranagar,0.02586,0.02525,false,false
+132,Attiguppe,151,Maruthi Mandir ward,0.00172,0.00135,false,false
+132,Attiguppe,159,Hampi Nagar,0.00172,0.0017,false,false
+133,Hampi Nagar,159,Hampi Nagar,0.66799,0.62521,true,true
+133,Hampi Nagar,161,Attiguppe,0.24735,0.2,true,false
+133,Hampi Nagar,162,Gali Anjenaya Temple ward,0.08333,0.08056,false,false
+133,Hampi Nagar,150,Marenahalli,0.00132,0,false,false
+133,Hampi Nagar,151,Maruthi Mandir ward,0,0.00135,false,false
+133,Hampi Nagar,160,Bapuji Nagar,0,0.00139,false,false
+134,Bapuji Nagar,160,Bapuji Nagar,0.67053,0.99861,true,true
+134,Bapuji Nagar,164,Avalahalli,0.20766,0.13632,true,false
+134,Bapuji Nagar,159,Hampi Nagar,0.11485,0.06303,false,false
+134,Bapuji Nagar,169,Devaraj Urs Nagar,0.0058,0.00725,false,false
+134,Bapuji Nagar,162,Gali Anjenaya Temple ward,0.00116,0.00256,false,false
+135,Padarayanapura,169,Devaraj Urs Nagar,0.58179,0.4058,true,false
+135,Padarayanapura,168,Padarayanapura,0.40123,0.25093,true,false
+135,Padarayanapura,159,Hampi Nagar,0.01389,0.0017,false,false
+135,Padarayanapura,158,Hosahalli,0.00309,0,false,false
+136,Jagajivanaramnagar,168,Padarayanapura,0.54083,0.67205,true,true
+136,Jagajivanaramnagar,169,Devaraj Urs Nagar,0.42418,0.58454,true,true
+136,Jagajivanaramnagar,167,Jagajivanaram Nagar,0.03499,0.03231,false,false
+136,Jagajivanaramnagar,165,Chamrajapet,0,0.00173,false,false
+136,Jagajivanaramnagar,170,Azad Nagar,0,0.00115,false,false
+137,Rayapuram,167,Jagajivanaram Nagar,0.91371,0.5859,true,true
+137,Rayapuram,168,Padarayanapura,0.07783,0.07329,false,false
+137,Rayapuram,136,Binnipete,0.00508,0.00579,false,false
+137,Rayapuram,156,Kempapura Agrahara,0.00169,0.00103,false,false
+137,Rayapuram,158,Hosahalli,0.00169,0.00142,false,false
+138,Chalavadipalya,167,Jagajivanaram Nagar,0.61188,0.34802,true,false
+138,Chalavadipalya,166,Chalavadipalya,0.37674,0.33077,true,false
+138,Chalavadipalya,137,Cottonpete,0.01138,0.00409,false,false
+139,K R Market,165,Chamrajapet,0.71733,0.38302,true,false
+139,K R Market,166,Chalavadipalya,0.2766,0.4989,true,true
+139,K R Market,167,Jagajivanaram Nagar,0.00304,0.00147,false,false
+139,K R Market,172,Dharmaraya Swamy Temple Ward,0.00203,0,false,false
+139,K R Market,137,Cottonpete,0.00101,0.00272,false,false
+140,Chamrajapet,165,Chamrajapet,0.91074,0.61352,true,true
+140,Chamrajapet,166,Chalavadipalya,0.06276,0.16923,false,false
+140,Chamrajapet,170,Azad Nagar,0.01255,0.00923,false,false
+140,Chamrajapet,167,Jagajivanaram Nagar,0.01116,0.01615,false,false
+140,Chamrajapet,211,Hanumanth Nagar,0.00279,0.00153,false,false
+140,Chamrajapet,168,Padarayanapura,0,0.00373,false,false
+141,Azad Nagar,170,Azad Nagar,0.99292,0.98155,true,true
+141,Azad Nagar,165,Chamrajapet,0.00236,0,false,false
+141,Azad Nagar,169,Devaraj Urs Nagar,0.00236,0.00242,false,false
+141,Azad Nagar,211,Hanumanth Nagar,0.00118,0.00307,false,false
+141,Azad Nagar,212,Srinivasa Nagar,0.00118,0.00123,false,false
+142,Sunkenahalli,173,Sunkenahalli,0.89858,0.90869,true,true
+142,Sunkenahalli,174,Vishveshwara Puram,0.10033,0.0528,false,false
+142,Sunkenahalli,211,Hanumanth Nagar,0.00109,0.00153,false,false
+142,Sunkenahalli,210,Basavanagudi,0,0.00205,false,false
+143,Vishveshwara Puram,174,Vishveshwara Puram,0.94673,0.9441,true,true
+143,Vishveshwara Puram,173,Sunkenahalli,0.05327,0.08686,false,false
+143,Vishveshwara Puram,165,Chamrajapet,0,0.00173,false,false
+143,Vishveshwara Puram,171,Sudham Nagara,0,0.00662,false,false
+144,Siddapura,176,Someshwara Nagar,0.62748,0.28,true,false
+144,Siddapura,175,Ashoka Pillar,0.36856,0.14601,true,false
+144,Siddapura,174,Vishveshwara Puram,0.00264,0.00311,false,false
+144,Siddapura,188,Lakkasandra,0.00132,0,false,false
+145,Hombegowda Nagara,177,Hombegowda Nagara,0.7629,0.99691,true,true
+145,Hombegowda Nagara,171,Sudham Nagara,0.22742,0.29801,true,false
+145,Hombegowda Nagara,182,Shanthi Nagar,0.00645,0.01047,false,false
+145,Hombegowda Nagara,172,Dharmaraya Swamy Temple Ward,0.00323,0,false,false
+145,Hombegowda Nagara,188,Lakkasandra,0,0.00259,false,false
+146,Lakkasandra,188,Lakkasandra,0.73321,0.53756,true,true
+146,Lakkasandra,189,Suddagunte Palya,0.26316,0.22665,true,false
+146,Lakkasandra,187,Adugodi,0.00363,0.00138,false,false
+146,Lakkasandra,177,Hombegowda Nagara,0,0.00155,false,false
+146,Lakkasandra,190,Madivala,0,0.00117,false,false
+147,Adugodi,188,Lakkasandra,0.51902,0.45855,true,false
+147,Adugodi,187,Adugodi,0.48098,0.37293,true,false
+147,Adugodi,189,Suddagunte Palya,0,0.00153,false,false
+148,Ejipura,185,Ejipura,0.65849,1,true,true
+148,Ejipura,186,Koramangala,0.3345,0.17089,true,false
+148,Ejipura,180,Agaram,0.00701,0,false,false
+149,Varthuru,112,Varthuru,0.79455,0.95208,true,true
+149,Varthuru,113,Munnekollala,0.17821,0.50917,true,true
+149,Varthuru,114,Marathahalli,0.02043,0.12647,false,false
+149,Varthuru,111,Hagadur,0.00341,0.01365,false,false
+149,Varthuru,110,Whitefield,0.00227,0.00452,false,false
+149,Varthuru,109,AECS Layout,0,0.00373,false,false
+150,Bellanduru,116,Doddakanahalli,0.4522,0.95444,true,true
+150,Bellanduru,115,Bellanduru,0.30233,0.84786,true,true
+150,Bellanduru,113,Munnekollala,0.12661,0.37615,true,false
+150,Bellanduru,114,Marathahalli,0.0969,0.59974,true,true
+150,Bellanduru,112,Varthuru,0.00646,0.01009,false,false
+150,Bellanduru,229,Ibluru,0.00646,0.05412,false,false
+150,Bellanduru,93,HAL Airport,0.00129,0,false,false
+150,Bellanduru,180,Agaram,0.00129,0.00214,false,false
+150,Bellanduru,124,Jeevanbhima Nagar,0,0.00282,false,false
+150,Bellanduru,243,Kudlu,0,0.00197,false,false
+151,Koramangala,186,Koramangala,0.64826,0.74525,true,true
+151,Koramangala,187,Adugodi,0.35029,0.62431,true,true
+151,Koramangala,185,Ejipura,0.00145,0,false,false
+151,Koramangala,189,Suddagunte Palya,0,0.00153,false,false
+151,Koramangala,191,Jakkasandra,0,0.00182,false,false
+152,Suddagunte Palya,189,Suddagunte Palya,0.6049,0.69985,true,true
+152,Suddagunte Palya,190,Madivala,0.39084,0.66159,true,true
+152,Suddagunte Palya,176,Someshwara Nagar,0.00213,0.00211,false,false
+152,Suddagunte Palya,187,Adugodi,0.00213,0.00138,false,false
+153,Jayanagar,175,Ashoka Pillar,0.57205,0.85031,true,true
+153,Jayanagar,176,Someshwara Nagar,0.42504,0.71684,true,true
+153,Jayanagar,196,Byrasandra,0.00291,0.00114,false,false
+154,Basavanagudi,210,Basavanagudi,0.96234,0.99488,true,true
+154,Basavanagudi,211,Hanumanth Nagar,0.03766,0.04908,false,false
+155,Hanumanth Nagar,211,Hanumanth Nagar,0.73742,0.63344,true,true
+155,Hanumanth Nagar,212,Srinivasa Nagar,0.26007,0.34479,true,true
+155,Hanumanth Nagar,165,Chamrajapet,0.00084,0,false,false
+155,Hanumanth Nagar,170,Azad Nagar,0.00084,0.00231,false,false
+155,Hanumanth Nagar,173,Sunkenahalli,0.00084,0,false,false
+156,Srinagar,213,Srinagar,0.64262,0.62136,true,true
+156,Srinagar,212,Srinivasa Nagar,0.21858,0.24049,true,false
+156,Srinagar,214,Girinagar,0.13224,0.07712,false,false
+156,Srinagar,170,Azad Nagar,0.00437,0.00346,false,false
+156,Srinagar,164,Avalahalli,0.00219,0.00286,false,false
+157,Gali Anjenaya Temple ward,164,Avalahalli,0.61742,0.65682,true,true
+157,Gali Anjenaya Temple ward,162,Gali Anjenaya Temple ward,0.28963,0.27877,true,false
+157,Gali Anjenaya Temple ward,163,Veerabhadranagar,0.091,0.06872,false,false
+157,Gali Anjenaya Temple ward,170,Azad Nagar,0.00196,0.00231,false,false
+157,Gali Anjenaya Temple ward,213,Srinagar,0,0.00277,false,false
+158,Deepanjali Nagar,163,Veerabhadranagar,0.64098,0.89902,true,true
+158,Deepanjali Nagar,162,Gali Anjenaya Temple ward,0.25569,0.44501,true,true
+158,Deepanjali Nagar,164,Avalahalli,0.10158,0.20305,true,false
+158,Deepanjali Nagar,214,Girinagar,0.00175,0.00523,false,false
+158,Deepanjali Nagar,161,Attiguppe,0,0.00156,false,false
+159,Kengeri,34,Bande Mutt,0.59827,0.45422,true,false
+159,Kengeri,33,Kengeri,0.36717,0.69823,true,true
+159,Kengeri,35,Hemmigepura,0.00432,0,false,false
+160,Rajarajeshwari Nagar,49,Rajarajeshwari Nagar,0.60236,0.90363,true,true
+160,Rajarajeshwari Nagar,48,Jnana Bharathi,0.30446,0.35038,true,false
+160,Rajarajeshwari Nagar,218,Subramanyapura,0.07349,0.10197,false,false
+160,Rajarajeshwari Nagar,35,Hemmigepura,0.01444,0.00341,false,false
+160,Rajarajeshwari Nagar,34,Bande Mutt,0.00262,0,false,false
+160,Rajarajeshwari Nagar,163,Veerabhadranagar,0.00131,0.00561,false,false
+160,Rajarajeshwari Nagar,208,Deen Dayalu Ward,0.00131,0.00621,false,false
+160,Rajarajeshwari Nagar,209,Hosakerehalli,0,0.00234,false,false
+161,Hosakerehalli,209,Hosakerehalli,0.65571,0.99766,true,true
+161,Hosakerehalli,208,Deen Dayalu Ward,0.33571,0.57143,true,true
+161,Hosakerehalli,48,Jnana Bharathi,0.00429,0.0015,false,false
+161,Hosakerehalli,49,Rajarajeshwari Nagar,0.00286,0,false,false
+161,Hosakerehalli,218,Subramanyapura,0.00143,0,false,false
+162,Girinagar,214,Girinagar,0.73757,0.91765,true,true
+162,Girinagar,215,Katriguppe,0.14215,0.25497,true,false
+162,Girinagar,213,Srinagar,0.12028,0.24688,true,false
+162,Girinagar,164,Avalahalli,0,0.00095,false,false
+163,Katriguppe,215,Katriguppe,0.65083,0.74503,true,true
+163,Katriguppe,216,Vidyapeeta ward,0.15404,0.20362,true,false
+163,Katriguppe,212,Srinivasa Nagar,0.09884,0.15337,false,false
+163,Katriguppe,213,Srinagar,0.09499,0.12899,false,false
+163,Katriguppe,207,Kamakya Nagar,0.00128,0.00123,false,false
+163,Katriguppe,208,Deen Dayalu Ward,0,0.00124,false,false
+164,Vidyapeeta ward,216,Vidyapeeta ward,0.54698,0.79638,true,true
+164,Vidyapeeta ward,211,Hanumanth Nagar,0.29858,0.31135,true,false
+164,Vidyapeeta ward,212,Srinivasa Nagar,0.14929,0.26012,true,false
+164,Vidyapeeta ward,202,Ganesh Mandir ward,0.00257,0.00425,false,false
+164,Vidyapeeta ward,207,Kamakya Nagar,0.00129,0,false,false
+164,Vidyapeeta ward,215,Katriguppe,0.00129,0,false,false
+164,Vidyapeeta ward,173,Sunkenahalli,0,0.00445,false,false
+165,Ganesh Mandir ward,202,Ganesh Mandir ward,0.95361,0.931,true,true
+165,Ganesh Mandir ward,201,Umamaheshwara Ward,0.04423,0.05531,false,false
+165,Ganesh Mandir ward,204,Kumaraswamy Layout,0.00108,0,false,false
+165,Ganesh Mandir ward,210,Basavanagudi,0.00108,0.00102,false,false
+166,Karisandra,201,Umamaheshwara Ward,0.99191,0.87527,true,true
+166,Karisandra,202,Ganesh Mandir ward,0.00462,0.00106,false,false
+166,Karisandra,197,Shakambari Nagar,0.00231,0.00099,false,false
+166,Karisandra,203,Banashankari Temple ward,0.00116,0.0025,false,false
+167,Yediyur,200,Yediyur,0.9408,1,true,true
+167,Yediyur,201,Umamaheshwara Ward,0.05534,0.06725,false,false
+167,Yediyur,202,Ganesh Mandir ward,0.00257,0,false,false
+167,Yediyur,210,Basavanagudi,0.00129,0.00205,false,false
+167,Yediyur,175,Ashoka Pillar,0,0.00245,false,false
+168,Pattabhiram Nagar,196,Byrasandra,0.75669,0.59318,true,true
+168,Pattabhiram Nagar,197,Shakambari Nagar,0.191,0.15089,true,false
+168,Pattabhiram Nagar,198,J P Nagar,0.05109,0.04545,false,false
+168,Pattabhiram Nagar,195,Tilak Nagar,0.00122,0.01087,false,false
+169,Byrasandra,196,Byrasandra,0.76596,0.30909,true,false
+169,Byrasandra,195,Tilak Nagar,0.2234,0.2663,true,false
+169,Byrasandra,200,Yediyur,0.0058,0,false,false
+169,Byrasandra,175,Ashoka Pillar,0.00387,0.00123,false,false
+169,Byrasandra,176,Someshwara Nagar,0.00097,0.00105,false,false
+170,Jayanagar East,194,Gurappanapalya,0.27154,0.39076,true,false
+170,Jayanagar East,198,J P Nagar,0.24755,0.13636,true,false
+170,Jayanagar East,195,Tilak Nagar,0.22792,0.34058,true,false
+170,Jayanagar East,196,Byrasandra,0.21047,0.09659,false,false
+170,Jayanagar East,197,Shakambari Nagar,0.03817,0.01874,false,false
+170,Jayanagar East,176,Someshwara Nagar,0.00327,0,false,false
+170,Jayanagar East,189,Suddagunte Palya,0.00109,0,false,false
+171,Gurappanapalya,194,Gurappanapalya,0.6011,0.60213,true,true
+171,Gurappanapalya,195,Tilak Nagar,0.38453,0.38225,true,true
+171,Gurappanapalya,189,Suddagunte Palya,0.00994,0.00306,false,false
+171,Gurappanapalya,192,BTM Layout,0.00442,0.0013,false,false
+172,Madivala,192,BTM Layout,0.61552,0.48249,true,false
+172,Madivala,190,Madivala,0.29806,0.33724,true,false
+172,Madivala,189,Suddagunte Palya,0.08201,0.06738,false,false
+172,Madivala,191,Jakkasandra,0.00353,0.00363,false,false
+172,Madivala,187,Adugodi,0.00088,0,false,false
+173,Jakkasandra,191,Jakkasandra,0.99088,0.99455,true,true
+173,Jakkasandra,230,Agara,0.00547,0.00169,false,false
+173,Jakkasandra,186,Koramangala,0.00365,0.00158,false,false
+174,HSR Layout,230,Agara,0.48366,0.94412,true,true
+174,HSR Layout,229,Ibluru,0.32026,0.66588,true,true
+174,HSR Layout,232,HSR - Singasandra,0.17484,0.35968,true,false
+174,HSR Layout,116,Doddakanahalli,0.01144,0.0024,false,false
+174,HSR Layout,115,Bellanduru,0.00654,0.00295,false,false
+174,HSR Layout,180,Agaram,0.00163,0.00214,false,false
+174,HSR Layout,231,Mangammanapalya,0.00163,0.00252,false,false
+175,Bommanahalli,236,Devarachikkanahalli,0.38955,0.38385,true,true
+175,Bommanahalli,235,Bommanahalli,0.30404,0.5761,true,true
+175,Bommanahalli,233,Rupenaagrahara,0.28029,0.17409,true,false
+175,Bommanahalli,238,Arakere,0.01663,0.01816,false,false
+175,Bommanahalli,232,HSR - Singasandra,0.0095,0.00791,false,false
+176,BTM Layout,193,N S Palya,0.64876,0.99813,true,true
+176,BTM Layout,192,BTM Layout,0.34711,0.51621,true,true
+176,BTM Layout,233,Rupenaagrahara,0.00207,0.0081,false,false
+176,BTM Layout,237,Bilekhalli,0.00207,0.00308,false,false
+176,BTM Layout,194,Gurappanapalya,0,0.0071,false,false
+177,J P Nagar,198,J P Nagar,0.88147,0.81699,true,true
+177,J P Nagar,199,Sarakki,0.11099,0.13872,true,false
+177,J P Nagar,197,Shakambari Nagar,0.00323,0,false,false
+177,J P Nagar,193,N S Palya,0.00216,0.00187,false,false
+177,J P Nagar,240,Vinayakanagar,0.00216,0.00164,false,false
+178,Sarakki,199,Sarakki,0.99194,0.84801,true,true
+178,Sarakki,198,J P Nagar,0.00538,0,false,false
+178,Sarakki,197,Shakambari Nagar,0.00179,0,false,false
+178,Sarakki,240,Vinayakanagar,0.0009,0,false,false
+178,Sarakki,242,Jaraganahalli,0,0.00152,false,false
+179,Shakambari Nagar,197,Shakambari Nagar,0.98768,0.82939,true,true
+179,Shakambari Nagar,198,J P Nagar,0.00616,0,false,false
+179,Shakambari Nagar,196,Byrasandra,0.00548,0,false,false
+179,Shakambari Nagar,203,Banashankari Temple ward,0.00068,0,false,false
+179,Shakambari Nagar,199,Sarakki,0,0.00241,false,false
+179,Shakambari Nagar,201,Umamaheshwara Ward,0,0.00108,false,false
+180,Banashankari Temple ward,203,Banashankari Temple ward,0.83871,0.99374,true,true
+180,Banashankari Temple ward,204,Kumaraswamy Layout,0.10992,0.07565,false,false
+180,Banashankari Temple ward,202,Ganesh Mandir ward,0.04301,0.01805,false,false
+180,Banashankari Temple ward,197,Shakambari Nagar,0.00717,0,false,false
+180,Banashankari Temple ward,201,Umamaheshwara Ward,0.00119,0.00108,false,false
+180,Banashankari Temple ward,220,Yelachenahalli,0,0.00109,false,false
+181,Kumaraswamy Layout,204,Kumaraswamy Layout,0.5,0.91334,true,true
+181,Kumaraswamy Layout,205,Vikram Nagar,0.36574,0.54252,true,true
+181,Kumaraswamy Layout,206,Padmanabha Nagar,0.12346,0.18217,true,false
+181,Kumaraswamy Layout,219,Vasanthpura,0.00926,0.00754,false,false
+181,Kumaraswamy Layout,203,Banashankari Temple ward,0.00154,0.0025,false,false
+181,Kumaraswamy Layout,202,Ganesh Mandir ward,0,0.00106,false,false
+182,Padmanabha Nagar,206,Padmanabha Nagar,0.62213,0.81391,true,true
+182,Padmanabha Nagar,205,Vikram Nagar,0.32254,0.44048,true,false
+182,Padmanabha Nagar,202,Ganesh Mandir ward,0.03914,0.04352,false,false
+182,Padmanabha Nagar,207,Kamakya Nagar,0.0108,0.02713,false,false
+182,Padmanabha Nagar,219,Vasanthpura,0.0027,0.00151,false,false
+182,Padmanabha Nagar,204,Kumaraswamy Layout,0.00135,0.0055,false,false
+182,Padmanabha Nagar,217,Uttarahalli,0.00135,0,false,false
+183,Chikkalsandra,207,Kamakya Nagar,0.68932,0.96917,true,true
+183,Chikkalsandra,208,Deen Dayalu Ward,0.30461,0.41863,true,false
+183,Chikkalsandra,202,Ganesh Mandir ward,0.00243,0.00106,false,false
+183,Chikkalsandra,206,Padmanabha Nagar,0.00243,0.00196,false,false
+183,Chikkalsandra,217,Uttarahalli,0.00121,0,false,false
+184,Uttarahalli,218,Subramanyapura,0.77041,0.80881,true,true
+184,Uttarahalli,219,Vasanthpura,0.08639,0.22474,false,false
+184,Uttarahalli,217,Uttarahalli,0.07337,0.51186,true,true
+184,Uttarahalli,49,Rajarajeshwari Nagar,0.06982,0.0852,false,false
+184,Uttarahalli,205,Vikram Nagar,0,0.0017,false,false
+184,Uttarahalli,208,Deen Dayalu Ward,0,0.00248,false,false
+185,Yelchenahalli,220,Yelachenahalli,0.63259,0.99891,true,true
+185,Yelchenahalli,221,Konanakunte,0.35223,0.11751,true,false
+185,Yelchenahalli,205,Vikram Nagar,0.00709,0.0102,false,false
+185,Yelchenahalli,204,Kumaraswamy Layout,0.00506,0.0055,false,false
+185,Yelchenahalli,242,Jaraganahalli,0.00304,0.00457,false,false
+185,Yelchenahalli,203,Banashankari Temple ward,0,0.00125,false,false
+186,Jaraganahalli,242,Jaraganahalli,0.57576,0.9939,true,true
+186,Jaraganahalli,241,Puttenahalli - Sarakki Lake,0.4154,0.40044,true,false
+186,Jaraganahalli,199,Sarakki,0.00758,0.00724,false,false
+186,Jaraganahalli,222,RBI layout,0.00126,0,false,false
+187,Puttenahalli,240,Vinayakanagar,0.71996,0.82923,true,true
+187,Puttenahalli,241,Puttenahalli - Sarakki Lake,0.27422,0.59844,true,true
+187,Puttenahalli,198,J P Nagar,0.00388,0.0012,false,false
+187,Puttenahalli,199,Sarakki,0.00097,0.00362,false,false
+187,Puttenahalli,222,RBI layout,0.00097,0.00141,false,false
+187,Puttenahalli,238,Arakere,0,0.0014,false,false
+188,Bilekhalli,237,Bilekhalli,0.71133,0.99538,true,true
+188,Bilekhalli,240,Vinayakanagar,0.09945,0.16749,false,false
+188,Bilekhalli,238,Arakere,0.08702,0.16899,false,false
+188,Bilekhalli,235,Bommanahalli,0.05387,0.23648,false,false
+188,Bilekhalli,236,Devarachikkanahalli,0.04144,0.09193,false,false
+188,Bilekhalli,233,Rupenaagrahara,0.00414,0.01215,false,false
+188,Bilekhalli,192,BTM Layout,0.00138,0,false,false
+188,Bilekhalli,193,N S Palya,0.00138,0,false,false
+189,Hongasandra,236,Devarachikkanahalli,0.30243,0.37019,true,false
+189,Hongasandra,234,Hongasandra,0.29912,0.97775,true,true
+189,Hongasandra,233,Rupenaagrahara,0.21192,0.16194,true,false
+189,Hongasandra,235,Bommanahalli,0.08609,0.18742,false,false
+189,Hongasandra,231,Mangammanapalya,0.04967,0.08942,false,false
+189,Hongasandra,232,HSR - Singasandra,0.04857,0.03557,false,false
+189,Hongasandra,227,Begur,0.00221,0,false,false
+190,Mangammanapalya,229,Ibluru,0.26852,0.27529,true,false
+190,Mangammanapalya,231,Mangammanapalya,0.26455,0.90806,true,true
+190,Mangammanapalya,232,HSR - Singasandra,0.17989,0.19763,true,false
+190,Mangammanapalya,233,Rupenaagrahara,0.12302,0.14575,true,false
+190,Mangammanapalya,236,Devarachikkanahalli,0.06085,0.11553,false,false
+190,Mangammanapalya,230,Agara,0.05423,0.05334,false,false
+190,Mangammanapalya,243,Kudlu,0.02381,0.02365,false,false
+190,Mangammanapalya,116,Doddakanahalli,0.01984,0.0048,false,false
+190,Mangammanapalya,234,Hongasandra,0.00397,0.02225,false,false
+190,Mangammanapalya,227,Begur,0.00132,0.0017,false,false
+191,Singasandra,228,Naganathapura,0.37533,0.71664,true,true
+191,Singasandra,243,Kudlu,0.33884,0.96256,true,true
+191,Singasandra,233,Rupenaagrahara,0.13727,0.44939,true,true
+191,Singasandra,232,HSR - Singasandra,0.1338,0.3913,true,true
+191,Singasandra,227,Begur,0.00956,0.01358,false,false
+191,Singasandra,116,Doddakanahalli,0,0.0012,false,false
+192,Begur,226,Kalena Agrahara,0.50778,0.91329,true,true
+192,Begur,227,Begur,0.35214,0.95076,true,true
+192,Begur,228,Naganathapura,0.06809,0.266,false,false
+192,Begur,225,Gottigere,0.02918,0.13679,false,false
+192,Begur,239,Hulimavu,0.01167,0.04292,false,false
+192,Begur,233,Rupenaagrahara,0.00973,0.04858,false,false
+192,Begur,236,Devarachikkanahalli,0.00389,0.03727,false,false
+192,Begur,232,HSR - Singasandra,0,0.00791,false,false
+193,Arakere,239,Hulimavu,0.69652,0.95244,true,true
+193,Arakere,238,Arakere,0.28346,0.81145,true,true
+193,Arakere,226,Kalena Agrahara,0.01475,0.00578,false,false
+193,Arakere,240,Vinayakanagar,0.00421,0.00164,false,false
+193,Arakere,236,Devarachikkanahalli,0.00105,0.00124,false,false
+193,Arakere,222,RBI layout,0,0.00141,false,false
+193,Arakere,223,Chunchaghatta,0,0.00122,false,false
+193,Arakere,237,Bilekhalli,0,0.00154,false,false
+194,Gottigere,225,Gottigere,0.56359,0.75033,true,true
+194,Gottigere,223,Chunchaghatta,0.21553,0.47259,true,false
+194,Gottigere,224,Anjanapura,0.20884,0.11803,true,false
+194,Gottigere,226,Kalena Agrahara,0.01071,0.00963,false,false
+194,Gottigere,239,Hulimavu,0.00134,0.00464,false,false
+195,Konankunte,222,RBI layout,0.50314,0.93099,true,true
+195,Konankunte,223,Chunchaghatta,0.45409,0.51888,true,true
+195,Konankunte,221,Konanakunte,0.04025,0.03357,false,false
+195,Konankunte,240,Vinayakanagar,0.00126,0,false,false
+195,Konankunte,241,Puttenahalli - Sarakki Lake,0.00126,0.00111,false,false
+196,Anjanapura,224,Anjanapura,0.79144,0.84979,true,true
+196,Anjanapura,221,Konanakunte,0.15615,0.41127,true,false
+196,Anjanapura,225,Gottigere,0.04278,0.11023,false,false
+196,Anjanapura,219,Vasanthpura,0.00642,0.01357,false,false
+196,Anjanapura,35,Hemmigepura,0.00214,0,false,false
+196,Anjanapura,223,Chunchaghatta,0,0.00731,false,false
+197,Vasanthpura,219,Vasanthpura,0.47039,0.71795,true,true
+197,Vasanthpura,221,Konanakunte,0.34856,0.43765,true,true
+197,Vasanthpura,217,Uttarahalli,0.1286,0.48814,true,false
+197,Vasanthpura,222,RBI layout,0.02876,0.0662,false,false
+197,Vasanthpura,35,Hemmigepura,0.00508,0.00341,false,false
+197,Vasanthpura,224,Anjanapura,0.00338,0.00107,false,false
+197,Vasanthpura,205,Vikram Nagar,0.00169,0.0051,false,false
+197,Vasanthpura,206,Padmanabha Nagar,0,0.00196,false,false
+197,Vasanthpura,207,Kamakya Nagar,0,0.00247,false,false
+198,Hemmigepura,35,Hemmigepura,0.83813,0.72014,true,true
+198,Hemmigepura,34,Bande Mutt,0.11871,0.49551,true,true
+198,Hemmigepura,218,Subramanyapura,0.02878,0.08922,false,false
+198,Hemmigepura,49,Rajarajeshwari Nagar,0.0018,0.01117,false,false
+198,Hemmigepura,219,Vasanthpura,0.0018,0.03469,false,false
+198,Hemmigepura,33,Kengeri,0,0.00161,false,false
+198,Hemmigepura,48,Jnana Bharathi,0,0.0015,false,false
+198,Hemmigepura,224,Anjanapura,0,0.00107,false,false

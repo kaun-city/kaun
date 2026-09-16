@@ -78,3 +78,68 @@ Generated files:
 
 - `apps/web/public/bengaluru-gba-369-to-datameet-243.json` — runtime asset.
 - `data/ward-crosswalk/gba2025_369_to_datameet_243.json` — source-controlled data copy.
+
+<!-- bbmp198-crosswalk:start (written by scripts/wardmap/build-bbmp198-crosswalk.mjs) -->
+## BBMP-198 (2010 delimitation) → historical DataMeet-243
+
+Three BBMP tables are keyed on the **198-ward** map in force for the 2010 and
+2015 councils, not on the 243-ward map Kaun uses as its historical reference:
+`ward_spend_category` (ward works spend 2018–23), `ward_potholes` (Fix My
+Street complaints 2022) and `ward_committee_meetings` (2020–22). The two
+maps number different places — 198 #25 is Horamavu, 243 #25 is Rajeshwari
+Nagar — so a lookup by ward number shows another ward's figures. Kaun
+verified all three tables against the source layer by ward number and name
+(every mismatch is a spelling variant such as "HSLayout" for HSR Layout), then
+derives the correspondence spatially.
+
+### Sources (pinned)
+
+| Set | Source | Carries |
+|---|---|---|
+| BBMP-198 | DataMeet `Municipal_Spatial_Data/Bangalore/BBMP_oldWards.geojson` ("Bangalore Ward Maps 2012") @ `0c3a2e3` | WARD_NO, WARD_NAME, assembly constituency, population, polygon |
+| DataMeet-243 | DataMeet `Municipal_Spatial_Data/Bangalore/BBMP.geojson` @ `0c3a2e3` | KGISWardNo, KGISWardName, polygon |
+
+### Method
+
+`scripts/wardmap/build-bbmp198-crosswalk.mjs` samples each ward's interior on
+a 40×40 grid in **both** directions and classifies every point by the ward
+of the other map that contains it. No names are matched. Every overlapping
+pair keeps two shares:
+
+- `bbmp198_share` — fraction of the 198 ward inside the 243 ward. **Additive
+  totals** (spend, complaint counts) are allocated with this weight, the same
+  role `legacy_share` plays for GBA-369. Per 198 ward the shares plus
+  `outside_dm243_share` sum to 1, so allocation conserves the city total
+  except for the 0.47% of 198-ward area outside the 243 map.
+- `dm243_share` — fraction of the 243 ward covered by the 198 ward.
+
+A current GBA ward reaches 198-ward figures in two steps: its 243-ward overlap
+vector (`legacy_share`) and then this one (`bbmp198_share`), so an allocated
+figure is `Σ legacy_share × bbmp198_share × value`. Allocated figures are
+estimates and are labelled as such.
+
+**Records that cannot be split by area.** A ward committee's meeting count
+describes an institution, not a quantity spread over land: a 243 ward covering
+30% of Horamavu did not hold 30% of Horamavu's meetings. Such records are never
+summed or weighted. A 198 ward committee is named under a 243 ward only when
+the overlap is material in both directions (`bbmp198_share` ≥ 0.1 and
+`dm243_share` ≥ 0.1) or it is that ward's largest overlap — the same rule
+Kaun applies to GBA-369 → 243 record lists. Each committee keeps its own name
+and count.
+
+### Result (version `bbmp198-dm243-2026.09`)
+
+- 198 BBMP-198 wards and 243 DataMeet-243 wards; 1024 overlapping pairs, 365 of them material.
+- 243 wards by largest 198 overlap: 166 clear primary (≥70%), 60 split primary (50–70%), 17 ambiguous (<50%), 0 outside the 198 map.
+- Only 3 of 198 ward numbers point at a 243 ward of the same number as their largest overlap — the reason number joins were wrong.
+
+### Files
+
+- `apps/web/public/bengaluru-bbmp-198-to-datameet-243.json` — runtime asset.
+- `data/ward-crosswalk/bbmp2010_198_to_datameet_243.json` — byte-identical data copy.
+- `data/ward-crosswalk/bbmp2010_198_to_datameet_243_pairs.csv` — one row per overlapping pair with both shares.
+- `wiki/docs/bengaluru/ward-crosswalk/bbmp2010_198_to_datameet_243{.json,_pairs.csv}` — public download copies, written by the builder.
+
+Corrections: open an issue at `github.com/kaun-city/kaun` with label
+`ward-crosswalk`.
+<!-- bbmp198-crosswalk:end -->
