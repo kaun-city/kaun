@@ -2,6 +2,7 @@
 
 import type { ContractorProfile, RepReportCard, WardCommitteeMeetings, WardInfraStats } from "@/lib/types"
 import { getCity } from "@/lib/cities"
+import { formatLakh } from "@/lib/ward-utils"
 
 interface Props {
   reportCard: RepReportCard | null
@@ -23,12 +24,6 @@ interface Headline {
   detail: string
   /** Where the number came from. Every headline carries one. */
   source: string
-}
-
-function formatLakh(lakh: number): string {
-  return lakh >= 100
-    ? `₹${Math.round(lakh / 100).toLocaleString("en-IN")} Cr`
-    : `₹${Math.round(lakh).toLocaleString("en-IN")} L`
 }
 
 function yearRange(values: Array<string | null | undefined>): string | null {
@@ -139,9 +134,9 @@ export function WardHeadline(props: Props) {
   // Red is a solid block, as in the reference; lesser severities stay tinted
   // so the one alarming finding is never outshouted.
   const styles = {
-    red: { box: "bg-[#b42318] border-[#b42318]", text: "text-[#fffaf1]", detail: "text-[#fffaf1]/85", source: "text-[#fffaf1]/70" },
-    yellow: { box: "bg-[#a05d00]/[0.07] border-[#a05d00]/40", text: "text-[#5c3700]", detail: "text-[#5c3700]/80", source: "text-[#5c3700]/65" },
-    info: { box: "bg-[#255c86]/[0.07] border-[#255c86]/35", text: "text-[#1c4566]", detail: "text-[#1c4566]/80", source: "text-[#1c4566]/65" },
+    red: { box: "bg-danger border-danger", text: "text-paper", detail: "text-paper/85", source: "text-paper/85" },
+    yellow: { box: "bg-warning/[0.07] border-warning/35", text: "text-warning", detail: "text-warning/90", source: "text-warning/90" },
+    info: { box: "bg-info/[0.07] border-info/35", text: "text-info", detail: "text-info/90", source: "text-info/90" },
   }
   const s = styles[headline.severity]
 
@@ -149,7 +144,7 @@ export function WardHeadline(props: Props) {
     <div className={`mx-5 mb-3 border px-3.5 py-3 ${s.box}`}>
       <p className={`${s.text} text-sm font-semibold leading-snug`}>{headline.text}</p>
       <p className={`${s.detail} text-xs mt-0.5 leading-snug`}>{headline.detail}</p>
-      <p className={`${s.source} mt-1.5 font-mono text-[10px] uppercase tracking-[0.06em] leading-snug`}>{headline.source}</p>
+      <p className={`${s.source} mt-1.5 font-mono text-[11px] uppercase tracking-[0.06em] leading-snug`}>{headline.source}</p>
     </div>
   )
 }

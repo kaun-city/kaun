@@ -44,10 +44,11 @@ export function TrackerControls({
           <button
             key={s.id}
             onClick={() => go({ sort: s.id })}
-            className={`text-[11px] px-2.5 py-1.5 rounded border transition-colors ${
+            className={`min-h-11 px-3 border font-mono text-[11px] uppercase tracking-[0.06em] transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
               activeSort === s.id
-                ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
-                : "border-white/10 text-white/40 hover:text-white/70"}`}
+                ? "border-ink bg-ink text-paper"
+                : "border-ink/20 text-ink/60 hover:text-ink hover:bg-ink/5"}`}
           >
             {s.label}
           </button>
@@ -57,8 +58,9 @@ export function TrackerControls({
       <select
         value={activeState ?? ""}
         onChange={e => go({ state: e.target.value === "" ? null : e.target.value })}
-        className="bg-black/60 border border-white/15 rounded-lg px-2.5 py-1.5
-          text-[11px] text-white/80 focus:outline-none focus:border-[#FF9933]/40 max-w-[14rem]"
+        className="min-h-11 bg-paper-bright border border-ink/25 px-2.5
+          text-xs text-ink focus:outline-none focus:border-ink/60
+          focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent max-w-[14rem]"
       >
         <option value="">All states</option>
         {states.map(s => (

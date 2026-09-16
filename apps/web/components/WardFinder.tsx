@@ -87,24 +87,24 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
   if (!open) return null
 
   return (
-    <div className="signal-backdrop fixed inset-0 z-[2000] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="ward-finder-title">
+    <div className="signal-backdrop fixed inset-0 z-[2000] flex items-end md:items-center justify-center bg-ink/45" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="ward-finder-title">
       <div
         className="signal-panel
-          w-full md:w-[520px] max-h-[85vh] bg-[#111] border border-white/10
-          rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden
+          w-full md:w-[520px] max-h-[85vh] bg-paper text-ink border-t-2 border-ink
+          md:border md:border-ink/55 flex flex-col overflow-hidden
         "
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-5 pt-5 pb-3 border-b border-white/10 shrink-0">
+        <div className="px-5 pt-5 pb-3 border-b border-ink/15 shrink-0">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h2 id="ward-finder-title" className="text-white font-semibold text-base">Older-record crosswalk</h2>
-              <p className="text-white/40 text-xs mt-0.5">
+              <h2 id="ward-finder-title" className="text-ink font-semibold text-base">Older-record crosswalk</h2>
+              <p className="text-ink/60 text-xs mt-0.5">
                 BBMP 2023 (225) ↔ KGIS/DataMeet (243). Current map: GBA 369.
               </p>
             </div>
-            <button onClick={onClose} aria-label="Close ward crosswalk" className="text-white/40 hover:text-white/80 text-xl leading-none w-11 h-11 flex items-center justify-center shrink-0">&times;</button>
+            <button onClick={onClose} aria-label="Close ward crosswalk" className="text-ink/60 hover:text-ink hover:bg-ink/5 text-xl leading-none w-11 h-11 flex items-center justify-center shrink-0">&times;</button>
           </div>
           <label htmlFor="ward-crosswalk-search" className="sr-only">Search ward name, number, or constituency</label>
           <input
@@ -114,40 +114,40 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search ward name, number, or constituency..."
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#FF9933]/40"
+            className="w-full min-h-11 bg-paper-bright border border-ink/25 px-3 py-2 text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:border-ink/60"
           />
         </div>
 
         {/* Results */}
         <div className="flex-1 overflow-y-auto px-2 py-2">
           {rows.length === 0 ? (
-            <p className="text-white/20 text-sm text-center py-8">Loading crosswalk data...</p>
+            <p className="text-ink/60 text-sm text-center py-8">Loading crosswalk data...</p>
           ) : results.length === 0 ? (
-            <p className="text-white/20 text-sm text-center py-8">No matching ward found</p>
+            <p className="text-ink/60 text-sm text-center py-8">No matching ward found</p>
           ) : (
             results.map(r => (
               <div
                 key={`${r.bbmp225_no}-${r.datameet243_no}`}
-                className="px-3 py-2.5 rounded-lg hover:bg-white/5 transition-colors group"
+                className="px-3 py-2.5 border-b border-ink/10 last:border-b-0 hover:bg-ink/5 transition-colors group"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-white/80 text-xs font-semibold">{r.bbmp225_name_en}</span>
-                      {r.bbmp225_name_ka && <span className="text-white/30 text-[10px]">{r.bbmp225_name_ka}</span>}
+                      <span className="text-ink text-xs font-semibold">{r.bbmp225_name_en}</span>
+                      {r.bbmp225_name_ka && <span className="text-ink/60 text-[11px]">{r.bbmp225_name_ka}</span>}
                     </div>
-                    <div className="flex items-center gap-3 mt-1 text-[10px]">
-                      <span className="text-[#FF9933]/70">BBMP 225 #{r.bbmp225_no}</span>
-                      <span className="text-white/20">&rarr;</span>
-                      <span className="text-white/50">Historical 243 #{r.datameet243_no} {r.datameet243_name}</span>
+                    <div className="flex items-center gap-3 mt-1 font-mono text-[11px]">
+                      <span className="text-ink/80">BBMP 225 #{r.bbmp225_no}</span>
+                      <span className="text-ink/60">&rarr;</span>
+                      <span className="text-ink/70">Historical 243 #{r.datameet243_no} {r.datameet243_name}</span>
                     </div>
-                    <div className="flex items-center gap-3 mt-0.5 text-[10px] text-white/30">
+                    <div className="flex items-center gap-3 mt-0.5 text-[11px] text-ink/60">
                       <span>{r.assembly_constituency}</span>
                       <span>Pop {r.population.toLocaleString("en-IN")}</span>
-                      <span className={`${r.overlap_confidence > 0.7 ? "text-green-400/60" : r.overlap_confidence > 0.4 ? "text-yellow-400/60" : "text-red-400/60"}`}>
+                      <span className={`${r.overlap_confidence > 0.7 ? "text-success" : r.overlap_confidence > 0.4 ? "text-warning" : "text-danger"}`}>
                         {Math.round(r.overlap_confidence * 100)}% overlap
                       </span>
-                      {r.tier !== "clean" && <span className="text-yellow-400/50">{r.tier}</span>}
+                      {r.tier !== "clean" && <span className="text-warning">{r.tier}</span>}
                     </div>
                   </div>
                 </div>
@@ -157,8 +157,8 @@ export function WardFinder({ open, onClose, onPanTo }: Props) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-white/5 shrink-0">
-          <p className="text-white/15 text-[10px] leading-snug">
+        <div className="px-5 py-3 border-t border-ink/15 shrink-0">
+          <p className="text-ink/60 text-xs leading-snug">
             Source: BBMP 2023 Final 225-ward KML ↔ DataMeet 243-ward GeoJSON, spatial overlap method.
             Confidence is the area fraction of the 225 ward that falls within the mapped 243 ward.
           </p>

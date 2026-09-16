@@ -135,37 +135,37 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem
 
   return (
     <div className="fixed inset-0 z-[1100] flex items-end md:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="report-sheet-title">
-      <div className="signal-backdrop absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="signal-backdrop absolute inset-0 bg-ink/45" onClick={onClose} />
 
-      <div className="signal-panel relative w-full md:w-[480px] bg-[#111] border border-white/10 rounded-t-2xl md:rounded-2xl p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
+      <div className="signal-panel relative w-full md:w-[480px] bg-paper border-t-2 border-ink md:border md:border-ink/55 p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <p id="report-sheet-title" className="text-white font-semibold text-base">Report a civic issue</p>
-            {wardName && <p className="text-white/40 text-sm mt-0.5">{wardName} ward</p>}
+            <p id="report-sheet-title" className="text-ink font-semibold text-base">Report a civic issue</p>
+            {wardName && <p className="text-ink/60 text-sm mt-0.5">{wardName} ward</p>}
           </div>
-          <button onClick={onClose} aria-label="Close report form" className="w-11 h-11 flex items-center justify-center text-white/40 hover:text-white/80 text-lg">&times;</button>
+          <button onClick={onClose} aria-label="Close report form" className="w-11 h-11 flex items-center justify-center border border-ink/20 text-ink/60 hover:bg-ink/5 hover:text-ink text-lg transition-colors">&times;</button>
         </div>
 
         {stage === "form" && (
           <>
             {/* Issue type grid */}
             <div>
-              <p className="text-white/50 text-xs uppercase tracking-wider mb-3">What are you reporting?</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60 mb-3">What are you reporting?</p>
               <div className="grid grid-cols-2 gap-2">
                 {ISSUE_TYPES.map((t) => (
                   <button
                     key={t.value}
                     onClick={() => setIssueType(t.value)}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all ${
+                    className={`flex items-center gap-2 min-h-11 px-3 py-2.5 border text-left text-sm font-medium transition-colors ${
                       issueType === t.value
-                        ? "bg-[#FF9933]/15 border-[#FF9933]/60 text-[#FF9933]"
-                        : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
+                        ? "bg-ink border-ink text-paper"
+                        : "bg-paper border-ink/20 text-ink/75 hover:bg-ink/5 hover:border-ink/35 hover:text-ink"
                     }`}
                   >
-                    <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold ${
-                      issueType === t.value ? "bg-[#FF9933]/20 text-[#FF9933]" : "bg-white/10 text-white/50"
+                    <span aria-hidden="true" className={`w-6 h-6 shrink-0 flex items-center justify-center border font-mono text-xs font-bold ${
+                      issueType === t.value ? "border-paper/40 text-paper" : "border-ink/20 text-ink/60"
                     }`}>
                       {t.icon}
                     </span>
@@ -176,33 +176,33 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem
             </div>
 
             {/* Location pinned from map — show confirmation */}
-            <div className="flex items-center gap-2 text-white/40 text-xs">
-              <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="3" fill="#FF9933"/>
-                <circle cx="8" cy="8" r="6.5" stroke="#FF9933" strokeWidth="1.5"/>
+            <div className="flex items-center gap-2 text-ink/60 text-xs">
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="shrink-0 text-accent">
+                <circle cx="8" cy="8" r="3" fill="currentColor"/>
+                <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
               </svg>
-              <span>Location pinned at {lat.toFixed(4)}, {lng.toFixed(4)}</span>
+              <span className="font-mono tabular-nums">Location pinned at {lat.toFixed(4)}, {lng.toFixed(4)}</span>
             </div>
 
             {/* Photo upload */}
             <div>
-              <p className="text-white/50 text-xs uppercase tracking-wider mb-3">Add a photo (recommended)</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60 mb-3">Add a photo (recommended)</p>
               {photoPreview ? (
-                <div className="relative rounded-xl overflow-hidden">
+                <div className="relative overflow-hidden border border-ink/15">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={photoPreview} alt="Preview" className="w-full h-48 object-cover" />
                   <button
                     onClick={() => { setPhotoFile(null); setPhotoPreview(null) }}
                     aria-label="Remove selected photo"
-                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 text-white/80 text-sm flex items-center justify-center"
+                    className="absolute top-2 right-2 w-11 h-11 bg-ink/85 text-paper text-lg flex items-center justify-center hover:bg-ink transition-colors"
                   >&times;</button>
                 </div>
               ) : (
                 <button
                   onClick={() => fileRef.current?.click()}
-                  className="w-full h-28 rounded-xl border-2 border-dashed border-white/15 flex flex-col items-center justify-center gap-2 text-white/30 hover:border-white/25 hover:text-white/50 transition-all"
+                  className="w-full h-28 border-2 border-dashed border-ink/25 bg-paper-bright flex flex-col items-center justify-center gap-2 text-ink/60 hover:border-ink/55 hover:text-ink transition-colors"
                 >
-                  <span className="text-2xl">+</span>
+                  <span className="text-2xl" aria-hidden="true">+</span>
                   <span className="text-sm">Camera or gallery</span>
                 </button>
               )}
@@ -211,7 +211,7 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem
 
             {/* Description */}
             <div>
-              <label htmlFor="report-description" className="block text-white/50 text-xs uppercase tracking-wider mb-3">Description (optional)</label>
+              <label htmlFor="report-description" className="block text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60 mb-3">Description (optional)</label>
               <textarea
                 id="report-description"
                 value={description}
@@ -219,19 +219,19 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem
                 placeholder="Brief description of the issue..."
                 maxLength={300}
                 rows={2}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/80 text-sm placeholder:text-white/20 resize-none focus:outline-none focus:border-white/20"
+                className="w-full bg-paper-bright border border-ink/25 px-4 py-3 text-ink text-sm placeholder:text-ink/50 resize-none focus:outline-none focus:border-ink/60"
               />
             </div>
 
             <button
               onClick={handleSubmit}
               disabled={!issueType}
-              className="w-full py-3.5 rounded-xl bg-[#FF9933] hover:bg-[#FF9933]/90 disabled:opacity-40 text-black font-semibold text-sm transition-all"
+              className="w-full min-h-11 px-4 py-3 bg-ink text-paper font-mono text-[11px] font-semibold uppercase tracking-[0.08em] hover:bg-ink/85 disabled:bg-ink/15 disabled:text-ink/50 transition-colors"
             >
               Submit report
             </button>
 
-            <p className="text-white/25 text-xs text-center">
+            <p className="text-ink/60 text-xs text-center">
               Reports are reviewed before appearing on the map. No login required.
             </p>
           </>
@@ -240,22 +240,22 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem
         {(stage === "uploading" || stage === "saving") && (
           <div className="flex flex-col items-center gap-5 py-10">
             <div className="relative w-10 h-10">
-              <div className="absolute inset-0 rounded-full border-2 border-[#FF9933]/20" />
-              <div className="absolute inset-0 rounded-full border-2 border-t-[#FF9933] animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-ink/15" />
+              <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-ink animate-spin motion-reduce:animate-none" />
             </div>
             <div className="text-center space-y-1">
-              <p className="text-white text-sm font-medium">
+              <p className="text-ink text-sm font-medium">
                 {stage === "uploading" ? "Uploading photo..." : "Saving report..."}
               </p>
-              <p className="text-white/30 text-xs">
+              <p className="text-ink/60 text-xs">
                 {stage === "uploading" ? "Hang on, sending your photo" : "Almost done"}
               </p>
             </div>
             {/* Step dots */}
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#FF9933]" />
-              <div className={`w-2 h-2 rounded-full ${stage === "saving" ? "bg-[#FF9933]" : "bg-white/20"}`} />
-              <div className="w-2 h-2 rounded-full bg-white/20" />
+            <div className="flex items-center gap-2" aria-hidden="true">
+              <div className="w-2 h-2 rounded-full bg-ink" />
+              <div className={`w-2 h-2 rounded-full ${stage === "saving" ? "bg-ink" : "bg-ink/20"}`} />
+              <div className="w-2 h-2 rounded-full bg-ink/20" />
             </div>
           </div>
         )}
@@ -263,36 +263,36 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem
         {stage === "success" && (
           <div className="flex flex-col gap-4 py-2">
             {/* Confirmation */}
-            <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 shrink-0 mt-0.5">
+            <div className="flex items-start gap-3 bg-success/[0.07] border border-success/35 p-4">
+              <div className="w-9 h-9 border border-success/35 flex items-center justify-center text-success shrink-0" aria-hidden="true">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M3 8l3.5 3.5L13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
               <div>
-                <p className="text-white font-semibold">Report queued for review</p>
-                <p className="text-white/40 text-sm mt-0.5">We will review it before it becomes part of Kaun’s public record.</p>
+                <p className="text-success font-semibold">Report queued for review</p>
+                <p className="text-ink/75 text-sm mt-0.5">We will review it before it becomes part of Kaun’s public record.</p>
               </div>
             </div>
 
-            <div className="h-px bg-white/5" />
+            <div className="h-px bg-ink/10" />
 
             {/* Complaint nudge */}
             {authority && (
-              <div className="rounded-xl bg-white/5 border border-white/10 p-4 space-y-2">
-                <p className="text-white/60 text-xs uppercase tracking-wider">Also file a formal complaint</p>
-                <p className="text-white/80 text-sm">
-                  Call <span className="text-[#FF9933] font-semibold">{authority.name} {authority.number}</span> — it creates a ticket and triggers a response deadline under the Sakala Act.
+              <div className="bg-paper-muted border border-ink/15 p-4 space-y-2">
+                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Also file a formal complaint</p>
+                <p className="text-ink/85 text-sm">
+                  Call <span className="text-ink font-semibold font-mono tabular-nums">{authority.name} {authority.number}</span> — it creates a ticket and triggers a response deadline under the Sakala Act.
                 </p>
                 {authority.url && (
                   <a
                     href={authority.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[#FF9933] text-xs font-medium hover:underline mt-1"
+                    className="inline-flex items-center gap-1.5 min-h-11 text-accent text-xs font-medium underline decoration-accent/40 underline-offset-2 hover:decoration-accent"
                   >
                     File online at {authority.name}
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
                       <path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </a>
@@ -310,10 +310,10 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem
                     await navigator.share({ text, url }).catch(() => {})
                   } else {
                     await navigator.clipboard.writeText(text)
-                    alert("Link copied!")
+                    alert("Link copied.")
                   }
                 }}
-                className="w-full py-3 rounded-xl bg-white/10 text-white/70 text-sm font-medium hover:bg-white/15 transition-all"
+                className="w-full min-h-11 px-4 py-3 bg-paper border border-ink/55 text-ink font-mono text-[11px] font-semibold uppercase tracking-[0.08em] hover:bg-paper-muted transition-colors"
               >
                 Share this report
               </button>
@@ -321,7 +321,7 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem
             <button
               type="button"
               onClick={onClose}
-              className="w-full border-2 border-[#16130e] px-4 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#16130e]"
+              className="w-full min-h-11 px-4 py-3 bg-ink text-paper font-mono text-[11px] font-semibold uppercase tracking-[0.08em] hover:bg-ink/85 transition-colors"
             >
               Close
             </button>
@@ -330,12 +330,12 @@ export default function ReportSheet({ lat, lng, wardNo, wardName, boundarySystem
 
         {stage === "error" && (
           <div className="flex flex-col items-center gap-4 py-6 text-center">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 text-xl">!</div>
+            <div className="w-12 h-12 bg-danger/[0.07] border border-danger/35 flex items-center justify-center text-danger text-xl font-bold" aria-hidden="true">!</div>
             <div>
-              <p className="text-white font-semibold">Could not submit</p>
-              <p className="text-white/50 text-sm mt-1">{errorMsg}</p>
+              <p className="text-danger font-semibold">Could not submit</p>
+              <p className="text-ink/75 text-sm mt-1">{errorMsg}</p>
             </div>
-            <button onClick={() => setStage("form")} className="mt-2 px-6 py-2.5 rounded-xl bg-white/10 text-white/70 text-sm hover:bg-white/15 transition-all">
+            <button onClick={() => setStage("form")} className="mt-2 min-h-11 px-6 bg-paper border border-ink/55 text-ink font-mono text-[11px] font-semibold uppercase tracking-[0.08em] hover:bg-paper-muted transition-colors">
               Try again
             </button>
           </div>

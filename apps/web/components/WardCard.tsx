@@ -67,7 +67,7 @@ function recordCode(result: PinResult): string | null {
 function HistoricalNote({ wards, listWards }: { wards: HistoricalWardRef[]; listWards: HistoricalWardRef[] }) {
   if (!wards.length) {
     return (
-      <p className="mt-2 text-xs leading-relaxed text-[#16130e]/55">
+      <p className="mt-2 text-xs leading-relaxed text-ink/60">
         Current-boundary data only. This ward falls outside the older 243-ward map.
       </p>
     )
@@ -75,16 +75,16 @@ function HistoricalNote({ wards, listWards }: { wards: HistoricalWardRef[]; list
   const shares = wards.map(ref => `${ref.ward_name} ${Math.round(ref.current_share * 100)}%`).join(" · ")
   const omitted = wards.length - listWards.length
   return (
-    <p className="mt-2 text-xs leading-relaxed text-[#16130e]/55">
+    <p className="mt-2 text-xs leading-relaxed text-ink/60">
       Older records are estimated from former wards by map overlap: {shares}.
       {omitted > 0 && <> Lists of contracts and complaints use only {listWards.map(ref => ref.ward_name).join(" and ")}.</>}
       {" "}
-      <a href="/how-it-works" className="text-[#b35400] underline decoration-[#b35400]/40 underline-offset-2">How this works</a>
+      <a href="/how-it-works" className="text-accent underline decoration-accent/40 underline-offset-2">How this works</a>
     </p>
   )
 }
 
-const iconButton = "shrink-0 w-11 h-11 lg:w-8 lg:h-8 flex items-center justify-center border border-[#16130e]/20 text-[#16130e]/60 hover:bg-[#16130e]/5 hover:text-[#16130e] transition-colors"
+const iconButton = "shrink-0 w-11 h-11 lg:w-8 lg:h-8 flex items-center justify-center border border-ink/20 text-ink/60 hover:bg-ink/5 hover:text-ink transition-colors"
 
 export default function WardCard({ result, loading, onClose }: Props) {
   const ward = useWardData(result)
@@ -150,35 +150,35 @@ export default function WardCard({ result, loading, onClose }: Props) {
       className="signal-panel
       fixed bottom-0 left-0 right-0 z-[1050]
       flex flex-col
-      bg-[#F8F5EF] border-t-2 border-[#16130e]
+      bg-paper border-t-2 border-ink
       min-h-[48svh] max-h-[88svh]
       animate-slide-up
 
       lg:static lg:z-auto
       lg:w-[26rem] lg:h-dvh lg:min-h-0 lg:max-h-none
-      lg:border-t-0 lg:border-l lg:border-[#16130e]/25
+      lg:border-t-0 lg:border-l lg:border-ink/25
     ">
       {/* Drag handle (mobile only) */}
       <div className="flex justify-center items-center pt-2.5 pb-1 lg:hidden shrink-0 cursor-grab active:cursor-grabbing">
-        <div className="w-10 h-1 bg-[#16130e]/25" />
+        <div className="w-10 h-1 bg-ink/25" />
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto min-h-0 overscroll-contain">
         {/* Record header */}
         <div className="px-5 pt-2 pb-4 lg:pt-4">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#16130e]/55">
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">
               {loading || result?.found ? "Ward record" : "No ward"}
             </p>
             <div className="flex items-center gap-1.5">
               {code && !loading && (
-                <span className="mr-1 font-mono text-[11px] tracking-[0.04em] text-[#16130e]/45">{code}</span>
+                <span className="mr-1 font-mono text-[11px] tracking-[0.04em] text-ink/60">{code}</span>
               )}
               {result?.found && !loading && (
                 <button onClick={handleShare} aria-label={copied ? "Link copied" : "Share"} className={iconButton}>
                   {copied ? (
-                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-                      <path d="M2.5 8L6 11.5L12.5 4" stroke="#24643c" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" className="text-success">
+                      <path d="M2.5 8L6 11.5L12.5 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   ) : (
                     <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
@@ -199,16 +199,16 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
           {loading ? (
             <div className="mt-2 space-y-2">
-              <div className="h-6 w-48 bg-[#16130e]/10 animate-pulse" />
-              <div className="h-3 w-32 bg-[#16130e]/5 animate-pulse" />
+              <div className="h-6 w-48 bg-ink/10 animate-pulse" />
+              <div className="h-3 w-32 bg-ink/5 animate-pulse" />
             </div>
           ) : result?.found ? (
             <>
               {/* GBA ward name (primary), falls back to legacy BBMP name */}
-              <h2 className="mt-1 text-2xl font-bold leading-tight tracking-[-0.02em] text-[#16130e]">
+              <h2 className="mt-1 text-2xl font-bold leading-tight tracking-[-0.02em] text-ink">
                 {result.gba_ward_name ?? result.ward_name}
               </h2>
-              <p className="mt-0.5 text-sm text-[#16130e]/60">
+              <p className="mt-0.5 text-sm text-ink/60">
                 {result.gba_corporation ? (
                   <>
                     Bengaluru {result.gba_corporation}
@@ -227,8 +227,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
             </>
           ) : (
             <>
-              <h2 className="mt-1 text-xl font-semibold text-[#16130e]/70">Outside city boundary</h2>
-              <p className="mt-0.5 text-sm text-[#16130e]/50">No ward found at this location</p>
+              <h2 className="mt-1 text-xl font-semibold text-ink/70">Outside city boundary</h2>
+              <p className="mt-0.5 text-sm text-ink/60">No ward found at this location</p>
             </>
           )}
         </div>
@@ -336,10 +336,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
         {/* Not found */}
         {!loading && !result?.found && (
           <div className="flex flex-col items-center justify-center px-5 py-8 pb-safe gap-2">
-            <p className="text-sm text-center text-[#16130e]/60">
+            <p className="text-sm text-center text-ink/60">
               Not in {ward.city.name}?
             </p>
-            <p className="text-xs text-center leading-relaxed text-[#16130e]/45">
+            <p className="text-xs text-center leading-relaxed text-ink/60">
               Try tapping within {ward.city.name} city limits.
             </p>
           </div>
@@ -348,8 +348,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
       {/* Pinned footer: tabs + Ask Kaun */}
       {!loading && result?.found && (
-        <div className="shrink-0 bg-[#F8F5EF]">
-          <div role="tablist" aria-label="Ward record sections" className="flex border-y border-[#16130e]/20">
+        <div className="shrink-0 bg-paper">
+          <div role="tablist" aria-label="Ward record sections" className="flex border-y border-ink/20">
             {TABS.map((t, index) => (
               <button
                 key={t.id}
@@ -357,10 +357,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
                 aria-selected={ward.tab === t.id}
                 onClick={() => selectTab(t.id)}
                 className={`flex-1 min-h-11 py-3 lg:py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors
-                  ${index > 0 ? "border-l border-[#16130e]/20" : ""}
+                  ${index > 0 ? "border-l border-ink/20" : ""}
                   ${ward.tab === t.id
-                    ? "bg-[#16130e] text-[#F8F5EF]"
-                    : "text-[#16130e]/55 hover:text-[#16130e] hover:bg-[#16130e]/5"
+                    ? "bg-ink text-paper"
+                    : "text-ink/60 hover:text-ink hover:bg-ink/5"
                   }`}
               >
                 {t.label}

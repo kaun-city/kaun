@@ -22,6 +22,7 @@ import { colorFor } from "@/lib/map-layers"
 import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
 import { GBA_CROSSWALK_URL, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact, type GbaCrosswalkRow } from "@/lib/gba-crosswalk"
 import { DEFAULT_SUPABASE_ANON_KEY, DEFAULT_SUPABASE_URL } from "@/lib/supabase-config"
+import { ACCENT, INK, PAPER, SUCCESS, WARNING } from "@/lib/design-tokens"
 
 /** Per-ward values + quantile breaks + ramp for choropleth painting */
 export interface ChoroplethData {
@@ -38,6 +39,12 @@ function escapeHtml(value: unknown): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;")
+}
+
+/** A design token at partial opacity, for Leaflet paths and popup HTML. */
+function tint(hex: string, alpha: number): string {
+  const n = parseInt(hex.slice(1), 16)
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`
 }
 
 /** Only http(s) photo URLs may reach an <img src>; anything else is dropped. */
@@ -68,10 +75,10 @@ const DEFAULT_CITY = bengaluru
 
 // Signal-on-paper: geography is ink; saffron is reserved for actions and pins.
 const WARD_STYLE = {
-  color: "#16130E",
+  color: INK,
   weight: 0.75,
   opacity: 0.46,
-  fillColor: "#16130E",
+  fillColor: INK,
   fillOpacity: 0.025,
 }
 const WARD_HOVER_STYLE = {
@@ -136,7 +143,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   useEffect(() => { onReportPinRef.current = onReportPin }, [onReportPin])
 
   /**
-   * Ward polygon style — flat saffron by default; when a choropleth layer
+   * Ward polygon style — flat ink by default; when a choropleth layer
    * is active, fill each ward by its metric bucket. Reads the ref so the
    * same function stays valid for Leaflet's resetStyle across layer changes.
    */
@@ -147,10 +154,10 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
     const value = wardKey != null ? data.values[wardKey] : undefined
     if (value === undefined) {
       // No data for this ward — recede so painted wards stand out
-      return { color: "#8f887d", weight: 0.5, opacity: 0.45, fillColor: "#d6d0c5", fillOpacity: 0.18 }
+      return { color: INK, weight: 0.5, opacity: 0.22, fillColor: PAPER.stage, fillOpacity: 0.5 }
     }
     return {
-      color: "#16130E",
+      color: INK,
       weight: 0.6,
       opacity: 0.8,
       fillColor: colorFor(value, data.breaks, data.ramp),
@@ -182,7 +189,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
     return () => clearTimeout(t)
   }, [resizeKey])
 
-  // Refresh report markers: both pending (yellow, confirmable) + approved (orange)
+  // Refresh report markers: both pending (warning, confirmable) + approved (accent)
   useEffect(() => {
     if (!mapRef.current || loading) return
     import("leaflet").then((L) => {
@@ -226,7 +233,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
             const alreadyDone = confirmed.includes(reportId)
             const photoUrl    = safeImageUrl(report.photo_url)
             const photoHtml   = photoUrl
-              ? `<img src="${escapeHtml(photoUrl)}" style="width:100%;height:90px;object-fit:cover;border-radius:6px;margin:6px 0 4px;display:block" />`
+              ? `<img src="${escapeHtml(photoUrl)}" style="width:100%;height:90px;object-fit:cover;margin:6px 0 4px;display:block;border:1px solid ${tint(INK, 0.15)}" />`
               : ""
             const wardName    = escapeHtml(report.ward_name)
             const aiPerson    = escapeHtml(report.ai_person)
@@ -234,14 +241,14 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
             const reportedAgo = escapeHtml(relativeTime(report.reported_at))
 
             if (isPending) {
-              // Yellow pulsing marker for unverified reports
+              // Pulsing warning marker for unverified reports
               const icon = L.divIcon({
                 html: `<div style="
                   width:13px;height:13px;
-                  background:#facc15;
-                  border:2px solid rgba(248,245,239,0.92);
+                  background:${WARNING};
+                  border:2px solid ${PAPER.DEFAULT};
                   border-radius:50%;
-                  box-shadow:0 0 0 4px rgba(250,204,21,0.3);
+                  box-shadow:0 0 0 4px ${tint(WARNING, 0.25)};
                   animation:kaun-pulse 1.5s ease-in-out infinite;
                 "></div>`,
                 iconSize: [13, 13],
@@ -250,29 +257,30 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               })
               const marker = L.marker([report.lat, report.lng], { icon })
               const statusBtn = alreadyDone
-                ? `<div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.3);border-radius:20px">
-                    <span style="width:6px;height:6px;background:#facc15;border-radius:50%;display:inline-block"></span>
-                    <span style="color:#facc15;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; you confirmed</span>
+                ? `<div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:${tint(WARNING, 0.07)};border:1px solid ${tint(WARNING, 0.35)}">
+                    <span style="width:6px;height:6px;background:${WARNING};border-radius:50%;display:inline-block"></span>
+                    <span style="color:${WARNING};font-family:var(--font-plex-mono),ui-monospace,monospace;font-size:11px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; you confirmed</span>
                    </div>`
                 : `<button id="confirm-${reportId}" style="
                     display:inline-flex;align-items:center;gap:5px;
-                    padding:3px 8px;border-radius:20px;
-                    background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);
+                    min-height:44px;padding:0 10px;
+                    background:${tint(WARNING, 0.07)};border:1px solid ${tint(WARNING, 0.35)};
+                    color:${WARNING};font-family:var(--font-plex-mono),ui-monospace,monospace;font-size:11px;font-weight:600;letter-spacing:0.05em;
                     cursor:pointer;
                   ">
-                    <span style="width:6px;height:6px;background:#facc15;border-radius:50%;display:inline-block;animation:kaun-pulse 1.5s ease-in-out infinite"></span>
-                    <span style="color:#facc15;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; Confirm ${upvotes}/2</span>
+                    <span style="width:6px;height:6px;background:${WARNING};border-radius:50%;display:inline-block;animation:kaun-pulse 1.5s ease-in-out infinite"></span>
+                    <span style="color:${WARNING};font-size:11px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; Confirm ${upvotes}/2</span>
                    </button>`
               marker.bindPopup(`
                 <div style="font-family:sans-serif;width:200px">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
                     ${statusBtn}
-                    <span style="color:rgba(22,19,14,.45);font-size:10px">${reportedAgo}</span>
+                    <span style="color:${tint(INK, 0.6)};font-size:11px">${reportedAgo}</span>
                   </div>
                   ${photoHtml}
-                  <div style="font-size:12px;font-weight:600;color:#16130e;margin-bottom:2px">${label}</div>
-                  ${wardName ? `<div style="color:rgba(22,19,14,.55);font-size:11px;margin-bottom:3px">${wardName}</div>` : ""}
-                  ${summaryText ? `<div style="font-size:11px;color:rgba(22,19,14,.70);line-height:1.4">${summaryText}</div>` : ""}
+                  <div style="font-size:12px;font-weight:600;color:${INK};margin-bottom:2px">${label}</div>
+                  ${wardName ? `<div style="color:${tint(INK, 0.6)};font-size:11px;margin-bottom:3px">${wardName}</div>` : ""}
+                  ${summaryText ? `<div style="font-size:11px;color:${tint(INK, 0.75)};line-height:1.4">${summaryText}</div>` : ""}
                 </div>
               `)
               marker.on("popupopen", () => {
@@ -293,11 +301,15 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                     const stored: number[] = JSON.parse(localStorage.getItem("kaun_confirmed") ?? "[]")
                     localStorage.setItem("kaun_confirmed", JSON.stringify([...stored, reportId]))
                     if (data.status === "approved") {
-                      btn.textContent = "Approved!"
-                      btn.style.background = "#FF9933"
+                      btn.textContent = "Approved"
+                      btn.style.background = tint(ACCENT, 0.07)
+                      btn.style.borderColor = tint(ACCENT, 0.35)
+                      btn.style.color = ACCENT
                     } else {
                       btn.textContent = `Confirmed (${newUpvotes}/2)`
-                      btn.style.background = "#86efac"
+                      btn.style.background = tint(SUCCESS, 0.07)
+                      btn.style.borderColor = tint(SUCCESS, 0.35)
+                      btn.style.color = SUCCESS
                     }
                   } catch {
                     btn.textContent = "Try again"
@@ -307,28 +319,28 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
               })
               reportLayerRef.current.addLayer(marker)
             } else {
-              // Orange solid dot for approved reports
+              // Solid accent dot for approved reports
               const dot = L.circleMarker([report.lat, report.lng], {
                 radius: 6,
-                color: "#C25400",
-                fillColor: "#FF9933",
-                fillOpacity: 0.9,
+                color: PAPER.DEFAULT,
+                fillColor: ACCENT,
+                fillOpacity: 1,
                 weight: 2,
               })
               dot.bindPopup(`
                 <div style="font-family:sans-serif;width:200px">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                    <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(194,84,0,0.08);border:1px solid rgba(194,84,0,0.28);border-radius:0">
-                      <span style="width:6px;height:6px;background:#C25400;display:inline-block"></span>
-                      <span style="color:#C25400;font-size:10px;font-weight:600;letter-spacing:0.05em">VERIFIED</span>
+                    <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:${tint(ACCENT, 0.07)};border:1px solid ${tint(ACCENT, 0.35)}">
+                      <span style="width:6px;height:6px;background:${ACCENT};display:inline-block"></span>
+                      <span style="color:${ACCENT};font-family:var(--font-plex-mono),ui-monospace,monospace;font-size:11px;font-weight:600;letter-spacing:0.05em">VERIFIED</span>
                     </div>
-                    <span style="color:rgba(22,19,14,.45);font-size:10px">${reportedAgo}</span>
+                    <span style="color:${tint(INK, 0.6)};font-size:11px">${reportedAgo}</span>
                   </div>
                   ${photoHtml}
-                  <div style="font-size:12px;font-weight:600;color:#16130e;margin-bottom:2px">${label}</div>
-                  ${wardName ? `<div style="color:rgba(22,19,14,.55);font-size:11px;margin-bottom:3px">${wardName}</div>` : ""}
-                  ${aiPerson ? `<div style="color:#C25400;font-size:11px;margin-bottom:3px">${aiPerson}</div>` : ""}
-                  ${summaryText ? `<div style="font-size:11px;color:rgba(22,19,14,.70);line-height:1.4">${summaryText}</div>` : ""}
+                  <div style="font-size:12px;font-weight:600;color:${INK};margin-bottom:2px">${label}</div>
+                  ${wardName ? `<div style="color:${tint(INK, 0.6)};font-size:11px;margin-bottom:3px">${wardName}</div>` : ""}
+                  ${aiPerson ? `<div style="color:${ACCENT};font-size:11px;margin-bottom:3px">${aiPerson}</div>` : ""}
+                  ${summaryText ? `<div style="font-size:11px;color:${tint(INK, 0.75)};line-height:1.4">${summaryText}</div>` : ""}
                 </div>
               `)
               reportLayerRef.current.addLayer(dot)
@@ -453,9 +465,9 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
             const label = L.marker(centroid, {
               icon: L.divIcon({
                 html: `<span style="
-                  font-size:9px;
-                  color:rgba(22,19,14,0.48);
-                  text-shadow:0 1px 0 rgba(248,245,239,0.9);
+                  font-size:11px;
+                  color:${tint(INK, 0.6)};
+                  text-shadow:0 1px 0 ${tint(PAPER.DEFAULT, 0.9)};
                   white-space:nowrap;
                   pointer-events:none;
                   font-family:system-ui,sans-serif;
@@ -495,10 +507,10 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       const pinIcon = L.divIcon({
         html: `<div style="
           width:14px;height:14px;
-          background:#C25400;
-          border:2px solid #F8F5EF;
+          background:${ACCENT};
+          border:2px solid ${PAPER.DEFAULT};
           border-radius:50%;
-          box-shadow:0 0 0 3px rgba(194,84,0,0.28)
+          box-shadow:0 0 0 3px ${tint(ACCENT, 0.28)}
         "></div>`,
         iconSize: [14, 14],
         iconAnchor: [7, 7],
@@ -562,7 +574,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   return (
     <div className={`relative w-full h-full${reportPickMode ? " [&_.leaflet-container]:cursor-crosshair" : ""}`}>
       {loading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-[#FF9933] text-sm tracking-widest uppercase">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-paper-canvas/90 text-ink/75 font-mono text-xs font-semibold tracking-[0.12em] uppercase">
           Loading ward boundaries...
         </div>
       )}

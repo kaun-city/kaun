@@ -54,25 +54,24 @@ export function SurfaceSwitcher({
       aria-label="Kaun surfaces"
       className={`inline-flex items-center shrink-0 overflow-hidden
         ${variant === "overlay"
-          ? "border border-[#16130e]/55 divide-x divide-[#16130e]/15 bg-[#F8F5EF] pointer-events-auto"
-          : "border border-[#16130e]/55 divide-x divide-[#16130e]/15 bg-[#F8F5EF]"}
+          ? "border border-ink/55 divide-x divide-ink/15 bg-paper pointer-events-auto"
+          : "border border-ink/55 divide-x divide-ink/15 bg-paper"}
         ${className}`}
     >
       {links.map(link => {
-        const displayLabel = variant === "overlay"
-          ? (link.id === "india" ? "IN" : link.id === "city" ? "BLR" : "DATA")
-          : link.label
+        // One label set on every surface; the full name stays in aria-label.
+        const displayLabel = link.id === "india" ? "IN" : link.id === "city" ? "BLR" : "DATA"
         const cls = variant === "overlay"
-          ? "min-h-9 px-2.5 py-1 font-mono text-[10px] tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center"
-          : "min-h-11 px-2.5 py-1 text-xs leading-none whitespace-nowrap transition-colors flex items-center"
+          ? "min-h-11 sm:min-h-9 px-2.5 py-1 font-mono text-[11px] tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center"
+          : "min-h-11 px-3 py-1 font-mono text-xs font-semibold tracking-[0.08em] leading-none whitespace-nowrap transition-colors flex items-center"
         if (link.id === current) {
           return (
-            <span key={link.id} aria-current="page" aria-label={link.label} className={`${cls} bg-[#16130e] text-[#F8F5EF] font-semibold`}>
+            <span key={link.id} aria-current="page" aria-label={link.label} className={`${cls} bg-ink text-paper font-semibold`}>
               {displayLabel}
             </span>
           )
         }
-        const linkCls = `${cls} text-[#16130e]/55 hover:text-[#16130e] hover:bg-[#16130e]/5`
+        const linkCls = `${cls} text-ink/60 hover:text-ink hover:bg-ink/5`
         return link.external ? (
           <a key={link.id} href={link.href} aria-label={link.label} className={linkCls}>{displayLabel}</a>
         ) : (

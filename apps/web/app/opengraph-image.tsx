@@ -1,8 +1,12 @@
 import { ImageResponse } from "next/og"
+import { ACCENT, INK, PAPER } from "@/lib/design-tokens"
 
 export const alt = "KAUN? - Bengaluru Civic Accountability"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
+
+/** Ink at an opacity (8-digit hex). Text stays at 0.6+, the contrast floor on paper. */
+const ink = (alpha: number) => INK + Math.round(alpha * 255).toString(16).padStart(2, "0")
 
 export default function Image() {
   return new ImageResponse(
@@ -13,32 +17,25 @@ export default function Image() {
           flexDirection: "column",
           width: "100%",
           height: "100%",
-          backgroundColor: "#0A0A0A",
+          backgroundColor: PAPER.canvas,
           padding: "64px 72px",
           fontFamily: "sans-serif",
           position: "relative",
         }}
       >
-        {/* Subtle grid texture */}
-        <div style={{
-          position: "absolute", inset: 0,
-          backgroundImage: "radial-gradient(circle at 80% 20%, rgba(255,153,51,0.08) 0%, transparent 60%)",
-          display: "flex",
-        }} />
-
         {/* Wordmark */}
-        <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
-          <span style={{ color: "white", fontSize: "32px", fontWeight: 900, letterSpacing: "-1px" }}>KAUN</span>
-          <span style={{ color: "#FF9933", fontSize: "36px", fontWeight: 900 }}>?</span>
+        <div style={{ display: "flex", alignItems: "center", alignSelf: "flex-start", gap: "2px", borderBottom: `2px solid ${INK}`, paddingBottom: "4px" }}>
+          <span style={{ color: INK, fontSize: "32px", fontWeight: 900, letterSpacing: "-1px" }}>KAUN</span>
+          <span style={{ color: ACCENT, fontSize: "36px", fontWeight: 900 }}>?</span>
         </div>
 
         {/* Main headline */}
         <div style={{ display: "flex", flexDirection: "column", flex: 1, justifyContent: "center", gap: "20px" }}>
-          <div style={{ display: "flex", flexDirection: "column", color: "white", fontSize: "68px", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-2px" }}>
+          <div style={{ display: "flex", flexDirection: "column", color: INK, fontSize: "68px", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-2px" }}>
             <span>Who is accountable</span>
             <span>for your ward?</span>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", color: "rgba(255,255,255,0.45)", fontSize: "28px", fontWeight: 400, lineHeight: 1.4 }}>
+          <div style={{ display: "flex", flexDirection: "column", color: ink(0.7), fontSize: "28px", fontWeight: 400, lineHeight: 1.4 }}>
             <span>MLAs, spending, infrastructure and grievances —</span>
             <span>ward-level civic data for Bengaluru.</span>
           </div>
@@ -50,10 +47,9 @@ export default function Image() {
             <div key={label} style={{
               display: "flex",
               padding: "10px 20px",
-              backgroundColor: "rgba(255,153,51,0.12)",
-              border: "1px solid rgba(255,153,51,0.25)",
-              borderRadius: "100px",
-              color: "rgba(255,255,255,0.7)",
+              backgroundColor: PAPER.DEFAULT,
+              border: `1px solid ${ink(0.2)}`,
+              color: ink(0.75),
               fontSize: "18px",
             }}>
               {label}
@@ -63,10 +59,10 @@ export default function Image() {
 
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "20px" }}>
+          <span style={{ color: ink(0.6), fontSize: "20px" }}>
             Pin a place. Know who is responsible.
           </span>
-          <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "22px", fontWeight: 700, letterSpacing: "0.5px" }}>
+          <span style={{ color: ink(0.75), fontSize: "22px", fontWeight: 700, letterSpacing: "0.5px" }}>
             kaun.city
           </span>
         </div>

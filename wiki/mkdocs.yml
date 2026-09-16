@@ -11,19 +11,13 @@ theme:
   font:
     text: Inter
     code: JetBrains Mono
+  # Signal on Paper, the same single light scheme as kaun.city. One mapping
+  # (not a list) means no scheme toggle; "custom" hands every colour to
+  # stylesheets/extra.css, which mirrors apps/web/lib/design-tokens.ts.
   palette:
-    - scheme: slate
-      primary: deep orange
-      accent: orange
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
-    - scheme: default
-      primary: deep orange
-      accent: orange
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
+    scheme: default
+    primary: custom
+    accent: custom
   features:
     - navigation.instant
     - navigation.tracking

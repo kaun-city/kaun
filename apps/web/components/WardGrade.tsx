@@ -84,17 +84,17 @@ export function WardGrade(props: Props) {
 
   return (
     <div className="mx-5 mb-3">
-      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#16130e]/55">
+      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">
         Evidence snapshot · {evidence.length} measure{evidence.length === 1 ? "" : "s"}
       </p>
-      <dl className="mt-1.5 border-t border-[#16130e]/15">
+      <dl className="mt-1.5 border-t border-ink/15">
         {rows.map(item => (
-          <div key={item.label} className="flex items-baseline justify-between gap-4 border-b border-[#16130e]/15 py-2">
+          <div key={item.label} className="flex items-baseline justify-between gap-4 border-b border-ink/15 py-2">
             <dt className="min-w-0">
-              <span className="block text-sm text-[#16130e]/80">{item.label}</span>
-              <span className="block text-xs leading-snug text-[#16130e]/45">{item.note}</span>
+              <span className="block text-sm text-ink/80">{item.label}</span>
+              <span className="block text-xs leading-snug text-ink/60">{item.note}</span>
             </dt>
-            <dd className={`shrink-0 font-mono text-base font-semibold tabular-nums ${item.alarm ? "text-[#b42318]" : "text-[#16130e]"}`}>
+            <dd className={`shrink-0 font-mono text-base font-semibold tabular-nums ${item.alarm ? "text-danger" : "text-ink"}`}>
               {item.value}
             </dd>
           </div>
@@ -105,7 +105,7 @@ export function WardGrade(props: Props) {
           type="button"
           onClick={() => setOpen(value => !value)}
           aria-expanded={open}
-          className="flex min-h-11 w-full items-center justify-between text-left text-xs text-[#16130e]/60 hover:text-[#16130e]"
+          className="flex min-h-11 w-full items-center justify-between text-left text-xs text-ink/60 hover:text-ink"
         >
           <span>{open ? "Show fewer measures" : `Show ${hidden} more measure${hidden === 1 ? "" : "s"}`}</span>
           <span aria-hidden="true">{open ? "−" : "+"}</span>

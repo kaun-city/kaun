@@ -35,21 +35,26 @@ export function IndiaHeader({
         // Wraps rather than overflows: on a phone the map's top strip is only
         // about 280px wide once the zoom control is accounted for.
         ? "signal-map-header absolute top-4 left-4 right-16 z-[900] flex flex-wrap items-center gap-x-3 gap-y-1.5 select-none pointer-events-none md:right-auto"
-        : "signal-page-header flex items-center gap-3 flex-wrap"
+        : "signal-page-header flex items-center gap-3 flex-wrap border-b-2 border-ink pb-4"
     }>
-      <Link href={indiaHref("/")} className={`shrink-0 ${overlay ? "signal-wordmark pointer-events-auto" : ""}`}>
-        <span className="text-white font-bold text-xl tracking-tight">
-          KAUN<span className="text-[#FF9933]">?</span>
+      <Link
+        href={indiaHref("/")}
+        className={`inline-flex min-h-11 items-center shrink-0 ${
+          overlay ? "signal-wordmark pointer-events-auto bg-paper border-b-2 border-ink px-3 leading-none" : ""}`}
+      >
+        <span className="text-ink font-bold text-xl tracking-tight">
+          KAUN<span className="text-accent">?</span>
         </span>
-        <span className="text-white/30 font-normal ml-2 text-sm align-middle">India</span>
+        <span className="text-ink/60 font-normal ml-2 text-sm">India</span>
       </Link>
 
       <SurfaceSwitcher current="india" host={host} variant={overlay ? "overlay" : "inline"} />
 
-      <nav className={`flex items-center gap-3 text-xs ${overlay ? "signal-map-control min-h-9 px-3 pointer-events-auto" : ""}`}>
-        <Link href={indiaHref("/")} className="text-white/40 hover:text-white/80 transition-colors">Map</Link>
-        <span className="text-white/10">·</span>
-        <Link href={indiaHref("/projects")} className="text-white/40 hover:text-white/80 transition-colors">
+      <nav className={`flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.08em] ${
+        overlay ? "signal-map-control min-h-11 px-3 pointer-events-auto bg-paper border border-ink/55" : ""}`}>
+        <Link href={indiaHref("/")} className="inline-flex min-h-11 items-center text-ink/70 hover:text-ink transition-colors">Map</Link>
+        <span className="text-ink/50">·</span>
+        <Link href={indiaHref("/projects")} className="inline-flex min-h-11 items-center text-ink/70 hover:text-ink transition-colors">
           Project overruns
         </Link>
       </nav>

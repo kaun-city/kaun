@@ -23,27 +23,27 @@ export function SourcesFooter({
   sources, crosswalkNote,
 }: { sources: SourceEntry[]; crosswalkNote?: string }) {
   return (
-    <footer className="mt-10 border-t border-white/5 pt-5 pb-10">
-      <p className="text-white/30 text-xs uppercase tracking-wider mb-3">Sources</p>
-      <div className="rounded-xl bg-white/[0.03] overflow-hidden">
-        <div className="divide-y divide-white/5">
+    <footer className="mt-10 border-t border-ink/15 pt-5 pb-10">
+      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60 mb-3">Sources</p>
+      <div className="bg-paper border border-ink/15">
+        <div className="divide-y divide-ink/10">
           {sources.map(s => (
             <div key={s.name} className="px-4 py-2.5">
-              <p className="text-white/70 text-xs">{s.name}</p>
-              <p className="text-white/30 text-[11px] mt-0.5">
+              <p className="text-ink/85 text-sm">{s.name}</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60 mt-0.5">
                 {s.publisher} · {s.period}
                 {s.url && (
                   <> · <a href={s.url} target="_blank" rel="noopener noreferrer"
-                    className="text-[#FF9933]/60 hover:text-[#FF9933]">source</a></>
+                    className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">source</a></>
                 )}
               </p>
-              {s.caveat && <p className="text-white/25 text-[11px] mt-1 leading-snug">{s.caveat}</p>}
+              {s.caveat && <p className="text-ink/60 text-xs mt-1 leading-snug">{s.caveat}</p>}
             </div>
           ))}
         </div>
       </div>
 
-      <p className="text-white/25 text-[11px] mt-3 leading-relaxed">
+      <p className="text-ink/60 text-xs mt-3 leading-relaxed">
         Constituency boundaries: Kaun PC boundary build <span className="font-mono">{PC_GEOJSON_VERSION}</span> —
         DataMeet&apos;s 2019 parliamentary-constituency file, with Assam, Jammu &amp; Kashmir and Ladakh
         geometry replaced from shijithpk&apos;s 2024 supplement because DataMeet predates the 2023 Assam and
@@ -52,12 +52,12 @@ export function SourcesFooter({
         parameters in <span className="font-mono">data/india/pc-boundaries-manifest.json</span>.
       </p>
       {crosswalkNote && (
-        <p className="text-white/25 text-[11px] mt-2 leading-relaxed">{crosswalkNote}</p>
+        <p className="text-ink/60 text-xs mt-2 leading-relaxed">{crosswalkNote}</p>
       )}
-      <p className="text-white/15 text-[11px] mt-3">
+      <p className="text-ink/60 text-xs mt-3">
         All data is from public records. kaun.city aggregates and serves — we don&apos;t generate the
         underlying data. Found an error? <a href="https://github.com/kaun-city/kaun/issues/new"
-          target="_blank" rel="noopener noreferrer" className="text-[#FF9933]/50 hover:text-[#FF9933]">Open an issue.</a>
+          target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">Open an issue.</a>
       </p>
     </footer>
   )

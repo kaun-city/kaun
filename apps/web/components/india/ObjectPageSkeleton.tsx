@@ -58,7 +58,7 @@ export function ObjectPageSkeleton({
           {Array.from({ length: sections }).map((_, i) => (
             <div key={i} className="mt-8">
               <SkeletonLine className="h-2.5 w-32" />
-              <div className="mt-2.5 rounded-xl bg-white/5 p-4 space-y-2.5">
+              <div className="mt-2.5 bg-paper border border-ink/15 p-4 space-y-2.5">
                 <SkeletonLine className="h-3 w-3/4" />
                 <SkeletonLine className="h-3 w-1/2" />
                 <SkeletonLine className="h-3 w-2/3" />

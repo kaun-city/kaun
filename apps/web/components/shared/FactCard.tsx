@@ -26,8 +26,8 @@ export function FactCard({ fact, onCorroborate }: Props) {
   return (
     <div className="flex items-center justify-between gap-2">
       <div className="flex-1 min-w-0">
-        <p className="text-white/40 text-[10px]">{fact.field}</p>
-        <p className="text-white text-sm font-medium truncate">{fact.value}</p>
+        <p className="text-[11px] text-ink/60">{fact.field}</p>
+        <p className="text-ink text-sm font-medium truncate">{fact.value}</p>
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <TrustBadge level={fact.trust_level} />
@@ -35,10 +35,10 @@ export function FactCard({ fact, onCorroborate }: Props) {
           onClick={handleCorroborate}
           disabled={voted || voting}
           title="I can verify this"
-          className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-colors
+          className={`flex min-h-11 min-w-11 items-center justify-center gap-1 border px-2 font-mono text-xs font-semibold tabular-nums transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent
             ${voted
-              ? "bg-amber-500/20 text-amber-400 cursor-default"
-              : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70 cursor-pointer"
+              ? "border-ink/35 bg-ink/10 text-ink cursor-default"
+              : "border-ink/20 text-ink/70 hover:bg-ink/5 hover:text-ink cursor-pointer"
             }`}
         >
           <span>+</span>

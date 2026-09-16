@@ -159,8 +159,8 @@ export default async function ConstituencyPage({ params }: Props) {
               title={c.pc_name}
               subtitle={
                 <>
-                  {c.pc_name_hi && <span className="text-white/40">{c.pc_name_hi} · </span>}
-                  <Link href={mapHref} className="text-[#FF9933]/60 hover:text-[#FF9933]">see on the map</Link>
+                  {c.pc_name_hi && <span className="text-ink/70">{c.pc_name_hi} · </span>}
+                  <Link href={mapHref} className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">see on the map</Link>
                 </>
               }
               chips={[
@@ -176,7 +176,7 @@ export default async function ConstituencyPage({ params }: Props) {
           </div>
 
           {!c.reserved_for && (
-            <p className="text-white/20 text-[11px] mt-3 leading-snug">
+            <p className="text-ink/60 text-xs mt-3 leading-snug">
               Reservation status (SC/ST) is shown only when it comes from the Delimitation Order. Every
               boundary and roster file checked under-reports it, so Kaun leaves it blank rather than
               repeating a figure it knows to be wrong.
@@ -208,10 +208,10 @@ export default async function ConstituencyPage({ params }: Props) {
             title={`Central projects in ${c.state_name}`}
             note={reportMonth ? `MoSPI report, ${formatMonth(reportMonth)}` : undefined}
           >
-            <p className="text-white/30 text-[11px] leading-snug mb-2.5">{MOSPI_STATE_LEVEL_NOTE}</p>
+            <p className="text-ink/60 text-xs leading-snug mb-2.5">{MOSPI_STATE_LEVEL_NOTE}</p>
             {projects.length === 0 ? (
-              <div className="rounded-xl bg-white/5 p-4">
-                <p className="text-white/50 text-sm">No central projects loaded for this state yet.</p>
+              <div className="bg-paper border border-ink/15 p-4">
+                <p className="text-ink/75 text-sm">No central projects loaded for this state yet.</p>
               </div>
             ) : (
               <>
@@ -220,7 +220,7 @@ export default async function ConstituencyPage({ params }: Props) {
                 </div>
                 <Link
                   href={indiaHref(`/projects?state=${c.st_code}`)}
-                  className="inline-block mt-3 text-[#FF9933]/70 hover:text-[#FF9933] text-xs"
+                  className="inline-flex items-center min-h-11 mt-1 text-sm text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent"
                 >
                   All {projectsTotal.toLocaleString("en-IN")} central projects in {c.state_name} &rarr;
                 </Link>

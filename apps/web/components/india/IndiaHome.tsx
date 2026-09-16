@@ -193,7 +193,7 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
   const legendNums = values ? Object.values(values) : []
 
   return (
-    <main className="signal-map flex flex-col h-full bg-[#0A0A0A] overflow-hidden">
+    <main className="signal-map flex flex-col h-full bg-paper-canvas overflow-hidden">
       <div className="relative flex-1 min-h-0">
         <IndiaHeader variant="overlay" />
 
@@ -205,11 +205,12 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
             value={q}
             onChange={e => setQ(e.target.value)}
             placeholder="Search a constituency or MP…"
-            className="w-full min-h-11 bg-black/80 backdrop-blur-xl border border-white/15 rounded-lg px-3 py-2
-              text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#FF9933]/40"
+            className="w-full min-h-11 bg-paper-bright border border-ink/55 px-3 py-2
+              text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:border-ink
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           />
           {results.length > 0 && (
-            <div className="mt-1 bg-[#111] border border-white/10 rounded-lg overflow-hidden shadow-xl max-h-72 overflow-y-auto">
+            <div className="mt-1 bg-paper border border-ink/55 divide-y divide-ink/10 max-h-72 overflow-y-auto">
               {results.map(f => {
                 const mp = mpBySeat.get(f.pc_code)
                 return (
@@ -223,13 +224,14 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                       setStateFilter(f.st_code)
                       focusRef.current?.focus(f.pc_code)
                     }}
-                    className="w-full min-h-11 text-left px-3 py-2 hover:bg-white/10 transition-colors"
+                    className="w-full min-h-11 text-left px-3 py-2 hover:bg-ink/5 transition-colors
+                      focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-white/85 text-xs">{f.pc_name}</span>
-                      <span className="text-white/20 text-[10px] font-mono">{f.pc_code}</span>
+                      <span className="text-ink text-sm">{f.pc_name}</span>
+                      <span className="text-ink/60 text-[11px] font-mono tabular-nums">{f.pc_code}</span>
                     </div>
-                    <div className="text-white/30 text-[10px] mt-0.5">
+                    <div className="text-ink/60 text-xs mt-0.5">
                       {f.state_name}{mp ? ` · ${mp.name}` : ""}
                     </div>
                   </button>
@@ -245,8 +247,9 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
             value={stateFilter ?? ""}
             onChange={e => setStateFilter(e.target.value === "" ? null : Number(e.target.value))}
             aria-label="Filter constituencies by state"
-            className="min-h-11 bg-black/80 backdrop-blur-xl border border-white/15 rounded-lg px-2.5 py-2
-              text-xs text-white/80 focus:outline-none focus:border-[#FF9933]/40 max-w-[13rem]"
+            className="min-h-11 bg-paper border border-ink/55 px-2.5 py-2
+              text-xs text-ink focus:outline-none focus:border-ink
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent max-w-[13rem]"
           >
             <option value="">All India · {features.length || LOK_SABHA_SEATS} seats</option>
             {states.map(s => (
@@ -286,15 +289,16 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
           {/* Layer switcher + legend */}
           <div className="pointer-events-auto w-full
             md:absolute md:bottom-4 md:left-4 md:z-[900] md:w-[min(20rem,calc(100vw-2rem))]
-            bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl p-3">
-            <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">Color by</p>
-            <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:gap-1.5">
+            bg-paper border border-ink/55 p-3">
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60 mb-2">Color by</p>
+            <div className="grid grid-cols-2 gap-1.5 md:flex md:flex-wrap">
               <button
                 onClick={() => setLayerId(null)}
-                className={`min-h-11 md:min-h-0 text-[11px] px-2 py-1 rounded border transition-colors ${
+                className={`min-h-11 md:min-h-8 px-2 py-1 border font-mono text-[11px] uppercase tracking-[0.06em] leading-tight
+                  transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
                   layerId === null
-                    ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
-                    : "border-white/10 text-white/40 hover:text-white/70"}`}
+                    ? "border-ink bg-ink text-paper"
+                    : "border-ink/20 text-ink/60 hover:text-ink hover:bg-ink/5"}`}
               >
                 None
               </button>
@@ -302,10 +306,11 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                 <button
                   key={l.id}
                   onClick={() => setLayerId(l.id)}
-                  className={`min-h-11 md:min-h-0 text-[11px] px-2 py-1 rounded border transition-colors ${
+                  className={`min-h-11 md:min-h-8 px-2 py-1 border font-mono text-[11px] uppercase tracking-[0.06em] leading-tight
+                    transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
                     layerId === l.id
-                      ? "border-[#FF9933]/50 text-[#FF9933] bg-[#FF9933]/10"
-                      : "border-white/10 text-white/40 hover:text-white/70"}`}
+                      ? "border-ink bg-ink text-paper"
+                      : "border-ink/20 text-ink/60 hover:text-ink hover:bg-ink/5"}`}
                 >
                   {l.label}
                 </button>
@@ -314,18 +319,18 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
 
             {layer && (
               <div className="mt-2.5 space-y-1.5">
-                <p className="text-white/40 text-[11px] leading-snug">{layer.description}</p>
-                <div className="flex items-center gap-1">
+                <p className="text-ink/75 text-xs leading-snug">{layer.description}</p>
+                <div className="flex items-center gap-px">
                   {rampFor(layer).map((c, i) => (
-                    <span key={i} className="h-2 flex-1 rounded-sm" style={{ backgroundColor: c }} />
+                    <span key={i} className="h-2 flex-1" style={{ backgroundColor: c }} />
                   ))}
                 </div>
-                <div className="flex items-center justify-between text-white/25 text-[10px]">
+                <div className="flex items-center justify-between text-ink/70 text-[11px] font-mono tabular-nums">
                   <span>{legendNums.length ? formatValue(Math.min(...legendNums), layer.format) : "—"}</span>
                   <span>{legendNums.length ? formatValue(Math.max(...legendNums), layer.format) : "—"}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-white/25 text-[10px]">
-                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: NO_DATA_FILL }} />
+                <div className="flex items-center gap-1.5 text-ink/60 text-xs">
+                  <span className="w-2.5 h-2.5 shrink-0 border border-ink/20" style={{ backgroundColor: NO_DATA_FILL }} />
                   <span>
                     {layerLoading
                       ? "loading…"
@@ -333,9 +338,9 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                   </span>
                 </div>
                 {layer.absentNote && (
-                  <p className="text-white/20 text-[10px] leading-snug">{layer.absentNote}</p>
+                  <p className="text-ink/60 text-xs leading-snug">{layer.absentNote}</p>
                 )}
-                <p className="text-white/15 text-[10px]">Source: {layer.source}</p>
+                <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">Source: {layer.source}</p>
               </div>
             )}
           </div>
@@ -344,36 +349,38 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
           {selected && (
             <div className="pointer-events-auto w-full
               md:absolute md:bottom-4 md:right-4 md:z-[950] md:w-[min(20rem,calc(100vw-2rem))]
-              bg-[#111] border border-white/10 rounded-xl p-4 shadow-2xl">
+              bg-paper border border-ink/55 border-t-2 border-t-ink p-4">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-white/30 text-[10px] uppercase tracking-widest">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">
                     {selected.state_name} · seat {selected.pc_no}
                   </p>
-                  <p className="text-white font-semibold text-base mt-0.5">{selected.pc_name}</p>
+                  <p className="text-ink font-semibold text-base mt-0.5">{selected.pc_name}</p>
                   {(() => {
                     const mp = mpBySeat.get(selected.pc_code)
                     if (!mp) {
-                      return <p className="text-white/30 text-xs mt-1">No sitting MP on record for this seat.</p>
+                      return <p className="text-ink/60 text-xs mt-1">No sitting MP on record for this seat.</p>
                     }
                     return (
-                      <p className="text-white/50 text-xs mt-1">
+                      <p className="text-ink/75 text-xs mt-1">
                         {mp.name}{mp.party_abbr ? ` · ${mp.party_abbr}` : ""}
                       </p>
                     )
                   })()}
                   {layer && (
-                    <p className="text-white/40 text-xs mt-1.5">
+                    <p className="text-ink/70 text-xs mt-1.5">
                       {layer.label}:{" "}
                       {values && values[selected.pc_code] !== undefined
-                        ? <span className="text-white/80">{formatValue(values[selected.pc_code], layer.format)}</span>
-                        : <span className="text-white/25 italic">no value recorded</span>}
+                        ? <span className="text-ink font-mono tabular-nums font-semibold">{formatValue(values[selected.pc_code], layer.format)}</span>
+                        : <span className="text-ink/60 italic">no value recorded</span>}
                     </p>
                   )}
                 </div>
                 <button
                   onClick={() => setSelected(null)}
-                  className="text-white/30 hover:text-white/70 text-lg leading-none w-7 h-7 flex items-center justify-center shrink-0"
+                  className="w-11 h-11 -mt-2 -mr-2 flex items-center justify-center shrink-0 border border-ink/20
+                    text-ink/60 hover:bg-ink/5 hover:text-ink text-lg leading-none transition-colors
+                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                   aria-label="Close"
                 >&times;</button>
               </div>
@@ -384,9 +391,10 @@ export default function IndiaHome({ mps }: { mps: MpLite[] }) {
                   map's one job; it should not feel like leaving. */}
               <Link
                 href={indiaHref(`/c/${selected.pc_code}`)}
-                className="mt-3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
-                  bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95 text-black font-semibold text-sm
-                  transition-all duration-150"
+                className="mt-3 flex min-h-11 items-center justify-center gap-2 px-4
+                  bg-ink text-paper font-mono text-[11px] font-semibold uppercase tracking-[0.08em]
+                  hover:bg-ink/85 transition-colors
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Open constituency page &rarr;
               </Link>

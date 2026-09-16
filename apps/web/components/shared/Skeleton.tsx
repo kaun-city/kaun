@@ -6,14 +6,14 @@ interface SkeletonProps {
 
 /** Single skeleton line */
 export function SkeletonLine({ className = "" }: SkeletonProps) {
-  return <div className={`bg-white/8 rounded animate-pulse ${className}`} />
+  return <div className={`bg-ink/10 animate-pulse ${className}`} />
 }
 
 /** Skeleton card block with 2-3 lines */
 export function SkeletonCard({ lines = 2 }: { lines?: number }) {
   const widths = ["w-3/4", "w-1/2", "w-5/6", "w-2/3"]
   return (
-    <div className="p-3 rounded-xl bg-white/5 space-y-2">
+    <div className="border-t border-ink/15 py-3 space-y-2">
       <SkeletonLine className="h-3 w-full" />
       {Array.from({ length: lines - 1 }).map((_, i) => (
         <SkeletonLine key={i} className={`h-3 ${widths[i % widths.length]}`} />
@@ -25,7 +25,7 @@ export function SkeletonCard({ lines = 2 }: { lines?: number }) {
 /** Skeleton for the rep / officer section */
 export function SkeletonRepCard() {
   return (
-    <div className="p-3 rounded-xl bg-white/5 space-y-2">
+    <div className="border-t border-ink/15 py-3 space-y-2">
       <div className="flex items-center gap-2">
         <SkeletonLine className="h-2.5 w-12" />
         <SkeletonLine className="h-2.5 w-8" />
@@ -39,7 +39,7 @@ export function SkeletonRepCard() {
 /** Skeleton for the scorecard grid */
 export function SkeletonScorecard() {
   return (
-    <div className="p-3 rounded-xl bg-white/5 space-y-3">
+    <div className="border-t border-ink/15 py-3 space-y-3">
       <SkeletonLine className="h-2.5 w-36" />
       <div className="grid grid-cols-2 gap-2">
         {[1,2,3,4].map(i => (
@@ -57,7 +57,7 @@ export function SkeletonScorecard() {
 export function SkeletonStats() {
   return (
     <div className="space-y-3">
-      <div className="p-3 rounded-xl bg-white/5 space-y-3">
+      <div className="border-t border-ink/15 py-3 space-y-3">
         <SkeletonLine className="h-2.5 w-24" />
         <div className="grid grid-cols-3 gap-2">
           {[1,2,3].map(i => (
@@ -68,7 +68,7 @@ export function SkeletonStats() {
           ))}
         </div>
       </div>
-      <div className="p-3 rounded-xl bg-white/5 space-y-2">
+      <div className="border-t border-ink/15 py-3 space-y-2">
         <SkeletonLine className="h-2.5 w-28" />
         {[1,2,3,4].map(i => (
           <div key={i} className="flex items-center gap-2">

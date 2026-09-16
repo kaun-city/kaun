@@ -33,26 +33,26 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
       md:w-[400px]
     ">
       <div className="
-        bg-[#111] border border-white/10 rounded-t-2xl md:rounded-2xl
+        bg-paper text-ink border-t-2 border-ink md:border md:border-ink/55
         p-6 flex flex-col gap-4
       ">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-white font-semibold text-base">Not in Bengaluru?</p>
-            <p className="text-white/50 text-sm mt-1">
+            <p className="text-ink font-semibold text-base">Not in Bengaluru?</p>
+            <p className="text-ink/60 text-sm mt-1">
               Kaun only covers Bengaluru right now.
             </p>
           </div>
           <button
             onClick={onClose}
             aria-label="Close city coverage message"
-            className="text-white/40 hover:text-white/80 text-xl leading-none w-11 h-11 flex items-center justify-center"
+            className="text-ink/60 hover:text-ink hover:bg-ink/5 text-xl leading-none w-11 h-11 flex items-center justify-center"
           >
             x
           </button>
         </div>
 
-        <p className="text-white/60 text-sm leading-relaxed">
+        <p className="text-ink/75 text-sm leading-relaxed">
           We want to expand to every Indian city. If you want Kaun in your city,
           open a request on GitHub -- others can vote on it and it helps us
           prioritise where to go next.
@@ -64,13 +64,13 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
           rel="noopener noreferrer"
           className="
             flex items-center justify-center gap-2
-            px-4 py-3 rounded-xl
-            bg-[#FF9933] hover:bg-[#FF9933]/90 active:scale-95
-            text-black font-semibold text-sm
+            min-h-11 px-4 py-3
+            bg-ink hover:bg-ink/85 active:scale-95
+            text-paper font-mono text-[11px] font-semibold uppercase tracking-[0.08em]
             transition-all duration-150
           "
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
               0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
               -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
@@ -79,13 +79,13 @@ function OutOfBoundsCard({ onClose }: { onClose: () => void }) {
               .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
               .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
               0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
-              fill="black"
+              fill="currentColor"
             />
           </svg>
           Request my city on GitHub
         </a>
 
-        <p className="text-white/30 text-xs text-center">
+        <p className="text-ink/60 text-xs text-center">
           Already requested? Drop a thumbs up on the existing issue.
         </p>
       </div>
@@ -484,7 +484,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
   }, [])
 
   return (
-    <main className="signal-map flex h-screen bg-[#F2EDE4] overflow-hidden">
+    <main className="signal-map flex h-screen bg-paper-canvas text-ink overflow-hidden">
 
       <div className="relative flex-1 min-w-0 h-full transition-all duration-300">
 
@@ -492,12 +492,12 @@ export default function HomePage({ host = "" }: { host?: string }) {
         <div className="signal-map-header absolute top-3.5 left-3.5 right-3.5 z-[900] select-none flex items-center gap-2">
           {!searchOpen && (
             <>
-              <span className="signal-wordmark text-white font-bold text-base tracking-tight pointer-events-none shrink-0">
-                KAUN<span className="text-[#FF9933]">?</span>
+              <span className="signal-wordmark bg-paper border-b-2 border-ink/55 px-[0.7rem] py-[0.45rem] leading-none text-ink font-bold text-base tracking-tight pointer-events-none shrink-0">
+                KAUN<span className="text-accent">?</span>
               </span>
               <a
                 href="/how-it-works"
-                className="signal-map-control flex items-center justify-center w-9 h-9 text-xs font-bold shrink-0"
+                className="signal-map-control flex items-center justify-center w-11 h-11 sm:w-9 sm:h-9 bg-paper border border-ink/55 text-ink hover:bg-paper-muted text-xs font-bold shrink-0"
                 aria-label="How Kaun works and where its data comes from"
                 title="How it works & data sources"
               >
@@ -529,10 +529,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
                   onBlur={() => setTimeout(() => { setSearchOpen(false); setSearchQuery("") }, 200)}
                   placeholder="Search ward..."
                   autoFocus
-                  className="w-full md:w-64 h-11 bg-[#F8F5EF] border border-[#16130e]/55 px-3 text-sm text-[#16130e] placeholder:text-[#16130e]/40 focus:outline-none focus:border-[#C25400]"
+                  className="w-full md:w-64 h-11 bg-paper-bright border border-ink/55 px-3 text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:border-ink"
                 />
                 {searchResults.length > 0 && (
-                  <div className="absolute top-full mt-1 left-0 right-0 bg-[#F8F5EF] border border-[#16130e]/55 overflow-hidden max-h-60 overflow-y-auto z-[1000]">
+                  <div className="absolute top-full mt-1 left-0 right-0 bg-paper border border-ink/55 overflow-hidden max-h-60 overflow-y-auto z-[1000]">
                     {searchResults.map(w => (
                       <button
                         key={`${w.corporation_id ?? "legacy"}:${w.ward_no}`}
@@ -541,10 +541,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
                           e.stopPropagation()
                           void handleSearchSelect(w)
                         }}
-                        className="w-full min-h-11 text-left px-3 py-2 hover:bg-[#16130e]/5 border-b border-[#16130e]/10 last:border-b-0 transition-colors flex items-center justify-between gap-3"
+                        className="w-full min-h-11 text-left px-3 py-2 hover:bg-ink/5 border-b border-ink/10 last:border-b-0 transition-colors flex items-center justify-between gap-3"
                       >
-                        <span className="text-[#16130e] text-sm">{w.ward_name}</span>
-                        <span className="font-mono text-[#16130e]/50 text-[11px] text-right">
+                        <span className="text-ink text-sm">{w.ward_name}</span>
+                        <span className="font-mono text-ink/60 text-[11px] text-right">
                           {w.corporation ? `${w.corporation} · ` : ""}#{w.ward_no}
                         </span>
                       </button>
@@ -555,11 +555,11 @@ export default function HomePage({ host = "" }: { host?: string }) {
             ) : (
               <button
                 onClick={() => setSearchOpen(true)}
-                className="signal-map-control flex items-center justify-center w-11 h-11 md:w-9 md:h-9 transition-colors"
+                className="signal-map-control flex items-center justify-center w-11 h-11 md:w-9 md:h-9 bg-paper border border-ink/55 text-ink hover:bg-paper-muted transition-colors"
                 aria-label="Search wards"
                 title="Search wards"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(22,19,14,0.70)" strokeWidth="2.5" strokeLinecap="round">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="text-ink/70" aria-hidden="true">
                   <circle cx="10.5" cy="10.5" r="7" />
                   <line x1="15.5" y1="15.5" x2="21" y2="21" />
                 </svg>
@@ -570,12 +570,18 @@ export default function HomePage({ host = "" }: { host?: string }) {
 
         {/* City Pulse — accountability headlines before pin drop */}
         {!showCard && !outOfBounds && !searchOpen && <CityPulse cityId={activeCity.id} />}
-        {!showCard && !outOfBounds && !reportPickMode && <CorporatorVacancy cityId={activeCity.id} />}
+        {/* On phones the layer legend occupies the lower map, so the onboarding
+            stack steps aside while a layer is painted (closing the legend restores it). */}
+        {!showCard && !outOfBounds && !reportPickMode && (
+          <div className={activeLayer ? "hidden sm:block" : undefined}>
+            <CorporatorVacancy cityId={activeCity.id} />
+          </div>
+        )}
 
         {/* Onboarding CTA */}
         {!showCard && !outOfBounds && (
-          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-[900] flex flex-col items-center gap-2">
-            <p className="pointer-events-none whitespace-nowrap bg-[#F2EDE4]/85 px-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-[#16130e]/55">
+          <div className={`absolute bottom-20 left-1/2 -translate-x-1/2 z-[900] flex-col items-center gap-2 ${activeLayer ? "hidden sm:flex" : "flex"}`}>
+            <p className="pointer-events-none whitespace-nowrap bg-paper-canvas/85 px-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-ink/60">
               {geoDenied ? "Location unavailable · tap anywhere on the map" : "Tap anywhere on the map"}
             </p>
             {!geoDenied && (
@@ -584,24 +590,25 @@ export default function HomePage({ host = "" }: { host?: string }) {
                 disabled={geoLoading}
                 className="
                   signal-primary-action flex items-center gap-2 min-h-11 px-4
-                  active:scale-95 text-[11px]
-                  transition-all duration-150 disabled:opacity-60
+                  bg-ink text-paper border border-ink hover:bg-ink/85
+                  font-mono text-[11px] font-semibold uppercase tracking-[0.08em]
+                  active:scale-95 transition-all duration-150 disabled:opacity-60
                 "
               >
                 {geoLoading ? (
                   <>
-                    <span className="w-3 h-3 border border-[#F8F5EF]/40 border-t-[#F8F5EF] rounded-full animate-spin" />
+                    <span className="w-3 h-3 border border-paper/40 border-t-paper rounded-full animate-spin" />
                     Locating...
                   </>
                 ) : (
                   <>
                     <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <circle cx="8" cy="8" r="3" fill="#F8F5EF"/>
-                      <circle cx="8" cy="8" r="6.5" stroke="#F8F5EF" strokeWidth="1.5"/>
-                      <line x1="8" y1="0" x2="8" y2="3" stroke="#F8F5EF" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="8" y1="13" x2="8" y2="16" stroke="#F8F5EF" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="0" y1="8" x2="3" y2="8" stroke="#F8F5EF" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="13" y1="8" x2="16" y2="8" stroke="#F8F5EF" strokeWidth="1.5" strokeLinecap="round"/>
+                      <circle cx="8" cy="8" r="3" fill="currentColor"/>
+                      <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
+                      <line x1="8" y1="0" x2="8" y2="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="8" y1="13" x2="8" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="0" y1="8" x2="3" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="13" y1="8" x2="16" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                     </svg>
                     Find my ward
                   </>
@@ -618,14 +625,14 @@ export default function HomePage({ host = "" }: { host?: string }) {
               {activeCity.id === "bengaluru" && (
                 <button
                   onClick={() => setWardFinderOpen(true)}
-                  className="flex items-center gap-2 min-h-11 px-4 bg-[#F8F5EF] border border-[#16130e]/55 hover:bg-[#efe9de] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[#16130e] transition-colors duration-150"
+                  className="flex items-center gap-2 min-h-11 px-4 bg-paper border border-ink/55 hover:bg-paper-muted font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-ink transition-colors duration-150"
                 >
                   New ward?
                 </button>
               )}
               <button
                 onClick={() => setReportPickMode(true)}
-                className="flex items-center gap-2 min-h-11 px-4 bg-[#F8F5EF] border border-[#16130e]/55 hover:bg-[#efe9de] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[#16130e] transition-colors duration-150"
+                className="flex items-center gap-2 min-h-11 px-4 bg-paper border border-ink/55 hover:bg-paper-muted font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-ink transition-colors duration-150"
               >
                 <span aria-hidden="true">+</span>
                 Report
@@ -634,12 +641,12 @@ export default function HomePage({ host = "" }: { host?: string }) {
 
             <div ref={actionsRef} className="relative sm:hidden">
               {actionsOpen && (
-                <div role="menu" className="absolute bottom-14 right-0 w-48 overflow-hidden bg-[#F8F5EF] border border-[#16130e]/55">
+                <div role="menu" className="absolute bottom-14 right-0 w-48 overflow-hidden bg-paper border border-ink/55">
                   {activeCity.id === "bengaluru" && (
                     <button
                       role="menuitem"
                       onClick={() => { setActionsOpen(false); setWardFinderOpen(true) }}
-                      className="w-full min-h-11 px-3 text-left text-sm text-[#16130e] hover:bg-[#16130e]/5"
+                      className="w-full min-h-11 px-3 text-left text-sm text-ink hover:bg-ink/5"
                     >
                       New ward crosswalk
                     </button>
@@ -647,7 +654,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
                   <button
                     role="menuitem"
                     onClick={() => { setActionsOpen(false); setReportPickMode(true) }}
-                    className="w-full min-h-11 px-3 text-left text-sm text-[#16130e] hover:bg-[#16130e]/5 border-t border-[#16130e]/15"
+                    className="w-full min-h-11 px-3 text-left text-sm text-ink hover:bg-ink/5 border-t border-ink/15"
                   >
                     Report an issue
                   </button>
@@ -658,7 +665,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
                 aria-label="More map actions"
                 aria-haspopup="menu"
                 aria-expanded={actionsOpen}
-                className="w-11 h-11 flex items-center justify-center bg-[#F8F5EF] border border-[#16130e]/55 text-[#16130e]"
+                className="w-11 h-11 flex items-center justify-center bg-paper border border-ink/55 text-ink hover:bg-paper-muted"
               >
                 <svg width="16" height="4" viewBox="0 0 16 4" aria-hidden="true" fill="currentColor">
                   <rect x="0" y="0" width="3" height="3" /><rect x="6.5" y="0" width="3" height="3" /><rect x="13" y="0" width="3" height="3" />
@@ -671,16 +678,16 @@ export default function HomePage({ host = "" }: { host?: string }) {
         {/* Report pick mode banner */}
         {reportPickMode && (
           <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-[900] flex items-center gap-2
-            pl-4 pr-1 bg-[#16130e] text-[#F8F5EF] text-sm font-semibold whitespace-nowrap">
+            pl-4 pr-1 bg-ink text-paper text-sm font-semibold whitespace-nowrap">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="8" cy="8" r="3" fill="#F8F5EF"/>
-              <circle cx="8" cy="8" r="6.5" stroke="#F8F5EF" strokeWidth="1.5"/>
+              <circle cx="8" cy="8" r="3" fill="currentColor"/>
+              <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
             </svg>
             Tap on the map where the issue is
             <button
               onClick={() => setReportPickMode(false)}
               aria-label="Cancel report location selection"
-              className="w-11 h-11 flex items-center justify-center text-[#F8F5EF]/60 hover:text-[#F8F5EF] text-base leading-none"
+              className="w-11 h-11 flex items-center justify-center text-paper/75 hover:text-paper text-base leading-none"
             >&times;</button>
           </div>
         )}

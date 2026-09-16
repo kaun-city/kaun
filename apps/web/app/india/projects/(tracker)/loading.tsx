@@ -41,7 +41,7 @@ export default function Loading() {
           {/* sort + state controls */}
           <div className="flex flex-wrap gap-1.5 mt-5">
             {["w-24", "w-28", "w-20", "w-16", "w-32"].map((w, i) => (
-              <SkeletonLine key={i} className={`h-7 ${w}`} />
+              <SkeletonLine key={i} className={`h-11 ${w}`} />
             ))}
           </div>
 
@@ -50,7 +50,7 @@ export default function Loading() {
               <SkeletonLine className="h-2.5 w-40" />
               <div className="mt-2.5 space-y-2">
                 {Array.from({ length: section === 0 ? 2 : 5 }).map((_, i) => (
-                  <div key={i} className="rounded-xl bg-white/5 p-4 space-y-3">
+                  <div key={i} className="bg-paper border border-ink/15 p-4 space-y-3">
                     <SkeletonLine className="h-3.5 w-2/3" />
                     <SkeletonLine className="h-2.5 w-1/3" />
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">

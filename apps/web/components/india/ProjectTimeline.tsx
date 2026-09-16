@@ -12,14 +12,13 @@
  * is itself the finding, and hiding those rows would hide it.
  */
 import { formatCrore, formatMonth, formatPct } from "@/lib/india/format"
-import { RAMP_DIVERGING } from "@/lib/india/viz"
 import type { CentralProjectChange } from "@/lib/india/types"
 
 export function ProjectTimeline({ history }: { history: CentralProjectChange[] }) {
   if (history.length === 0) {
     return (
-      <div className="rounded-xl bg-white/5 p-4">
-        <p className="text-white/50 text-sm">No monthly reports recorded for this project yet.</p>
+      <div className="bg-paper border border-ink/15 p-4">
+        <p className="text-ink/75 text-sm">No monthly reports recorded for this project yet.</p>
       </div>
     )
   }
@@ -28,41 +27,42 @@ export function ProjectTimeline({ history }: { history: CentralProjectChange[] }
   const rows = [...history].reverse()
 
   return (
-    <div className="rounded-xl bg-white/5 overflow-hidden">
-      <div className="divide-y divide-white/5">
+    <div className="bg-paper border border-ink/15 px-4">
+      {/* The rail: one hairline down the months, a mark on it for each report.
+          Solid where cost or completion moved, hollow where nothing did. */}
+      <div className="ml-1 border-l border-ink/20 divide-y divide-ink/10">
         {rows.map((h, i) => {
           const moved = Boolean(h.cost_revised || h.schedule_changed)
           const first = i === rows.length - 1
           return (
-            <div key={h.report_month} className="px-4 py-3 flex gap-3">
-              <div className="pt-1 shrink-0">
-                <span
-                  className="block w-2 h-2 rounded-full"
-                  style={{ backgroundColor: moved ? RAMP_DIVERGING[3] : "#3a3a3a" }}
-                />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline justify-between gap-3">
-                  <p className={`text-xs font-medium ${moved ? "text-white/85" : "text-white/40"}`}>
+            <div key={h.report_month} className="relative pl-4 py-3">
+              <span
+                aria-hidden="true"
+                className={`absolute -left-[4.5px] top-4 block w-2 h-2 rounded-full ${
+                  moved ? "bg-ink" : "bg-paper border border-ink/40"}`}
+              />
+              <div className="min-w-0">
+                <div className="flex items-baseline justify-between gap-3 flex-wrap">
+                  <p className={`font-mono text-xs ${moved ? "text-ink font-semibold" : "text-ink/60"}`}>
                     {formatMonth(h.report_month)} report
                   </p>
-                  <p className="text-white/30 text-[11px] shrink-0">
+                  <p className="text-ink/70 font-mono tabular-nums text-[11px] shrink-0">
                     {formatCrore(h.revised_cost_cr)} · {formatPct(h.physical_progress_pct)} complete
                   </p>
                 </div>
 
                 {h.cost_revised && (
-                  <p className="text-white/60 text-[11px] mt-1">
+                  <p className="text-ink/85 text-xs mt-1">
                     Cost revised from {formatCrore(h.prev_revised_cost_cr)} to {formatCrore(h.revised_cost_cr)}
                   </p>
                 )}
                 {h.schedule_changed && (
-                  <p className="text-white/60 text-[11px] mt-1">
+                  <p className="text-ink/85 text-xs mt-1">
                     Completion moved from {formatMonth(h.prev_revised_doc_month)} to {formatMonth(h.revised_doc_month)}
                   </p>
                 )}
                 {!moved && (
-                  <p className="text-white/25 text-[11px] mt-1">
+                  <p className="text-ink/60 text-xs mt-1">
                     {first
                       ? "First month in Kaun's record — nothing to compare against."
                       : "No change to cost or completion date."}
@@ -70,7 +70,7 @@ export function ProjectTimeline({ history }: { history: CentralProjectChange[] }
                 )}
 
                 {h.cumulative_expenditure_cr !== null && (
-                  <p className="text-white/25 text-[11px] mt-1">
+                  <p className="text-ink/60 text-xs mt-1">
                     Spent to date: {formatCrore(h.cumulative_expenditure_cr)}
                   </p>
                 )}

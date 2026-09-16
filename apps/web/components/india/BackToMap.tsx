@@ -61,14 +61,14 @@ export function BackToMap({ href }: { href: string }) {
       aria-label="Back to the map"
       data-testid="back-to-map"
       className="fixed left-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-[60]
-        inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm
-        bg-black/85 backdrop-blur-xl border border-white/15 text-white/80 shadow-2xl
-        hover:text-white hover:border-[#FF9933]/40 active:scale-95
-        transition-all duration-150
-        md:static md:mb-4 md:rounded-lg md:px-2.5 md:py-1.5 md:text-xs
-        md:bg-white/5 md:border-white/10 md:shadow-none md:backdrop-blur-none"
+        inline-flex items-center gap-2 min-h-11 px-4
+        bg-paper border border-ink/55 text-ink
+        font-mono text-[11px] font-semibold uppercase tracking-[0.08em]
+        hover:bg-paper-muted transition-colors
+        focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent
+        md:static md:mb-4 md:px-3 md:border-ink/20"
     >
-      <span aria-hidden="true" className="text-[#FF9933]">&larr;</span>
+      <span aria-hidden="true" className="text-accent">&larr;</span>
       Map
     </Link>
   )

@@ -20,6 +20,7 @@ import { useEffect, useRef, useState, type MutableRefObject } from "react"
 import type { Map as LeafletMap, GeoJSON as LeafletGeoJSON, PathOptions } from "leaflet"
 import type { Feature } from "geojson"
 import { BASE_TILE_OPTIONS, BASE_TILE_URL } from "@/lib/base-map"
+import { INK, PAPER } from "@/lib/design-tokens"
 import { colorFor } from "@/lib/map-layers"
 import { INDIA_CENTER, INDIA_MAX_ZOOM, INDIA_MIN_ZOOM, INDIA_ZOOM, PC_GEOJSON_URL } from "@/lib/india/constants"
 import { NO_DATA_FILL, NO_DATA_STROKE } from "@/lib/india/viz"
@@ -40,15 +41,16 @@ export interface PcFeatureProps {
 
 /** Flat style when no layer is active — quiet ink on the paper basemap. */
 const SEAT_STYLE: PathOptions = {
-  color: "#16130E",
+  color: INK,
   weight: 0.5,
   opacity: 0.45,
-  fillColor: "#16130E",
+  fillColor: INK,
   fillOpacity: 0.025,
 }
 const SEAT_HOVER_STYLE: PathOptions = { fillOpacity: 0.22, weight: 1.4 }
+/** Seats outside the filtered state recede under a wash of the stage tone. */
 const DIMMED_STYLE: PathOptions = {
-  color: "#8f887d", weight: 0.4, opacity: 0.35, fillColor: "#d6d0c5", fillOpacity: 0.2,
+  color: INK, weight: 0.4, opacity: 0.18, fillColor: PAPER.stage, fillOpacity: 0.55,
 }
 
 interface Props {
@@ -120,7 +122,7 @@ export default function IndiaMapView({
       return { color: NO_DATA_STROKE, weight: 0.4, opacity: 0.3, fillColor: NO_DATA_FILL, fillOpacity: 0.18 }
     }
     return {
-      color: "#0A0A0A",
+      color: INK,
       weight: 0.4,
       opacity: 0.85,
       fillColor: colorFor(value, breaksRef.current, rampFor(activeLayer)),
@@ -287,11 +289,12 @@ export default function IndiaMapView({
   return (
     <div className="india-map relative w-full h-full">
       {loading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-[#FF9933] text-sm tracking-widest uppercase">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-paper-canvas/80
+          font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-ink/70">
           Loading 543 constituencies...
         </div>
       )}
-      <div ref={containerRef} className="w-full h-full" style={{ background: "#F2EDE4" }} />
+      <div ref={containerRef} className="w-full h-full" style={{ background: PAPER.canvas }} />
     </div>
   )
 }

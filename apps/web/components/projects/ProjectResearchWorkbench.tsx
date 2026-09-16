@@ -98,21 +98,21 @@ export function ProjectResearchWorkbench({
   const canPropose = Boolean(isAi && result?.can_submit && result?.signature)
 
   return (
-    <section aria-labelledby="research-heading" className="border-2 border-[#101828] bg-white">
-      <div className="border-b border-[#101828]/20 px-4 py-3 sm:px-5">
+    <section aria-labelledby="research-heading" className="border-2 border-ink bg-paper">
+      <div className="border-b border-ink/20 px-4 py-3 sm:px-5">
         <div className="flex items-center justify-between gap-4">
-          <h2 id="research-heading" className="text-sm font-bold uppercase tracking-[0.12em] text-[#101828]">
+          <h2 id="research-heading" className="text-sm font-bold uppercase tracking-[0.12em] text-ink">
             Live research desk
           </h2>
-          <span className="font-mono text-xs text-[#101828]/60">AI WEB SEARCH</span>
+          <span className="font-mono text-xs text-ink/60">AI WEB SEARCH</span>
         </div>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#101828]/70 sm:text-base">
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink/70 sm:text-base">
           Ask one narrow question about this project. Kaun checks its record first, then runs an AI web search. AI answers are labelled, are not reviewed, and may be shown to other visitors who ask the same question for up to seven days.
         </p>
       </div>
 
       <form onSubmit={research} className="p-4 sm:p-5">
-        <label htmlFor="project-question" className="text-sm font-semibold text-[#101828]">
+        <label htmlFor="project-question" className="text-sm font-semibold text-ink">
           What should we find out?
         </label>
         <div className="mt-2 flex flex-col gap-2 sm:flex-row">
@@ -122,12 +122,12 @@ export function ProjectResearchWorkbench({
             onChange={event => setQuestion(event.target.value.slice(0, 300))}
             placeholder="For example: Has KRDCL disclosed the contractor or work order?"
             rows={3}
-            className="min-h-24 flex-1 resize-y border border-[#101828]/35 bg-[#f8fafc] px-3 py-3 text-base leading-relaxed text-[#101828] outline-none placeholder:text-[#101828]/40 focus:border-[#2563eb] focus:ring-2 focus:ring-[#2563eb]/20"
+            className="min-h-24 flex-1 resize-y border border-ink/35 bg-paper-bright px-3 py-3 text-base leading-relaxed text-ink placeholder:text-ink/50 focus:border-ink/60 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-accent"
           />
           <button
             type="submit"
             disabled={loading || question.trim().length < 8}
-            className="min-h-12 self-stretch bg-[#101828] px-5 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition hover:bg-[#344054] focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 sm:self-end"
+            className="min-h-12 self-stretch bg-ink px-5 py-3 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-paper transition-colors enabled:hover:bg-ink/85 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-ink/15 disabled:text-ink/50 sm:self-end"
           >
             {loading ? "Searching…" : "Dig now →"}
           </button>
@@ -138,7 +138,7 @@ export function ProjectResearchWorkbench({
               key={suggestion}
               type="button"
               onClick={() => setQuestion(suggestion)}
-              className="min-h-11 border border-[#101828]/20 bg-transparent px-3 py-2 text-left text-sm leading-snug text-[#101828]/70 hover:border-[#101828]/50 hover:text-[#101828] focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
+              className="min-h-11 border border-ink/20 bg-transparent px-3 py-2 text-left text-sm leading-snug text-ink/70 hover:border-ink/50 hover:bg-ink/5 hover:text-ink focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               {suggestion}
             </button>
@@ -147,81 +147,81 @@ export function ProjectResearchWorkbench({
       </form>
 
       {error && (
-        <p role="alert" className="mx-4 mb-4 border border-[#b42318]/30 bg-[#b42318]/5 px-3 py-3 text-sm text-[#b42318] sm:mx-5">
+        <p role="alert" className="mx-4 mb-4 border border-danger/35 bg-danger/[0.07] px-3 py-3 text-sm text-danger sm:mx-5">
           {error}
         </p>
       )}
 
       {result && (
-        <div className="border-t-2 border-[#101828] bg-[#f8fafc] p-4 sm:p-5" aria-live="polite">
+        <div className="border-t-2 border-ink bg-paper-muted p-4 sm:p-5" aria-live="polite">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.1em] text-[#101828]">Research result</p>
-              <p className="mt-1 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-[#2563eb]">
+              <p className="text-sm font-bold uppercase tracking-[0.1em] text-ink">Research result</p>
+              <p className={`mt-1 font-mono text-xs font-semibold uppercase tracking-[0.08em] ${isAi ? "text-warning" : "text-success"}`}>
                 {originLabel[result.origin]}
               </p>
             </div>
-            <time className="font-mono text-xs text-[#101828]/60" dateTime={result.searched_at}>
+            <time className="font-mono text-xs text-ink/60" dateTime={result.searched_at}>
               {new Date(result.searched_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
             </time>
           </div>
           {isAi && (
-            <p className="mt-4 border-l-4 border-[#b54708] bg-[#b54708]/5 px-3 py-2 text-sm leading-relaxed text-[#101828]">
+            <p className="mt-4 border-l-4 border-warning bg-warning/[0.07] px-3 py-2 text-sm leading-relaxed text-ink">
               <strong>AI-generated. Verify important claims before acting.</strong>{" "}
               {result.origin === "recent_research"
                 ? "Cached from an earlier search for the same question. Kaun has not reviewed it."
                 : "Kaun has not reviewed this answer."}
             </p>
           )}
-          <p className="mt-4 whitespace-pre-wrap text-base leading-7 text-[#101828]/85">{result.answer}</p>
+          <p className="mt-4 whitespace-pre-wrap text-base leading-7 text-ink/85">{result.answer}</p>
 
           <div className="mt-5">
-            <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#101828]/60">Sources used</p>
+            <p className="text-xs font-bold uppercase tracking-[0.1em] text-ink/60">Sources used</p>
             {result.sources.length > 0 ? (
               <ol className="mt-2 space-y-2">
                 {result.sources.map((source, index) => (
                   <li key={source.url} className="flex gap-2 text-sm leading-relaxed">
-                    <span className="font-mono text-[#2563eb]">{String(index + 1).padStart(2, "0")}</span>
-                    <a className="text-[#101828] underline decoration-[#2563eb]/45 underline-offset-2 hover:decoration-[#2563eb]" href={source.url} target="_blank" rel="noopener noreferrer">
+                    <span className="font-mono tabular-nums text-accent">{String(index + 1).padStart(2, "0")}</span>
+                    <a className="text-ink underline decoration-accent/45 underline-offset-2 hover:decoration-accent focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" href={source.url} target="_blank" rel="noopener noreferrer">
                       {source.title}
                     </a>
                   </li>
                 ))}
               </ol>
             ) : (
-              <p className="mt-2 text-sm text-[#b42318]">No citable source was returned.</p>
+              <p className="mt-2 text-sm text-danger">No citable source was returned.</p>
             )}
           </div>
 
-          <div className="mt-5 border-t border-[#101828]/20 pt-4">
+          <div className="mt-5 border-t border-ink/20 pt-4">
             {result.origin === "kaun_record" ? (
-              <p className="text-sm leading-relaxed text-[#101828]/60">
+              <p className="text-sm leading-relaxed text-ink/60">
                 This answer comes from Kaun’s existing project record, so no new search was run.
               </p>
             ) : result.origin === "published_research" ? (
-              <p className="text-sm leading-relaxed text-[#101828]/60">
+              <p className="text-sm leading-relaxed text-ink/60">
                 A Kaun reviewer approved this finding for the project record, so no new search was run.
               </p>
             ) : !canPropose ? (
-              <p className="text-sm leading-relaxed text-[#101828]/60">
+              <p className="text-sm leading-relaxed text-ink/60">
                 {result.sources.length === 0
                   ? "Without a citable source, this answer cannot be proposed for the project record."
                   : "Proposals to the project record are not open yet."}
               </p>
             ) : submission === "queued" ? (
-              <p className="border border-[#027a48]/30 bg-[#027a48]/5 px-3 py-3 text-sm font-semibold text-[#067647]">
+              <p className="border border-success/35 bg-success/[0.07] px-3 py-3 text-sm font-semibold text-success">
                 Added to Kaun’s review queue. If a reviewer confirms the claims and sources, it becomes a dated entry in the project record.
               </p>
             ) : (
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="max-w-xl text-sm leading-relaxed text-[#101828]/60">
+                <p className="max-w-xl text-sm leading-relaxed text-ink/60">
                   Nothing joins the project record until a reviewer checks the question, answer, search time and sources.
                 </p>
                 <button
                   type="button"
                   disabled={!canPropose || submission === "saving"}
                   onClick={submitToRecord}
-                  className="min-h-12 shrink-0 border-2 border-[#101828] bg-transparent px-4 py-3 text-sm font-bold uppercase tracking-[0.07em] text-[#101828] hover:bg-[#101828] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45"
+                  className="min-h-12 shrink-0 border-2 border-ink bg-paper px-4 py-3 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-ink transition-colors enabled:hover:bg-ink enabled:hover:text-paper focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:border-ink/25 disabled:bg-paper disabled:text-ink/50"
                 >
                   {submission === "saving" ? "Adding…" : "Propose to record"}
                 </button>

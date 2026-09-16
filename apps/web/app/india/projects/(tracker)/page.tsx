@@ -63,18 +63,18 @@ export default async function ProjectsPage({ searchParams }: Props) {
         <IndiaHeader host={host} />
 
         <div className="mt-6">
-          <p className="text-white/30 text-[10px] uppercase tracking-widest">
+          <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">
             MoSPI Flash Report · Table 6{reportMonth ? ` · ${formatMonth(reportMonth)}` : ""}
           </p>
-          <h1 className="text-white font-bold text-2xl tracking-tight mt-1">
+          <h1 className="text-ink font-bold text-2xl tracking-tight mt-1">
             Central projects{stateName ? ` in ${stateName}` : ""}
           </h1>
-          <p className="text-white/50 text-sm mt-2 max-w-2xl leading-relaxed">
+          <p className="text-ink/75 text-sm mt-2 max-w-2xl leading-relaxed">
             Every centrally-monitored project of ₹150 crore or more, with what it was sanctioned at, what
             it now costs, and how far its completion date has moved. Kaun keeps each monthly report, so
             these are changes over time rather than a snapshot.
           </p>
-          <p className="text-white/30 text-xs mt-2">
+          <p className="text-ink/70 text-xs mt-2">
             {total.toLocaleString("en-IN")} ongoing project{total === 1 ? "" : "s"}
             {rows.length < total ? ` · showing the top ${rows.length}` : ""}
             {totalOverrun > 0 ? ` · ${formatCrore(totalOverrun)} above sanctioned cost across the rows shown` : ""}
@@ -93,11 +93,11 @@ export default async function ProjectsPage({ searchParams }: Props) {
           note={`${changed.length} of ${rows.length} shown`}
         >
           {changed.length === 0 ? (
-            <div className="rounded-xl bg-white/5 p-4">
-              <p className="text-white/50 text-sm">
+            <div className="bg-paper border border-ink/15 p-4">
+              <p className="text-ink/75 text-sm">
                 No cost or completion date moved in this report, for the projects shown.
               </p>
-              <p className="text-white/25 text-xs mt-1 leading-snug">
+              <p className="text-ink/60 text-xs mt-1 leading-snug">
                 Comparison is against the previous monthly report. A project&apos;s first month in the
                 record has nothing to compare against and never counts as a change.
               </p>
@@ -111,8 +111,8 @@ export default async function ProjectsPage({ searchParams }: Props) {
 
         <Section title="All projects" note="ordered by the control above">
           {rows.length === 0 ? (
-            <div className="rounded-xl bg-white/5 p-4">
-              <p className="text-white/50 text-sm">No projects loaded yet.</p>
+            <div className="bg-paper border border-ink/15 p-4">
+              <p className="text-ink/75 text-sm">No projects loaded yet.</p>
             </div>
           ) : (
             <div className="space-y-2">

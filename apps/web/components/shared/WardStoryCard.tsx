@@ -46,17 +46,17 @@ export function WardStoryCard({ storyData }: Props) {
   if (!storyData) return null
 
   return (
-    <div className="rounded-xl overflow-hidden bg-gradient-to-br from-[#FF9933]/10 to-white/5 border border-white/10">
+    <div className="bg-paper-muted border border-ink/15">
       <div className="px-4 py-3">
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#FF9933]/20 text-[#FF9933] uppercase tracking-wider">AI</span>
-            <span className="text-white/40 text-[10px] uppercase tracking-wider">Ward Brief</span>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center border border-ink/20 px-1.5 py-0.5 font-mono text-[11px] font-semibold uppercase leading-none text-ink/70">AI</span>
+            <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Ward Brief</span>
           </div>
           {story && !loading && (
             <button
               onClick={() => storyData && generate(storyData, true)}
-              className="text-white/20 hover:text-white/50 transition-colors text-[10px]"
+              className="-my-3 -mr-2 inline-flex min-h-11 items-center px-2 font-mono text-[11px] uppercase tracking-[0.08em] text-ink/60 hover:text-ink transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               title="Regenerate"
             >
               Refresh
@@ -66,23 +66,29 @@ export function WardStoryCard({ storyData }: Props) {
 
         {loading && (
           <div className="space-y-2 py-1">
-            <div className="h-3 bg-white/10 rounded animate-pulse w-full" />
-            <div className="h-3 bg-white/10 rounded animate-pulse w-5/6" />
-            <div className="h-3 bg-white/10 rounded animate-pulse w-4/5" />
+            <div className="h-3 bg-ink/10 animate-pulse w-full" />
+            <div className="h-3 bg-ink/10 animate-pulse w-5/6" />
+            <div className="h-3 bg-ink/10 animate-pulse w-4/5" />
           </div>
         )}
 
         {error && !loading && (
-          <p className="text-white/30 text-xs py-1">
+          <p className="text-ink/70 text-xs py-1">
             Could not generate brief.{" "}
-            <button onClick={() => storyData && generate(storyData)} className="underline hover:text-white/50">
+            <button
+              onClick={() => storyData && generate(storyData)}
+              className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            >
               Try again
             </button>
           </p>
         )}
 
         {story && !loading && (
-          <p className="text-white/70 text-sm leading-relaxed">{story}</p>
+          <>
+            <p className="text-ink/85 text-sm leading-relaxed">{story}</p>
+            <p className="mt-2 text-xs text-ink/60">AI-generated. Verify important claims before acting.</p>
+          </>
         )}
       </div>
     </div>

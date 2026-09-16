@@ -42,13 +42,13 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
   return (
     <div ref={wrapRef} className="absolute bottom-4 left-4 z-[900] select-none">
       {open && (
-        <div className="mb-2 w-64 rounded-xl bg-[#0A0A0A]/95 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden">
-          <div className="px-3 py-2 border-b border-white/5 flex items-center justify-between">
-            <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">Paint the city by</p>
+        <div className="mb-2 w-64 bg-paper border border-ink/55 overflow-hidden">
+          <div className="px-3 py-2 border-b border-ink/15 flex items-center justify-between">
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Paint the city by</p>
             <button
               onClick={() => setOpen(false)}
               aria-label="Close layers"
-              className="w-11 h-11 -my-2 -mr-2 flex items-center justify-center text-white/30 hover:text-white/60 text-sm leading-none"
+              className="w-11 h-11 -my-2 -mr-2 flex items-center justify-center text-ink/60 hover:text-ink hover:bg-ink/5 text-sm leading-none"
             >
               &times;
             </button>
@@ -56,8 +56,8 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
 
           <button
             onClick={() => { onSelect(null); setOpen(false) }}
-            className={`w-full min-h-11 text-left px-3 py-2 text-xs transition-colors hover:bg-white/5
-              ${activeId === null ? "text-[#FF9933]" : "text-white/60"}`}
+            className={`w-full min-h-11 text-left px-3 py-2 text-xs transition-colors
+              ${activeId === null ? "bg-ink text-paper" : "text-ink/75 hover:bg-ink/5 hover:text-ink"}`}
           >
             None — plain map
           </button>
@@ -66,11 +66,11 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
             <button
               key={layer.id}
               onClick={() => { onSelect(layer.id); setOpen(false) }}
-              className={`w-full min-h-11 text-left px-3 py-2 transition-colors hover:bg-white/5 border-t border-white/5
-                ${layer.id === activeId ? "text-[#FF9933]" : "text-white/70"}`}
+              className={`w-full min-h-11 text-left px-3 py-2 transition-colors border-t border-ink/10
+                ${layer.id === activeId ? "bg-ink text-paper" : "text-ink hover:bg-ink/5"}`}
             >
               <span className="block text-xs font-medium">{layer.label}</span>
-              <span className="block text-[10px] text-white/35 mt-0.5 leading-snug">{layer.description}</span>
+              <span className={`block text-[11px] mt-0.5 leading-snug ${layer.id === activeId ? "text-paper/75" : "text-ink/60"}`}>{layer.description}</span>
             </button>
           ))}
         </div>
@@ -78,47 +78,47 @@ export function LayerControl({ activeId, onSelect, legend, loading }: Props) {
 
       {/* Legend for the active layer */}
       {active && !open && (
-        <div className="mb-2 w-60 rounded-xl bg-[#0A0A0A]/90 backdrop-blur-md border border-white/10 shadow-xl px-3 py-2.5">
+        <div className="mb-2 w-60 bg-paper border border-ink/55 px-3 py-2.5">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-white/80 text-xs font-semibold truncate">{active.label}</p>
+            <p className="text-ink text-xs font-semibold truncate">{active.label}</p>
             <button
               onClick={() => onSelect(null)}
               aria-label="Clear layer"
-              className="w-11 h-11 -my-2 -mr-2 flex items-center justify-center text-white/30 hover:text-white/60 text-sm leading-none shrink-0"
+              className="w-11 h-11 -my-2 -mr-2 flex items-center justify-center text-ink/60 hover:text-ink hover:bg-ink/5 text-sm leading-none shrink-0"
             >
               &times;
             </button>
           </div>
           {loading ? (
-            <p className="text-white/30 text-[10px] mt-1.5">Loading...</p>
+            <p className="text-ink/60 text-[11px] mt-1.5">Loading...</p>
           ) : legend && legend.wardCount > 0 ? (
             <>
-              <div className="flex h-2 mt-2 rounded-full overflow-hidden">
+              <div className="flex h-2 mt-2 overflow-hidden border border-ink/15">
                 {active.ramp.map(c => (
                   <div key={c} className="flex-1" style={{ background: c }} />
                 ))}
               </div>
               <div className="flex justify-between mt-1">
-                <span className="text-white/40 text-[10px]">{formatValue(legend.min, active.format)}</span>
-                <span className="text-white/40 text-[10px]">{formatValue(legend.max, active.format)}</span>
+                <span className="font-mono tabular-nums text-ink/75 text-[11px]">{formatValue(legend.min, active.format)}</span>
+                <span className="font-mono tabular-nums text-ink/75 text-[11px]">{formatValue(legend.max, active.format)}</span>
               </div>
-              <p className="text-white/25 text-[9px] mt-1.5 leading-snug">
+              <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60 mt-1.5 leading-snug">
                 {legend.wardCount} wards &middot; {active.source}
               </p>
             </>
           ) : (
-            <p className="text-white/30 text-[10px] mt-1.5">No data yet for this city.</p>
+            <p className="text-ink/60 text-[11px] mt-1.5">No data yet for this city.</p>
           )}
         </div>
       )}
 
       <button
         onClick={() => setOpen(o => !o)}
-        className={`flex min-h-11 items-center gap-2 px-4 py-2.5 rounded-full
-          bg-[#111] border text-sm font-medium shadow-lg transition-all duration-150
+        className={`flex min-h-11 items-center gap-2 px-4 py-2.5
+          bg-paper hover:bg-paper-muted border font-mono text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors duration-150
           ${active
-            ? "border-[#FF9933]/50 text-[#FF9933]"
-            : "border-white/15 hover:border-white/30 text-white/70 hover:text-white"}`}
+            ? "border-accent text-accent"
+            : "border-ink/55 text-ink"}`}
         aria-haspopup="listbox"
         aria-expanded={open}
       >

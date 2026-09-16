@@ -100,9 +100,9 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
   // Severity carries the alarm through a small square marker and a dark,
   // paper-safe label colour; the strip itself stays neutral paper.
   const sev = {
-    red: { mark: "bg-[#b42318]", cat: "text-[#b42318]", link: "text-[#b42318]" },
-    green: { mark: "bg-[#24643c]", cat: "text-[#24643c]", link: "text-[#24643c]" },
-    yellow: { mark: "bg-[#a05d00]", cat: "text-[#754500]", link: "text-[#754500]" },
+    red: { mark: "bg-danger", cat: "text-danger", link: "text-danger decoration-danger/40" },
+    green: { mark: "bg-success", cat: "text-success", link: "text-success decoration-success/40" },
+    yellow: { mark: "bg-warning", cat: "text-warning", link: "text-warning decoration-warning/40" },
   }[fact.severity]
   const headline = decodeEntities(fact.headline)
   const source = decodeEntities(fact.source)
@@ -121,13 +121,13 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
         tabIndex={0}
         aria-expanded={expanded}
         aria-label={`${fact.category}: ${headline}`}
-        className="signal-ticker w-full text-left pl-3 pr-1 py-1.5 cursor-pointer"
+        className="signal-ticker w-full text-left pl-3 pr-1 py-1.5 cursor-pointer bg-paper border-y border-ink/55 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
       >
         <div className="flex items-start gap-2">
           <span aria-hidden="true" className={`mt-[0.4rem] h-2 w-2 shrink-0 ${sev.mark}`} />
           <div className="flex-1 min-w-0 py-0.5">
-            <p className={`text-[13px] leading-snug text-[#16130e]/85 ${expanded ? "" : "line-clamp-2 sm:line-clamp-1"}`}>
-              <span className={`mr-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${sev.cat}`}>
+            <p className={`text-[13px] leading-snug text-ink/85 ${expanded ? "" : "line-clamp-2 sm:line-clamp-1"}`}>
+              <span className={`mr-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] ${sev.cat}`}>
                 {fact.category}
               </span>
               {headline}
@@ -135,7 +135,7 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
           </div>
           <button
             onClick={e => { e.stopPropagation(); setDismissed(true) }}
-            className="w-9 h-9 -my-1 flex items-center justify-center text-[#16130e]/45 hover:text-[#16130e] text-sm shrink-0"
+            className="w-11 h-11 -my-2 flex items-center justify-center text-ink/60 hover:bg-ink/5 hover:text-ink text-sm shrink-0"
             aria-label="Dismiss headlines"
           >
             &times;
@@ -144,8 +144,8 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
 
         {/* Expanded: source link + next */}
         {expanded && (
-          <div className="flex items-center justify-between gap-3 mt-1.5 mb-0.5 pt-1.5 pr-2 border-t border-[#16130e]/15">
-            <span className="min-w-0 truncate font-mono text-[10px] uppercase tracking-[0.06em] text-[#16130e]/50">
+          <div className="flex items-center justify-between gap-3 mt-1.5 mb-0.5 pt-1.5 pr-2 border-t border-ink/15">
+            <span className="min-w-0 truncate font-mono text-[11px] uppercase tracking-[0.06em] text-ink/60">
               {source} · {(index % facts.length) + 1}/{facts.length}
             </span>
             <span className="flex shrink-0 items-center gap-3">
@@ -155,14 +155,14 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
-                  className={`min-h-9 flex items-center text-xs font-medium underline underline-offset-2 ${sev.link}`}
+                  className={`min-h-11 flex items-center text-xs font-medium underline underline-offset-2 ${sev.link}`}
                 >
                   {isTwitter ? "View on X" : "Read source"} &rarr;
                 </a>
               )}
               <button
                 onClick={e => { e.stopPropagation(); handleNext() }}
-                className="min-h-9 text-xs text-[#16130e]/60 hover:text-[#16130e]"
+                className="min-h-11 px-1 text-xs text-ink/60 hover:text-ink"
               >
                 Next &rsaquo;
               </button>

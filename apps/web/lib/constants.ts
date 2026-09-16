@@ -45,18 +45,18 @@ export const PARTY_COLORS: Record<string, string> = {
 }
 
 export const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  OPEN:      { bg: "bg-yellow-500/20", text: "text-yellow-400", label: "Open" },
-  AWARDED:   { bg: "bg-blue-500/20",   text: "text-blue-400",   label: "Awarded" },
-  COMPLETED: { bg: "bg-green-500/20",  text: "text-green-400",  label: "Done" },
-  CANCELLED: { bg: "bg-red-500/20",    text: "text-red-400",    label: "Cancelled" },
+  OPEN:      { bg: "bg-warning/[0.07] border border-warning/35", text: "text-warning", label: "Open" },
+  AWARDED:   { bg: "bg-info/[0.07] border border-info/35",       text: "text-info",    label: "Awarded" },
+  COMPLETED: { bg: "bg-success/[0.07] border border-success/35", text: "text-success", label: "Done" },
+  CANCELLED: { bg: "bg-danger/[0.07] border border-danger/35",   text: "text-danger",  label: "Cancelled" },
 }
 
 export const TRUST_STYLES: Record<string, { bg: string; text: string; border: string; label: string; icon: string }> = {
-  official:           { bg: "bg-green-500/10",  text: "text-green-400",  border: "border-green-500/20", label: "Govt source",        icon: "OK" },
-  rti:                { bg: "bg-blue-500/10",   text: "text-blue-400",   border: "border-blue-500/20",  label: "RTI sourced",        icon: "" },
-  community_verified: { bg: "bg-amber-500/10",  text: "text-amber-400",  border: "border-amber-500/20", label: "Community verified", icon: "OK" },
-  unverified:         { bg: "bg-white/5",       text: "text-white/30",   border: "border-white/10",     label: "Unverified",         icon: "?" },
-  disputed:           { bg: "bg-red-500/10",    text: "text-red-400",    border: "border-red-500/20",   label: "Disputed",           icon: "!" },
+  official:           { bg: "bg-success/[0.07]", text: "text-success", border: "border-success/35", label: "Govt source",        icon: "OK" },
+  rti:                { bg: "bg-info/[0.07]",    text: "text-info",    border: "border-info/35",    label: "RTI sourced",        icon: "" },
+  community_verified: { bg: "bg-warning/[0.07]", text: "text-warning", border: "border-warning/35", label: "Community verified", icon: "OK" },
+  unverified:         { bg: "bg-ink/5",          text: "text-ink/60",  border: "border-ink/20",     label: "Unverified",         icon: "?" },
+  disputed:           { bg: "bg-danger/[0.07]",  text: "text-danger",  border: "border-danger/35",  label: "Disputed",           icon: "!" },
 }
 
 export const OFFICER_SUBJECTS: Record<string, string> = {

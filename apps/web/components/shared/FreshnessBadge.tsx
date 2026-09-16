@@ -9,7 +9,7 @@ interface Props {
  */
 export function FreshnessBadge({ label, source }: Props) {
   return (
-    <span className="inline-flex items-center gap-1 font-mono text-[0.6875rem] px-1.5 py-0.5 text-[#16130e]/55 border border-[#16130e]/20 leading-none whitespace-nowrap">
+    <span className="font-mono text-[11px] uppercase leading-snug tracking-[0.06em] text-ink/60 whitespace-nowrap">
       {source ? `${source} · ` : ""}{label}
     </span>
   )
