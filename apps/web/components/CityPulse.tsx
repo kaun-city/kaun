@@ -53,10 +53,11 @@ export function pulseHeadline(raw: string): string {
 /**
  * Where a pulse item came from, and what its link should say.
  *
- * Feed-ingested items carry the search that found them as their source name
- * ("X/Pothole", "Google News BWSSB"), not a publisher, and that label lands on
- * unrelated items (a POWER cut filed under "X/POTHOLE"). Those are never
- * printed; the link's host names the source instead. The link label follows
+ * Ingestion now stores the publisher ("X via Google News", "The News Minute";
+ * see lib/pulse-ingest.mjs). Rows written before that carry the search that
+ * found them ("X/Pothole", "Google News BWSSB"), which lands on unrelated
+ * items (a POWER cut filed under "X/POTHOLE"). Those are never printed; the
+ * link's host names the source instead. The link label follows
  * the host too: only an x.com/twitter.com link says "View on X".
  */
 export function pulseSource(source: string, url: string | null): { label: string | null; linkLabel: string } {

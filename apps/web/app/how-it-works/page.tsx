@@ -93,9 +93,11 @@ export default function HowItWorksPage() {
             <div className="py-4">
               <p className="mb-1 font-semibold text-ink">News and civic signals</p>
               <p>The CityPulse ticker shows recent news about BBMP, BWSSB, and Bengaluru civic issues
-              from public RSS feeds (Citizen Matters, The News Minute, Deccan Herald).
-              Articles are filtered for civic relevance &mdash; public money, road safety, environment,
-              water, and elected representatives.</p>
+              from public RSS feeds: Citizen Matters, The News Minute, and Google News searches for BBMP, BDA,
+              BWSSB, BESCOM and potholes, which also surface public posts on X. Each item is credited to its
+              original publisher, marked &ldquo;via Google News&rdquo; when that is where the link goes.
+              Articles are filtered for civic relevance &mdash; public money, contractors, budgets, elected
+              representatives, road safety, flooding, water, waste, power and the environment.</p>
             </div>
           </div>
         </Section>

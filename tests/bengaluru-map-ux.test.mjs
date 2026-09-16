@@ -194,6 +194,9 @@ test("pulse source labels come from the link, never from the feed's search label
   assert.deepEqual(pulseSource("The Hindu", "https://www.thehindu.com/a"), { label: "The Hindu", linkLabel: "Read source" })
   assert.deepEqual(pulseSource("X/Pothole", null), { label: null, linkLabel: "Read source" })
   assert.deepEqual(pulseSource("", "https://www.deccanherald.com/a"), { label: "deccanherald.com", linkLabel: "Read source" })
+  // Publisher names written by lib/pulse-ingest pass through unchanged
+  assert.deepEqual(pulseSource("X via Google News", google), { label: "X via Google News", linkLabel: "Read source" })
+  assert.deepEqual(pulseSource("Google News", google), { label: "Google News", linkLabel: "Read source" })
 })
 
 test("the ticker keeps red to its severity marker", () => {
