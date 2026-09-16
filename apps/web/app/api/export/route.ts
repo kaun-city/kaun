@@ -107,8 +107,11 @@ export async function GET(req: Request) {
         }
       }
 
-      const [infraRes, potholesRes, crashesRes, airRes, workOrderRes] = await Promise.all([
-        supabase.from("ward_infra_stats").select("ward_no, ward_name, signal_count, bus_stop_count, daily_trips").order("ward_no"),
+      const [infraRes, busStopsRes, potholesRes, crashesRes, airRes, workOrderRes] = await Promise.all([
+        supabase.from("ward_infra_stats").select("ward_no, signal_count").order("ward_no"),
+        // Bus figures come from ward_bus_stops (one row per physical stop),
+        // never ward_infra_stats, whose bus columns counted duplicate rows.
+        supabase.from("ward_bus_stops").select("ward_no, stop_count, total_trips"),
         supabase.from("ward_potholes").select("ward_no, complaints, data_year").order("ward_no"),
         supabase.from("ward_road_crashes").select("ward_no, crashes_2024, fatal_2024, crashes_2025, fatal_2025").order("ward_no"),
         supabase.from("ward_air_quality").select("ward_no, station_name, avg_pm25, avg_pm10, data_year").order("ward_no"),
@@ -131,6 +134,7 @@ export async function GET(req: Request) {
       // Build lookup maps. Spend and potholes are allocated from BBMP-198
       // wards by area overlap; never matched by ward number or ward name.
       const infraMap = new Map(infraStats.map(i => [i.ward_no, i]))
+      const busStopsMap = new Map(((busStopsRes.data ?? []) as Array<{ ward_no: number; stop_count: number; total_trips: number }>).map(b => [b.ward_no, b]))
       const potholesMap = new Map<number, { complaints: number; data_year: string | null }>()
       for (const wardNo of BBMP198_INDEX.keys()) {
         const estimate = estimateDatameet243FromBbmp198(BBMP198_INDEX, wardNo, potholeRows, ["complaints"])
@@ -183,8 +187,9 @@ export async function GET(req: Request) {
           demographics_year: acStat.data_year ?? "",
           // Infrastructure (ward level)
           traffic_signals: infra.signal_count ?? "",
-          bus_stops: infra.bus_stop_count ?? "",
-          daily_bus_trips: infra.daily_trips ?? "",
+          // A ward in the infra view with no ward_bus_stops row has no stop inside it.
+          bus_stops: busStopsMap.get(w.ward_no)?.stop_count ?? (infraMap.has(w.ward_no) ? 0 : ""),
+          daily_bus_trips: busStopsMap.get(w.ward_no)?.total_trips ?? (infraMap.has(w.ward_no) ? 0 : ""),
           // Spending (ward level, Rs)
           spend_buildings_facilities: spend.buildings_facilities ?? "",
           spend_drainage: spend.drainage ?? "",
@@ -212,7 +217,10 @@ export async function GET(req: Request) {
         }
       })
 
-      return csvResponse(combined, "kaun-bengaluru-ward-data.csv", [BBMP198_ALLOCATION_NOTE])
+      return csvResponse(combined, "kaun-bengaluru-ward-data.csv", [
+        BBMP198_ALLOCATION_NOTE,
+        `"# bus_stops counts physical BMTC stops inside each ward. daily_bus_trips is scheduled bus arrivals a day summed over those stops, so a bus stopping at two of them counts twice. Before 2026-09 both columns counted duplicate stop rows and were inflated."`,
+      ])
     }
 
     if (type === "ward-demographics") {

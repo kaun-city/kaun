@@ -21,10 +21,14 @@
  */
 export const BBMP_198_RECORDS_ATTRIBUTABLE = true
 
-/**
- * ward_infra_stats.bus_stop_count and daily_trips are inflated: bmtc_stops
- * holds ~14 duplicate rows per physical stop and the view's signal join
- * multiplies trips. Bus figures come from ward_bus_stops instead;
- * ward_infra_stats.signal_count is a DISTINCT count and stays usable.
+/*
+ * Bus stops and trips come only from ward_bus_stops (one row per physical
+ * BMTC stop inside a DataMeet-243 ward), on every surface: ward sheet, Ask
+ * Kaun, the public ward API and the CSV export. bmtc_stops used to hold ~14
+ * rows per physical stop (one per nearby polling booth) and ward_infra_stats
+ * joined signals and stops in one query, inflating bus_stop_count ~21x and
+ * daily_trips ~240x. Migration 20260917_bmtc_stops_dedup.sql deduplicates the
+ * table and rebuilds the view (asserting it equals ward_bus_stops); reading
+ * ward_bus_stops keeps every surface right before and after it is applied.
+ * ward_infra_stats.signal_count was always a DISTINCT count and stays in use.
  */
-export const INFRA_BUS_COUNTS_RELIABLE = false

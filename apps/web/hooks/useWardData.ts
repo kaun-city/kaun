@@ -49,11 +49,11 @@ export { BBMP_198_RECORDS_ATTRIBUTABLE } from "@/lib/ward-data-quality"
 
 /**
  * ward_infra_stats.bus_stop_count and daily_trips are not used: bmtc_stops
- * holds ~14 duplicate rows per physical stop (42,529 rows, 2,972 locations)
- * and the view's traffic-signal join multiplies daily_trips by the signal
- * count. ward_bus_stops matches a deduplicated spatial join exactly (237 of
- * 243 wards), so bus figures come from there. signal_count is a DISTINCT
- * count and stays correct.
+ * held ~14 rows per physical stop (42,529 rows, 2,972 locations) and the
+ * view's traffic-signal join multiplied daily_trips by the signal count.
+ * ward_bus_stops matches a deduplicated spatial join exactly (237 of 243
+ * wards), so bus figures come from there on every surface (see
+ * lib/ward-data-quality.ts). signal_count is a DISTINCT count.
  */
 
 export function useWardData(result: PinResult | null) {

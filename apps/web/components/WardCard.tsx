@@ -434,10 +434,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   period: committee.period,
                 })),
                 signal_count: ward.infraStats?.signal_count ?? null,
-                // ward_infra_stats.bus_stop_count is inflated ~14x by duplicate
-                // stop rows, and the route compares against that inflated
-                // average; omit rather than feed Ask Kaun a wrong figure.
-                bus_stop_count: null,
+                // Physical stops from ward_bus_stops (loaded with the citizen
+                // tab); never ward_infra_stats' bus columns.
+                bus_stop_count: ward.wardBusStats?.stop_count ?? null,
                 pothole_complaints: ward.potholes?.complaints ?? null,
                 ward_spend_total_lakh: ward.wardSpend ? ward.wardSpend.grand_total / 100_000 : null,
                 ward_spend_roads_pct: ward.wardSpend

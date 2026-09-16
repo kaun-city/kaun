@@ -18,6 +18,8 @@ The current 369-ward GBA boundary and its corporation-aware identifiers are avai
 |---|---|
 | `ward` | Ward number for detailed data (infrastructure, spending, work orders, potholes, crashes, air quality) |
 
+`infrastructure.bus_stop_count` counts physical BMTC stops inside the ward and `infrastructure.daily_trips` is scheduled bus arrivals a day summed over those stops (a bus stopping at two of them counts twice). Before 2026-09 both counted duplicate stop rows (one per nearby polling booth) and were inflated roughly 20× and 240×; the CSV export's `bus_stops` and `daily_bus_trips` columns had the same problem.
+
 `spending` and `potholes` are recorded on BBMP's 198-ward map (2010 delimitation), whose numbers name different places. They are allocated to the requested 243 ward by area overlap using the [BBMP-198 → DataMeet-243 crosswalk](../bengaluru/ward-crosswalk.md#bbmp-198-datameet-243) and carry an `estimate` object: `method`, `crosswalk_version`, `crosswalk` and `bbmp198_wards` (each source ward with the `bbmp198_share` of it allocated here). Before 2026-09 these fields were looked up by ward number and showed another place's figures.
 
 **Examples:**

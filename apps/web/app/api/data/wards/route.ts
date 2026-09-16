@@ -41,9 +41,12 @@ export async function GET(req: Request) {
     // 198 wards overlapping this 243 ward, never the same number.
     const bbmp198WardNos = [...bbmp198AllocationWeights([{ ward_no: wn, legacy_share: 1 }], BBMP198_INDEX).keys()]
     const noRows = Promise.resolve({ data: [] as never[] })
-    const [ward, infra, potholes, crashes, air, spend, workOrders] = await Promise.all([
+    const [ward, infra, busStops, potholes, crashes, air, spend, workOrders] = await Promise.all([
       supabase.from("wards").select("ward_no, ward_name, assembly_constituency, zone").eq("ward_no", wn).eq("city_id", "bengaluru").single(),
-      supabase.from("ward_infra_stats").select("signal_count, bus_stop_count, daily_trips").eq("ward_no", wn).single(),
+      supabase.from("ward_infra_stats").select("signal_count").eq("ward_no", wn).single(),
+      // Bus figures come from ward_bus_stops (one row per physical stop), not
+      // ward_infra_stats, whose bus columns counted duplicate stop rows.
+      supabase.from("ward_bus_stops").select("stop_count, total_trips").eq("ward_no", wn).maybeSingle(),
       bbmp198WardNos.length
         ? supabase.from("ward_potholes").select("ward_no, complaints, data_year").in("ward_no", bbmp198WardNos)
         : noRows,
@@ -65,7 +68,16 @@ export async function GET(req: Request) {
 
     return Response.json({
       ward: ward.data,
-      infrastructure: infra.data,
+      // Same keys as before. daily_trips = scheduled bus arrivals a day summed
+      // over the ward's stops (a bus stopping at two of them counts twice).
+      // A ward with no ward_bus_stops row has no stop inside it.
+      infrastructure: infra.data
+        ? {
+            signal_count: infra.data.signal_count,
+            bus_stop_count: busStops.data?.stop_count ?? 0,
+            daily_trips: busStops.data?.total_trips ?? 0,
+          }
+        : null,
       potholes: potholeEstimate
         ? { ...potholeEstimate.values, data_year: potholeRows[0]?.data_year ?? null, estimate: bbmp198EstimateProvenance(potholeEstimate) }
         : null,

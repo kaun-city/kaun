@@ -176,6 +176,25 @@ test("bus stops appear once, from the deduplicated source, with honest trip word
   assert.doesNotMatch(card, /bus_stop_count: ward\.infraStats/)
 })
 
+test("public API, CSV export and Ask Kaun take bus figures from ward_bus_stops only", () => {
+  // ward_infra_stats' bus columns counted duplicate bmtc_stops rows; the BNP
+  // partner pipeline reads the API and export, so they must not use them.
+  const routes = {
+    wards: read("app/api/data/wards/route.ts"),
+    export: read("app/api/export/route.ts"),
+    ask: read("app/api/ask-kaun/route.ts"),
+  }
+  for (const [name, source] of Object.entries(routes)) {
+    for (const call of source.matchAll(/from\("ward_infra_stats"\)\.select\("([^"]*)"\)/g)) {
+      assert.doesNotMatch(call[1], /bus_stop_count|daily_trips/, `${name} reads bus figures from ward_infra_stats`)
+    }
+    assert.match(source, /from\("ward_bus_stops"\)/, name)
+    assert.doesNotMatch(source, /INFRA_BUS_COUNTS_RELIABLE|\binfra\.(bus_stop_count|daily_trips)/, name)
+  }
+  assert.doesNotMatch(read("lib/ward-data-quality.ts"), /INFRA_BUS_COUNTS_RELIABLE/)
+  assert.match(routes.export, /bus stopping at two of them counts twice/)
+})
+
 test("ward committee copy has no impossible ratio or loaded RTI question", () => {
   assert.doesNotMatch(who, /out of a possible|~48|Meets regularly/)
   // The RTI route appends "out of a possible 56" when a count is passed.
