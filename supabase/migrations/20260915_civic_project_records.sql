@@ -108,7 +108,21 @@ CREATE POLICY civic_project_research_public_read ON public.civic_project_researc
 
 GRANT SELECT ON public.civic_projects, public.civic_project_areas, public.civic_project_records
   TO anon, authenticated;
-GRANT SELECT ON public.civic_project_research_submissions TO anon, authenticated;
+
+-- Research submissions also hold moderation and abuse-prevention fields
+-- (review_note, submitter_ip_hash, question_key, searched_at) that must not be
+-- publicly readable, even on published rows. Supabase's default privileges
+-- grant ALL on new public tables to anon and authenticated, so a column GRANT
+-- alone would not narrow access: revoke table privileges (which also revokes
+-- any column privileges), then grant only the public record columns. The anon
+-- read path in apps/web/lib/civic-projects-server.ts selects, filters and
+-- orders on exactly these columns; server routes use the service role.
+REVOKE ALL ON public.civic_project_research_submissions FROM anon, authenticated;
+GRANT SELECT (id, project_slug, question, answer, sources, status, submitted_at, reviewed_at)
+  ON public.civic_project_research_submissions TO anon, authenticated;
+
+-- Unreviewed cached search results are read and written by the service role only.
+REVOKE ALL ON public.civic_project_research_cache FROM anon, authenticated;
 
 INSERT INTO public.civic_projects (
   slug, city_id, title, project_type, owner_agency, status, summary, latest_as_of

@@ -69,14 +69,17 @@ enabled = false
 sql_paths = ["./.local/seed.sql"]
 
 [db.network_restrictions]
-# Enable management of network restrictions.
+# Hosted projects only: `supabase config push` would apply these to production.
+# They do not restrict the local Docker stack. Keep management disabled; the
+# CLI template defaults are left in place so enabling it can never lock
+# production down to a developer's loopback address.
 enabled = false
 # List of IPv4 CIDR blocks allowed to connect to the database.
 # Defaults to allow all IPv4 connections. Set empty array to block all IPs.
-allowed_cidrs = ["127.0.0.1/32"]
+allowed_cidrs = ["0.0.0.0/0"]
 # List of IPv6 CIDR blocks allowed to connect to the database.
 # Defaults to allow all IPv6 connections. Set empty array to block all IPs.
-allowed_cidrs_v6 = ["::1/128"]
+allowed_cidrs_v6 = ["::/0"]
 
 # Uncomment to reject non-secure connections to the database.
 # [db.ssl_enforcement]

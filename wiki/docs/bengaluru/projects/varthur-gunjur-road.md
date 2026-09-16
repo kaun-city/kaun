@@ -14,7 +14,7 @@
 
 ## Summary
 
-The Varthur–Gunjur work combines road widening and an elevated-corridor programme whose scope, cost and completion date have changed repeatedly. Work was reported as beginning on 20 May 2019 with an original November 2021 target. In August 2026, KRDCL set a new December 2026 target and reported that 80% of land acquisition was complete, with 14 properties pending.[^toi-2026]
+The Varthur–Gunjur work combines road widening and an elevated-corridor programme whose scope, cost and completion date have changed repeatedly. Work was reported as beginning on 20 May 2019 with an original November 2021 target. Completion was later reported as moving to July 2025,[^toi-2024] and in November 2025 KRDCL described 2027 as realistic.[^toi-2025] In August 2026, KRDCL set a new December 2026 target and reported that 80% of land acquisition was complete, with 14 properties pending.[^toi-2026]
 
 The accepted contract value, project-specific contractor identity, milestone schedule, payment record, penalties and extension orders were not found in the public sources reviewed by Kaun. This is an evidence gap, not a claim that the records do not exist.
 

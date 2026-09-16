@@ -19,12 +19,33 @@ npm run db:start
 `db:sync` creates the missing full-schema baseline and a data seed. The schema
 baseline is safe to review and commit. The data seed is stored at
 `supabase/.local/seed.sql`, is git-ignored, and excludes user questions,
-precise civic-report locations, community submissions, research submissions,
-analytics and rate-limit records.
+precise civic-report locations, community facts and their votes, research
+submissions (with review notes and submitter IP hashes), the research cache
+and analytics. Tables whose rows are inserted by migrations (`civic_projects`,
+`civic_project_areas`) are also excluded, so the seed never duplicates them.
+The connection password is passed to the Supabase CLI through `PGPASSWORD`,
+not on the command line.
 
 `db:start` starts the local Supabase services and writes local API credentials
 to `apps/web/.env.local`. Restart `npm run dev` after switching the database.
-Supabase Studio is available at <http://127.0.0.1:54323>.
+Before `db:start`, `db:reset` or `db:use-hosted` changes that file, the previous
+copy is saved to `supabase/.local/env-backups/` (git-ignored, owner-only) and
+the path is printed. Supabase Studio is available at <http://127.0.0.1:54323>.
+
+`[db.network_restrictions]` in `supabase/config.toml` applies only to hosted
+projects and stays disabled; it does not limit who can reach the local
+containers' published ports, so run the local stack on a trusted network.
+
+## Why the baseline is dated 20260505
+
+`20260505_remote_schema.sql` is a September 2026 dump of the live public
+schema, placed immediately after PostGIS so it is the earliest migration that
+already contains everything live. Later-dated migrations whose effect is
+already in the dump must replay as no-ops: `20260506` is kept as an empty
+placeholder (its primary-key swap never matched production), and `20260910`
+recreates a `pin_lookup` byte-identical to the dump. Keeping the version files
+rather than deleting them keeps local and production migration history
+aligned, and `tests/local-db.test.mjs` fails if a replay would diverge.
 
 ## Daily workflow
 
@@ -49,6 +70,26 @@ The committed baseline is intentionally not overwritten during routine syncs.
 Use `node scripts/local-db/sync-remote.mjs --refresh-schema` only when deliberately
 rebasing the full schema, review the resulting diff, and never use
 `supabase db reset --linked` against production.
+
+## Production rollout (PR #129)
+
+Production has no Supabase CLI migration history, so `supabase db push` would
+try to run every file, including the full schema dump. Never push before the
+history is repaired. `20260915` and `20260916` must be applied to production
+before PR #129 merges. Keep the password out of the command line:
+
+```powershell
+$env:PGPASSWORD = '<database password>'
+$url = '<Session pooler URI without the password>'
+npx supabase migration list --db-url $url      # read-only: expect no remote versions
+npx supabase migration repair --status applied 20260504 20260505 20260506 20260910 --db-url $url
+npx supabase db push --dry-run --db-url $url   # must list only 20260915 and 20260916
+npx supabase db push --db-url $url
+npx supabase migration list --db-url $url      # all six versions now remote
+Remove-Item Env:PGPASSWORD
+```
+
+`repair` only records the four already-live versions; it runs none of their SQL.
 
 ## Switching back to hosted Supabase
 

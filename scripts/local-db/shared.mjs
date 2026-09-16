@@ -1,14 +1,51 @@
 import { spawnSync } from "node:child_process"
-import { existsSync, statSync } from "node:fs"
-import { resolve } from "node:path"
+import { chmodSync, constants, copyFileSync, existsSync, mkdirSync, statSync } from "node:fs"
+import { relative, resolve } from "node:path"
 
 export const root = resolve(import.meta.dirname, "../..")
 export const baseline = resolve(root, "supabase/migrations/20260505_remote_schema.sql")
 export const localDir = resolve(root, "supabase/.local")
 export const localSeed = resolve(localDir, "seed.sql")
+export const webEnvFile = resolve(root, "apps/web/.env.local")
+export const webEnvBackupDir = resolve(localDir, "env-backups")
+
+// Tables never copied into local data snapshots: user questions, precise
+// report locations, contributor/voter tokens, analytics, and research
+// submissions with their moderation notes and submitter IP hashes.
+export const privateTables = [
+  "public.ask_kaun_logs",
+  "public.ward_reports",
+  "public.community_facts",
+  "public.fact_votes",
+  "public.analytics_events",
+  "public.civic_project_research_submissions",
+  "public.civic_project_research_cache",
+]
+
+// Tables whose rows are inserted by migrations. `supabase db reset` already
+// creates these rows, so copying production's copies into the seed would abort
+// the single-transaction seed load on duplicate keys.
+export const migrationSeededTables = [
+  "public.civic_projects",
+  "public.civic_project_areas",
+]
 
 export function hasNonEmptyFile(path) {
   return existsSync(path) && statSync(path).size > 0
+}
+
+/**
+ * Copy apps/web/.env.local to a timestamped, owner-only file under the
+ * git-ignored supabase/.local/ before a script rewrites it, and say where.
+ */
+export function backupWebEnv() {
+  mkdirSync(webEnvBackupDir, { recursive: true, mode: 0o700 })
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-")
+  const backup = resolve(webEnvBackupDir, `web.env.local.${stamp}`)
+  copyFileSync(webEnvFile, backup, constants.COPYFILE_EXCL)
+  chmodSync(backup, 0o600)
+  console.log(`Backed up the previous apps/web/.env.local to ${relative(root, backup)}`)
+  return backup
 }
 
 function redactSensitiveArgs(args) {

@@ -1,9 +1,7 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from "node:fs"
-import { resolve } from "node:path"
-import { root } from "./shared.mjs"
+import { backupWebEnv, webEnvFile } from "./shared.mjs"
 
-const target = resolve(root, "apps/web/.env.local")
-if (!existsSync(target)) {
+if (!existsSync(webEnvFile)) {
   console.log("No apps/web/.env.local file exists; Kaun already uses its hosted defaults.")
   process.exit(0)
 }
@@ -13,11 +11,13 @@ const managed = new Set([
   "NEXT_PUBLIC_SUPABASE_ANON_KEY",
   "SUPABASE_SERVICE_ROLE_KEY",
 ])
-const remaining = readFileSync(target, "utf8")
-  .split(/\r?\n/)
-  .filter(line => line && !managed.has(line.split("=", 1)[0]))
+const lines = readFileSync(webEnvFile, "utf8").split(/\r?\n/).filter(Boolean)
+const remaining = lines.filter(line => !managed.has(line.split("=", 1)[0]))
 
-if (remaining.length) writeFileSync(target, `${remaining.join("\n")}\n`)
-else unlinkSync(target)
+if (remaining.length !== lines.length) {
+  backupWebEnv()
+  if (remaining.length) writeFileSync(webEnvFile, `${remaining.join("\n")}\n`)
+  else unlinkSync(webEnvFile)
+}
 
 console.log("Kaun will use hosted Supabase defaults after the Next.js dev server restarts.")

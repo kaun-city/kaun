@@ -8,7 +8,10 @@
  * The former explains identity ambiguity; the latter is the defensible weight
  * for allocating additive historical totals into current wards.
  *
- * Run: node scripts/wardmap/build-gba-crosswalk.mjs
+ * Output is a pure function of the checked-in GBA layer, the pinned DataMeet
+ * commit and --generated-at, so re-running with the same inputs is byte-stable.
+ *
+ * Run: node scripts/wardmap/build-gba-crosswalk.mjs --generated-at 2026-09-16T02:12:56.604Z
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, resolve } from "node:path"
@@ -23,7 +26,21 @@ const CURRENT_PATH = resolve(ROOT, "apps/web/public/bengaluru-gba-369.geojson")
 const PUBLIC_PATH = resolve(ROOT, "apps/web/public/bengaluru-gba-369-to-datameet-243.json")
 const DATA_DIR = resolve(ROOT, "data/ward-crosswalk")
 const DATA_PATH = resolve(DATA_DIR, "gba2025_369_to_datameet_243.json")
-const LEGACY_URL = "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Bangalore/BBMP.geojson"
+// Latest DataMeet commit touching Bangalore/BBMP.geojson ("BBMP new wards (#51)",
+// 2022-11-28). Bump deliberately and regenerate; never fetch a moving branch.
+const LEGACY_COMMIT = "0c3a2e3dd2e87c514817378d6c73a9dd2ffb8f69"
+const LEGACY_URL = `https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/${LEGACY_COMMIT}/Bangalore/BBMP.geojson`
+
+function generatedAtArg(argv) {
+  const index = argv.findIndex(arg => arg === "--generated-at" || arg.startsWith("--generated-at="))
+  const value = index === -1 ? null
+    : argv[index].includes("=") ? argv[index].slice("--generated-at=".length) : argv[index + 1]
+  const date = value ? new Date(value) : null
+  if (!date || Number.isNaN(date.getTime())) {
+    throw new Error("Pass --generated-at <ISO-8601 timestamp> so the crosswalk output is reproducible.")
+  }
+  return date.toISOString()
+}
 
 function polygons(geometry) {
   return geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates
@@ -78,6 +95,7 @@ function classify(source, targets, targetKey) {
 }
 
 async function main() {
+  const generatedAt = generatedAtArg(process.argv.slice(2))
   const currentCollection = JSON.parse(readFileSync(CURRENT_PATH, "utf8"))
   const legacyCollection = await fetch(LEGACY_URL).then(response => {
     if (!response.ok) throw new Error(`DataMeet boundary fetch failed: ${response.status}`)
@@ -137,7 +155,7 @@ async function main() {
   const artifact = {
     crosswalk: "gba-369-2025 → datameet-243",
     version: VERSION,
-    generated_at: new Date().toISOString(),
+    generated_at: generatedAt,
     method: `bidirectional deterministic interior-point overlap (${STEPS}x${STEPS} grids; no name matching)`,
     sources: {
       current: currentCollection.source,

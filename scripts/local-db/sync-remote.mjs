@@ -6,7 +6,15 @@
  * The schema baseline is created once, before Kaun's incremental migrations.
  */
 import { mkdirSync } from "node:fs"
-import { baseline, hasNonEmptyFile, localDir, localSeed, run } from "./shared.mjs"
+import {
+  baseline,
+  hasNonEmptyFile,
+  localDir,
+  localSeed,
+  migrationSeededTables,
+  privateTables,
+  run,
+} from "./shared.mjs"
 
 const dbUrl = process.env.KAUN_REMOTE_DB_URL
 const schemaOnly = process.argv.includes("--schema-only")
@@ -41,6 +49,21 @@ if (/^db\.[^.]+\.supabase\.co$/i.test(parsedDbUrl.hostname)) {
   console.warn("If hostname lookup fails, copy the Session pooler URI from Dashboard > Connect instead.")
 }
 
+// Keep the password out of the process list: the Supabase CLI resolves a
+// password-less --db-url with PGPASSWORD from its environment (libpq rules).
+const { KAUN_REMOTE_DB_URL: _remoteUrl, ...dumpEnv } = process.env
+if (parsedDbUrl.password) {
+  try {
+    dumpEnv.PGPASSWORD = decodeURIComponent(parsedDbUrl.password)
+  } catch {
+    console.error("KAUN_REMOTE_DB_URL has an invalid percent-encoded password.")
+    process.exit(1)
+  }
+}
+const dbUrlWithoutPassword = new URL(parsedDbUrl)
+dbUrlWithoutPassword.password = ""
+const connectionArgs = ["--db-url", dbUrlWithoutPassword.toString()]
+
 mkdirSync(localDir, { recursive: true })
 
 const hasSchemaBaseline = hasNonEmptyFile(baseline)
@@ -49,10 +72,10 @@ if (!hasSchemaBaseline || refreshSchema) {
   console.log(`${hasSchemaBaseline ? "Refreshing" : "Creating"} schema baseline...`)
   run("supabase", [
     "db", "dump",
-    "--db-url", dbUrl,
+    ...connectionArgs,
     "--schema", "public",
     "--file", baseline,
-  ])
+  ], { env: dumpEnv })
 } else {
   console.log("Keeping the committed schema baseline; incremental migrations remain authoritative.")
   console.log("Pass --refresh-schema only when intentionally rebasing the local clone.")
@@ -63,28 +86,20 @@ if (schemaOnly) {
   process.exit(0)
 }
 
-// Public civic source tables are copied. User questions, precise report
-// locations, moderation queues, and research submissions stay out of local
-// snapshots by default even when they live in the public schema.
-const excluded = [
-  "public.ask_kaun_logs",
-  "public.ward_reports",
-  "public.community_facts",
-  "public.civic_project_research_submissions",
-  "public.civic_project_research_events",
-  "public.analytics_events",
-  "public.rate_limits",
-].join(",")
+// Public civic source tables are copied. Private tables stay out of local
+// snapshots even though they live in the public schema, and migration-seeded
+// tables are left to the migrations so the seed cannot collide with them.
+const excluded = [...privateTables, ...migrationSeededTables].join(",")
 
 console.log("Refreshing the git-ignored, privacy-filtered local data seed...")
 run("supabase", [
   "db", "dump",
-  "--db-url", dbUrl,
+  ...connectionArgs,
   "--data-only",
   "--use-copy",
   "--schema", "public",
   "--exclude", excluded,
   "--file", localSeed,
-])
+], { env: dumpEnv })
 
 console.log("Snapshot complete. Start Docker Desktop, then run npm run db:start.")
