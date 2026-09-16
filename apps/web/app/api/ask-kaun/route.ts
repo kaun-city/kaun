@@ -4,9 +4,27 @@ import { z } from "zod"
 import { createClient } from "@supabase/supabase-js"
 import { makeAiLimiter, getIP, rateLimitResponse } from "@/lib/ratelimit"
 import { publicSupabaseConfig } from "@/lib/supabase-config"
+import {
+  attributableHistoricalWards, gbaWardKey, indexGbaCrosswalk, sourceWardNosForLegacyWard,
+  type GbaCrosswalkArtifact, type LegacySourceWardRow,
+} from "@/lib/gba-crosswalk"
+// Bundled server-side (no relative fetch from a route handler). These are the
+// same versioned public assets the client reads.
+import legacyWardCrosswalk from "@/public/bengaluru-ward-crosswalk.json"
+import gbaWardCrosswalk from "@/public/bengaluru-gba-369-to-datameet-243.json"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
+
+const LEGACY_SOURCE_WARDS = (legacyWardCrosswalk as { rows: LegacySourceWardRow[] }).rows
+const GBA_CROSSWALK_INDEX = indexGbaCrosswalk(gbaWardCrosswalk as GbaCrosswalkArtifact)
+
+/** Former 243 wards whose ward-tagged records may be attributed to the current GBA ward. */
+function recordWardsFor(c: AskKaunRequest["ward_context"]) {
+  if (c.boundary_system !== "gba-369-2025" || c.gba_corporation_id == null || c.gba_ward_no == null) return []
+  const row = GBA_CROSSWALK_INDEX.get(gbaWardKey(c.gba_corporation_id, c.gba_ward_no))
+  return row ? attributableHistoricalWards(row.historical_wards) : []
+}
 
 export interface AskKaunRequest {
   question: string
@@ -54,6 +72,10 @@ function buildContext(c: AskKaunRequest["ward_context"]): string {
   const lines = [`Ward: ${currentIdentity}, Assembly Constituency: ${c.assembly_constituency}`]
   if (c.historical_wards?.length) {
     lines.push(`Historical data provenance: ${c.historical_wards.map(ref => `${ref.ward_name} #${ref.ward_no} (${Math.round(ref.current_share * 100)}% of current ward area)`).join(", ")}`)
+  }
+  const recordWards = recordWardsFor(c)
+  if (recordWards.length) {
+    lines.push(`Former wards with attributable ward-level records (>=10% overlap; the only ward numbers to use for ward_contractors): ${recordWards.map(ref => `${ref.ward_name} #${ref.ward_no}`).join(", ")}`)
   }
   if (c.corporator_name)             lines.push(`Corporator: ${c.corporator_name}${c.corporator_party ? ` (${c.corporator_party})` : ""}`)
   if (c.mla_name)                    lines.push(`MLA: ${c.mla_name}${c.mla_party ? ` (${c.mla_party})` : ""}`)
@@ -246,18 +268,24 @@ function makeTools(supabase: any) {
     }),
 
     ward_contractors: tool({
-      description: "Get contractors active in a specific ward. Use for 'who are the contractors in my ward', 'which companies work in ward X'.",
+      description: "Get contractors active in a historical DataMeet-243 ward. Use for 'who are the contractors in my ward', 'which companies work in ward X'. For a current GBA ward, call it once per former ward listed as having attributable ward-level records.",
       inputSchema: zodSchema(z.object({
-        ward_no: z.number().describe("Ward number to look up"),
+        ward_no: z.number().describe("Historical DataMeet-243 ward number (from find_ward or the attributable former wards in context)"),
       })),
       execute: async ({ ward_no }): Promise<unknown> => {
+        // contractor_profiles.wards holds BBMP-Final-225 numbers. Bridge through
+        // the same >= 10% material-overlap pairs as prod ward_crosswalk /
+        // v_work_orders_243, never a raw 243 number or "any shared area".
+        const sourceWardNos = sourceWardNosForLegacyWard(LEGACY_SOURCE_WARDS, ward_no)
+        if (!sourceWardNos.length) return { datameet243_ward_no: ward_no, bbmp225_source_wards: [], contractors: [] }
         const { data } = await supabase
           .from("contractor_profiles")
           .select("canonical_name, aliases, total_contracts, total_value_lakh, avg_deduction_pct, ward_count, blacklist_flags, is_govt_entity")
-          .contains("wards", [ward_no])
+          .eq("city_id", "bengaluru")
+          .overlaps("wards", sourceWardNos)
           .order("total_value_lakh", { ascending: false })
           .limit(10)
-        return data ?? []
+        return { datameet243_ward_no: ward_no, bbmp225_source_wards: sourceWardNos, contractors: data ?? [] }
       },
     }),
   }

@@ -1,7 +1,7 @@
 import test from "node:test"
 import assert from "node:assert/strict"
 
-import { currentWardPinResult } from "../apps/web/lib/current-ward.ts"
+import { currentWardPinResult, preferredElectedReps } from "../apps/web/lib/current-ward.ts"
 
 const currentWard = {
   gba_ward_no: 4,
@@ -54,4 +54,24 @@ test("point enrichment cannot masquerade as the current ward's historical identi
   assert.equal(result.gba_ward_no, 5)
   assert.equal(result.gba_ward_name, "Sampangirama Nagar")
   assert.equal(result.historical_wards[0].ward_no, 129)
+})
+
+const rep = (role, name) => ({ id: name.length, role, constituency: "Shivajinagar", name, party: null })
+
+test("the ward profile's reps win over the MLA-only list in either arrival order", () => {
+  const profile = [rep("MLA", "Profile MLA"), rep("MP", "Profile MP"), rep("CORPORATOR", "Profile Corporator")]
+  const mlaOnly = [rep("MLA", "Direct MLA")]
+
+  assert.deepEqual(preferredElectedReps(profile, mlaOnly).map(r => r.name), ["Profile MLA", "Profile MP", "Profile Corporator"])
+  // Profile not landed yet (or failed): the MLA-only list is the fallback.
+  assert.deepEqual(preferredElectedReps(null, mlaOnly).map(r => r.name), ["Direct MLA"])
+  assert.deepEqual(preferredElectedReps([], mlaOnly).map(r => r.name), ["Direct MLA"])
+  // MLA-only not landed yet: nothing lost.
+  assert.deepEqual(preferredElectedReps(profile, []).map(r => r.name), ["Profile MLA", "Profile MP", "Profile Corporator"])
+})
+
+test("the MLA-only list fills only a missing MLA role in the profile", () => {
+  const profile = [rep("MP", "Profile MP"), rep("CORPORATOR", "Profile Corporator")]
+  const mlaOnly = [rep("MLA", "Direct MLA")]
+  assert.deepEqual(preferredElectedReps(profile, mlaOnly).map(r => r.name), ["Profile MP", "Profile Corporator", "Direct MLA"])
 })

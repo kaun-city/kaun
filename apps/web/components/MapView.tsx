@@ -20,7 +20,7 @@ import { bengaluru, type CityConfig } from "@/lib/cities"
 import { BASE_TILE_OPTIONS, BASE_TILE_URL } from "@/lib/base-map"
 import { colorFor } from "@/lib/map-layers"
 import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
-import { GBA_CROSSWALK_URL, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact } from "@/lib/gba-crosswalk"
+import { GBA_CROSSWALK_URL, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact, type GbaCrosswalkRow } from "@/lib/gba-crosswalk"
 import { DEFAULT_SUPABASE_ANON_KEY, DEFAULT_SUPABASE_URL } from "@/lib/supabase-config"
 
 /** Per-ward values + quantile breaks + ramp for choropleth painting */
@@ -28,6 +28,27 @@ export interface ChoroplethData {
   values: Record<string, number>
   breaks: number[]
   ramp: readonly string[]
+}
+
+/** Escape a value for interpolation into Leaflet popup/divIcon HTML. */
+function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
+
+/** Only http(s) photo URLs may reach an <img src>; anything else is dropped. */
+function safeImageUrl(value: unknown): string | null {
+  if (typeof value !== "string") return null
+  try {
+    const url = new URL(value)
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : null
+  } catch {
+    return null
+  }
 }
 
 function relativeTime(isoStr: string): string {
@@ -98,6 +119,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
   const geojsonRef = useRef<LeafletGeoJSON | null>(null)
   const choroplethRef = useRef<ChoroplethData | null>(choropleth)
   const currentWardAtRef = useRef<(lat: number, lng: number) => CurrentWardMeta | null>(() => null)
+  const crosswalkReadyRef = useRef<Promise<void>>(Promise.resolve())
   const selectAtRef = useRef<(lat: number, lng: number) => Promise<void>>(async () => {})
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const reportLayerRef = useRef<any>(null)
@@ -194,14 +216,22 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
           const confirmed: number[] = JSON.parse(localStorage.getItem("kaun_confirmed") ?? "[]")
 
           reports.forEach((report) => {
+            // Every report field is user- or model-supplied: escape before it
+            // reaches popup HTML (stored XSS on the admin-secret origin).
+            const reportId    = Number(report.id)
+            if (!Number.isFinite(reportId)) return
             const isPending   = report.status === "pending"
-            const label       = ISSUE_LABELS[report.issue_type] ?? report.issue_type
-            const upvotes     = report.upvotes ?? 0
-            const alreadyDone = confirmed.includes(report.id)
-            const photoHtml   = report.photo_url
-              ? `<img src="${report.photo_url}" style="width:100%;height:90px;object-fit:cover;border-radius:6px;margin:6px 0 4px;display:block" />`
+            const label       = escapeHtml(ISSUE_LABELS[report.issue_type] ?? report.issue_type)
+            const upvotes     = Number(report.upvotes) || 0
+            const alreadyDone = confirmed.includes(reportId)
+            const photoUrl    = safeImageUrl(report.photo_url)
+            const photoHtml   = photoUrl
+              ? `<img src="${escapeHtml(photoUrl)}" style="width:100%;height:90px;object-fit:cover;border-radius:6px;margin:6px 0 4px;display:block" />`
               : ""
-            const summaryText = report.ai_label || report.description || ""
+            const wardName    = escapeHtml(report.ward_name)
+            const aiPerson    = escapeHtml(report.ai_person)
+            const summaryText = escapeHtml(report.ai_label || report.description || "")
+            const reportedAgo = escapeHtml(relativeTime(report.reported_at))
 
             if (isPending) {
               // Yellow pulsing marker for unverified reports
@@ -224,7 +254,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                     <span style="width:6px;height:6px;background:#facc15;border-radius:50%;display:inline-block"></span>
                     <span style="color:#facc15;font-size:10px;font-weight:600;letter-spacing:0.05em">UNVERIFIED &middot; you confirmed</span>
                    </div>`
-                : `<button id="confirm-${report.id}" style="
+                : `<button id="confirm-${reportId}" style="
                     display:inline-flex;align-items:center;gap:5px;
                     padding:3px 8px;border-radius:20px;
                     background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);
@@ -237,16 +267,16 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                 <div style="font-family:sans-serif;width:200px">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
                     ${statusBtn}
-                    <span style="color:rgba(22,19,14,.45);font-size:10px">${relativeTime(report.reported_at)}</span>
+                    <span style="color:rgba(22,19,14,.45);font-size:10px">${reportedAgo}</span>
                   </div>
                   ${photoHtml}
                   <div style="font-size:12px;font-weight:600;color:#16130e;margin-bottom:2px">${label}</div>
-                  ${report.ward_name ? `<div style="color:rgba(22,19,14,.55);font-size:11px;margin-bottom:3px">${report.ward_name}</div>` : ""}
+                  ${wardName ? `<div style="color:rgba(22,19,14,.55);font-size:11px;margin-bottom:3px">${wardName}</div>` : ""}
                   ${summaryText ? `<div style="font-size:11px;color:rgba(22,19,14,.70);line-height:1.4">${summaryText}</div>` : ""}
                 </div>
               `)
               marker.on("popupopen", () => {
-                const btn = document.getElementById(`confirm-${report.id}`)
+                const btn = document.getElementById(`confirm-${reportId}`)
                 if (!btn || alreadyDone) return
                 btn.onclick = async () => {
                   btn.textContent = "Confirming..."
@@ -255,13 +285,13 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                     const res = await fetch("/api/confirm-report", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ id: report.id }),
+                      body: JSON.stringify({ id: reportId }),
                     })
                     const data = await res.json()
                     const newUpvotes = data.upvotes ?? upvotes + 1
                     // Save to localStorage
                     const stored: number[] = JSON.parse(localStorage.getItem("kaun_confirmed") ?? "[]")
-                    localStorage.setItem("kaun_confirmed", JSON.stringify([...stored, report.id]))
+                    localStorage.setItem("kaun_confirmed", JSON.stringify([...stored, reportId]))
                     if (data.status === "approved") {
                       btn.textContent = "Approved!"
                       btn.style.background = "#FF9933"
@@ -292,12 +322,12 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                       <span style="width:6px;height:6px;background:#C25400;display:inline-block"></span>
                       <span style="color:#C25400;font-size:10px;font-weight:600;letter-spacing:0.05em">VERIFIED</span>
                     </div>
-                    <span style="color:rgba(22,19,14,.45);font-size:10px">${relativeTime(report.reported_at)}</span>
+                    <span style="color:rgba(22,19,14,.45);font-size:10px">${reportedAgo}</span>
                   </div>
                   ${photoHtml}
                   <div style="font-size:12px;font-weight:600;color:#16130e;margin-bottom:2px">${label}</div>
-                  ${report.ward_name ? `<div style="color:rgba(22,19,14,.55);font-size:11px;margin-bottom:3px">${report.ward_name}</div>` : ""}
-                  ${report.ai_person ? `<div style="color:#C25400;font-size:11px;margin-bottom:3px">${report.ai_person}</div>` : ""}
+                  ${wardName ? `<div style="color:rgba(22,19,14,.55);font-size:11px;margin-bottom:3px">${wardName}</div>` : ""}
+                  ${aiPerson ? `<div style="color:#C25400;font-size:11px;margin-bottom:3px">${aiPerson}</div>` : ""}
                   ${summaryText ? `<div style="font-size:11px;color:rgba(22,19,14,.70);line-height:1.4">${summaryText}</div>` : ""}
                 </div>
               `)
@@ -338,21 +368,35 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       if (city.wardBoundarySource) {
         const source = city.wardBoundarySource
         map.attributionControl.addAttribution(
-          `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label}</a>`
+          `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a>`
         )
       }
 
+      // The historical crosswalk only enriches current wards with former-ward
+      // data. It loads independently: if it fails, boundaries still draw and
+      // clicks still resolve the current ward (with no historical vector).
+      let crosswalkIndex = new Map<string, GbaCrosswalkRow>()
+      let crosswalkVersion: string | undefined
+      const crosswalkReady: Promise<void> = city.id === "bengaluru"
+        ? fetch(GBA_CROSSWALK_URL, { signal: controller.signal })
+          .then((r) => {
+            if (!r.ok) throw new Error(`GBA crosswalk ${r.status}`)
+            return r.json() as Promise<GbaCrosswalkArtifact>
+          })
+          .then((crosswalk) => {
+            crosswalkIndex = indexGbaCrosswalk(crosswalk)
+            crosswalkVersion = crosswalk.version
+          })
+          .catch(() => {})
+        : Promise.resolve()
+      crosswalkReadyRef.current = crosswalkReady
+
       // Load ward GeoJSON overlay (per-city)
-      Promise.all([
-        fetch(city.geojsonUrl, { signal: controller.signal }).then((r) => r.json()),
-        city.id === "bengaluru"
-          ? fetch(GBA_CROSSWALK_URL, { signal: controller.signal }).then((r) => r.json() as Promise<GbaCrosswalkArtifact>)
-          : Promise.resolve(null),
-      ])
-        .then(([data, crosswalk]) => {
+      fetch(city.geojsonUrl, { signal: controller.signal })
+        .then((r) => r.json())
+        .then((data) => {
           if (!active) return
           const wardFeatures = data.features as Feature[]
-          const crosswalkIndex = crosswalk ? indexGbaCrosswalk(crosswalk) : new Map()
           currentWardAtRef.current = (lat, lng) => {
             const feature = wardFeatures.find(candidate => featureContains(candidate, lat, lng))
             if (!feature) return null
@@ -360,7 +404,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
             const row = p
               ? crosswalkIndex.get(gbaWardKey(Number(p.corporation_id), Number(p.ward_no)))
               : undefined
-            return currentWardMeta(feature, row, crosswalk?.version)
+            return currentWardMeta(feature, row, crosswalkVersion)
           }
           geojsonRef.current = L.geoJSON(data, {
             style: styleFeature,
@@ -416,7 +460,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
                   pointer-events:none;
                   font-family:system-ui,sans-serif;
                   letter-spacing:0.02em;
-                ">${String(displayName).replace(/ Ward$/i, "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}</span>`,
+                ">${escapeHtml(String(displayName).replace(/ Ward$/i, ""))}</span>`,
                 className: "",
                 iconAnchor: [0, 0],
               }),
@@ -464,6 +508,11 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       let marker: ReturnType<typeof L.marker> | null = null
 
       const selectAt = async (lat: number, lng: number) => {
+        // Never resolve a click against a half-loaded crosswalk (a click
+        // during load would otherwise lose its historical vector). The
+        // promise always settles, success or failure.
+        await crosswalkReadyRef.current
+        if (!active) return
         const currentWard = currentWardAtRef.current(lat, lng)
         // Report pick mode: capture coords and hand off — no ward lookup
         if (reportPickRef.current) {
@@ -505,6 +554,7 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
       geojsonRef.current = null
       labelLayerRef.current = null
       currentWardAtRef.current = () => null
+      crosswalkReadyRef.current = Promise.resolve()
       selectAtRef.current = async () => {}
     }
   }, [city.center, city.geojsonUrl, city.zoom])

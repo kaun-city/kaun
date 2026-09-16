@@ -11,18 +11,28 @@ import { rpc, query, insert } from "./supabase"
 import { wardQueryScope } from "./ward-query-scope"
 import { WARD_CROSSWALK_URL } from "./constants"
 import { bengaluruDataConstituency } from "./bengaluru-constituencies"
+import { sourceWardNosForLegacyWard, type LegacySourceWardRow } from "./gba-crosswalk"
 
-let sourceWardCrosswalk: Promise<Array<{ bbmp225_no: number; shares: Array<{ datameet243_no: number }> }>> | null = null
+let sourceWardCrosswalk: Promise<LegacySourceWardRow[]> | null = null
 
+/**
+ * BBMP-Final-225 wards whose records are attributable to a DataMeet-243 ward,
+ * using the same >= 10% material-overlap pairs as prod `ward_crosswalk` /
+ * `v_work_orders_243` (never "any shared area").
+ */
 async function sourceWardNosForHistoricalWard(wardNo: number): Promise<number[]> {
   sourceWardCrosswalk ??= fetch(WARD_CROSSWALK_URL)
-    .then(response => response.ok ? response.json() : { rows: [] })
-    .then(data => data.rows ?? [])
-    .catch(() => [])
-  const rows = await sourceWardCrosswalk
-  return rows
-    .filter(row => row.shares?.some(share => share.datameet243_no === wardNo))
-    .map(row => row.bbmp225_no)
+    .then(response => {
+      if (!response.ok) throw new Error(`crosswalk ${response.status}`)
+      return response.json()
+    })
+    .then(data => (data.rows ?? []) as LegacySourceWardRow[])
+    .catch(() => {
+      // Do not cache a failure for the whole session; retry on the next ward.
+      sourceWardCrosswalk = null
+      return []
+    })
+  return sourceWardNosForLegacyWard(await sourceWardCrosswalk, wardNo)
 }
 
 /**
@@ -496,7 +506,8 @@ export async function fetchWardContractors(wardNo: number, cityId = "bengaluru")
   if (!sourceWardNos.length) return []
   return await query<import('./types').ContractorProfile>('contractor_profiles', {
     // contractor_profiles.wards stores the original BBMP-Final-225 work-order
-    // keys, not DataMeet-243 keys. Array overlap performs the evidenced bridge.
+    // keys, not DataMeet-243 keys. Array overlap over the materially
+    // overlapping 225 wards performs the same bridge as v_work_orders_243.
     'wards': `ov.{${sourceWardNos.join(',')}}`,
     'city_id': `eq.${cityId}`,
     'select': 'entity_id,canonical_name,aliases,phone,total_contracts,total_value_lakh,total_paid_lakh,total_deduction_lakh,avg_deduction_pct,ward_count,wards,first_seen,last_seen,is_govt_entity,blacklist_flags',

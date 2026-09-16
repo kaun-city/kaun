@@ -1,5 +1,5 @@
 import type { Feature } from "geojson"
-import type { PinResult } from "./types"
+import type { ElectedRep, PinResult } from "./types"
 import type { GbaCrosswalkRow, HistoricalWardRef } from "./gba-crosswalk"
 
 type Ring = number[][]
@@ -94,4 +94,20 @@ export function currentWardPinResult(
     primary_agency: remoteResult?.found ? remoteResult.primary_agency : null,
     ...currentWard,
   }
+}
+
+/**
+ * Representatives shown for a ward. The ward_profile payload (MLA + MP +
+ * corporator) always wins; the separately fetched MLA-only list is a per-role
+ * fallback, so whichever request lands last can never drop the MP/corporator.
+ */
+export function preferredElectedReps(
+  profileReps: readonly ElectedRep[] | null | undefined,
+  mlaReps: readonly ElectedRep[] | null | undefined,
+): ElectedRep[] {
+  const profile = profileReps ?? []
+  const mla = mlaReps ?? []
+  if (!profile.length) return [...mla]
+  if (profile.some(rep => rep.role === "MLA")) return [...profile]
+  return [...profile, ...mla.filter(rep => rep.role === "MLA")]
 }

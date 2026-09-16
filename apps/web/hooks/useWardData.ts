@@ -17,7 +17,8 @@ import {
 import { getCity } from "@/lib/cities"
 import type { CityConfig } from "@/lib/cities"
 import { getVoterToken, groupOfficerFacts } from "@/lib/ward-utils"
-import type { HistoricalWardRef } from "@/lib/gba-crosswalk"
+import { attributableHistoricalWards, type HistoricalWardRef } from "@/lib/gba-crosswalk"
+import { preferredElectedReps } from "@/lib/current-ward"
 
 export type WardUnknowns = {
   total_questions: number
@@ -50,15 +51,23 @@ export function useWardData(result: PinResult | null) {
     if (result.historical_wards?.length) return result.historical_wards
     return result.ward_no ? [LEGACY_FALLBACK_REF(result.ward_no, result.ward_name)] : []
   }, [result])
+  // Additive totals (spend, amenities, signals counts…) use the full overlap
+  // vector weighted by legacy_share. Record *lists* (work orders, contractors,
+  // signals, grievances, licences, water/air readings) may only come from
+  // former wards that overlap materially (>= 10% both ways, primary always).
+  const recordWards = useMemo(() => attributableHistoricalWards(historicalWards), [historicalWards])
   const wardNo = historicalWards[0]?.ward_no
   const cityId = result?.city_id ?? city.id
+  // Two current wards can share a primary former ward (Varthur/Gunjur -> 112),
+  // so identity-scoped fetches must key on the current ward, not just wardNo.
+  const wardIdentity = `${cityId}|${result?.gba_corporation_id ?? ""}|${result?.gba_ward_no ?? ""}|${wardNo ?? ""}`
   const assemblyConstituency = result?.gba_ac ?? result?.assembly_constituency ?? undefined
   const currentWardName = result?.gba_ward_name ?? result?.ward_name ?? "Current ward"
 
   // ── Profile ──────────────────────────────────────────────
   const [profile, setProfile] = useState<WardProfile | null>(null)
   const [profileLoading, setProfileLoading] = useState(false)
-  const [electedReps, setElectedReps] = useState<ElectedRep[]>([])
+  const [mlaReps, setMlaReps] = useState<ElectedRep[]>([])
 
   // ── WHO tab ──────────────────────────────────────────────
   const [extraFacts, setExtraFacts] = useState<CommunityFact[]>([])
@@ -106,7 +115,7 @@ export function useWardData(result: PinResult | null) {
     setTab("who")
     setProfile(null)
     setProfileLoading(false)
-    setElectedReps([])
+    setMlaReps([])
     setExtraFacts([])
     setUnknowns(null)
     setShowAddFor(null)
@@ -137,7 +146,7 @@ export function useWardData(result: PinResult | null) {
     setSakala(null)
     setLocalOffices([])
     setDepartments([])
-  }, [wardNo, cityId, result?.gba_corporation_id, result?.gba_ward_no])
+  }, [wardIdentity])
 
   // ── Profile (always) ─────────────────────────────────────
   useEffect(() => {
@@ -146,21 +155,22 @@ export function useWardData(result: PinResult | null) {
     setProfileLoading(true)
     if (assemblyConstituency) {
       void fetchElectedReps(assemblyConstituency, cityId).then(value => {
-        if (active) setElectedReps(value)
+        if (active) setMlaReps(value)
       })
     }
     if (wardNo) {
       void fetchWardProfile(wardNo, cityId, assemblyConstituency).then(value => {
         if (!active) return
         setProfile(value)
-        if (value?.elected_reps?.length) setElectedReps(value.elected_reps)
         setProfileLoading(false)
       })
     } else {
       setProfileLoading(false)
     }
     return () => { active = false }
-  }, [wardNo, cityId, assemblyConstituency])
+  }, [wardIdentity, wardNo, cityId, assemblyConstituency])
+  // Derived, not raced: the profile's MLA+MP+corporator list always wins.
+  const electedReps = useMemo(() => preferredElectedReps(profile?.elected_reps, mlaReps), [profile, mlaReps])
 
   // ── WHO: unknowns (always-fetch) ──────────────────────────
   useEffect(() => {
@@ -170,7 +180,7 @@ export function useWardData(result: PinResult | null) {
       if (active) setUnknowns(value)
     })
     return () => { active = false }
-  }, [wardNo, cityId])
+  }, [wardIdentity, wardNo, cityId])
 
   // ── WHO: accountability records ──────────────────────────
   useEffect(() => {
@@ -193,7 +203,7 @@ export function useWardData(result: PinResult | null) {
     }
 
     return () => { active = false }
-  }, [wardNo, assemblyConstituency, city.features.wardCommitteeMeetings, city.features.mlaLadFunds, city.features.repReportCards])
+  }, [wardIdentity, wardNo, assemblyConstituency, city.features.wardCommitteeMeetings, city.features.mlaLadFunds, city.features.repReportCards])
 
   // ── Local offices + corporation contacts ─────────────────
   useEffect(() => {
@@ -225,13 +235,13 @@ export function useWardData(result: PinResult | null) {
     if (city.features.budget) {
       void fetchBudgetSummary(city.budgetYear).then(value => { if (active) setBudget(value) })
     }
-    if (historicalWards.length && city.features.workOrders) {
-      void Promise.all(historicalWards.map(ref => fetchWorkOrders(ref.ward_no, cityId))).then(groups => {
+    if (recordWards.length && city.features.workOrders) {
+      void Promise.all(recordWards.map(ref => fetchWorkOrders(ref.ward_no, cityId))).then(groups => {
         if (active) setWorkOrders(uniqueBy(groups.flat(), row => row.work_order_id || row.id))
       })
     }
-    if (historicalWards.length && city.features.tradeLicenses) {
-      void Promise.all(historicalWards.map(ref => fetchTradeLicenses(ref.ward_name, cityId))).then(values => {
+    if (recordWards.length && city.features.tradeLicenses) {
+      void Promise.all(recordWards.map(ref => fetchTradeLicenses(ref.ward_name, cityId))).then(values => {
         if (active) setTradeLicenses(values.flat())
       })
     }
@@ -251,7 +261,7 @@ export function useWardData(result: PinResult | null) {
     }
 
     return () => { active = false }
-  }, [tab, wardNo, cityId, result?.ward_name, historicalWards, currentWardName, assemblyConstituency, city.budgetYear, city.features.budget, city.features.workOrders, city.features.tradeLicenses, city.features.propertyTax, city.features.wardSpend])
+  }, [tab, wardNo, cityId, result?.ward_name, historicalWards, recordWards, currentWardName, assemblyConstituency, city.budgetYear, city.features.budget, city.features.workOrders, city.features.tradeLicenses, city.features.propertyTax, city.features.wardSpend])
 
   // ── CITIZEN tab ───────────────────────────────────────────
   useEffect(() => {
@@ -280,7 +290,7 @@ export function useWardData(result: PinResult | null) {
         if (!active || !rows.length) return
         setRoadCrashes({ ward_no: 0, crashes_2024: Math.round(weightedNumber(rows, v => v.crashes_2024)), fatal_2024: Math.round(weightedNumber(rows, v => v.fatal_2024)), crashes_2025: Math.round(weightedNumber(rows, v => v.crashes_2025)), fatal_2025: Math.round(weightedNumber(rows, v => v.fatal_2025)) })
       })
-      void Promise.all(historicalWards.map(ref => fetchWardAirQuality(ref.ward_no))).then(values => {
+      void Promise.all(recordWards.map(ref => fetchWardAirQuality(ref.ward_no))).then(values => {
         if (active) setAirQuality(values.find(Boolean) ?? null)
       })
     }
@@ -294,14 +304,14 @@ export function useWardData(result: PinResult | null) {
         setAmenities(estimate)
       })
     }
-    if (historicalWards.length && city.features.wardWaterQuality) {
-      void Promise.all(historicalWards.map(ref => fetchWardWaterQuality(ref.ward_no, cityId))).then(values => {
+    if (recordWards.length && city.features.wardWaterQuality) {
+      void Promise.all(recordWards.map(ref => fetchWardWaterQuality(ref.ward_no, cityId))).then(values => {
         if (active) setWaterQuality(uniqueBy(values.flat(), row => `${row.water_body_name}:${row.data_year}`))
       })
     }
 
     return () => { active = false }
-  }, [tab, wardNo, cityId, result?.ward_name, historicalWards, assemblyConstituency, city.subreddit, city.features.buzz, city.features.wardAmenities, city.features.wardWaterQuality])
+  }, [tab, wardNo, cityId, result?.ward_name, historicalWards, recordWards, assemblyConstituency, city.subreddit, city.features.buzz, city.features.wardAmenities, city.features.wardWaterQuality])
 
   // ── REACH tab ─────────────────────────────────────────────
   useEffect(() => {
@@ -312,14 +322,14 @@ export function useWardData(result: PinResult | null) {
     if (assemblyConstituency && city.features.sakala) {
       void fetchSakalaPerformance(assemblyConstituency).then(value => { if (active) setSakala(value) })
     }
-    if (historicalWards.length && city.features.grievances) {
-      void Promise.all(historicalWards.map(ref => fetchWardGrievances(ref.ward_name, cityId))).then(values => {
+    if (recordWards.length && city.features.grievances) {
+      void Promise.all(recordWards.map(ref => fetchWardGrievances(ref.ward_name, cityId))).then(values => {
         if (active) setGrievances(values.flat())
       })
     }
 
     return () => { active = false }
-  }, [tab, wardNo, cityId, historicalWards, assemblyConstituency, city.features.sakala, city.features.grievances])
+  }, [tab, wardNo, cityId, recordWards, assemblyConstituency, city.features.sakala, city.features.grievances])
 
   // ── Eager ward context used by the header and story card ─
   useEffect(() => {
@@ -333,7 +343,7 @@ export function useWardData(result: PinResult | null) {
     void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardReportCount(ref.ward_no, cityId) }))).then(rows => {
       if (active) setReportCount(Math.round(weightedNumber(rows, value => value)))
     })
-    void Promise.all(historicalWards.map(ref => fetchWardSignals(ref.ward_no, cityId))).then(values => {
+    void Promise.all(recordWards.map(ref => fetchWardSignals(ref.ward_no, cityId))).then(values => {
       if (active) setSignals(uniqueBy(values.flat(), row => row.id))
     })
     if (city.features.wardPotholes) {
@@ -343,13 +353,15 @@ export function useWardData(result: PinResult | null) {
       })
     }
     if (city.features.workOrders) {
-      void Promise.all(historicalWards.map(ref => fetchWardContractors(ref.ward_no, cityId))).then(values => {
-        if (active) setWardContractors(uniqueBy(values.flat(), row => row.entity_id))
+      void Promise.all(recordWards.map(ref => fetchWardContractors(ref.ward_no, cityId))).then(values => {
+        if (!active) return
+        const contractors = uniqueBy(values.flat(), row => row.entity_id)
+        setWardContractors(contractors.sort((a, b) => (Number(b.total_value_lakh) || 0) - (Number(a.total_value_lakh) || 0)))
       })
     }
 
     return () => { active = false }
-  }, [historicalWards, currentWardName, cityId, city.features.wardPotholes, city.features.workOrders])
+  }, [historicalWards, recordWards, currentWardName, cityId, city.features.wardPotholes, city.features.workOrders])
 
   // ── Derived values ────────────────────────────────────────
   const allFacts = [...(profile?.community_facts ?? []), ...extraFacts]
@@ -374,7 +386,10 @@ export function useWardData(result: PinResult | null) {
 
   return {
     city,
+    /** Full overlap vector: provenance for the additive, legacy_share-weighted estimates. */
     historicalWards,
+    /** Former wards that ward-tagged record lists (work orders, contractors, signals, grievances, licences, water/air) are drawn from. */
+    recordWards,
     // tab
     tab, setTab,
     // profile
