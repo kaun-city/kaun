@@ -6,7 +6,8 @@ import { formatLakh } from "@/lib/ward-utils"
 
 interface Props {
   reportCard: RepReportCard | null
-  committeeMeetings: WardCommitteeMeetings | null
+  /** Former BBMP-198 ward committees covering this ward, largest overlap first. */
+  committeeMeetings: WardCommitteeMeetings[]
   infraStats: WardInfraStats | null
   wardContractors: ContractorProfile[]
   /** city_id from PinResult — used to phrase city-specific copy correctly */
@@ -114,14 +115,18 @@ export function pickHeadline({ reportCard, committeeMeetings, infraStats, wardCo
   }
 
   // No ward committee meetings on record. The 2020-22 dataset gives no
-  // denominator, so the finding is the zero itself, never "0 of N".
-  if (committeeMeetings && committeeMeetings.meetings_count === 0) {
+  // denominator, so the finding is the zero itself, never "0 of N". The
+  // committees belong to BBMP's 198-ward map, so each is named, and the
+  // finding holds only when every committee covering this ward is at zero.
+  if (committeeMeetings.length > 0 && committeeMeetings.every(committee => committee.meetings_count === 0)) {
+    const period = committeeMeetings[0].period
+    const names = committeeMeetings.map(committee => committee.ward_name).join(" and ")
     headlines.push({
       priority: 75,
       severity: "red",
-      text: `No ward committee meetings recorded${committeeMeetings.period ? ` in ${committeeMeetings.period}` : ""}`,
-      detail: "Ward committees are meant to meet every month",
-      source: `BBMP ward committee records via opencity.in${committeeMeetings.period ? ` · ${committeeMeetings.period}` : ""}`,
+      text: `No ward committee meetings recorded${period ? ` in ${period}` : ""}`,
+      detail: `${names} ward committee${committeeMeetings.length === 1 ? "" : "s"} · committees are meant to meet every month`,
+      source: `BBMP ward committee records via opencity.in · 198-ward map${period ? ` · ${period}` : ""}`,
     })
   }
 

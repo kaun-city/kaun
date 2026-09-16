@@ -9,11 +9,38 @@
 import type { BudgetSummary, CommunityFact, ElectedRep, PinResult, PropertyTaxData, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "./types"
 import { rpc, query, insert } from "./supabase"
 import { wardQueryScope } from "./ward-query-scope"
-import { WARD_CROSSWALK_URL } from "./constants"
+import { BBMP198_CROSSWALK_URL, WARD_CROSSWALK_URL } from "./constants"
 import { bengaluruDataConstituency } from "./bengaluru-constituencies"
 import { sourceWardNosForLegacyWard, type LegacySourceWardRow } from "./gba-crosswalk"
+import { indexBbmp198Crosswalk, type Bbmp198CrosswalkArtifact, type Bbmp198Index } from "./bbmp198-crosswalk"
 
 let sourceWardCrosswalk: Promise<LegacySourceWardRow[]> | null = null
+let bbmp198Crosswalk: Promise<Bbmp198Index | null> | null = null
+
+/**
+ * The BBMP-198 -> DataMeet-243 crosswalk, loaded once per session. Null when
+ * it cannot be loaded: 198-keyed figures are then withheld, never guessed.
+ */
+export function loadBbmp198Crosswalk(): Promise<Bbmp198Index | null> {
+  bbmp198Crosswalk ??= fetch(BBMP198_CROSSWALK_URL)
+    .then(response => {
+      if (!response.ok) throw new Error(`bbmp198 crosswalk ${response.status}`)
+      return response.json() as Promise<Bbmp198CrosswalkArtifact>
+    })
+    .then(indexBbmp198Crosswalk)
+    .catch(() => {
+      // Do not cache a failure for the whole session; retry on the next ward.
+      bbmp198Crosswalk = null
+      return null
+    })
+  return bbmp198Crosswalk
+}
+
+/** PostgREST `in` filter over BBMP-198 ward numbers (the 198-keyed tables are Bengaluru-only). */
+function bbmp198WardFilter(bbmp198WardNos: Iterable<number>): string | null {
+  const wardNos = [...new Set(bbmp198WardNos)].filter(Number.isInteger).sort((a, b) => a - b)
+  return wardNos.length ? `in.(${wardNos.join(",")})` : null
+}
 
 /**
  * BBMP-Final-225 wards whose records are attributable to a DataMeet-243 ward,
@@ -496,15 +523,17 @@ export async function fetchWardContractors(wardNo: number, cityId = "bengaluru")
 }
 
 /**
- * Fetch pothole complaint count for a ward (Fix My Street 2022).
+ * Fetch pothole complaint counts (Fix My Street 2022) for BBMP-198 wards.
+ * ward_potholes is keyed on the 198-ward map: pass 198 numbers from the
+ * crosswalk, never a DataMeet-243 or GBA ward number.
  */
-export async function fetchWardPotholes(wardNo: number, cityId = "bengaluru"): Promise<import('./types').WardPotholes | null> {
-  const rows = await query<import('./types').WardPotholes>('ward_potholes', {
-    ...wardQueryScope('ward_potholes', wardNo, cityId),
+export async function fetchWardPotholesByBbmp198(bbmp198WardNos: Iterable<number>): Promise<import('./types').WardPotholes[]> {
+  const wardNo = bbmp198WardFilter(bbmp198WardNos)
+  if (!wardNo) return []
+  return await query<import('./types').WardPotholes>('ward_potholes', {
+    'ward_no': wardNo,
     'select': 'ward_no,ward_name,complaints,data_year',
-    'limit': '1',
   })
-  return rows[0] ?? null
 }
 
 /**
@@ -521,15 +550,17 @@ export async function fetchRepReportCard(constituency: string, role: string = 'M
 }
 
 /**
- * Fetch ward committee meeting count (2020-2022) by ward number.
+ * Fetch ward committee meeting counts (2020-2022) for BBMP-198 ward
+ * committees. ward_committee_meetings is keyed on the 198-ward map: pass 198
+ * numbers from the crosswalk, never a DataMeet-243 or GBA ward number.
  */
-export async function fetchWardCommitteeMeetings(wardNo: number): Promise<import('./types').WardCommitteeMeetings | null> {
-  const rows = await query<import('./types').WardCommitteeMeetings>('ward_committee_meetings', {
-    'ward_no': `eq.${wardNo}`,
+export async function fetchWardCommitteeMeetingsByBbmp198(bbmp198WardNos: Iterable<number>): Promise<import('./types').WardCommitteeMeetings[]> {
+  const wardNo = bbmp198WardFilter(bbmp198WardNos)
+  if (!wardNo) return []
+  return await query<import('./types').WardCommitteeMeetings>('ward_committee_meetings', {
+    'ward_no': wardNo,
     'select': 'ward_no,ward_name,assembly_constituency,meetings_count,period',
-    'limit': '1',
   })
-  return rows[0] ?? null
 }
 
 /**
@@ -669,11 +700,16 @@ export async function fetchWardWaterQuality(wardNo: number, cityId = "bengaluru"
   })
 }
 
-export async function fetchWardSpend(wardNo: number, cityId = "bengaluru"): Promise<import('./types').WardSpendCategory | null> {
-  const rows = await query<import('./types').WardSpendCategory>('ward_spend_category', {
-    ...wardQueryScope('ward_spend_category', wardNo, cityId),
+/**
+ * Fetch ward works spend by category (2018-23) for BBMP-198 wards.
+ * ward_spend_category is keyed on the 198-ward map: pass 198 numbers from the
+ * crosswalk, never a DataMeet-243 or GBA ward number.
+ */
+export async function fetchWardSpendByBbmp198(bbmp198WardNos: Iterable<number>): Promise<import('./types').WardSpendCategory[]> {
+  const wardNo = bbmp198WardFilter(bbmp198WardNos)
+  if (!wardNo) return []
+  return await query<import('./types').WardSpendCategory>('ward_spend_category', {
+    'ward_no': wardNo,
     'select': 'ward_no,ward_name,buildings_facilities,drainage,roads_and_drains,roads_and_infrastructure,streetlighting,waste_management,water_and_sanitation,grand_total,period',
-    'limit': '1',
   })
-  return rows[0] ?? null
 }

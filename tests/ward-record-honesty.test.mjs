@@ -7,6 +7,7 @@
  *   - the headline waits for everything it ranks, so it never swaps;
  *   - BBMP-198-keyed tables (spend, potholes, committee meetings) are not
  *     looked up with DataMeet-243 ward numbers, which name other places;
+ *     they reach a ward only through the spatial 198 -> 243 crosswalk;
  *   - bus stops are shown once, from the deduplicated source;
  *   - no impossible "56 of ~48" ratio, no wrong RTI portal, helplines dial;
  *   - no browser call to reddit.com, and a refused clipboard is handled.
@@ -60,7 +61,7 @@ const KRIDL_SECOND_PHONE = { ...KRIDL, entity_id: "ph_8073912353", total_contrac
 const SMALL_FLAGGED = { ...KRIDL, entity_id: "ph_9901828068", canonical_name: "N", total_contracts: 1, total_value_lakh: 9.68, ward_count: 1 }
 const CLEAN = { ...KRIDL, entity_id: "ph_1", canonical_name: "CLEAN WORKS", blacklist_flags: [], total_value_lakh: 99999 }
 
-const base = { reportCard: null, committeeMeetings: null, infraStats: null, wardContractors: [], cityId: "bengaluru" }
+const base = { reportCard: null, committeeMeetings: [], infraStats: null, wardContractors: [], cityId: "bengaluru" }
 
 test("a flagged contractor's money is named as city-wide, never as this ward's", () => {
   const headline = pickHeadline({ ...base, wardContractors: [CLEAN, KRIDL], formerWards: ["Kodandarampura"] })
@@ -88,10 +89,25 @@ test("a single-ward contractor is not described as spread across the city", () =
   assert.equal(headline.detail, "N: ₹9.7 L in 1 contract city-wide, in 1 ward")
 })
 
+const committee = (ward_no, ward_name, meetings_count) => ({ ward_no, ward_name, assembly_constituency: null, meetings_count, period: "2020-2022" })
+
 test("no committee finding claims a denominator the data does not have", () => {
-  const headline = pickHeadline({ ...base, committeeMeetings: { ward_no: 1, ward_name: "x", assembly_constituency: null, meetings_count: 0, period: "2020-2022" } })
+  const headline = pickHeadline({ ...base, committeeMeetings: [committee(25, "Horamavu", 0)] })
   assert.equal(headline.text, "No ward committee meetings recorded in 2020-2022")
+  assert.match(headline.detail, /^Horamavu ward committee/)
+  assert.match(headline.source, /198-ward map/)
   assert.doesNotMatch(`${headline.text} ${headline.detail}`, /of 56|mandated meetings|never met/)
+})
+
+test("former ward committees are judged one by one, never pooled", () => {
+  // One silent committee does not make the whole area silent.
+  assert.equal(pickHeadline({ ...base, committeeMeetings: [committee(25, "Horamavu", 0), committee(26, "Ramamurthy Nagar", 12)] }), null)
+  const both = pickHeadline({ ...base, committeeMeetings: [committee(25, "Horamavu", 0), committee(26, "Ramamurthy Nagar", 0)] })
+  assert.match(both.detail, /^Horamavu and Ramamurthy Nagar ward committees/)
+  // Counts are shown per committee: the snapshot shows the largest overlap's own count.
+  assert.match(grade, /const \[largestCommittee\] = committeeMeetings/)
+  assert.doesNotMatch(`${grade}\n${who}\n${hook}`, /meetings_count\)?\s*\+|reduce\([^)]*meetings_count/)
+  assert.match(who, /committeeMeetings\.map\(committee =>/)
 })
 
 test("the headline waits for every input it ranks, then renders once", () => {
@@ -111,19 +127,42 @@ test("the evidence snapshot leaves red to the headline", () => {
 })
 
 test("BBMP-198-keyed tables are not looked up with 243-ward numbers", () => {
-  // One switch, shared by the sheet, map layers and AI routes.
-  assert.match(read("lib/ward-data-quality.ts"), /export const BBMP_198_RECORDS_ATTRIBUTABLE = false/)
+  // One switch, shared by the sheet, map layers and AI routes. It is on only
+  // because every surface below goes through the spatial crosswalk.
+  assert.match(read("lib/ward-data-quality.ts"), /export const BBMP_198_RECORDS_ATTRIBUTABLE = true/)
   assert.match(hook, /import \{ BBMP_198_RECORDS_ATTRIBUTABLE \} from "@\/lib\/ward-data-quality"/)
   const layers = read("lib/map-layers.ts")
   assert.match(layers, /BBMP_198_LAYER_IDS = new Set\(\["potholes", "ward_spend"\]\)/)
-  assert.doesNotMatch(read("app/api/ask-kaun/route.ts"), /"committee_meetings", "mla_attendance"|\/56`/)
-  for (const fetcher of ["fetchWardSpend", "fetchWardPotholes", "fetchWardCommitteeMeetings"]) {
+  const ask = read("app/api/ask-kaun/route.ts")
+  assert.doesNotMatch(ask, /\/56`/)
+  for (const fetcher of ["fetchWardSpendByBbmp198", "fetchWardPotholesByBbmp198", "fetchWardCommitteeMeetingsByBbmp198"]) {
     const call = hook.indexOf(`${fetcher}(`)
     assert.ok(call > 0, fetcher)
     const guard = hook.lastIndexOf("BBMP_198_RECORDS_ATTRIBUTABLE", call)
-    assert.ok(guard > 0 && call - guard < 400, `${fetcher} must sit behind BBMP_198_RECORDS_ATTRIBUTABLE`)
+    assert.ok(guard > 0 && call - guard < 700, `${fetcher} must sit behind BBMP_198_RECORDS_ATTRIBUTABLE`)
+    // Fed 198 numbers from the crosswalk, never a historical 243 ref's number.
+    assert.doesNotMatch(hook, new RegExp(`${fetcher}\\(ref\\.ward_no`))
   }
-  assert.match(spend, /198-ward map/)
+  assert.match(hook, /fetchWardSpendByBbmp198\(weights\.keys\(\)\)/)
+  assert.match(hook, /fetchWardPotholesByBbmp198\(weights\.keys\(\)\)/)
+  assert.match(hook, /fetchWardCommitteeMeetingsByBbmp198\(committees\.map\(committee => committee\.ward_no\)\)/)
+  // The old single-ward fetchers that took a 243 number are gone.
+  assert.doesNotMatch(api, /export async function (fetchWardSpend|fetchWardPotholes|fetchWardCommitteeMeetings)\(/)
+
+  // Server surfaces: no ward-number or ward-name joins onto the 198 tables.
+  const wards = read("app/api/data/wards/route.ts")
+  const spending = read("app/api/data/spending/route.ts")
+  const exporter = read("app/api/export/route.ts")
+  const mapRoute = read("app/api/map-layers/route.ts")
+  for (const [name, source] of [["wards", wards], ["spending", spending], ["export", exporter], ["ask-kaun", ask]]) {
+    assert.doesNotMatch(source, /from\("(ward_spend_category|ward_potholes|ward_committee_meetings)"\)(?:\s*\.\w+\((?:[^()]|\([^()]*\))*\))*?\s*\.eq\("ward_no"/, name)
+  }
+  // The CSV export joined 198 rows to 243 wards by number, then by name.
+  assert.doesNotMatch(exporter, /spendByName|new Map\(\(spending \?\? \[\]\)\.map/)
+  assert.match(exporter, /spendBy243\(/)
+  assert.match(exporter, /estimateDatameet243FromBbmp198\(BBMP198_INDEX, wardNo, potholeRows/)
+  assert.match(mapRoute, /currentizeBbmp198Values\(values\)[\s\S]*currentizeBbmp198Values\(values\)/)
+  assert.match(spend, /198-ward/)
 })
 
 test("bus stops appear once, from the deduplicated source, with honest trip wording", () => {

@@ -13,6 +13,8 @@ import {
 // same versioned public assets the client reads.
 import legacyWardCrosswalk from "@/public/bengaluru-ward-crosswalk.json"
 import gbaWardCrosswalk from "@/public/bengaluru-gba-369-to-datameet-243.json"
+import { attributableBbmp198Wards, describeFormerWardCommittees, type FormerWardCommittee } from "@/lib/bbmp198-crosswalk"
+import { BBMP198_INDEX } from "@/lib/bbmp198-server"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
@@ -45,7 +47,8 @@ export interface AskKaunRequest {
     mla_questions_asked?: number | null
     mla_lad_utilization_pct?: number | null
     mla_criminal_cases?: number | null
-    committee_meetings?: number | null
+    /** Former BBMP-198 ward committees covering the ward; counts stay per committee. */
+    former_ward_committees?: FormerWardCommittee[]
     signal_count?: number | null
     bus_stop_count?: number | null
     pothole_complaints?: number | null
@@ -84,11 +87,15 @@ function buildContext(c: AskKaunRequest["ward_context"]): string {
   if (c.mla_questions_asked != null) lines.push(`MLA questions asked: ${c.mla_questions_asked}`)
   if (c.mla_lad_utilization_pct != null) lines.push(`MLA LAD fund utilization: ${c.mla_lad_utilization_pct}%`)
   if (c.mla_criminal_cases != null)  lines.push(`MLA criminal cases (EC affidavit): ${c.mla_criminal_cases}`)
-  if (c.committee_meetings != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`Ward committee meetings recorded (2020-22): ${c.committee_meetings}`)
+  if (BBMP_198_RECORDS_ATTRIBUTABLE) {
+    const committees = describeFormerWardCommittees(c.former_ward_committees)
+    if (committees.length) lines.push(`Ward committee meetings (per committee; never add them up): ${committees.join("; ")}`)
+  }
   if (c.signal_count != null)        lines.push(`Traffic signals: ${c.signal_count} (city avg: 5.5)`)
   if (c.bus_stop_count != null && INFRA_BUS_COUNTS_RELIABLE) lines.push(`BMTC bus stops: ${c.bus_stop_count}`)
-  if (c.pothole_complaints != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`Pothole complaints: ${c.pothole_complaints}`)
-  if (c.ward_spend_total_lakh != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`BBMP ward spend: ₹${c.ward_spend_total_lakh} lakh (2018-2023)`)
+  // Recorded on BBMP's 198-ward map and allocated to this ward by map overlap.
+  if (c.pothole_complaints != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`Pothole complaints, Fix My Street 2022 (estimated from BBMP 198-ward records by map overlap): ${Math.round(c.pothole_complaints)}`)
+  if (c.ward_spend_total_lakh != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`BBMP ward works spend 2018-2023 (estimated from BBMP 198-ward records by map overlap): ₹${Math.round(c.ward_spend_total_lakh)} lakh`)
   if (c.ward_spend_roads_pct != null && BBMP_198_RECORDS_ATTRIBUTABLE) lines.push(`Roads share of spend: ${c.ward_spend_roads_pct.toFixed(1)}%`)
   if (c.grievance_count != null)     lines.push(`BBMP grievances: ${c.grievance_count}`)
   // Amenities (OSM)
@@ -109,8 +116,9 @@ function makeTools(supabase: any) {
     rank_wards: tool({
       description: "Get top or bottom N wards across Bengaluru for a specific metric. Use for questions like 'which ward has the most signals', 'worst MLA attendance', 'where are the most potholes'.",
       inputSchema: zodSchema(z.object({
-        // bus_stops and committee_meetings are withdrawn: their tables are inflated or 198-ward keyed (lib/ward-data-quality.ts).
-        metric: z.enum(["signals", "mla_attendance", "lad_utilization", "criminal_cases", "hospitals", "pharmacies", "atms", "public_toilets", "ev_charging", "metro_stations"]),
+        // bus_stops is withdrawn: ward_infra_stats counts duplicate stop rows (lib/ward-data-quality.ts).
+        // committee_meetings ranks former BBMP-198 ward committees, not current wards.
+        metric: z.enum(["signals", "committee_meetings", "mla_attendance", "lad_utilization", "criminal_cases", "hospitals", "pharmacies", "atms", "public_toilets", "ev_charging", "metro_stations"]),
         order: z.enum(["top", "bottom"]).describe("top = highest/best, bottom = lowest/worst"),
         limit: z.number().min(1).max(10).default(5),
       })),
@@ -124,6 +132,21 @@ function makeTools(supabase: any) {
             .order("signal_count", { ascending: asc })
             .limit(limit)
           return data ?? []
+        }
+        if (metric === "committee_meetings") {
+          if (!BBMP_198_RECORDS_ATTRIBUTABLE) return []
+          const { data } = await supabase
+            .from("ward_committee_meetings")
+            .select("ward_no, ward_name, meetings_count, period")
+            .order("meetings_count", { ascending: asc })
+            .limit(limit)
+          // These are committees of BBMP's 198-ward map (2010 delimitation).
+          // Their numbers are not DataMeet-243 or current GBA ward numbers.
+          return {
+            map: "BBMP 198-ward map (2010 delimitation) ward committees; ward numbers are not current or DataMeet-243 wards",
+            committees: ((data ?? []) as Array<{ ward_no: number; ward_name: string; meetings_count: number; period: string }>)
+              .map(row => ({ bbmp198_ward_no: row.ward_no, committee: row.ward_name, meetings_count: row.meetings_count, period: row.period })),
+          }
         }
         if (["hospitals", "pharmacies", "atms", "public_toilets", "ev_charging", "metro_stations"].includes(metric)) {
           const { data } = await supabase
@@ -168,15 +191,21 @@ function makeTools(supabase: any) {
           const ward = wardRes.data as { ward_no: number; ward_name: string; assembly_constituency: string } | null
           if (!ward) { results.push({ searched: name, found: false }); continue }
 
+          // ward_committee_meetings is keyed on the 198-ward map: name the
+          // committees that materially overlap this 243 ward, never its number.
+          const committeeWards = BBMP198_INDEX.get(ward.ward_no)
+          const committeeWardNos = committeeWards ? attributableBbmp198Wards(committeeWards).map(ref => ref.ward_no) : []
           const [infra, report, meetings, amenities] = await Promise.all([
             supabase.from("ward_infra_stats").select("signal_count, bus_stop_count").eq("ward_no", ward.ward_no).single(),
             supabase.from("rep_report_cards").select("attendance_pct, lad_utilization_pct, criminal_cases").eq("constituency", ward.assembly_constituency).eq("role", "MLA").single(),
-            supabase.from("ward_committee_meetings").select("meetings_count").eq("ward_no", ward.ward_no).single(),
+            BBMP_198_RECORDS_ATTRIBUTABLE && committeeWardNos.length
+              ? supabase.from("ward_committee_meetings").select("ward_no, ward_name, meetings_count, period").in("ward_no", committeeWardNos)
+              : Promise.resolve({ data: [] }),
             supabase.from("ward_amenities").select("hospitals, clinics, pharmacies, atms, banks, public_toilets, ev_charging, metro_stations").eq("ward_no", ward.ward_no).single(),
           ])
           const i = infra.data as { signal_count: number; bus_stop_count: number } | null
           const r = report.data as { attendance_pct: number; lad_utilization_pct: number; criminal_cases: number } | null
-          const m = meetings.data as { meetings_count: number } | null
+          const m = (meetings.data ?? []) as Array<{ ward_no: number; ward_name: string; meetings_count: number; period: string }>
           const a = amenities.data as { hospitals: number; clinics: number; pharmacies: number; atms: number; banks: number; public_toilets: number; ev_charging: number; metro_stations: number } | null
 
           results.push({
@@ -188,7 +217,10 @@ function makeTools(supabase: any) {
             mla_attendance_pct: r?.attendance_pct ?? null,
             lad_utilization_pct: r?.lad_utilization_pct ?? null,
             criminal_cases: r?.criminal_cases ?? null,
-            committee_meetings: BBMP_198_RECORDS_ATTRIBUTABLE ? m?.meetings_count ?? null : null,
+            former_ward_committees: committeeWardNos
+              .map(wardNo => m.find(row => row.ward_no === wardNo))
+              .filter((row): row is (typeof m)[number] => !!row)
+              .map(row => ({ bbmp198_ward_no: row.ward_no, committee: row.ward_name, meetings_count: row.meetings_count, period: row.period })),
             hospitals: a?.hospitals ?? null,
             clinics: a?.clinics ?? null,
             pharmacies: a?.pharmacies ?? null,
