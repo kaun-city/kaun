@@ -81,7 +81,8 @@ test("rows inserted by migrations are never duplicated by the data seed", () => 
   assert.ok(migrationInsertTargets.size > 0)
   const replayed = new Set(seedReplayedMigrations.map(({ file }) => file))
   for (const [name, sql] of migrations) {
-    for (const insert of sql.match(/^INSERT INTO[\s\S]*?;/gm) ?? []) {
+    // A statement ends at a semicolon that closes its line; prose values may contain semicolons.
+    for (const insert of sql.match(/^INSERT INTO[\s\S]*?;$/gm) ?? []) {
       const table = qualified(insert.match(/^INSERT INTO ([\w."]+)/)[1])
       if (replayed.has(name)) {
         // Derived from rows the seed already holds and replayed after it loads,
@@ -205,7 +206,8 @@ test("migrations after the baseline stay safe to replay on a refreshed baseline"
     for (const [, policy] of sql.matchAll(/CREATE POLICY (\w+)/g)) {
       assert.match(sql, new RegExp(`DROP POLICY IF EXISTS ${policy}\\b`), `${name} recreates ${policy}`)
     }
-    for (const insert of sql.match(/^INSERT INTO[\s\S]*?;/gm) ?? []) {
+    // A statement ends at a semicolon that closes its line; prose values may contain semicolons.
+    for (const insert of sql.match(/^INSERT INTO[\s\S]*?;$/gm) ?? []) {
       assert.match(insert, /ON CONFLICT/, `${name} inserts idempotently`)
     }
   }
@@ -236,8 +238,9 @@ test("research submissions expose only public columns to anon, covering the app'
 })
 
 test("every static civic project has a database row for research foreign keys", () => {
-  const sql = migrations.get("20260915_civic_project_records.sql")
-  const insert = sql.match(/^INSERT INTO public\.civic_projects[\s\S]*?;/m)?.[0] ?? ""
+  const insert = [...migrations.values()]
+    .flatMap(sql => sql.match(/^INSERT INTO public\.civic_projects\b[\s\S]*?;$/gm) ?? [])
+    .join("\n")
   for (const project of CIVIC_PROJECTS) {
     assert.match(insert, new RegExp(`'${project.slug}'`), `${project.slug} is seeded`)
   }

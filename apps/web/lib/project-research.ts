@@ -311,7 +311,8 @@ export function projectReferenceTerms(project: CivicProject): Set<string> {
     project.routeName,
     project.road,
     project.ownerAgency,
-    ...project.affectedWardNames,
+    ...project.aliases,
+    ...project.affectedWards.map(ward => ward.name),
   ].join(" ")
   const words = [
     ...questionTokens(text),
@@ -330,7 +331,7 @@ function projectVocabulary(project: CivicProject): Set<string> {
   const recordText = [
     project.title, project.shortTitle, project.routeName, project.projectType, project.road, project.statusNote,
     project.ownerAgency, project.ownerAgencyShort, project.nextTarget, project.wardSignalNote, project.summary,
-    project.alert, ...project.affectedWardNames, ...project.affectedWardLabels, ...project.suggestedQuestions,
+    project.alert, ...project.aliases, ...project.affectedWards.map(ward => ward.name), ...project.suggestedQuestions,
     ...project.metrics.flatMap(metric => [metric.label, metric.value, metric.note]),
     ...project.records.flatMap(record => [record.dateLabel, record.title, record.body]),
     ...project.signals.flatMap(signal => [signal.label, signal.value, signal.explanation]),
@@ -430,14 +431,30 @@ function asksAboutAccountability(tokens: string[], spaced: string): boolean {
     || ACCOUNTABILITY_PHRASES.some(phrase => hasPhrase(spaced, phrase))
 }
 
+const projectOwnNames = new WeakMap<CivicProject, string>()
+
+/** The project's own names as spaced phrase text, so "Silk Board" or "metro" is never "another project" on its own record. */
+function ownNameText(project: CivicProject): string {
+  const cached = projectOwnNames.get(project)
+  if (cached) return cached
+  const text = spacedPhraseText(normalizeProjectQuestion([
+    project.title, project.shortTitle, project.routeName, project.road, project.ownerAgency, project.ownerAgencyShort,
+    ...project.aliases, ...project.affectedWards.map(ward => ward.name),
+  ].join(" ")))
+  projectOwnNames.set(project, text)
+  return text
+}
+
 /** Politicians and parties, or a person, place, company or project that is not in this record. */
 function namesSomeoneElse(project: CivicProject, question: string, spaced: string): boolean {
   const withoutCivicPhrases = NON_POLITICAL_PHRASES.reduce((text, phrase) => text.split(` ${phrase} `).join(" "), spaced)
   const words = withoutCivicPhrases.trim().split(/\s+/)
-  if (words.some(word => POLITICAL_TERMS.has(word) || POLITICAL_TERMS.has(stemToken(word)) || OTHER_ENTITY_TERMS.has(word))) {
+  const own = ownNameText(project)
+  const otherEntity = (word: string) => OTHER_ENTITY_TERMS.has(word) && !hasPhrase(own, word)
+  if (words.some(word => POLITICAL_TERMS.has(word) || POLITICAL_TERMS.has(stemToken(word)) || otherEntity(word))) {
     return true
   }
-  if (OTHER_ENTITY_PHRASES.some(phrase => hasPhrase(spaced, phrase))) return true
+  if (OTHER_ENTITY_PHRASES.some(phrase => hasPhrase(spaced, phrase) && !hasPhrase(own, phrase))) return true
   const questionWithoutCivicPhrases = NON_POLITICAL_PHRASES.reduce(
     (text, phrase) => text.replace(new RegExp(`\\b${phrase.split(" ").join("[\\s-]+")}\\b`, "gi"), " "),
     question.normalize("NFKD"),
