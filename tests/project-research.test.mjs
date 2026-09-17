@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import test from "node:test"
-import { getCivicProject } from "../apps/web/lib/civic-projects.ts"
+import { CIVIC_PROJECTS, getCivicProject } from "../apps/web/lib/civic-projects.ts"
 import {
   assessProjectQuestion,
   canonicalResearchPayload,
@@ -245,4 +245,26 @@ test("recognizes a missing table from PostgREST or Postgres", () => {
   assert.equal(isMissingRelationError({ message: "Could not find the table 'public.x' in the schema cache" }), true)
   assert.equal(isMissingRelationError({ code: "23514", message: "new row violates check constraint" }), false)
   assert.equal(isMissingRelationError(null), false)
+})
+
+test("every project's suggested questions pass its own scope check", () => {
+  for (const record of CIVIC_PROJECTS) {
+    for (const question of record.suggestedQuestions) {
+      assert.deepEqual(assessProjectQuestion(record, question), { relevant: true }, `${record.slug}: ${question}`)
+    }
+  }
+})
+
+test("a project's own names are never treated as another project on its record", () => {
+  const metro = getCivicProject("namma-metro-phase-2a-orr")
+  const rail = getCivicProject("bsrp-corridor-2-mallige-line")
+  const ring = getCivicProject("peripheral-ring-road-bengaluru-business-corridor")
+  const flyover = getCivicProject("ejipura-kendriya-sadan-flyover")
+  assert.equal(assessProjectQuestion(metro, "Is the Silk Board metro station delayed?").relevant, true)
+  assert.equal(assessProjectQuestion(rail, "Why did L&T leave the suburban rail project?").relevant, true)
+  assert.equal(assessProjectQuestion(ring, "How much compensation have landowners received for the ring road?").relevant, true)
+  assert.equal(assessProjectQuestion(flyover, "When will the Ejipura flyover open?").relevant, true)
+  // Still another project everywhere else.
+  assert.equal(assessProjectQuestion(project, "When is the metro coming to Varthur?").relevant, false)
+  assert.equal(assessProjectQuestion(flyover, "When will the Silk Board metro station open?").relevant, false)
 })

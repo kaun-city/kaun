@@ -1,11 +1,18 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { BackLink, PageHeader } from "@/components/shared/PageHeader"
-import { CIVIC_PROJECTS } from "@/lib/civic-projects"
+import { CIVIC_PROJECTS, isBehindSchedule, projectWardLabels, type CivicProject } from "@/lib/civic-projects"
 
 export const metadata: Metadata = {
   title: "Project records — Bengaluru | KAUN?",
   description: "Public records of multi-ward civic projects in Bengaluru: status, deadline and cost history, and open accountability gaps, each with its sources.",
+}
+
+function wardSummary(project: CivicProject): string {
+  if (project.affectedWards.length === 0) return "Not attached to wards"
+  if (project.affectedWards.length <= 3) return projectWardLabels(project).join(" · ")
+  const corporations = [...new Set(project.affectedWards.map(ward => ward.corporation))].sort().join(", ")
+  return `${project.affectedWards.length} wards · ${corporations}`
 }
 
 const FOCUS = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -36,7 +43,7 @@ export default function CivicProjectsIndexPage() {
                   <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">
                     {project.projectType} · {project.road}
                   </p>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-danger">{project.status}</p>
+                  <p className={`font-mono text-[11px] uppercase tracking-[0.08em] ${isBehindSchedule(project.status) ? "text-danger" : "text-ink/70"}`}>{project.status}</p>
                 </div>
                 <h2 className="mt-1 text-xl font-bold leading-snug text-ink group-hover:underline decoration-accent/40 underline-offset-4">
                   {project.title}
@@ -53,7 +60,7 @@ export default function CivicProjectsIndexPage() {
                   </div>
                   <div>
                     <dt className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Affected wards</dt>
-                    <dd className="text-ink">{project.affectedWardLabels.join(" · ")}</dd>
+                    <dd className="text-ink">{wardSummary(project)}</dd>
                   </div>
                 </dl>
                 <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.08em] text-accent">

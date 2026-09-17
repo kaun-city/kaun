@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { BackLink, PageHeader } from "@/components/shared/PageHeader"
 import { ProjectResearchWorkbench } from "@/components/projects/ProjectResearchWorkbench"
-import { getCivicProject, sourceMap, type EvidenceState } from "@/lib/civic-projects"
+import { CIVIC_PROJECTS, getCivicProject, isBehindSchedule, sourceMap, wardLabel, type AffectedWard, type EvidenceState } from "@/lib/civic-projects"
 import { fetchPublishedProjectResearch } from "@/lib/civic-projects-server"
 
 export const revalidate = 300
@@ -32,6 +32,36 @@ const EVIDENCE_DOT: Record<EvidenceState, string> = {
 
 const FOCUS = "focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
 
+function corporationsOf(wards: AffectedWard[]): string {
+  return [...new Set(wards.map(ward => ward.corporation))].sort().join(", ")
+}
+
+function AffectedWards({ wards, basis }: { wards: AffectedWard[]; basis: string }) {
+  const list = (
+    <ul className="mt-2 space-y-1 text-sm font-semibold">
+      {wards.map(ward => <li key={`${ward.corporationId}-${ward.wardNo}`}>{wardLabel(ward)}</li>)}
+    </ul>
+  )
+  return (
+    <>
+      {wards.length > 0 && wards.length <= 4 && list}
+      {wards.length > 4 && (
+        <details className="group mt-2">
+          <summary className={`flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 border border-ink/25 px-3 py-2 text-sm font-semibold hover:border-ink/55 ${FOCUS}`}>
+            <span>{wards.length} wards · {corporationsOf(wards)}</span>
+            <span className="font-mono text-xs uppercase tracking-[0.08em] text-accent">
+              <span className="group-open:hidden">Show</span>
+              <span className="hidden group-open:inline">Hide</span>
+            </span>
+          </summary>
+          {list}
+        </details>
+      )}
+      <p className="mt-2 text-xs leading-relaxed text-ink/65">{basis}</p>
+    </>
+  )
+}
+
 function EvidenceBadge({ state }: { state: EvidenceState }) {
   return (
     <span className={`inline-flex min-h-7 items-center border px-2 py-1 text-xs font-semibold ${EVIDENCE_STYLE[state]}`}>
@@ -56,6 +86,7 @@ export default async function CivicProjectPage({ params }: Props) {
   if (!project) notFound()
 
   const sources = sourceMap(project)
+  const recordNumber = String(CIVIC_PROJECTS.indexOf(project) + 1).padStart(2, "0")
   const publishedResearch = await fetchPublishedProjectResearch(project.slug)
 
   return (
@@ -63,7 +94,7 @@ export default async function CivicProjectPage({ params }: Props) {
       <PageHeader
         surface="city"
         back={<BackLink href={`/${project.cityId}/projects`} label="Projects" ariaLabel="Back to project records" />}
-        actions={<span className="hidden font-mono text-xs tracking-[0.08em] text-ink/60 sm:block">PUBLIC RECORD · 01</span>}
+        actions={<span className="hidden font-mono text-xs tracking-[0.08em] text-ink/60 sm:block">PUBLIC RECORD · {recordNumber}</span>}
         width="6xl"
       />
 
@@ -100,16 +131,14 @@ export default async function CivicProjectPage({ params }: Props) {
                 </div>
                 <div className="bg-paper p-4">
                   <p className="text-xs font-bold uppercase tracking-[0.1em] text-ink/60">Affected current wards</p>
-                  <div className="mt-2 space-y-1 text-sm font-semibold">
-                    {project.affectedWardLabels.map(label => <p key={label}>{label}</p>)}
-                  </div>
+                  <AffectedWards wards={project.affectedWards} basis={project.wardBasis} />
                 </div>
               </div>
             </div>
 
             <aside className="bg-paper-muted px-4 py-6 sm:px-7 sm:py-8">
               <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/60">Current status</p>
-              <p className="mt-2 font-mono text-4xl font-semibold tracking-tight text-danger">{project.status.toUpperCase()}</p>
+              <p className={`mt-2 font-mono text-4xl font-semibold tracking-tight ${isBehindSchedule(project.status) ? "text-danger" : "text-ink"}`}>{project.status.toUpperCase()}</p>
               <p className="mt-3 text-base leading-7 text-ink/75">{project.statusNote}</p>
               <div className="mt-6 border-t border-ink/25 pt-4">
                 <p className="text-xs font-bold uppercase tracking-[0.1em] text-ink/60">Next public target</p>
@@ -143,7 +172,7 @@ export default async function CivicProjectPage({ params }: Props) {
         </article>
 
         <div className="mt-6">
-          <ProjectResearchWorkbench projectSlug={project.slug} suggestedQuestions={project.suggestedQuestions} />
+          <ProjectResearchWorkbench projectSlug={project.slug} agencyShort={project.ownerAgencyShort} suggestedQuestions={project.suggestedQuestions} />
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,.85fr)]">

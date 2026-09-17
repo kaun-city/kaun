@@ -23,9 +23,11 @@ type SubmissionState = "idle" | "saving" | "queued"
 
 export function ProjectResearchWorkbench({
   projectSlug,
+  agencyShort,
   suggestedQuestions,
 }: {
   projectSlug: string
+  agencyShort: string
   suggestedQuestions: string[]
 }) {
   // Only reviewer-approved research may be called reviewed. AI answers are labelled as such.
@@ -120,7 +122,7 @@ export function ProjectResearchWorkbench({
             id="project-question"
             value={question}
             onChange={event => setQuestion(event.target.value.slice(0, 300))}
-            placeholder="For example: Has KRDCL disclosed the contractor or work order?"
+            placeholder={`For example: Has ${agencyShort} disclosed the contractor or work order?`}
             rows={3}
             className="min-h-24 flex-1 resize-y border border-ink/35 bg-paper-bright px-3 py-3 text-base leading-relaxed text-ink placeholder:text-ink/50 focus:border-ink/60 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-accent"
           />
