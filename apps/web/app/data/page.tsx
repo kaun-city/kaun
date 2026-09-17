@@ -74,6 +74,7 @@ const ENDPOINTS = [
 const DATA_SOURCES = [
   { name: "BBMP Work Orders", records: "7,136", period: "2024-25", source: "opencity.in", url: "https://data.opencity.in" },
   { name: "Contractor Profiles", records: "1,305", period: "2024-25", source: "Entity-resolved from work orders", url: null },
+  { name: "Tenders and Awarded Suppliers", records: "131,551 tenders", period: "2009 – Aug 2026", source: "Vonter/blr-tenders-bids (ODbL 1.0)", url: "https://data.kaun.city/bengaluru/sources/blr-tenders-bids/" },
   { name: "Elected Representatives", records: "28 ACs", period: "2023 election", source: "MyNeta / EC affidavits", url: "https://myneta.info" },
   { name: "Rep Report Cards", records: "28 MLAs", period: "2018-23 term", source: "CIVIC Bengaluru via opencity.in", url: "https://opencity.in" },
   { name: "Current Ward Boundaries", records: "369 wards / 5 corporations", period: "Final, Dec 2025", source: "OpenCity (GBA delimitation)", url: "https://data.opencity.in/dataset/gba-wards-delimitation-2025" },

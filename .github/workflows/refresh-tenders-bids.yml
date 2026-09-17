@@ -1,0 +1,60 @@
+name: Refresh Tender Awards (blr-tenders-bids)
+
+# Loads Vonter's blr-tenders-bids dataset (ODbL 1.0) into procurement_tenders
+# and procurement_tender_winners. The dataset is republished by hand, so most
+# weekly runs find the same snapshot and write nothing; a newer snapshot
+# replaces both tables in one transaction.
+#
+# Needs migration 20260921_procurement_tenders.sql; until it is applied the
+# job fails with a message saying so.
+on:
+  schedule:
+    # Sundays at 05:30 UTC, after the KPPP (01:00) and IFMS (02:00) jobs.
+    - cron: '30 5 * * 0'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry-run (read and compare only) or apply (write a newer snapshot)'
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+      force:
+        description: 'Reload even if the snapshot is unchanged or smaller'
+        type: boolean
+        default: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: npm
+
+      # The Parquet reader (hyparquet) is a root devDependency. Scripts are
+      # skipped so the Supabase CLI binary isn't downloaded for nothing.
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund --ignore-scripts
+
+      - name: Load blr-tenders-bids
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
+        run: |
+          ARGS=""
+          # A scheduled run has no inputs and applies.
+          if [ "${{ github.event.inputs.mode || 'apply' }}" = "dry-run" ]; then
+            ARGS="--dry-run"
+          fi
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            ARGS="$ARGS --force"
+          fi
+          node scripts/adapters/blr-tenders-bids.mjs $ARGS

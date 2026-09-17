@@ -78,7 +78,7 @@ The search also returns fields Kaun doesn't store yet, including `description`, 
 
 ## Known Gaps
 
-- **Awarded contractor**: search results don't include the winning bidder or the awarded value, so `contractor_name` stays empty. Whether a per-tender endpoint exposes them hasn't been checked.
+- **Awarded contractor**: search results don't include the winning bidder or the awarded value, so `contractor_name` stays empty. Awarded suppliers for tenders up to the dataset's snapshot are loaded separately from [blr-tenders-bids](blr-tenders-bids.md), which reads KPPP's detail pages.
 - **Status changes**: an incremental run never re-fetches older tenders. A tender awarded or cancelled after it was first loaded keeps its old status until a full run.
 - **Same-day tenders**: an incremental run only fetches tenders published after the newest stored date. Tenders published later on that same day can be missed until a full run.
 - **Partial failures**: a failed department or category is logged and skipped, and the run still reports success.
