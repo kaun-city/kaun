@@ -14,12 +14,19 @@
 //   2. LoadCombo ward list    → all wards (legacy "o"/"oo" + new GBA)
 //   3. For each new GBA ward: LoadPaymentGridData
 //   4. Parse each row's jobcode + brdetails HTML blobs
-//   5. Delete existing data_source='ifms_direct' rows, insert fresh batch
+//   5. Stage the fresh rows, then swap them in for data_source='ifms_direct' in one transaction
 
 import { readFileSync } from "fs"
 import { fileURLToPath } from "url"
 import { dirname, resolve } from "path"
-import { dbQuery, insertRows } from "../lib/db.mjs"
+import { egressConfigured, egressFetch } from "../lib/egress.mjs"
+
+// lib/db.mjs exits at import when Supabase env is missing; load it only when a
+// query runs, so --dry-run and the tests can import this module.
+async function dbQuery(sql) {
+  const { dbQuery: query } = await import("../lib/db.mjs")
+  return query(sql)
+}
 
 // Kaun ward crosswalk: IFMS tags rows with the BBMP-Final-225 ward number;
 // the map/`wards`/wiki render DataMeet-243. We classify every ingested row up
@@ -43,7 +50,10 @@ function classifyWard(wardNo) {
 // Browsers fetch it from the AIA URL; Node's fetch does not. The fix is to
 // add the intermediate to Node's trusted roots at startup via
 // NODE_EXTRA_CA_CERTS — we ship the intermediate at scripts/adapters/ca/.
-if (!process.env.NODE_EXTRA_CA_CERTS) {
+// Through the India egress relay (scripts/lib/egress.mjs) the relay supplies
+// the intermediate itself, so the bundle is only needed for direct fetches.
+function requireCaBundle() {
+  if (process.env.NODE_EXTRA_CA_CERTS || egressConfigured()) return
   console.error("IFMS requires a CA bundle. Re-run with:")
   console.error("  NODE_EXTRA_CA_CERTS=scripts/adapters/ca/godaddy-g2.pem node scripts/adapters/ifms.mjs ...")
   process.exit(1)
@@ -150,7 +160,7 @@ function isNewGbaWard(w) {
 }
 
 async function handshake() {
-  const res = await fetch(HOME_URL, { headers: { "User-Agent": HEADERS_BASE["User-Agent"] } })
+  const res = await egressFetch(HOME_URL, { headers: { "User-Agent": HEADERS_BASE["User-Agent"] } })
   if (!res.ok) throw new Error(`Handshake failed: ${res.status}`)
   const setCookie = res.headers.get("set-cookie") ?? ""
   const phpMatch = setCookie.match(/PHPSESSID=([^;]+)/)
@@ -160,7 +170,7 @@ async function handshake() {
 }
 
 async function ifmsGet(path, cookie) {
-  const res = await fetch(`${DATA_URL}?${path}`, {
+  const res = await egressFetch(`${DATA_URL}?${path}`, {
     headers: { ...HEADERS_BASE, Cookie: cookie },
   })
   if (!res.ok) throw new Error(`${path.slice(0, 80)}: ${res.status}`)
@@ -252,6 +262,7 @@ async function ensureSchema() {
 }
 
 async function main() {
+  requireCaBundle()
   const startedAt = new Date().toISOString()
   console.log(`[${startedAt}] IFMS refresh started${DRY_RUN ? " (dry-run)" : ""}${WARD_ARG ? ` ward=${WARD_ARG}` : ""}${LIMIT_ARG ? ` limit=${LIMIT_ARG}` : ""}`)
 
@@ -326,17 +337,74 @@ async function main() {
     return
   }
 
-  // Delete-then-insert scoped to data_source='ifms_direct' — fully
-  // idempotent, leaves legacy opencity-sourced rows alone. The canonical
-  // table's UNIQUE (work_order_id, fy) constraint is respected because we
-  // deduped on exactly that key above.
-  console.log(`  Deleting existing IFMS rows...`)
-  await dbQuery("DELETE FROM bbmp_work_orders WHERE data_source = 'ifms_direct';")
-
-  for (let i = 0; i < deduped.length; i += 200) {
-    await insertRows("bbmp_work_orders", deduped.slice(i, i + 200))
+  // A partial scrape must not replace a complete table: every IFMS row is
+  // swapped out below, so wards that failed would lose all their work orders.
+  if (failed > list.length * MAX_FAILED_WARD_SHARE) {
+    throw new Error(`${failed} of ${list.length} wards failed to scrape; not touching bbmp_work_orders`)
   }
-  console.log(`[${new Date().toISOString()}] Done. Inserted ${deduped.length} IFMS work orders.`)
+
+  await replaceIfmsRows(deduped)
+  console.log(`[${new Date().toISOString()}] Done. Replaced IFMS work orders with ${deduped.length} rows.`)
 }
 
-main().catch(e => { console.error("Fatal:", e); process.exit(1) })
+const STAGING = "bbmp_work_orders_ifms_staging"
+/** More failed wards than this share and the run stops before any write. */
+export const MAX_FAILED_WARD_SHARE = 0.1
+
+/** Dollar-quote a SQL literal with a tag the text cannot contain. */
+export function dollarQuote(text) {
+  let tag = "ifms"
+  while (text.includes(`$${tag}$`)) tag += "x"
+  return `$${tag}$${text}$${tag}$`
+}
+
+/**
+ * The SQL that swaps the staged rows in: one transaction, so a failure leaves
+ * the previous week's IFMS rows in place instead of a half-loaded table.
+ */
+export function swapSql(columns) {
+  const cols = columns.map(column => `"${column.replace(/"/g, '""')}"`)
+  return [
+    "BEGIN;",
+    "DELETE FROM public.bbmp_work_orders WHERE data_source = 'ifms_direct';",
+    `INSERT INTO public.bbmp_work_orders (${cols.join(", ")})`,
+    `  SELECT ${cols.map(col => `r.${col}`).join(", ")}`,
+    `  FROM public.${STAGING} s, jsonb_populate_record(NULL::public.bbmp_work_orders, s.row) r;`,
+    "COMMIT;",
+  ].join("\n")
+}
+
+/**
+ * Replace every data_source='ifms_direct' row. Legacy opencity rows are left
+ * alone; the canonical table's UNIQUE (work_order_id, fy) holds because the
+ * rows were deduped on exactly that key.
+ *
+ * The rows are staged first (many requests), then swapped in by a single
+ * transaction (one request). Before this, a DELETE followed by batched REST
+ * inserts could stop halfway and leave work orders missing until next week.
+ */
+async function replaceIfmsRows(rows) {
+  await dbQuery([
+    `CREATE TABLE IF NOT EXISTS public.${STAGING} (row jsonb NOT NULL);`,
+    `ALTER TABLE public.${STAGING} ENABLE ROW LEVEL SECURITY;`,
+    `REVOKE ALL ON public.${STAGING} FROM anon, authenticated;`,
+    `TRUNCATE public.${STAGING};`,
+  ].join("\n"))
+  for (let i = 0; i < rows.length; i += 200) {
+    const chunk = JSON.stringify(rows.slice(i, i + 200))
+    await dbQuery(`INSERT INTO public.${STAGING} (row) SELECT jsonb_array_elements(${dollarQuote(chunk)}::jsonb);`)
+  }
+  const staged = Number((await dbQuery(`SELECT count(*)::int AS n FROM public.${STAGING};`))[0]?.n)
+  if (staged !== rows.length) throw new Error(`staged ${staged} of ${rows.length} rows; IFMS rows left unchanged`)
+
+  const columns = [...new Set(rows.flatMap(row => Object.keys(row)))]
+  console.log(`  Swapping ${rows.length} staged rows into bbmp_work_orders in one transaction...`)
+  await dbQuery(swapSql(columns))
+  const live = Number((await dbQuery("SELECT count(*)::int AS n FROM public.bbmp_work_orders WHERE data_source = 'ifms_direct';"))[0]?.n)
+  if (live !== rows.length) throw new Error(`expected ${rows.length} IFMS rows after the swap, found ${live}`)
+  await dbQuery(`TRUNCATE public.${STAGING};`)
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch(e => { console.error("Fatal:", e); process.exit(1) })
+}
