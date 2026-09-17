@@ -2,11 +2,13 @@ name: Refresh Tender Awards (blr-tenders-bids)
 
 # Loads Vonter's blr-tenders-bids dataset (ODbL 1.0) into procurement_tenders
 # and procurement_tender_winners. The dataset is republished by hand, so most
-# weekly runs find the same snapshot and write nothing; a newer snapshot
-# replaces both tables in one transaction.
+# weekly runs find the same snapshot; a newer snapshot replaces both tables in
+# one transaction. Every run then rematches contractors to awarded suppliers by
+# company name (contractor_supplier_matches).
 #
-# Needs migration 20260921_procurement_tenders.sql; until it is applied the
-# job fails with a message saying so.
+# Needs migrations 20260921_procurement_tenders.sql and
+# 20260922_contractor_tender_wins.sql; until they are applied the job fails
+# with a message saying which.
 on:
   schedule:
     # Sundays at 05:30 UTC, after the KPPP (01:00) and IFMS (02:00) jobs.

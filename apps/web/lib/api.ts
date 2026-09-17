@@ -566,6 +566,24 @@ export async function fetchWardContractors(
 }
 
 /**
+ * Tenders won under these contractors' company names (migration
+ * 20260922_contractor_tender_wins.sql). Only matched contractors come back.
+ * entity_ids embed phone numbers, so they travel in the POST body.
+ */
+export async function fetchContractorTenderWins(entityIds: string[]): Promise<import('./types').ContractorTenderWins[]> {
+  if (!entityIds.length) return []
+  const rows = await rpcOrThrow<import('./types').ContractorTenderWins[]>("contractor_tender_wins", { p_entity_ids: entityIds })
+  return (rows ?? []).map(row => ({
+    ...row,
+    award_amount_inr: row.award_amount_inr == null ? null : Number(row.award_amount_inr),
+    latest: (row.latest ?? []).map(tender => ({
+      ...tender,
+      award_amount_inr: tender.award_amount_inr == null ? null : Number(tender.award_amount_inr),
+    })),
+  }))
+}
+
+/**
  * Fetch pothole complaint counts (Fix My Street 2022) for BBMP-198 wards.
  * ward_potholes is keyed on the 198-ward map: pass 198 numbers from the
  * crosswalk, never a DataMeet-243 or GBA ward number.

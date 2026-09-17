@@ -2,18 +2,10 @@ import { createClient } from "@supabase/supabase-js"
 import { allCities } from "@/lib/cities"
 import { deriveOverallHealth } from "@/lib/health-status"
 import { CRON_JOBS, cronStatus, type CronJob, type CronStatus } from "@/lib/cron-runs"
+import { checkTable, HEALTH_TABLES, type TableCheck } from "@/lib/health-tables"
 
 export const runtime = "nodejs"
 export const maxDuration = 15
-
-interface TableCheck {
-  table: string
-  total: number | null
-  recent_24h: number | null
-  recent_7d: number | null
-  latest_at: string | null
-  status: "ok" | "empty" | "error"
-}
 
 interface RecentReport {
   ward_name: string | null
@@ -106,49 +98,6 @@ interface HealthResult {
   recent_community_facts: RecentFact[]
 }
 
-async function checkTable(
-  supabase: any,
-  table: string,
-  dateCol: string,
-): Promise<TableCheck> {
-  try {
-    const { count: total } = await supabase
-      .from(table)
-      .select("*", { count: "exact", head: true })
-
-    const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-    const { count: recent24h } = await supabase
-      .from(table)
-      .select("*", { count: "exact", head: true })
-      .gte(dateCol, since24h)
-
-    const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-    const { count: recent7d } = await supabase
-      .from(table)
-      .select("*", { count: "exact", head: true })
-      .gte(dateCol, since7d)
-
-    const { data: latest } = await supabase
-      .from(table)
-      .select(dateCol)
-      .order(dateCol, { ascending: false })
-      .limit(1)
-
-    const latestAt = latest?.[0]?.[dateCol] ?? null
-
-    return {
-      table,
-      total: total ?? 0,
-      recent_24h: recent24h ?? 0,
-      recent_7d: recent7d ?? 0,
-      latest_at: latestAt,
-      status: (total ?? 0) > 0 ? "ok" : "empty",
-    }
-  } catch {
-    return { table, total: null, recent_24h: null, recent_7d: null, latest_at: null, status: "error" }
-  }
-}
-
 export async function GET() {
   const result: HealthResult = {
     status: "healthy",
@@ -195,19 +144,7 @@ export async function GET() {
     result.supabase = "connected"
 
     // Check key tables
-    const tableChecks = await Promise.all([
-      checkTable(supabase, "wards", "created_at"),
-      checkTable(supabase, "elected_reps", "created_at"),
-      checkTable(supabase, "bbmp_work_orders", "created_at"),
-      checkTable(supabase, "contractor_profiles", "updated_at"),
-      checkTable(supabase, "ward_reports", "reported_at"),
-      checkTable(supabase, "ask_kaun_logs", "asked_at"),
-      checkTable(supabase, "civic_signals", "ingested_at"),
-      checkTable(supabase, "community_facts", "created_at"),
-      checkTable(supabase, "city_pulse_facts", "created_at"),
-      checkTable(supabase, "ward_grievances", "created_at"),
-      checkTable(supabase, "tenders", "created_at"),
-    ])
+    const tableChecks = await Promise.all(HEALTH_TABLES.map(table => checkTable(supabase, table)))
     result.tables = tableChecks
 
     // Per-city coverage — what's flowing into each registered city's tables.

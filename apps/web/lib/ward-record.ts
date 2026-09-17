@@ -16,13 +16,13 @@
  */
 
 import type {
-  BudgetSummary, CommunityFact, ContractorProfile, Department, ElectedRep, GbaContact,
+  BudgetSummary, CommunityFact, ContractorProfile, ContractorTenderWins, Department, ElectedRep, GbaContact,
   MlaLadFunds, PinResult, PropertyTaxData, RepReportCard,
   SakalaPerformance, WardAirQuality, WardAmenities, WardBusStats, WardCommitteeMeetings, WardGrievances, WardInfraStats, WardPotholes,
   WardProfile, WardRoadCrashes, WardSpendCategory, WardStats, WardTradeLicenses, WardWaterQuality, WorkOrder,
 } from "./types.ts"
 import {
-  fetchBudgetSummary, fetchCorpContacts, fetchCorporationTenders, fetchDepartments, fetchElectedReps,
+  fetchBudgetSummary, fetchContractorTenderWins, fetchCorpContacts, fetchCorporationTenders, fetchDepartments, fetchElectedReps,
   fetchMlaLadFunds, fetchPropertyTax, fetchRepReportCard, fetchSakalaPerformance,
   fetchTradeLicenses, fetchWardAirQuality, fetchWardAmenities, fetchWardBusStats, fetchWardCommitteeMeetingsByBbmp198, fetchWardContractors, fetchWardGrievances, fetchWardInfraStats,
   fetchWardPotholesByBbmp198, fetchWardProfile, fetchWardReportCount, fetchWardRoadCrashes, fetchWardSignals, fetchWardSpendByBbmp198, fetchWardStats,
@@ -52,7 +52,7 @@ export type LoadSection =
   | "budget" | "workOrders" | "tradeLicenses" | "propertyTax" | "wardSpend" | "tenders"
   | "wardStats" | "busStats" | "roadCrashes" | "airQuality" | "amenities" | "waterQuality"
   | "departments" | "sakala" | "grievances"
-  | "infra" | "reportCount" | "signals" | "potholes" | "contractors"
+  | "infra" | "reportCount" | "signals" | "potholes" | "contractors" | "tenderWins"
 
 /** The inputs the headline ranks; if one failed, the headline would be a guess. */
 export const HEADLINE_SECTIONS: LoadSection[] = ["reportCard", "committee", "infra", "contractors"]
@@ -89,6 +89,8 @@ export interface WardRecord {
   infraStats: WardInfraStats | null
   potholes: WardPotholes | null
   wardContractors: ContractorProfile[]
+  /** Tenders won under the company names of wardContractors, for the matched ones. */
+  contractorTenderWins: ContractorTenderWins[]
   /** Sections whose reads failed; everything else is complete. */
   failed: LoadSection[]
 }
@@ -106,7 +108,7 @@ export const RECORD_SECTIONS: LoadSection[] = [
   "profile", "reps", "committee", "ladFunds", "reportCard", "corpContacts",
   "budget", "workOrders", "tradeLicenses", "propertyTax", "wardSpend", "tenders",
   "wardStats", "busStats", "roadCrashes", "airQuality", "amenities", "waterQuality",
-  "departments", "sakala", "grievances", "infra", "potholes", "contractors",
+  "departments", "sakala", "grievances", "infra", "potholes", "contractors", "tenderWins",
 ]
 export const LIVE_SECTIONS: LoadSection[] = ["reportCount", "signals", "unknowns", "facts"]
 
@@ -395,12 +397,18 @@ export async function buildWardRecord(
     }),
   ])
 
+  // Needs the contractor list, so it reads after it. A failure here marks only
+  // tenderWins: the contractors themselves still show.
+  const contractorTenderWins = wardContractors.length
+    ? await run("tenderWins", [] as ContractorTenderWins[], () => fetchContractorTenderWins(wardContractors.map(row => row.entity_id)))
+    : []
+
   return {
     profile, mlaReps, committeeMeetings, reportCard, ladFunds,
     corpName: corporation.corpName, corpContacts: corporation.corpContacts,
     budget, workOrders, tradeLicenses, propertyTax, wardSpend, corporationTenders,
     wardStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality,
-    departments, sakala, grievances, infraStats, potholes, wardContractors,
+    departments, sakala, grievances, infraStats, potholes, wardContractors, contractorTenderWins,
     failed: RECORD_SECTIONS.filter(name => failed.includes(name)),
   }
 }

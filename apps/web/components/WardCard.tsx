@@ -353,6 +353,7 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   budget={ward.budget}
                   workOrders={ward.workOrders}
                   wardContractors={ward.wardContractors ?? []}
+                  contractorTenderWins={ward.contractorTenderWins}
                   tradeLicenses={ward.tradeLicenses}
                   wardSpend={ward.wardSpend}
                   wardSpendSettled={ward.wardSpendSettled}

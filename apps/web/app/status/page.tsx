@@ -5,11 +5,13 @@ import { useState, useEffect, useCallback } from "react"
 
 interface TableCheck {
   table: string
+  date_column: string | null
   total: number | null
   recent_24h: number | null
   recent_7d: number | null
   latest_at: string | null
   status: "ok" | "empty" | "error"
+  errors?: string[]
 }
 
 interface CityCoverage {
@@ -453,6 +455,9 @@ export default function StatusPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-ink text-sm font-mono truncate">{t.table}</p>
+                      {t.errors?.map(error => (
+                        <p key={error} className="text-danger text-[11px] font-mono break-words">{error}</p>
+                      ))}
                     </div>
                     <div className="hidden md:flex items-center gap-6 text-right">
                       <div>
@@ -473,7 +478,7 @@ export default function StatusPage() {
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-ink/70 text-xs font-mono">{timeAgo(t.latest_at)}</p>
+                      <p className="text-ink/70 text-xs font-mono">{t.date_column ? timeAgo(t.latest_at) : "not tracked"}</p>
                       <p className="text-ink/60 text-[11px]">latest</p>
                     </div>
                   </div>

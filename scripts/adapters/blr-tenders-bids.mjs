@@ -13,11 +13,17 @@
 // Each run downloads the whole Parquet file (about 24 MB) and compares its
 // generated_at with the loaded snapshot. A newer snapshot replaces both tables
 // in one transaction; an unchanged or older one is left alone.
+//
+// Every run that is current also rematches Kaun's contractors to the awarded
+// suppliers by company name (scripts/lib/tender-supplier-matches.mjs) and
+// replaces contractor_supplier_matches, so new contractor profiles are picked
+// up even when the dataset hasn't changed.
 
 import { readFile } from "node:fs/promises"
 import { fileURLToPath } from "node:url"
 import { parquetMetadataAsync, parquetReadObjects } from "hyparquet"
 import { compressors } from "hyparquet-compressors"
+import { indexWinners, matchContractors } from "../lib/tender-supplier-matches.mjs"
 
 export const DATASET_URL = "https://raw.githubusercontent.com/Vonter/blr-tenders-bids/main/data/tenders.parquet"
 
@@ -104,27 +110,29 @@ export function toRows(records, generatedAt) {
 }
 
 /**
- * Whether to replace the loaded snapshot.
+ * Whether to replace the loaded snapshot. `current` says whether the dataset
+ * is, or after this run will be, the loaded snapshot: contractor matches are
+ * only rebuilt from a current one.
  * @param dataset {generatedAt: ISO string, count}
  * @param live    {generatedAt: ISO string | null, count}
  */
 export function planLoad(dataset, live, { force = false } = {}) {
   if (dataset.count === 0) throw new Error("the dataset is empty")
-  if (force) return { load: true, reason: `forced load of the ${dataset.generatedAt} snapshot` }
-  if (!live.generatedAt) return { load: true, reason: `first load: the ${dataset.generatedAt} snapshot` }
+  if (force) return { load: true, current: true, reason: `forced load of the ${dataset.generatedAt} snapshot` }
+  if (!live.generatedAt) return { load: true, current: true, reason: `first load: the ${dataset.generatedAt} snapshot` }
 
   const datasetTime = Date.parse(dataset.generatedAt)
   const liveTime = Date.parse(live.generatedAt)
   if (datasetTime < liveTime) {
-    return { load: false, reason: `the dataset (${dataset.generatedAt}) is older than the loaded snapshot (${live.generatedAt}); nothing to do` }
+    return { load: false, current: false, reason: `the dataset (${dataset.generatedAt}) is older than the loaded snapshot (${live.generatedAt}); nothing to do` }
   }
   if (datasetTime === liveTime && dataset.count === live.count) {
-    return { load: false, reason: `unchanged since the ${live.generatedAt} snapshot; nothing to do` }
+    return { load: false, current: true, reason: `unchanged since the ${live.generatedAt} snapshot; nothing to do` }
   }
   if (dataset.count < live.count * MIN_ROW_SHARE) {
     throw new Error(`the dataset has ${dataset.count} rows, fewer than ${MIN_ROW_SHARE * 100}% of the ${live.count} loaded; not replacing them (use --force if this is expected)`)
   }
-  return { load: true, reason: `replacing the ${live.generatedAt} snapshot with ${dataset.generatedAt}` }
+  return { load: true, current: true, reason: `replacing the ${live.generatedAt} snapshot with ${dataset.generatedAt}` }
 }
 
 /** Dollar-quote a SQL literal with a tag the text cannot contain. */
@@ -161,6 +169,40 @@ export function swapSql() {
 }
 
 const countOf = async (query, sql) => Number((await query(sql))[0]?.n)
+
+/**
+ * Replace every contractor match in one transaction.
+ * matches: contractor_supplier_matches rows from matchContractors().
+ */
+export function matchesSql(matches) {
+  return [
+    "BEGIN;",
+    "DELETE FROM public.contractor_supplier_matches;",
+    "INSERT INTO public.contractor_supplier_matches (contractor_profile_id, supplier_key, matched_name, match_kind)",
+    "  SELECT m.contractor_profile_id, m.supplier_key, m.matched_name, m.match_kind",
+    `  FROM jsonb_to_recordset(${dollarQuote(JSON.stringify(matches))}::jsonb)`,
+    "    AS m(contractor_profile_id integer, supplier_key text, matched_name text, match_kind text);",
+    "COMMIT;",
+  ].join("\n")
+}
+
+/** Kaun's contractors, matched against the dataset's winners, and the matches written. */
+export async function rematchContractors(query, rows, { dryRun = false } = {}) {
+  const [ready] = await query("SELECT to_regclass('public.contractor_supplier_matches') IS NOT NULL AS ready;")
+  if (!ready?.ready) throw new Error("public.contractor_supplier_matches does not exist; apply migration 20260922_contractor_tender_wins.sql first")
+  const profiles = await query("SELECT id, canonical_name, aliases FROM public.contractor_profiles WHERE city_id = 'bengaluru';")
+  const matches = matchContractors(profiles, indexWinners(rows))
+  const contractors = new Set(matches.map(match => match.contractor_profile_id)).size
+  console.log(`Contractor matches: ${contractors} of ${profiles.length} contractors, through ${matches.length} supplier names.`)
+  if (dryRun) return matches
+  // Matching nothing at all means a broken input, not a week without matches.
+  if (profiles.length && !matches.length) throw new Error("no contractor matched any awarded supplier; contractor matches left unchanged")
+
+  await query(matchesSql(matches))
+  const live = await countOf(query, "SELECT count(*)::int AS n FROM public.contractor_supplier_matches;")
+  if (live !== matches.length) throw new Error(`expected ${matches.length} contractor matches after the swap, found ${live}`)
+  return matches
+}
 
 /** The loaded snapshot: row count and generated_at. */
 export async function liveState(query) {
@@ -249,13 +291,18 @@ async function main() {
   const live = await liveState(dbQuery)
   const plan = planLoad({ generatedAt: dataset.generatedAt, count: dataset.rows.length }, live, { force })
   console.log(`Loaded: ${live.count} tenders${live.generatedAt ? ` from the ${live.generatedAt} snapshot` : ""}. ${plan.reason}`)
-  if (!plan.load) return
+  if (!plan.current) return
   if (dryRun) {
+    await rematchContractors(dbQuery, dataset.rows, { dryRun })
     console.log("Dry run: nothing written.")
     return
   }
-  await replaceRows(dbQuery, dataset.rows)
-  console.log(`Done: ${dataset.rows.length} tenders from the ${dataset.generatedAt} snapshot.`)
+  if (plan.load) {
+    await replaceRows(dbQuery, dataset.rows)
+    console.log(`Loaded ${dataset.rows.length} tenders from the ${dataset.generatedAt} snapshot.`)
+  }
+  await rematchContractors(dbQuery, dataset.rows)
+  console.log("Done.")
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

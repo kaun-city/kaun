@@ -305,6 +305,39 @@ export interface ContractorProfile {
   blacklist_flags: string[]
 }
 
+/** A tender in a contractor's latest wins (contractor_tender_wins). */
+export interface ContractorTenderWin {
+  source: "kppp" | "eproc"
+  tender_number: string
+  title: string | null
+  department: string | null
+  published_at: string | null
+  /** eProc only; KPPP doesn't publish the awarded amount. */
+  award_amount_inr: number | null
+}
+
+/**
+ * Tenders won under a contractor's company name, matched to awarded suppliers
+ * in blr-tenders-bids (Vonter, ODbL). A name match, not a registration: see
+ * scripts/lib/tender-supplier-matches.mjs.
+ */
+export interface ContractorTenderWins {
+  entity_id: string
+  wins: number
+  /** How many of the wins have a published award amount (eProc). */
+  with_amount: number
+  /** Sum of those published amounts, rupees. */
+  award_amount_inr: number | null
+  first_year: number | null
+  last_year: number | null
+  /** The contractor's names that matched: its canonical name or an alias. */
+  matched_names: string[]
+  /** Up to three winner names as the portals published them. */
+  published_as: string[]
+  /** The five latest, newest first. */
+  latest: ContractorTenderWin[]
+}
+
 export interface WardPotholes {
   ward_no: number
   ward_name: string

@@ -16,6 +16,7 @@ import {
   recordCronRun,
   runSucceeded,
 } from "../apps/web/lib/cron-runs.ts"
+import { HEALTH_TABLES } from "../apps/web/lib/health-tables.ts"
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8")
 const HOUR = 60 * 60 * 1000
@@ -102,7 +103,7 @@ test("both jobs record their runs and health reads the heartbeat, not the newest
   assert.match(health, /\.from\("cron_runs"\)/)
   assert.match(health, /status: cronStatus\(run\?\.last_success_at, !runsError, now\)/)
   assert.doesNotMatch(health, /48 \* 60 \* 60 \* 1000/, "no data-age threshold left in the route")
-  assert.match(health, /checkTable\(supabase, "civic_signals", "ingested_at"\)/)
+  assert.ok(HEALTH_TABLES.some(t => t.table === "civic_signals" && t.dateColumn === "ingested_at"))
 })
 
 test("the heartbeat table is service-role only", () => {
