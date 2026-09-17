@@ -95,7 +95,7 @@ export const TRACKER_LIMIT = 200
 
 const C_COLS = "pc_code,st_code,pc_no,state_name,pc_name,pc_name_hi,reserved_for,reserved_source,wikidata_qid,geom_source,data_source,updated_at"
 const MP_COLS = "id,mpsno,house,term_label,pc_code,state_name,constituency_label,name,party_abbr,party_full,gender,age,no_of_terms,profession,status,is_minister,minister_note,profile_url,data_source,updated_at"
-const AFF_COLS = "id,mp_id,election,candidate_name,party_abbr,age,self_profession,education_category,education_detail,criminal_cases,total_assets_inr,liabilities_inr,declared_assets_history,profile_url,data_source,updated_at"
+const AFF_COLS = "id,mp_id,election,constituency_label,candidate_name,party_abbr,age,self_profession,education_category,education_detail,criminal_cases,total_assets_inr,liabilities_inr,declared_assets_history,profile_url,data_source,updated_at"
 const ACT_COLS = "id,period_kind,session_no,session_label,sittings_held,signed_days,attendance_pct,questions_asked,debates,private_member_bills,committees,metrics_excluded,metrics_excluded_reason,data_source"
 const MPLADS_COLS = "id,source,house,term_label,allocated_inr,expenditure_inr,unspent_inr,utilization_pct,works_recommended,works_sanctioned,works_completed,captured_at,data_source"
 const PROJ_COLS = "project_code,legacy_ocms_code,pmgid,project_name,ministry,sector,agency,state_raw,st_code,is_multi_state,first_seen_month,last_seen_month,is_ongoing"

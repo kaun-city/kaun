@@ -69,6 +69,8 @@ export interface MpAffidavit {
   /** in_mps.id of the member who FILED it. Shown only when that member is sitting (lib/india/affidavit.ts). */
   mp_id: number | null
   election: string
+  /** MyNeta's name for the seat this affidavit was filed for, e.g. "BANGALORE CENTRAL". */
+  constituency_label: string | null
   candidate_name: string
   party_abbr: string | null
   age: number | null
@@ -83,6 +85,15 @@ export interface MpAffidavit {
     election: string
     declared_assets_inr: number | null
     declared_cases: number | null
+    /**
+     * Only on rows whose election repeats (a second seat, or a by-election in
+     * the same term): the seat MyNeta filed the declaration under, when its
+     * compare page settles it. See annotateRepeatedNominations in
+     * scripts/india/myneta-affidavits.mjs.
+     */
+    constituency?: string | null
+    by_election?: boolean
+    profile_url?: string | null
   }> | null
   profile_url: string | null
   data_source: string

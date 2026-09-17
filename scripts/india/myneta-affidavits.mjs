@@ -303,6 +303,117 @@ export function parseOtherElections(html) {
   return out.length ? out : null
 }
 
+/* ------------------------------------------------------------------------- */
+/* Repeated elections in the history                                          */
+/* ------------------------------------------------------------------------- */
+// "Other Elections" can list one election more than once, with different
+// figures and nothing to tell the rows apart: MyNeta files a candidate's
+// declaration for each seat they contested, and a by-election held during a
+// term, under the same election label (Eatala Rajender: "Telangana 2018" for
+// Huzurabad and for the Huzurabad by-election of 30-10-2021). 21 of 543 LS2024
+// winners have such a repeat. MyNeta's compare page for the same person names
+// each declaration's seat; these functions carry that across where it is
+// unambiguous and leave the row unlabelled where it is not.
+
+/** Election labels compare equal across MyNeta's spellings ("Loksabha 2014" = "Lok Sabha 2014" = "LokSabha2014"). */
+export function electionKey(label) {
+  return String(label ?? "").toLowerCase().replace(/[^a-z0-9]/g, "")
+}
+
+/** Election keys that occur more than once across this affidavit's own election and its history. */
+export function repeatedElections(election, history) {
+  const counts = new Map()
+  for (const label of [election, ...(history ?? []).map(h => h.election)]) {
+    const k = electionKey(label)
+    if (k) counts.set(k, (counts.get(k) ?? 0) + 1)
+  }
+  return new Set([...counts].filter(([, n]) => n > 1).map(([k]) => k))
+}
+
+/** The candidate page's "Click here for more details" link: MyNeta's comparison of every declaration it holds for this person. */
+export function compareProfileUrl(html) {
+  const id = /compare_profile\.php\?group_id=([A-Za-z0-9_-]+)/i.exec(html ?? "")?.[1]
+  return id ? `https://myneta.info/compare_profile.php?group_id=${id}` : null
+}
+
+const BY_ELECTION = /\s*:\s*bye[\s-]*election\b[\s\S]*$/i
+
+/**
+ * The compare page -> one row per declaration.
+ * Columns: Name (link "X in <election>"), Constituency, Age, Party, Criminal
+ * Cases (Yes/No), Number of Cases, Education, Total Assets, Liabilities, PAN.
+ */
+export function parseCompareProfiles(html) {
+  const table = /<table class='w3-table w3-bordered'>([\s\S]*?)<\/table>/i.exec(html ?? "")?.[1]
+  if (!table) return []
+  const out = []
+  for (const tr of table.matchAll(/<tr>([\s\S]*?)<\/tr>/gi)) {
+    const cells = [...tr[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map(m => m[1])
+    if (cells.length < 8) continue
+    const link = /<a href='([^']+)'[^>]*>([\s\S]*?)<\/a>/i.exec(cells[0])
+    if (!link) continue
+    const seat = text(cells[1]) ?? ""
+    const cases = text(cells[5])
+    const assets = text(cells[7].split(/<br/i)[0])
+    out.push({
+      election: / in (.+)$/.exec(text(link[2]) ?? "")?.[1]?.trim() ?? null,
+      constituency: seat.replace(BY_ELECTION, "").trim() || null,
+      by_election: BY_ELECTION.test(seat),
+      profile_url: new URL(link[1], "https://myneta.info/").href,
+      declared_cases: cases && /^\d+$/.test(cases) ? Number(cases) : null,
+      declared_assets_inr: assets && /^\d[\d,]*$/.test(assets) ? Number(assets.replace(/,/g, "")) : null,
+    })
+  }
+  return out
+}
+
+/**
+ * Label repeated-election rows with the seat MyNeta filed them under.
+ *
+ * A history row is matched to compare-page rows of the same person with the
+ * same election AND the same declared assets and cases, excluding this
+ * affidavit's own row. Rows sharing those figures are identical, so pairing
+ * them in order keeps every label true, with each compare row used once:
+ *   - as many compare rows as history rows: all labelled;
+ *   - fewer (the compare page omits some declarations — Somanna's two
+ *     identical "Karnataka 2023" rows, only Varuna listed): that many
+ *     labelled, the rest left unlabelled;
+ *   - more than history rows: none labelled, since a row could be either seat;
+ *   - none (Shatrughan Sinha's second "Lok Sabha 2019"): unlabelled.
+ * Figures and order are never changed.
+ */
+export function annotateRepeatedNominations(history, profiles, { election, profileUrl } = {}) {
+  if (!Array.isArray(history) || history.length === 0) return history
+  const repeated = repeatedElections(election, history)
+  if (repeated.size === 0) return history
+
+  const own = String(profileUrl ?? "").toLowerCase()
+  const figures = r => `${electionKey(r.election)}|${r.declared_assets_inr}|${r.declared_cases}`
+  const available = new Map()
+  for (const p of profiles ?? []) {
+    if (!p.election || String(p.profile_url).toLowerCase() === own) continue
+    const k = figures(p)
+    available.set(k, [...(available.get(k) ?? []), p])
+  }
+  const wanted = new Map()
+  for (const h of history) {
+    if (repeated.has(electionKey(h.election))) wanted.set(figures(h), (wanted.get(figures(h)) ?? 0) + 1)
+  }
+
+  const taken = new Map()
+  return history.map(h => {
+    if (!repeated.has(electionKey(h.election))) return h
+    const k = figures(h)
+    const matches = available.get(k) ?? []
+    if (matches.length === 0 || matches.length > wanted.get(k)) return h
+    const i = taken.get(k) ?? 0
+    if (i >= matches.length) return h
+    taken.set(k, i + 1)
+    const p = matches[i]
+    return { ...h, constituency: p.constituency, by_election: p.by_election, profile_url: p.profile_url }
+  })
+}
+
 const IND_ALIASES = new Set(["IND", "INDEPENDENT", "INDEPENDENTS"])
 
 /**
@@ -407,6 +518,19 @@ async function main() {
       `${BASE}/candidate.php?candidate_id=${winner.myneta_candidate_id}`,
       { namespace: "myneta", json: false, delayMs: REQUEST_DELAY_MS })
     const d = parseCandidateDetail(detailHtml)
+    // One extra request, only for the few winners whose history repeats an election.
+    if (repeatedElections(ELECTION, d.declared_assets_history).size) {
+      const compareUrl = compareProfileUrl(detailHtml)
+      if (compareUrl) {
+        const compareHtml = await politeFetch(compareUrl, { namespace: "myneta", json: false, delayMs: REQUEST_DELAY_MS })
+        d.declared_assets_history = annotateRepeatedNominations(d.declared_assets_history, parseCompareProfiles(compareHtml), {
+          election: ELECTION, profileUrl: `${BASE}/candidate.php?candidate_id=${winner.myneta_candidate_id}`,
+        })
+        sink.count("histories with a repeated election (compare page read)")
+      } else {
+        sink.warn(`${d.candidate_name}: history repeats an election but the page has no compare link`)
+      }
+    }
 
     const res = reference?.resolve({
       source: "myneta", sourceKey: String(c.myneta_constituency_id),

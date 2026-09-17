@@ -147,7 +147,7 @@ const MYNETA_SRC = "ECI affidavits via myneta.info (ADR)"
 
 export const FIXTURE_AFFIDAVITS: Record<string, MpAffidavit> = {
   "29-24": {
-    id: 1, mp_id: 2, election: "LokSabha2024", candidate_name: "SHOBHA KARANDLAJE",
+    id: 1, mp_id: 2, election: "LokSabha2024", constituency_label: "BANGALORE NORTH", candidate_name: "SHOBHA KARANDLAJE",
     party_abbr: "BJP", age: 57, self_profession: "Parliamentarian",
     education_category: "Post Graduate",
     education_detail: "Master of Social Services (Social Service), Roshani Nilaya, Mangalore University, 1990",
@@ -162,7 +162,7 @@ export const FIXTURE_AFFIDAVITS: Record<string, MpAffidavit> = {
     data_source: MYNETA_SRC, updated_at: "2026-07-25T00:00:00Z",
   },
   "29-25": {
-    id: 2, mp_id: 3, election: "LokSabha2024", candidate_name: "P C MOHAN",
+    id: 2, mp_id: 3, election: "LokSabha2024", constituency_label: "BANGALORE CENTRAL", candidate_name: "P C MOHAN",
     party_abbr: "BJP", age: 60, self_profession: "Business and Social Worker",
     education_category: "12th Pass",
     education_detail: "2nd PUC, Vijaya College, Jayanagar, Bengaluru, 1981",
@@ -178,7 +178,7 @@ export const FIXTURE_AFFIDAVITS: Record<string, MpAffidavit> = {
     data_source: MYNETA_SRC, updated_at: "2026-07-25T00:00:00Z",
   },
   "29-26": {
-    id: 3, mp_id: 4, election: "LokSabha2024", candidate_name: "TEJASVI SURYA",
+    id: 3, mp_id: 4, election: "LokSabha2024", constituency_label: "BANGALORE SOUTH", candidate_name: "TEJASVI SURYA",
     party_abbr: "BJP", age: 33, self_profession: "Advocate",
     education_category: "Graduate Professional",
     education_detail: "BA LLB, Bangalore Institute of Legal Studies (Bangalore University), 2013",
