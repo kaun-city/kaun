@@ -6,8 +6,9 @@ import { getFallbackFacts, type FallbackFact } from "@/lib/cities/fallback-facts
 
 /**
  * CityPulse — compact rotating ticker of city facts.
- * Sits below the wordmark, leaves room for map zoom controls on the right.
- * One fact at a time, auto-rotates every 5 seconds. Tap to expand.
+ * The map places it (className): it sits low on the map, above the location
+ * line, and grows upward when expanded. One fact at a time, auto-rotates every
+ * 5 seconds. Tap to expand.
  *
  * Tone-aware:
  *   - Bengaluru (accountability) → red/yellow markers: scams + missing money
@@ -80,9 +81,11 @@ export function pulseSource(source: string, url: string | null): { label: string
 interface Props {
   /** city_id from the active pin or the homepage default ('bengaluru' | 'visakhapatnam' | …) */
   cityId?: string
+  /** Position and width, set by the map that places the ticker. */
+  className?: string
 }
 
-export function CityPulse({ cityId = "bengaluru" }: Props) {
+export function CityPulse({ cityId = "bengaluru", className = "" }: Props) {
   const initialFallback = getFallbackFacts(cityId) as FallbackFact[]
   const [facts, setFacts] = useState<PulseFact[]>(initialFallback as PulseFact[])
   const [index, setIndex] = useState(0)
@@ -144,7 +147,7 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
   const position = `${(index % facts.length) + 1}/${facts.length}`
 
   return (
-    <div className="absolute top-[4.25rem] left-3.5 right-16 md:right-auto md:max-w-[420px] z-[900] pointer-events-auto">
+    <div className={className}>
       <div
         onClick={handleTap}
         onKeyDown={e => {
@@ -157,7 +160,7 @@ export function CityPulse({ cityId = "bengaluru" }: Props) {
         tabIndex={0}
         aria-expanded={expanded}
         aria-label={`${fact.category}: ${headline}`}
-        className="signal-ticker w-full text-left pl-3 pr-1 py-1.5 cursor-pointer bg-paper border-y border-ink/55 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+        className="signal-ticker w-full text-left pl-3 pr-1 py-1.5 cursor-pointer bg-paper border border-ink/55 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
       >
         <div className="flex items-start gap-2">
           <span aria-hidden="true" className={`mt-[0.4rem] h-2 w-2 shrink-0 ${mark}`} />

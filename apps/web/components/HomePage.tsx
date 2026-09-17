@@ -18,9 +18,34 @@ import type { ChoroplethData } from "@/components/MapView"
 import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
 import { GBA_CROSSWALK_URL, MATERIAL_OVERLAP, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact, type GbaCrosswalkRow } from "@/lib/gba-crosswalk"
 import { publicSupabaseConfig } from "@/lib/supabase-config"
-import { CorporatorVacancy } from "@/components/CorporatorVacancy"
 import Link from "next/link"
 import { CIVIC_PROJECTS, searchCivicProjects } from "@/lib/civic-projects"
+
+/** Why "My location" found no ward. */
+export type LocationProblem = "blocked" | "dismissed" | "unavailable" | "timeout" | "unsupported"
+
+/**
+ * A browser that has location blocked (for the site, for the browser app, or
+ * by its own auto-block after repeated dismissals) fails the request without
+ * showing a prompt, and on Chrome that block carries into incognito. Only the
+ * site-level block is visible to the Permissions API, so a refusal that comes
+ * back faster than anyone could answer a prompt counts as blocked too.
+ */
+export function locationProblem(code: number, permission: string | null, elapsedMs: number): LocationProblem {
+  if (code === 1) return permission === "denied" || elapsedMs < 600 ? "blocked" : "dismissed"
+  if (code === 3) return "timeout"
+  return "unavailable"
+}
+
+export function locationProblemCopy(problem: LocationProblem): string {
+  switch (problem) {
+    case "blocked": return "Location is blocked in your browser or phone settings. Allow it for this site."
+    case "dismissed": return "Location wasn't shared."
+    case "unavailable": return "Your device couldn't find a location. Check that location is on."
+    case "timeout": return "Finding your location took too long."
+    case "unsupported": return "This browser can't share location."
+  }
+}
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false })
 
@@ -238,7 +263,7 @@ export default function HomePage({ host = "" }: { host?: string }) {
   const [pinLoading, setPinLoading]   = useState(false)
   const [showCard, setShowCard]       = useState(false)
   const [outOfBounds, setOutOfBounds] = useState(false)
-  const [geoDenied, setGeoDenied]     = useState(false)
+  const [geoProblem, setGeoProblem]   = useState<LocationProblem | null>(null)
   const [geoLoading, setGeoLoading]   = useState(false)
   const [showReport, setShowReport]     = useState(false)
   const [reportPickMode, setReportPickMode] = useState(false)
@@ -686,22 +711,24 @@ export default function HomePage({ host = "" }: { host?: string }) {
     }
   }, [showCard])
 
-  const handleFindMyWard = useCallback(async () => {
+  const handleFindMyWard = useCallback(() => {
     if (!navigator.geolocation) {
-      setGeoDenied(true)
+      setGeoProblem("unsupported")
       return
     }
     setGeoLoading(true)
+    setGeoProblem(null)
+    const requestedAt = Date.now()
 
     const bail = setTimeout(() => {
       setGeoLoading(false)
-      setGeoDenied(true)
+      setGeoProblem("timeout")
     }, 12000)
 
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         clearTimeout(bail)
-        setGeoDenied(false)
+        setGeoProblem(null)
         const { latitude: lat, longitude: lng } = coords
         mapViewRef.current?.panTo(lat, lng)
         setPinLoading(true)
@@ -722,10 +749,15 @@ export default function HomePage({ host = "" }: { host?: string }) {
           setPinLoading(false)
         }
       },
-      () => {
+      async error => {
         clearTimeout(bail)
+        const elapsed = Date.now() - requestedAt
+        const permission = await navigator.permissions
+          ?.query({ name: "geolocation" })
+          .then(status => status.state)
+          .catch(() => null)
         setGeoLoading(false)
-        setGeoDenied(true)
+        setGeoProblem(locationProblem(error.code, permission ?? null, elapsed))
       },
       { timeout: 10000, maximumAge: 0 }
     )
@@ -892,54 +924,55 @@ export default function HomePage({ host = "" }: { host?: string }) {
           )}
         </div>
 
-        {/* City Pulse — accountability headlines before pin drop */}
-        {!showCard && !outOfBounds && !searchOpen && <CityPulse cityId={activeCity.id} />}
-        {/* On phones the layer legend occupies the lower map, so the onboarding
-            stack steps aside while a layer is painted (closing the legend restores it). */}
+        {/* The lower map: headlines, then one line to find a ward. The top of
+            the map is left to the header. On phones the layer legend takes
+            this space, so the stack steps aside while a layer is painted. The
+            location line stays clear of the phone "…" button (bottom-right,
+            60px in), so a failed location can always be retried. Picking a
+            report spot shows its own banner here instead. */}
         {!showCard && !outOfBounds && !reportPickMode && (
-          <div className={activeLayer ? "hidden sm:block" : undefined}>
-            <CorporatorVacancy cityId={activeCity.id} />
-          </div>
-        )}
-
-        {/* Onboarding CTA */}
-        {!showCard && !outOfBounds && (
-          <div className={`absolute bottom-20 left-1/2 -translate-x-1/2 z-[900] flex-col items-center gap-2 ${activeLayer ? "hidden sm:flex" : "flex"}`}>
-            {/* Stays clear of the phone "…" button (bottom-right, 60px in):
-                the text wraps inside the middle of the screen and the button
-                stays, so a denied or timed-out location can be retried. */}
-            <p role="status" className="pointer-events-none max-w-[calc(100vw-7.5rem)] text-center bg-paper-canvas/85 px-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-ink/60">
-              {geoDenied ? "No location · tap the map" : "Tap anywhere on the map"}
+          <div className={`absolute bottom-20 inset-x-0 z-[900] pointer-events-none flex-col items-center gap-2 ${activeLayer ? "hidden sm:flex" : "flex"}`}>
+            {!searchOpen && (
+              <CityPulse
+                cityId={activeCity.id}
+                className="pointer-events-auto w-[min(420px,calc(100vw-1.75rem))] sm:w-[min(420px,calc(100vw-26rem))]"
+              />
+            )}
+            <p role="status" className={geoProblem ? "pointer-events-auto max-w-[calc(100vw-7.5rem)] bg-paper border border-ink/55 px-3 py-2 text-xs leading-snug text-ink/85" : "sr-only"}>
+              {geoProblem ? locationProblemCopy(geoProblem) : ""}
             </p>
-            <button
-              onClick={handleFindMyWard}
-              disabled={geoLoading}
-              className="
-                signal-primary-action flex items-center gap-2 min-h-11 px-4
-                bg-ink text-paper border border-ink hover:bg-ink/85
-                font-mono text-[11px] font-semibold uppercase tracking-[0.08em]
-                active:scale-95 transition-all duration-150 disabled:opacity-60
-              "
-            >
-              {geoLoading ? (
-                <>
-                  <span className="w-3 h-3 border border-paper/40 border-t-paper rounded-full animate-spin" />
-                  Locating...
-                </>
-              ) : (
-                <>
-                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <circle cx="8" cy="8" r="3" fill="currentColor"/>
-                    <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
-                    <line x1="8" y1="0" x2="8" y2="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                    <line x1="8" y1="13" x2="8" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                    <line x1="0" y1="8" x2="3" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                    <line x1="13" y1="8" x2="16" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                  {geoDenied ? "Retry location" : "Find my ward"}
-                </>
-              )}
-            </button>
+            <div className="pointer-events-auto flex max-w-[calc(100vw-7.5rem)] items-stretch border border-ink bg-paper">
+              <button
+                onClick={handleFindMyWard}
+                disabled={geoLoading}
+                className="
+                  signal-primary-action flex shrink-0 items-center gap-2 min-h-11 px-3
+                  bg-ink text-paper hover:bg-ink/85
+                  font-mono text-[11px] font-semibold uppercase tracking-[0.08em]
+                  active:scale-95 transition-all duration-150 disabled:opacity-60
+                "
+              >
+                {geoLoading ? (
+                  <>
+                    <span className="w-3 h-3 border border-paper/40 border-t-paper rounded-full animate-spin" />
+                    Locating...
+                  </>
+                ) : (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <circle cx="8" cy="8" r="3" fill="currentColor"/>
+                      <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
+                      <line x1="8" y1="0" x2="8" y2="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="8" y1="13" x2="8" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="0" y1="8" x2="3" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="13" y1="8" x2="16" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    {geoProblem ? "Try again" : "My location"}
+                  </>
+                )}
+              </button>
+              <span className="flex items-center px-3 text-xs text-ink/70 whitespace-nowrap">or tap the map</span>
+            </div>
           </div>
         )}
 
