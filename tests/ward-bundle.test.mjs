@@ -117,6 +117,9 @@ for (const [corporation, number] of FIXTURE_WARDS) {
     }))
     assert.deepEqual(record.failed, [])
     assert.deepEqual(live.failed, [])
+    if (record.profile) {
+      assert.deepEqual(Object.keys(record.profile).sort(), ["assembly_constituency", "city_id", "elected_reps", "governance_alert", "officers", "ward_no"])
+    }
     const actual = cardView(record, live)
     const lost = OLD_CARD_LOST[name] ?? []
     for (const tab of ["who", "spend", "citizen", "reach"]) {
@@ -140,6 +143,18 @@ test("a ward with no former-ward overlap still gets its constituency-level recor
   assert.deepEqual([record.workOrders, record.wardContractors, record.waterQuality], [[], [], []])
   assert.equal(record.wardSpend, null)
   assert.ok(record.wardStats, "constituency statistics do not need a former ward")
+})
+
+test("the record never carries ward_profile's tenders, even before migration 20260919 removes them", async () => {
+  const { result, centre } = ward(4, 31)
+  const withTenders = replay(key => {
+    if (!key.includes("/rpc/ward_profile")) return null
+    const body = JSON.parse(responses[key].body)
+    return new Response(JSON.stringify({ ...body, tenders: [{ id: 1, title: "x" }], tender_count: 13203, tender_total_lakh: 1 }), { status: 200 })
+  })
+  const record = await withFetch(withTenders.fetch, () => buildWardRecord(result, sources, centre))
+  assert.equal(JSON.stringify(record).includes("tender_count"), false)
+  assert.equal(record.profile.tenders, undefined)
 })
 
 test("a read that fails twice marks only its section; a single failure is retried", async () => {

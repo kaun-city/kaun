@@ -21,9 +21,12 @@ export async function GET(_request: Request, { params }: { params: Promise<{ cor
   if (!gbaWard) {
     return Response.json({ error: "No such GBA ward" }, { status: 404, headers: { "Cache-Control": "public, s-maxage=86400" } })
   }
+  const started = performance.now()
   const record = await buildWardRecord(gbaWard.result, SERVER_WARD_SOURCES, gbaWard.centre)
   return Response.json(record, {
     headers: {
+      // How long the database reads took on a cache miss (browser dev tools show it).
+      "Server-Timing": `record;dur=${Math.round(performance.now() - started)}`,
       "Cache-Control": record.failed.length
         ? "no-store"
         : "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",

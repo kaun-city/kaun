@@ -18,9 +18,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ cor
   if (!gbaWard) {
     return Response.json({ error: "No such GBA ward" }, { status: 404, headers: { "Cache-Control": "public, s-maxage=86400" } })
   }
+  const started = performance.now()
   const live = await buildWardLive(gbaWard.result)
   return Response.json(live, {
     headers: {
+      "Server-Timing": `live;dur=${Math.round(performance.now() - started)}`,
       "Cache-Control": live.failed.length
         ? "no-store"
         : "public, max-age=0, s-maxage=60, stale-while-revalidate=300",

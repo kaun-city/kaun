@@ -263,10 +263,10 @@ export async function buildWardRecord(
       if (!wardNo) return null
       const value = await fetchWardProfile(wardNo, cityId, assemblyConstituency)
       if (!value) return null
-      // Facts are live (buildWardLive); a day-old copy must not ride along.
-      const record: Omit<WardProfile, "community_facts"> & { community_facts?: unknown } = { ...value }
-      delete record.community_facts
-      return record
+      // Only what the card reads. Facts are live (buildWardLive), and until
+      // migration 20260919 runs the function still returns every city tender.
+      const { ward_no, city_id, assembly_constituency, elected_reps, officers, governance_alert } = value
+      return { ward_no, city_id, assembly_constituency, elected_reps, officers, governance_alert }
     }),
     section(limit, failed, "reps", [] as ElectedRep[], async () => assemblyConstituency ? fetchElectedReps(assemblyConstituency, cityId) : []),
     section(limit, failed, "committee", [] as WardCommitteeMeetings[], async () => {
