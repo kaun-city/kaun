@@ -91,9 +91,7 @@ export interface WardProfile {
   assembly_constituency: string | null
   elected_reps: ElectedRep[]
   officers: Officer[]
-  tenders: Tender[]
-  tender_count: number
-  tender_total_lakh: number
+  // Tenders are no longer part of the profile: see fetchCorporationTenders.
   governance_alert: GovernanceAlert
   community_facts: CommunityFact[]
 }

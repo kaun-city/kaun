@@ -3,7 +3,7 @@
 import { useRef, useState, useCallback, useEffect } from "react"
 import type { PinResult } from "@/lib/types"
 import type { HistoricalWardRef } from "@/lib/gba-crosswalk"
-import { useWardData } from "@/hooks/useWardData"
+import { HEADLINE_SECTIONS, SNAPSHOT_SECTIONS, useWardData } from "@/hooks/useWardData"
 import { useKeyboardAware } from "@/hooks/useKeyboardAware"
 import { WhoTab } from "@/components/tabs/WhoTab"
 import { SpendTab } from "@/components/tabs/SpendTab"
@@ -291,6 +291,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
             {/* Most important finding, with its source */}
             <WardHeadline
               settled={ward.headlineReady}
+              failed={HEADLINE_SECTIONS.some(ward.loadFailed)}
+              onRetry={ward.retry}
               reportCard={ward.reportCard}
               committeeMeetings={ward.committeeMeetings}
               infraStats={ward.infraStats}
@@ -301,6 +303,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
             <WardGrade
               settled={ward.snapshotReady}
+              failed={SNAPSHOT_SECTIONS.some(ward.loadFailed)}
+              onRetry={ward.retry}
               reportCard={ward.reportCard}
               committeeMeetings={ward.committeeMeetings}
               infraStats={ward.infraStats}
@@ -335,6 +339,8 @@ export default function WardCard({ result, loading, onClose }: Props) {
 
                   infraStats={ward.infraStats}
                   potholes={ward.potholes}
+                  loadFailed={ward.loadFailed}
+                  onRetry={ward.retry}
                 />
               )}
 
@@ -352,6 +358,10 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   wardSpendSettled={ward.wardSpendSettled}
                   wardSpendAttributable={ward.bbmp198Attributable}
                   propertyTax={ward.propertyTax}
+                  corporationTenders={ward.corporationTenders}
+                  loadFailed={ward.loadFailed}
+                  loadDone={ward.loadDone}
+                  onRetry={ward.retry}
                 />
               )}
 
@@ -372,6 +382,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   assemblyConstituency={result.gba_ac ?? result.assembly_constituency ?? ""}
                   reportCount={ward.reportCount}
                   signals={ward.signals}
+                  loadFailed={ward.loadFailed}
+                  loadDone={ward.loadDone}
+                  onRetry={ward.retry}
                 />
               )}
 
@@ -386,6 +399,9 @@ export default function WardCard({ result, loading, onClose }: Props) {
                   wardName={result.gba_ward_name ?? result.ward_name ?? ""}
                   wardLabel={wardCitation(result)}
                   assemblyConstituency={result.gba_ac ?? result.assembly_constituency ?? ""}
+                  loadFailed={ward.loadFailed}
+                  loadDone={ward.loadDone}
+                  onRetry={ward.retry}
                 />
               )}
             </div>

@@ -9,8 +9,10 @@ import type {
   WardProfile, WardSpendCategory, WardTradeLicenses, WorkOrder,
 } from "@/lib/types"
 import { SkeletonBarRow, SkeletonCard } from "@/components/shared/Skeleton"
-
-const CORPORATION_TENDERS_SHOWN = 3
+import { LoadFailed } from "@/components/shared/LoadFailed"
+import type { CorporationTenders as CorporationTenderRecords } from "@/lib/api"
+import { CORPORATION_TENDERS_SHOWN, corporationDepartment } from "@/lib/corporation-tenders"
+import type { LoadSection } from "@/hooks/useWardData"
 const WORK_ORDERS_PREVIEW = 5
 const CONTRACTORS_PREVIEW = 5
 
@@ -33,10 +35,19 @@ function stripHtml(str: string): string {
   return str.replace(/<[^>]*>/g, "").replace(/^\d{3}-\d{2}-\d{6}/, "").trim()
 }
 
-function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: WorkOrder[]; profileLoading: boolean; profile: WardProfile | null }) {
+function WorkOrdersList({ workOrders, profileLoading, profile, failed, onRetry }: { workOrders: WorkOrder[]; profileLoading: boolean; profile: WardProfile | null; failed: boolean; onRetry: () => void }) {
   const [expanded, setExpanded] = useState(false)
   const visible = expanded ? workOrders : workOrders.slice(0, WORK_ORDERS_PREVIEW)
   const hidden = workOrders.length - WORK_ORDERS_PREVIEW
+
+  if (failed && workOrders.length === 0) {
+    return (
+      <section className={SECTION}>
+        <p className={EYEBROW}>Works</p>
+        <LoadFailed what="work orders" onRetry={onRetry} className="mt-1.5" />
+      </section>
+    )
+  }
 
   if (workOrders.length === 0) {
     if (!profileLoading && profile !== null) {
@@ -156,13 +167,6 @@ function WorkOrdersList({ workOrders, profileLoading, profile }: { workOrders: W
   )
 }
 
-/** "West" / "Bengaluru West City Corporation" -> "Bengaluru West City Corporation", the KPPP department name. */
-function corporationDepartment(corporation: string | null | undefined): string | null {
-  const direction = corporation?.match(/\b(Central|North|South|East|West)\b/i)?.[1]
-  if (!direction) return null
-  return `Bengaluru ${direction[0].toUpperCase()}${direction.slice(1).toLowerCase()} City Corporation`
-}
-
 /** KPPP statuses beyond the four styled ones (RETENDERED, NO_BIDS_RECIEVED…) read as plain text, never as "Open". */
 function tenderStatus(status: string): { className: string; label: string } {
   const styled = STATUS_STYLES[status]
@@ -178,11 +182,10 @@ function tenderStatus(status: string): { className: string; label: string } {
  * the reader's GBA corporation — with a small fixed list, no ward total, and
  * no "show 13,000 more".
  */
-function CorporationTenders({ result, profile, profileLoading }: { result: PinResult; profile: WardProfile | null; profileLoading: boolean }) {
+function CorporationTenders({ result, records, failed, onRetry }: { result: PinResult; records: CorporationTenderRecords | null; failed: boolean; onRetry: () => void }) {
   const department = corporationDepartment(result.gba_corporation)
   if (!department) return null
-  const tenders = (profile?.tenders ?? []).filter(t => t.department === department)
-  const latest = tenders.slice(0, CORPORATION_TENDERS_SHOWN)
+  const latest = (records?.tenders ?? []).slice(0, CORPORATION_TENDERS_SHOWN)
 
   return (
     <section className={SECTION}>
@@ -191,7 +194,9 @@ function CorporationTenders({ result, profile, profileLoading }: { result: PinRe
         From {department}, not specific to this ward. KPPP tenders are not reliably tagged to wards.
       </p>
 
-      {profileLoading && !profile ? (
+      {failed ? (
+        <LoadFailed what="corporation tenders" onRetry={onRetry} className="mt-1.5" />
+      ) : !records ? (
         <div className="mt-1.5 space-y-2"><SkeletonCard lines={2} /><SkeletonCard lines={2} /></div>
       ) : latest.length > 0 ? (
         <div className="mt-1 divide-y divide-ink/10 border-b border-ink/10">
@@ -220,7 +225,7 @@ function CorporationTenders({ result, profile, profileLoading }: { result: PinRe
       >
         Search all tenders on KPPP &rarr;
       </a>
-      <Provenance label={profile ? `latest ${latest.length} of ${tenders.length.toLocaleString("en-IN")}` : "latest"} source="KPPP" />
+      <Provenance label={records ? `latest ${latest.length} of ${records.total.toLocaleString("en-IN")}` : "latest"} source="KPPP" />
     </section>
   )
 }
@@ -240,11 +245,16 @@ interface Props {
   wardSpendAttributable: boolean
   propertyTax: PropertyTaxData | null
   wardContractors: ContractorProfile[]
+  corporationTenders: CorporationTenderRecords | null
+  loadFailed: (section: LoadSection) => boolean
+  loadDone: (section: LoadSection) => boolean
+  onRetry: () => void
 }
 
 export function SpendTab({
   result, city, profile, profileLoading, budget,
   workOrders, tradeLicenses, wardSpend, wardSpendSettled, wardSpendAttributable, propertyTax, wardContractors,
+  corporationTenders, loadFailed, loadDone, onRetry,
 }: Props) {
   const [contractorsExpanded, setContractorsExpanded] = useState(false)
   // Flagged firms first, so a short list never hides one.
@@ -254,6 +264,11 @@ export function SpendTab({
 
   return (
     <div className="px-5 py-4 space-y-5 pb-safe-content">
+
+      {/* Sections that simply stay hidden when empty still say when they failed. */}
+      {(["propertyTax", "tradeLicenses", "contractors"] as const).some(loadFailed) && (
+        <LoadFailed what="property tax, trade licences or contractors" message="Some of this ward's spending records couldn't load" onRetry={onRetry} />
+      )}
 
       {/* City-wide Budget */}
       {budget ? (
@@ -281,8 +296,13 @@ export function SpendTab({
           )}
           <Provenance label={city.budgetYear} source="BBMP" />
         </section>
-      ) : (
-        <div className={`${SECTION} space-y-2`}>
+      ) : loadFailed("budget") ? (
+        <section className={SECTION}>
+          <p className={EYEBROW}>BBMP Budget</p>
+          <LoadFailed what="the BBMP budget" onRetry={onRetry} className="mt-1.5" />
+        </section>
+      ) : loadDone("budget") ? null : (
+        <div aria-busy="true" className={`${SECTION} space-y-2`}>
           <div className="h-3 w-28 bg-ink/10 animate-pulse" />
           <SkeletonBarRow />
         </div>
@@ -320,6 +340,11 @@ export function SpendTab({
             })}
           </div>
           <Provenance label="2018-23" source="BBMP 198-ward records, estimated by map overlap" />
+        </section>
+      ) : loadFailed("wardSpend") ? (
+        <section className={SECTION}>
+          <p className={EYEBROW}>Ward Spending</p>
+          <LoadFailed what="ward spending" onRetry={onRetry} className="mt-1.5" />
         </section>
       ) : !wardSpendAttributable ? (
         <section className={SECTION}>
@@ -360,10 +385,10 @@ export function SpendTab({
       ) : null}
 
       {/* Tenders — corporation-wide, clearly labelled; ward scoping isn't possible */}
-      <CorporationTenders result={result} profile={profile} profileLoading={profileLoading} />
+      <CorporationTenders result={result} records={corporationTenders} failed={loadFailed("tenders")} onRetry={onRetry} />
 
       {/* Work Orders */}
-      <WorkOrdersList workOrders={workOrders} profileLoading={profileLoading} profile={profile} />
+      <WorkOrdersList workOrders={workOrders} profileLoading={profileLoading} profile={profile} failed={loadFailed("workOrders")} onRetry={onRetry} />
 
       {/* Contractor Accountability */}
       {contractors.length > 0 && (

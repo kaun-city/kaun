@@ -51,6 +51,8 @@ import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
 import { wardCitation } from "@/lib/current-ward"
 import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import type { WardInfraStats, WardPotholes } from "@/lib/types"
+import { LoadFailed } from "@/components/shared/LoadFailed"
+import type { LoadSection } from "@/hooks/useWardData"
 
 interface Props {
   result: PinResult
@@ -70,13 +72,15 @@ interface Props {
   onNewFact: (fact: CommunityFact) => void
   infraStats: WardInfraStats | null
   potholes: WardPotholes | null
+  loadFailed: (section: LoadSection) => boolean
+  onRetry: () => void
 }
 
 export function WhoTab({
   result, city, profile, profileLoading, electedReps,
   committeeMeetings, reportCard, ladFunds, corpContacts, corpName,
   allFacts, officerGroups, onCorroborate, onNewFact,
-  infraStats, potholes,
+  infraStats, potholes, loadFailed, onRetry,
 }: Props) {
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
 
@@ -98,6 +102,10 @@ export function WhoTab({
     <>
     <RTIDraftSheet request={rtiRequest} onClose={() => setRtiRequest(null)} />
     <div className="px-5 py-4 space-y-6 pb-safe-content">
+
+      {(["committee", "ladFunds", "offices"] as const).some(loadFailed) && (
+        <LoadFailed what="ward committee, MLA fund or corporation contact records" message="Some of this ward's records couldn't load" onRetry={onRetry} />
+      )}
 
 
       {/* Governance alert — skip the "No elected corporator" noise (applies citywide) */}
@@ -152,6 +160,8 @@ export function WhoTab({
               </div>
             ))}
           </div>
+        ) : loadFailed("profile") || loadFailed("reps") ? (
+          <LoadFailed what="elected representatives" onRetry={onRetry} />
         ) : !profileLoading ? (
           <div className="border-y border-ink/15 py-4 text-center">
             <p className="text-ink/70 text-sm">No representative data yet</p>
@@ -217,6 +227,11 @@ export function WhoTab({
             </div>
           )}
         </div>
+      ) : loadFailed("reportCard") ? (
+        <div className="space-y-2">
+          <p className={EYEBROW}>MLA Scorecard</p>
+          <LoadFailed what="the MLA scorecard" onRetry={onRetry} />
+        </div>
       ) : profileLoading ? (
         <SkeletonScorecard />
       ) : null}
@@ -275,7 +290,7 @@ export function WhoTab({
       })() : null}
 
       {/* Ward Officers — only show if data exists */}
-      {(profileLoading || (profile && (profile.officers.length > 0 || Object.keys(officerGroups).length > 0)) || corpContacts.length > 0) && (
+      {(profileLoading || loadFailed("profile") || (profile && (profile.officers.length > 0 || Object.keys(officerGroups).length > 0)) || corpContacts.length > 0) && (
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-2">
           <p className={EYEBROW}>Ward Officers</p>
@@ -286,6 +301,8 @@ export function WhoTab({
 
         {profileLoading && !profile ? (
           <SkeletonCard lines={3} />
+        ) : loadFailed("profile") ? (
+          <LoadFailed what="ward officers" onRetry={onRetry} />
         ) : profile && profile.officers.length > 0 ? (
           <div className="border-t border-ink/15">
             {profile.officers.map(o => (

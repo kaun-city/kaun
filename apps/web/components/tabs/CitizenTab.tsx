@@ -8,6 +8,8 @@ import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
 import type { RTIDraftRequest } from "@/app/api/rti-draft/route"
 import { SkeletonCard, SkeletonStats } from "@/components/shared/Skeleton"
 import type { CivicSignal } from "@/lib/api"
+import { LoadFailed } from "@/components/shared/LoadFailed"
+import type { LoadSection } from "@/hooks/useWardData"
 
 // City-wide averages for comparison, per DataMeet-243 ward.
 // Signals: ward_infra_stats (1,340 OSM signals / 243). Bus stops: ward_bus_stops
@@ -33,7 +35,13 @@ interface Props {
   assemblyConstituency: string
   reportCount?: number
   signals?: CivicSignal[]
+  loadFailed: (section: LoadSection) => boolean
+  loadDone: (section: LoadSection) => boolean
+  onRetry: () => void
 }
+
+/** Citizen sections that stay hidden when empty; a failure among them is reported once, at the top. */
+const QUIET_SECTIONS: LoadSection[] = ["infra", "potholes", "busStats", "roadCrashes", "airQuality", "amenities", "waterQuality", "signals"]
 
 // Signal on Paper: hairline-ruled sections, mono figures, a source under each.
 const SECTION = "border-t border-ink/15 pt-2"
@@ -60,17 +68,23 @@ function Row({ label, tone = "text-ink", children }: { label: string; tone?: str
 
 const LEDGER = "grid grid-cols-2 gap-x-4"
 
-export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality, wardNo, wardName, wardLabel, assemblyConstituency, reportCount = 0, signals = [] }: Props) {
+export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality, wardNo, wardName, wardLabel, assemblyConstituency, reportCount = 0, signals = [], loadFailed, loadDone, onRetry }: Props) {
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   return (
     <>
     <RTIDraftSheet request={rtiRequest} onClose={() => setRtiRequest(null)} />
     <div className="px-5 py-4 space-y-5 pb-safe-content">
 
+      {QUIET_SECTIONS.some(loadFailed) && (
+        <LoadFailed what="traffic, transport, air, water, amenity or signal records" message="Some of this ward's records couldn't load" onRetry={onRetry} />
+      )}
+
       {/* Demographics + Infrastructure */}
-      {!wardStats ? (
+      {!wardStats && loadFailed("wardStats") ? (
+        <LoadFailed what="this area's statistics" message="Couldn't load this area's statistics" onRetry={onRetry} />
+      ) : !wardStats && !loadDone("wardStats") ? (
         <SkeletonStats />
-      ) : wardStats.ward_count === 0 ? (
+      ) : !wardStats || wardStats.ward_count === 0 ? (
         <div className="bg-paper-muted px-4 py-5 text-center space-y-1">
           <p className="text-sm text-ink/75">No area data available</p>
           <p className="text-xs text-ink/60">This constituency isn&apos;t yet in our database.</p>
@@ -151,15 +165,24 @@ export function CitizenTab({ city, wardStats, potholes, infraStats, wardBusStats
 
           {/* Live reports count */}
           <section className={SECTION}>
-            <div className="flex items-baseline justify-between gap-4">
-              <p className={EYEBROW}>Civic Reports (last 30 days)</p>
-              <p className={`text-2xl ${FIGURE} ${reportCount > 0 ? "text-ink" : "text-ink/60"}`}>
-                {reportCount}
-              </p>
-            </div>
-            <p className="text-xs text-ink/70">
-              {reportCount === 0 ? "No resident reports in the last 30 days" : reportCount === 1 ? "1 issue reported by residents" : `issues reported by residents`}
-            </p>
+            {loadFailed("reportCount") ? (
+              <>
+                <p className={EYEBROW}>Civic Reports (last 30 days)</p>
+                <LoadFailed what="the civic report count" onRetry={onRetry} className="mt-1.5" />
+              </>
+            ) : (
+              <>
+                <div className="flex items-baseline justify-between gap-4">
+                  <p className={EYEBROW}>Civic Reports (last 30 days)</p>
+                  <p className={`text-2xl ${FIGURE} ${reportCount > 0 ? "text-ink" : "text-ink/60"}`}>
+                    {reportCount}
+                  </p>
+                </div>
+                <p className="text-xs text-ink/70">
+                  {reportCount === 0 ? "No resident reports in the last 30 days" : reportCount === 1 ? "1 issue reported by residents" : `issues reported by residents`}
+                </p>
+              </>
+            )}
           </section>
 
           {potholes && (

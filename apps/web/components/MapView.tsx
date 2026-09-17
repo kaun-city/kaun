@@ -21,7 +21,8 @@ import { BASE_TILE_OPTIONS, BASE_TILE_URL } from "@/lib/base-map"
 import { colorFor } from "@/lib/map-layers"
 import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
 import { GBA_CROSSWALK_URL, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact, type GbaCrosswalkRow } from "@/lib/gba-crosswalk"
-import { DEFAULT_SUPABASE_ANON_KEY, DEFAULT_SUPABASE_URL } from "@/lib/supabase-config"
+import { proxiedStorageUrl } from "@/lib/supabase-config"
+import { queryOrThrow } from "@/lib/supabase"
 import { ACCENT, INK, PAPER, SUCCESS, WARNING } from "@/lib/design-tokens"
 
 /** Per-ward values + quantile breaks + ramp for choropleth painting */
@@ -200,9 +201,6 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
         reportLayerRef.current = L.layerGroup().addTo(mapRef.current!)
       }
 
-      const SUPABASE_URL  = process.env.NEXT_PUBLIC_SUPABASE_URL ?? DEFAULT_SUPABASE_URL
-      const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? DEFAULT_SUPABASE_ANON_KEY
-
       const ISSUE_LABELS: Record<string, string> = {
         hoarding: "Illegal banner / hoarding",
         pothole: "Pothole / broken road",
@@ -214,12 +212,13 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
         other: "Civic issue",
       }
 
-      // Fetch both pending and approved
-      fetch(`${SUPABASE_URL}/rest/v1/ward_reports?status=in.(pending,approved)&select=id,lat,lng,issue_type,description,ward_name,ai_person,ai_label,upvotes,status,photo_url,reported_at&order=reported_at.desc&limit=300`, {
-        headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` }
+      // Fetch both pending and approved (through kaun.city, like every browser read)
+      queryOrThrow<{ id: number; lat: number; lng: number; issue_type: string; description: string; ward_name: string; ai_person: string; ai_label: string; upvotes: number; status: string; photo_url: string | null; reported_at: string }>("ward_reports", { status: "in.(pending,approved)" }, {
+        select: "id,lat,lng,issue_type,description,ward_name,ai_person,ai_label,upvotes,status,photo_url,reported_at",
+        order: "reported_at.desc",
+        limit: 300,
       })
-        .then(r => r.json())
-        .then((reports: Array<{ id: number; lat: number; lng: number; issue_type: string; description: string; ward_name: string; ai_person: string; ai_label: string; upvotes: number; status: string; photo_url: string | null; reported_at: string }>) => {
+        .then(reports => {
           // Track confirmed report IDs in localStorage to prevent double-confirm
           const confirmed: number[] = JSON.parse(localStorage.getItem("kaun_confirmed") ?? "[]")
 
@@ -232,7 +231,8 @@ export default function MapView({ onPin, resizeKey = 0, panRef, reportRefresh = 
             const label       = escapeHtml(ISSUE_LABELS[report.issue_type] ?? report.issue_type)
             const upvotes     = Number(report.upvotes) || 0
             const alreadyDone = confirmed.includes(reportId)
-            const photoUrl    = safeImageUrl(report.photo_url)
+            const safePhoto   = safeImageUrl(report.photo_url)
+            const photoUrl    = safePhoto ? proxiedStorageUrl(safePhoto) : null
             const photoHtml   = photoUrl
               ? `<img src="${escapeHtml(photoUrl)}" style="width:100%;height:90px;object-fit:cover;margin:6px 0 4px;display:block;border:1px solid ${tint(INK, 0.15)}" />`
               : ""

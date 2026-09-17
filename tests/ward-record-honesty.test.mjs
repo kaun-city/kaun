@@ -210,7 +210,10 @@ test("ward committee copy has no impossible ratio or loaded RTI question", () =>
 test("tenders are labelled for their real scope and capped", () => {
   assert.doesNotMatch(spend, /more tender/)
   assert.match(spend, /not specific to this ward/)
-  assert.match(spend, /CORPORATION_TENDERS_SHOWN = 3/)
+  assert.match(read("lib/corporation-tenders.ts"), /CORPORATION_TENDERS_SHOWN = 3/)
+  // Only those few rows travel; the count comes from the response header.
+  assert.match(read("lib/api.ts"), /url\.searchParams\.set\('limit', String\(limit\)\)[\s\S]*'Prefer': 'count=exact'/)
+  assert.match(spend, /latest \$\{latest\.length\} of \$\{records\.total/)
 })
 
 test("ward spend distinguishes loading from empty", () => {

@@ -42,6 +42,8 @@ test("API routes are never touched, on any host, in any mode", () => {
     "/api/health", "/api/data/wards", "/api/data/contractors", "/api/export",
     "/api/ingest-signals", "/api/refresh-pulse", "/api/og", "/api/ask-kaun",
     "/api/submit-report", "/api/moderate-report", "/api",
+    // the browser's same-origin route to Supabase (next.config.ts rewrites)
+    "/api/db/rest/v1/rpc/ward_profile", "/api/db/storage/v1/object/public/reports/a.jpg",
   ]
   for (const host of HOSTS) {
     for (const indiaRoot of MODES) {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import type {
   BudgetSummary, CommunityFact, ContractorProfile, Department, ElectedRep, GbaContact, LocalOffice,
   MlaLadFunds, PinResult, PropertyTaxData, RepReportCard,
@@ -8,12 +8,14 @@ import type {
   WardProfile, WardRoadCrashes, WardSpendCategory, WardStats, WardTradeLicenses, WardWaterQuality, WorkOrder,
 } from "@/lib/types"
 import {
-  fetchBudgetSummary, fetchCorpContacts, fetchDepartments, fetchElectedReps,
+  fetchBudgetSummary, fetchCorpContacts, fetchCorporationTenders, fetchDepartments, fetchElectedReps,
   fetchMlaLadFunds, fetchPropertyTax, fetchRepReportCard, fetchSakalaPerformance,
   fetchTradeLicenses, fetchWardAirQuality, fetchWardAmenities, fetchWardBusStats, fetchWardCommitteeMeetingsByBbmp198, fetchWardContractors, fetchWardGrievances, fetchWardInfraStats,
   fetchWardPotholesByBbmp198, fetchWardProfile, fetchWardReportCount, fetchWardRoadCrashes, fetchWardSignals, fetchWardSpendByBbmp198, fetchWardStats,
   fetchWardUnknowns, fetchWardWaterQuality, fetchWorkOrders, loadBbmp198Crosswalk, lookupLocalOffices, voteFact,
+  type CorporationTenders,
 } from "@/lib/api"
+import { CORPORATION_TENDERS_SHOWN, corporationDepartment } from "@/lib/corporation-tenders"
 import { getCity } from "@/lib/cities"
 import { BBMP_198_RECORDS_ATTRIBUTABLE } from "@/lib/ward-data-quality"
 import type { CityConfig } from "@/lib/cities"
@@ -29,6 +31,29 @@ export type WardUnknowns = {
 }
 
 export type ShowAddFor = { category: string; subject: string; field: string; prompt: string }
+
+/**
+ * Parts of the ward card whose reads can fail on their own. A failed part
+ * shows "Couldn't load · Retry" (components/shared/LoadFailed) instead of a
+ * placeholder that never finishes, or an empty state that isn't true.
+ */
+export type LoadSection =
+  | "profile" | "reps" | "unknowns" | "committee" | "ladFunds" | "reportCard" | "offices"
+  | "budget" | "workOrders" | "tradeLicenses" | "propertyTax" | "wardSpend" | "tenders"
+  | "wardStats" | "busStats" | "roadCrashes" | "airQuality" | "amenities" | "waterQuality"
+  | "departments" | "sakala" | "grievances"
+  | "infra" | "reportCount" | "signals" | "potholes" | "contractors"
+
+/** The inputs the headline ranks; if one failed, the headline would be a guess. */
+export const HEADLINE_SECTIONS: LoadSection[] = ["reportCard", "committee", "infra", "contractors"]
+/** The headline inputs plus potholes: what the evidence snapshot draws. */
+export const SNAPSHOT_SECTIONS: LoadSection[] = [...HEADLINE_SECTIONS, "potholes"]
+
+/** A crosswalk that could not be loaded is a failed read, not "no rows". */
+function requireIndex<T>(index: T | null): T {
+  if (!index) throw new Error("bbmp198 crosswalk: unavailable")
+  return index
+}
 
 const LEGACY_FALLBACK_REF = (wardNo: number, wardName: string | null): HistoricalWardRef => ({
   ward_no: wardNo,
@@ -100,6 +125,7 @@ export function useWardData(result: PinResult | null) {
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([])
   const [wardContractors, setWardContractors] = useState<ContractorProfile[]>([])
   const [tradeLicenses, setTradeLicenses] = useState<WardTradeLicenses[]>([])
+  const [corporationTenders, setCorporationTenders] = useState<CorporationTenders | null>(null)
   /** Ward spend has been fetched for this ward (rows or none). Until then the spend tab shows a skeleton, not "no data". */
   const [wardSpendSettled, setWardSpendSettled] = useState(false)
 
@@ -140,6 +166,19 @@ export function useWardData(result: PinResult | null) {
   // ── Tab state ─────────────────────────────────────────────
   const [tab, setTab] = useState<"who" | "spend" | "citizen" | "reach">("who")
 
+  // ── Failed reads ──────────────────────────────────────────
+  const [failures, setFailures] = useState<ReadonlySet<LoadSection>>(() => new Set())
+  /** Bumped by retry(): every fetch effect lists it, so they all run again. */
+  const [attempt, setAttempt] = useState(0)
+  const markFailed = useCallback((section: LoadSection) => {
+    setFailures(prev => (prev.has(section) ? prev : new Set(prev).add(section)))
+  }, [])
+  /** Parts whose read finished, with or without rows: their placeholder can go. */
+  const [loaded, setLoaded] = useState<ReadonlySet<LoadSection>>(() => new Set())
+  const markLoaded = useCallback((section: LoadSection) => {
+    setLoaded(prev => (prev.has(section) ? prev : new Set(prev).add(section)))
+  }, [])
+
   // ── Reset on ward change ─────────────────────────────────
   useEffect(() => {
     setTab("who")
@@ -158,6 +197,9 @@ export function useWardData(result: PinResult | null) {
     setWorkOrders([])
     setWardContractors([])
     setTradeLicenses([])
+    setCorporationTenders(null)
+    setFailures(new Set())
+    setLoaded(new Set())
     setWardSpendSettled(false)
     setSettledIdentity(wardIdentity)
     setReportCardSettled(false)
@@ -191,19 +233,23 @@ export function useWardData(result: PinResult | null) {
     if (assemblyConstituency) {
       void fetchElectedReps(assemblyConstituency, cityId).then(value => {
         if (active) setMlaReps(value)
-      })
+      }).catch(() => { if (active) markFailed("reps") })
     }
     if (wardNo) {
       void fetchWardProfile(wardNo, cityId, assemblyConstituency).then(value => {
         if (!active) return
         setProfile(value)
         setProfileLoading(false)
+      }).catch(() => {
+        if (!active) return
+        markFailed("profile")
+        setProfileLoading(false)
       })
     } else {
       setProfileLoading(false)
     }
     return () => { active = false }
-  }, [wardIdentity, wardNo, cityId, assemblyConstituency])
+  }, [wardIdentity, wardNo, cityId, assemblyConstituency, attempt, markFailed])
   // Derived, not raced: the profile's MLA+MP+corporator list always wins.
   const electedReps = useMemo(() => preferredElectedReps(profile?.elected_reps, mlaReps), [profile, mlaReps])
 
@@ -213,9 +259,9 @@ export function useWardData(result: PinResult | null) {
     let active = true
     void fetchWardUnknowns(wardNo, cityId).then(value => {
       if (active) setUnknowns(value)
-    })
+    }).catch(() => { if (active) markFailed("unknowns") })
     return () => { active = false }
-  }, [wardIdentity, wardNo, cityId])
+  }, [wardIdentity, wardNo, cityId, attempt, markFailed])
 
   // ── WHO: accountability records ──────────────────────────
   useEffect(() => {
@@ -225,11 +271,15 @@ export function useWardData(result: PinResult | null) {
       // A committee's meeting count belongs to that committee: name each
       // materially overlapping former 198-ward committee, never split or sum.
       void loadBbmp198Crosswalk().then(async index => {
-        const committees = index ? attributableBbmp198WardsForHistoricalWards(historicalWards, index) : []
+        const committees = attributableBbmp198WardsForHistoricalWards(historicalWards, requireIndex(index))
         const rows = await fetchWardCommitteeMeetingsByBbmp198(committees.map(committee => committee.ward_no))
         if (!active) return
         const order = new Map(committees.map((committee, position) => [committee.ward_no, position]))
         setCommitteeMeetings(rows.sort((a, b) => (order.get(a.ward_no) ?? 0) - (order.get(b.ward_no) ?? 0)))
+        setCommitteeSettled(true)
+      }).catch(() => {
+        if (!active) return
+        markFailed("committee")
         setCommitteeSettled(true)
       })
     } else {
@@ -238,12 +288,16 @@ export function useWardData(result: PinResult | null) {
     if (assemblyConstituency && city.features.mlaLadFunds) {
       void fetchMlaLadFunds(assemblyConstituency).then(value => {
         if (active) setLadFunds(value ?? [])
-      })
+      }).catch(() => { if (active) markFailed("ladFunds") })
     }
     if (assemblyConstituency && city.features.repReportCards) {
       void fetchRepReportCard(assemblyConstituency).then(value => {
         if (!active) return
         setReportCard(value)
+        setReportCardSettled(true)
+      }).catch(() => {
+        if (!active) return
+        markFailed("reportCard")
         setReportCardSettled(true)
       })
     } else {
@@ -251,29 +305,34 @@ export function useWardData(result: PinResult | null) {
     }
 
     return () => { active = false }
-  }, [wardIdentity, historicalWards, assemblyConstituency, city.features.wardCommitteeMeetings, city.features.mlaLadFunds, city.features.repReportCards])
+  }, [wardIdentity, historicalWards, assemblyConstituency, city.features.wardCommitteeMeetings, city.features.mlaLadFunds, city.features.repReportCards, attempt, markFailed])
 
   // ── Local offices + corporation contacts ─────────────────
   useEffect(() => {
+    let active = true
     if (!result?.lat || !result.lng) {
+      // No point to look offices up for (a ward opened by number).
+      markLoaded("offices")
       if (result?.gba_corporation) {
         setCorpName(result.gba_corporation)
-        void fetchCorpContacts(result.gba_corporation).then(setCorpContacts)
+        void fetchCorpContacts(result.gba_corporation).then(contacts => {
+          if (active) setCorpContacts(contacts)
+        }).catch(() => { if (active) markFailed("offices") })
       }
-      return
+      return () => { active = false }
     }
-    let active = true
     void lookupLocalOffices(result.lat, result.lng).then(async offices => {
       if (!active) return
       setLocalOffices(offices)
+      markLoaded("offices")
       const corporation = offices.find(office => office.boundary_type === "gba_corporation")
       if (!corporation) return
       setCorpName(corporation.name)
       const contacts = await fetchCorpContacts(corporation.name)
       if (active) setCorpContacts(contacts)
-    })
+    }).catch(() => { if (active) markFailed("offices") })
     return () => { active = false }
-  }, [result?.lat, result?.lng, result?.gba_corporation])
+  }, [result?.lat, result?.lng, result?.gba_corporation, attempt, markFailed, markLoaded])
 
   // ── SPEND tab ─────────────────────────────────────────────
   useEffect(() => {
@@ -281,20 +340,29 @@ export function useWardData(result: PinResult | null) {
     let active = true
 
     if (city.features.budget) {
-      void fetchBudgetSummary(city.budgetYear).then(value => { if (active) setBudget(value) })
+      void fetchBudgetSummary(city.budgetYear).then(value => { if (active) { setBudget(value); markLoaded("budget") } })
+        .catch(() => { if (active) markFailed("budget") })
     }
     if (recordWards.length && city.features.workOrders) {
       void Promise.all(recordWards.map(ref => fetchWorkOrders(ref.ward_no, cityId))).then(groups => {
         if (active) setWorkOrders(uniqueBy(groups.flat(), row => row.work_order_id || row.id))
-      })
+      }).catch(() => { if (active) markFailed("workOrders") })
     }
     if (recordWards.length && city.features.tradeLicenses) {
       void Promise.all(recordWards.map(ref => fetchTradeLicenses(ref.ward_name, cityId))).then(values => {
         if (active) setTradeLicenses(values.flat())
-      })
+      }).catch(() => { if (active) markFailed("tradeLicenses") })
     }
     if (assemblyConstituency && city.features.propertyTax) {
       void fetchPropertyTax(assemblyConstituency, cityId).then(value => { if (active) setPropertyTax(value) })
+        .catch(() => { if (active) markFailed("propertyTax") })
+    }
+    // A few of the corporation's latest tenders, not every city tender.
+    const tenderDepartment = corporationDepartment(result?.gba_corporation)
+    if (tenderDepartment) {
+      void fetchCorporationTenders(tenderDepartment, CORPORATION_TENDERS_SHOWN, cityId).then(value => {
+        if (active) setCorporationTenders(value)
+      }).catch(() => { if (active) markFailed("tenders") })
     }
     if (!historicalWards.length || !city.features.wardSpend || !BBMP_198_RECORDS_ATTRIBUTABLE) {
       setWardSpendSettled(true)
@@ -302,7 +370,7 @@ export function useWardData(result: PinResult | null) {
       // Spend is recorded on the 198-ward map: allocate each 198 ward's total
       // by legacy_share (current -> 243) x bbmp198_share (243 -> 198).
       void loadBbmp198Crosswalk().then(async index => {
-        const weights = index ? bbmp198AllocationWeights(historicalWards, index) : new Map<number, number>()
+        const weights = bbmp198AllocationWeights(historicalWards, requireIndex(index))
         const rows = await fetchWardSpendByBbmp198(weights.keys())
         if (!active) return
         setWardSpendSettled(true)
@@ -311,11 +379,15 @@ export function useWardData(result: PinResult | null) {
         const estimate = { ward_no: 0, ward_name: currentWardName, period: rows[0].period } as WardSpendCategory
         for (const field of fields) Object.assign(estimate, { [field]: allocateBbmp198(weights, rows, row => Number(row[field])) ?? 0 })
         setWardSpend(estimate)
+      }).catch(() => {
+        if (!active) return
+        markFailed("wardSpend")
+        setWardSpendSettled(true)
       })
     }
 
     return () => { active = false }
-  }, [tab, wardNo, cityId, result?.ward_name, historicalWards, recordWards, currentWardName, assemblyConstituency, city.budgetYear, city.features.budget, city.features.workOrders, city.features.tradeLicenses, city.features.propertyTax, city.features.wardSpend])
+  }, [tab, wardNo, cityId, result?.ward_name, result?.gba_corporation, historicalWards, recordWards, currentWardName, assemblyConstituency, city.budgetYear, city.features.budget, city.features.workOrders, city.features.tradeLicenses, city.features.propertyTax, city.features.wardSpend, attempt, markFailed, markLoaded])
 
   // ── CITIZEN tab ───────────────────────────────────────────
   // Reddit "buzz" is not fetched: reddit.com blocks browser requests (CORS)
@@ -325,21 +397,25 @@ export function useWardData(result: PinResult | null) {
     let active = true
 
     if (assemblyConstituency) {
-      void fetchWardStats(assemblyConstituency, cityId).then(value => { if (active) setWardStats(value) })
+      void fetchWardStats(assemblyConstituency, cityId).then(value => { if (active) { setWardStats(value); markLoaded("wardStats") } })
+        .catch(() => { if (active) markFailed("wardStats") })
+    } else {
+      // Area statistics are per assembly constituency; without one there is nothing to wait for.
+      markLoaded("wardStats")
     }
     if (historicalWards.length) {
       void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardBusStats(ref.ward_no) }))).then(results => {
         const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardBusStats } => !!row.value)
         if (active && rows.length) setWardBusStats({ ward_no: 0, stop_count: Math.round(weightedNumber(rows, v => v.stop_count)), total_trips: Math.round(weightedNumber(rows, v => v.total_trips)) })
-      })
+      }).catch(() => { if (active) markFailed("busStats") })
       void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardRoadCrashes(ref.ward_no) }))).then(results => {
         const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardRoadCrashes } => !!row.value)
         if (!active || !rows.length) return
         setRoadCrashes({ ward_no: 0, crashes_2024: Math.round(weightedNumber(rows, v => v.crashes_2024)), fatal_2024: Math.round(weightedNumber(rows, v => v.fatal_2024)), crashes_2025: Math.round(weightedNumber(rows, v => v.crashes_2025)), fatal_2025: Math.round(weightedNumber(rows, v => v.fatal_2025)) })
-      })
+      }).catch(() => { if (active) markFailed("roadCrashes") })
       void Promise.all(recordWards.map(ref => fetchWardAirQuality(ref.ward_no))).then(values => {
         if (active) setAirQuality(values.find(Boolean) ?? null)
-      })
+      }).catch(() => { if (active) markFailed("airQuality") })
     }
     if (historicalWards.length && city.features.wardAmenities) {
       void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardAmenities(ref.ward_no, cityId) }))).then(results => {
@@ -349,34 +425,36 @@ export function useWardData(result: PinResult | null) {
         const estimate = { ward_no: 0, city_id: cityId, data_source: "Historical 243-ward overlap estimate", updated_at: rows[0].value.updated_at } as WardAmenities
         for (const field of fields) Object.assign(estimate, { [field]: Math.round(weightedNumber(rows, value => Number(value[field]))) })
         setAmenities(estimate)
-      })
+      }).catch(() => { if (active) markFailed("amenities") })
     }
     if (recordWards.length && city.features.wardWaterQuality) {
       void Promise.all(recordWards.map(ref => fetchWardWaterQuality(ref.ward_no, cityId))).then(values => {
         if (active) setWaterQuality(uniqueBy(values.flat(), row => `${row.water_body_name}:${row.data_year}`))
-      })
+      }).catch(() => { if (active) markFailed("waterQuality") })
     }
 
     return () => { active = false }
-  }, [tab, wardNo, cityId, historicalWards, recordWards, assemblyConstituency, city.features.wardAmenities, city.features.wardWaterQuality])
+  }, [tab, wardNo, cityId, historicalWards, recordWards, assemblyConstituency, city.features.wardAmenities, city.features.wardWaterQuality, attempt, markFailed, markLoaded])
 
   // ── REACH tab ─────────────────────────────────────────────
   useEffect(() => {
     if (tab !== "reach") return
     let active = true
 
-    void fetchDepartments(cityId).then(value => { if (active) setDepartments(value as Department[]) })
+    void fetchDepartments(cityId).then(value => { if (active) { setDepartments(value as Department[]); markLoaded("departments") } })
+      .catch(() => { if (active) markFailed("departments") })
     if (assemblyConstituency && city.features.sakala) {
       void fetchSakalaPerformance(assemblyConstituency).then(value => { if (active) setSakala(value) })
+        .catch(() => { if (active) markFailed("sakala") })
     }
     if (recordWards.length && city.features.grievances) {
       void Promise.all(recordWards.map(ref => fetchWardGrievances(ref.ward_name, cityId))).then(values => {
         if (active) setGrievances(values.flat())
-      })
+      }).catch(() => { if (active) markFailed("grievances") })
     }
 
     return () => { active = false }
-  }, [tab, wardNo, cityId, recordWards, assemblyConstituency, city.features.sakala, city.features.grievances])
+  }, [tab, wardNo, cityId, recordWards, assemblyConstituency, city.features.sakala, city.features.grievances, attempt, markFailed, markLoaded])
 
   // ── Eager ward context used by the header and story card ─
   useEffect(() => {
@@ -396,21 +474,29 @@ export function useWardData(result: PinResult | null) {
       // the top); only signal_count is carried. Bus figures: wardBusStats.
       if (rows.length) setInfraStats({ ward_no: 0, ward_name: currentWardName, signal_count: Math.round(weightedNumber(rows, v => v.signal_count)), bus_stop_count: 0, daily_trips: 0 })
       setInfraSettled(true)
+    }).catch(() => {
+      if (!active) return
+      markFailed("infra")
+      setInfraSettled(true)
     })
     void Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardReportCount(ref.ward_no, cityId) }))).then(rows => {
       if (active) setReportCount(Math.round(weightedNumber(rows, value => value)))
-    })
+    }).catch(() => { if (active) markFailed("reportCount") })
     void Promise.all(recordWards.map(ref => fetchWardSignals(ref.ward_no, cityId))).then(values => {
       if (active) setSignals(uniqueBy(values.flat(), row => row.id))
-    })
+    }).catch(() => { if (active) markFailed("signals") })
     if (city.features.wardPotholes && BBMP_198_RECORDS_ATTRIBUTABLE) {
       // Complaints are counted on the 198-ward map: allocate like spend.
       void loadBbmp198Crosswalk().then(async index => {
-        const weights = index ? bbmp198AllocationWeights(historicalWards, index) : new Map<number, number>()
+        const weights = bbmp198AllocationWeights(historicalWards, requireIndex(index))
         const rows = await fetchWardPotholesByBbmp198(weights.keys())
         if (!active) return
         const complaints = allocateBbmp198(weights, rows, row => row.complaints)
         if (complaints != null) setPotholes({ ward_no: 0, ward_name: currentWardName, complaints: Math.round(complaints), data_year: rows[0].data_year })
+        setPotholesSettled(true)
+      }).catch(() => {
+        if (!active) return
+        markFailed("potholes")
         setPotholesSettled(true)
       })
     } else {
@@ -422,13 +508,17 @@ export function useWardData(result: PinResult | null) {
         const contractors = uniqueBy(values.flat(), row => row.entity_id)
         setWardContractors(contractors.sort((a, b) => (Number(b.total_value_lakh) || 0) - (Number(a.total_value_lakh) || 0)))
         setContractorsSettled(true)
+      }).catch(() => {
+        if (!active) return
+        markFailed("contractors")
+        setContractorsSettled(true)
       })
     } else {
       setContractorsSettled(true)
     }
 
     return () => { active = false }
-  }, [historicalWards, recordWards, currentWardName, cityId, city.features.wardPotholes, city.features.workOrders])
+  }, [historicalWards, recordWards, currentWardName, cityId, city.features.wardPotholes, city.features.workOrders, attempt, markFailed])
 
   // ── Derived values ────────────────────────────────────────
   const allFacts = [...(profile?.community_facts ?? []), ...extraFacts]
@@ -448,8 +538,27 @@ export function useWardData(result: PinResult | null) {
 
   function refreshUnknowns() {
     setUnknowns(null)
-    if (wardNo) void fetchWardUnknowns(wardNo, cityId).then(setUnknowns)
+    if (wardNo) void fetchWardUnknowns(wardNo, cityId).then(setUnknowns).catch(() => markFailed("unknowns"))
   }
+
+  /**
+   * Load every failed part again. The headline and snapshot wait for their
+   * inputs a second time, so a retry never shows a finding built without one.
+   */
+  function retry() {
+    if (failures.has("reportCard")) setReportCardSettled(false)
+    if (failures.has("committee")) setCommitteeSettled(false)
+    if (failures.has("infra")) setInfraSettled(false)
+    if (failures.has("contractors")) setContractorsSettled(false)
+    if (failures.has("potholes")) setPotholesSettled(false)
+    if (failures.has("wardSpend")) setWardSpendSettled(false)
+    if (failures.has("profile")) setProfileLoading(true)
+    setFailures(new Set())
+    setAttempt(value => value + 1)
+  }
+
+  const loadFailed = (section: LoadSection) => failures.has(section)
+  const loadDone = (section: LoadSection) => loaded.has(section)
 
   return {
     city,
@@ -467,8 +576,10 @@ export function useWardData(result: PinResult | null) {
     corpContacts, corpName,
     allFacts, officerGroups,
     handleCorroborate, handleNewFact, refreshUnknowns,
+    // failed reads
+    loadFailed, loadDone, retry,
     // expenses
-    budget, workOrders, wardContractors, tradeLicenses,
+    budget, workOrders, wardContractors, tradeLicenses, corporationTenders,
     // stats
     wardStats, grievances, potholes, infraStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality,
     wardSpend, wardSpendSettled, propertyTax, sakala, reportCount, signals,

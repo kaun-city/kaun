@@ -17,7 +17,7 @@ import { MAP_LAYERS, getLayer } from "@/lib/map-layers"
 import type { ChoroplethData } from "@/components/MapView"
 import { currentWardMeta, currentWardPinResult, featureContains, type CurrentWardMeta } from "@/lib/current-ward"
 import { GBA_CROSSWALK_URL, MATERIAL_OVERLAP, gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact, type GbaCrosswalkRow } from "@/lib/gba-crosswalk"
-import { publicSupabaseConfig } from "@/lib/supabase-config"
+import { queryOrThrow } from "@/lib/supabase"
 import Link from "next/link"
 import { CIVIC_PROJECTS, searchCivicProjects } from "@/lib/civic-projects"
 
@@ -529,12 +529,10 @@ export default function HomePage({ host = "" }: { host?: string }) {
 
     if (reportParam) {
       // Fetch report location and pan to it
-      const { url: supabaseUrl, anonKey: supabaseAnon } = publicSupabaseConfig()
-      fetch(
-        `${supabaseUrl}/rest/v1/ward_reports?id=eq.${reportParam}&status=eq.approved&select=lat,lng,ward_no,ward_name,issue_type,ai_label,ai_person&limit=1`,
-        { headers: { apikey: supabaseAnon, Authorization: `Bearer ${supabaseAnon}` } }
-      )
-        .then(r => r.json())
+      queryOrThrow<{ lat: number; lng: number }>("ward_reports", { id: `eq.${reportParam}`, status: "eq.approved" }, {
+        select: "lat,lng,ward_no,ward_name,issue_type,ai_label,ai_person",
+        limit: 1,
+      })
         .then(async (rows) => {
           const report = Array.isArray(rows) ? rows[0] : null
           if (!report) return
