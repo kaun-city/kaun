@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import type { ContractorProfile, RepReportCard, WardCommitteeMeetings, WardInfraStats, WardPotholes } from "@/lib/types"
+import { LoadFailed } from "@/components/shared/LoadFailed"
 
 interface Props {
   reportCard: RepReportCard | null
@@ -13,6 +14,9 @@ interface Props {
   cityId?: string
   /** The measures below have loaded; until then rows are held as skeletons so they don't jump in. */
   settled?: boolean
+  /** A measure could not be loaded; the snapshot would silently drop its row. */
+  failed?: boolean
+  onRetry?: () => void
 }
 
 interface EvidenceItem {
@@ -79,6 +83,15 @@ const VISIBLE_ROWS = 4
  */
 export function WardGrade(props: Props) {
   const [open, setOpen] = useState(false)
+
+  if (props.failed && props.onRetry) {
+    return (
+      <div className="mx-5 mb-3">
+        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink/60">Evidence snapshot</p>
+        <LoadFailed what="the evidence snapshot" onRetry={props.onRetry} className="mt-1.5" />
+      </div>
+    )
+  }
 
   if (props.settled === false) {
     return (

@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import { allCities } from "@/lib/cities"
 import { deriveOverallHealth } from "@/lib/health-status"
+import { CRON_JOBS, cronStatus, type CronJob, type CronStatus } from "@/lib/cron-runs"
 
 export const runtime = "nodejs"
 export const maxDuration = 15
@@ -44,6 +45,18 @@ interface RecentFact {
   created_at: string
 }
 
+interface CronHealth {
+  name: string
+  job: CronJob
+  /** Last run the job counted as successful (public.cron_runs); what status is judged on. */
+  last_run_at: string | null
+  /** Last run of any outcome. */
+  last_attempt_at: string | null
+  /** Newest row the job wrote. For information only: quiet days write nothing. */
+  last_data_at: string | null
+  status: CronStatus
+}
+
 interface CityCoverage {
   city_id: string
   name: string
@@ -71,7 +84,7 @@ interface HealthResult {
   supabase: "connected" | "error"
   tables: TableCheck[]
   cities: CityCoverage[]
-  crons: { name: string; last_data_at: string | null; status: "ok" | "stale" | "unknown" }[]
+  crons: CronHealth[]
   summary: {
     total_wards: number | null
     total_reps: number | null
@@ -189,7 +202,7 @@ export async function GET() {
       checkTable(supabase, "contractor_profiles", "updated_at"),
       checkTable(supabase, "ward_reports", "reported_at"),
       checkTable(supabase, "ask_kaun_logs", "asked_at"),
-      checkTable(supabase, "civic_signals", "signal_at"),
+      checkTable(supabase, "civic_signals", "ingested_at"),
       checkTable(supabase, "community_facts", "created_at"),
       checkTable(supabase, "city_pulse_facts", "created_at"),
       checkTable(supabase, "ward_grievances", "created_at"),
@@ -305,20 +318,29 @@ export async function GET() {
     result.recent_signals = signals
     result.recent_community_facts = facts
 
-    // Cron health
-    const signalsLatest = find("civic_signals")?.latest_at
-    const pulseLatest = find("city_pulse_facts")?.latest_at
+    // Cron health: judged on each job's own heartbeat, not on its newest row,
+    // because a run that finds nothing new writes no rows.
+    const { data: runs, error: runsError } = await supabase
+      .from("cron_runs")
+      .select("job,last_attempt_at,last_success_at")
+    const runFor = (job: CronJob) =>
+      (runs as Array<{ job: string; last_attempt_at: string; last_success_at: string | null }> | null)
+        ?.find(run => run.job === job)
+    const now = Date.now()
+    const cron = (name: string, job: CronJob, lastDataAt: string | null | undefined): CronHealth => {
+      const run = runFor(job)
+      return {
+        name,
+        job,
+        last_run_at: run?.last_success_at ?? null,
+        last_attempt_at: run?.last_attempt_at ?? null,
+        last_data_at: lastDataAt ?? null,
+        status: cronStatus(run?.last_success_at, !runsError, now),
+      }
+    }
     result.crons = [
-      {
-        name: "ingest-signals (daily 2am UTC)",
-        last_data_at: signalsLatest ?? null,
-        status: signalsLatest && (Date.now() - new Date(signalsLatest).getTime()) < 48 * 60 * 60 * 1000 ? "ok" : "stale",
-      },
-      {
-        name: "refresh-pulse (daily 6am UTC)",
-        last_data_at: pulseLatest ?? null,
-        status: pulseLatest && (Date.now() - new Date(pulseLatest).getTime()) < 48 * 60 * 60 * 1000 ? "ok" : "stale",
-      },
+      cron("ingest-signals (daily 2am UTC)", CRON_JOBS.ingestSignals, find("civic_signals")?.latest_at),
+      cron("refresh-pulse (daily 6am UTC)", CRON_JOBS.refreshPulse, find("city_pulse_facts")?.latest_at),
     ]
 
     // Overall status

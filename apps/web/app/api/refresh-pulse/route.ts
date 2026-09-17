@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js"
+import { CRON_JOBS, recordCronRun, runSucceeded } from "@/lib/cron-runs"
 import { dedupKey } from "@/lib/pulse-dedup"
 import { buildPulseFact, parseRssItems } from "@/lib/pulse-ingest"
 
@@ -50,6 +51,8 @@ export async function GET(req: Request) {
 
   let totalNew = 0
   let skipped = 0
+  let writesTried = 0
+  let writeErrors = 0
   const errors: string[] = []
 
   // Seed the in-run dedup set from existing rows. The DB UNIQUE
@@ -98,7 +101,9 @@ export async function GET(req: Request) {
           expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         }, { onConflict: "dedup_key,city_id", ignoreDuplicates: true })
 
-        if (!error) totalNew++
+        writesTried++
+        if (error) writeErrors++
+        else totalNew++
       }
     } catch (e) {
       errors.push(`${feed.name}: ${e instanceof Error ? e.message : String(e)}`)
@@ -112,5 +117,14 @@ export async function GET(req: Request) {
     .lt("expires_at", new Date().toISOString())
     .eq("is_editorial", false)
 
-  return Response.json({ ok: true, new_facts: totalNew, skipped, errors })
+  // errors holds one entry per feed that could not be read or parsed.
+  const succeeded = runSucceeded([
+    { tried: RSS_FEEDS.length, failed: errors.length },
+    { tried: writesTried, failed: writeErrors },
+  ])
+  await recordCronRun(supabase, CRON_JOBS.refreshPulse, succeeded, {
+    new_facts: totalNew, skipped, write_errors: writeErrors, feed_errors: errors,
+  })
+
+  return Response.json({ ok: true, succeeded, new_facts: totalNew, skipped, write_errors: writeErrors, errors })
 }

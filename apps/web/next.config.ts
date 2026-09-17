@@ -1,4 +1,5 @@
 import type { NextConfig } from "next"
+import { DB_PROXY_PATH, publicSupabaseConfig } from "./lib/supabase-config"
 
 /**
  * The two committed map assets are the largest things Kaun serves and the
@@ -28,6 +29,16 @@ const BUILD_SHA = process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ??
 const BUILD_REF = process.env.VERCEL_GIT_COMMIT_REF ?? process.env.GITHUB_REF_NAME ?? "local"
 const BUILD_TIME = new Date().toISOString()
 
+/**
+ * Browser reads and writes reach Supabase through kaun.city (see DB_PROXY_PATH
+ * in lib/supabase-config.ts): some Indian networks cannot connect to
+ * *.supabase.co. A rewrite to an external origin is proxied by Vercel's edge,
+ * so no function runs and methods, bodies and the apikey/Authorization/Prefer
+ * headers pass through. Only PostgREST and public Storage objects (report
+ * photos) are exposed, exactly what the anon key could already reach.
+ */
+const SUPABASE_UPSTREAM = publicSupabaseConfig().url
+
 const nextConfig: NextConfig = {
   agentRules: false,
   poweredByHeader: false,
@@ -39,11 +50,23 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_KAUN_BUILD_REF: BUILD_REF,
     NEXT_PUBLIC_KAUN_BUILD_TIME: BUILD_TIME,
   },
+  async rewrites() {
+    return [
+      { source: `${DB_PROXY_PATH}/rest/v1/:path*`, destination: `${SUPABASE_UPSTREAM}/rest/v1/:path*` },
+      { source: `${DB_PROXY_PATH}/storage/v1/object/public/:path*`, destination: `${SUPABASE_UPSTREAM}/storage/v1/object/public/:path*` },
+    ]
+  },
   async headers() {
     return [
       {
         source: "/:path*",
         headers: [{ key: "X-Content-Type-Options", value: "nosniff" }],
+      },
+      // Live rows, never a shared cache: PostgREST sends no Cache-Control, and
+      // this keeps the edge and the browser from inventing one.
+      {
+        source: `${DB_PROXY_PATH}/rest/v1/:path*`,
+        headers: [{ key: "Cache-Control", value: "no-store" }],
       },
       ...IMMUTABLE_ASSETS.map(source => ({
         source,

@@ -6,6 +6,8 @@ import type { Department, LocalOffice, SakalaPerformance, WardGrievances } from 
 import { FreshnessBadge } from "@/components/shared/FreshnessBadge"
 import { RTIDraftSheet } from "@/components/shared/RTIDraftSheet"
 import type { RTIDraftRequest, RTIIssueType } from "@/app/api/rti-draft/route"
+import { LoadFailed } from "@/components/shared/LoadFailed"
+import type { LoadSection } from "@/hooks/useWardData"
 
 const OFFICE_LABELS: Record<string, string> = {
   pincode:               "Pin Code",
@@ -39,6 +41,9 @@ interface Props {
   /** Citation for letters (current GBA identity when there is one). */
   wardLabel: string
   assemblyConstituency: string
+  loadFailed: (section: LoadSection) => boolean
+  loadDone: (section: LoadSection) => boolean
+  onRetry: () => void
 }
 
 const RTI_ISSUES: { type: RTIIssueType; label: string; desc: string }[] = [
@@ -58,7 +63,7 @@ function telHref(number: string): string {
   return `tel:${number.replace(/[^\d+]/g, "")}`
 }
 
-export function ReachTab({ city, localOffices, departments, grievances, sakala, wardNo, wardName, wardLabel, assemblyConstituency }: Props) {
+export function ReachTab({ city, localOffices, departments, grievances, sakala, wardNo, wardName, wardLabel, assemblyConstituency, loadFailed, loadDone, onRetry }: Props) {
   const offices = localOffices.filter(o => o.boundary_type !== "gba_corporation")
   const [rtiRequest, setRtiRequest] = useState<RTIDraftRequest | null>(null)
   const [showIssues, setShowIssues] = useState(false)
@@ -67,6 +72,10 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala, 
     <>
     <RTIDraftSheet request={rtiRequest} onClose={() => setRtiRequest(null)} />
     <div className="px-5 py-4 space-y-6 pb-safe-content">
+
+      {(["grievances", "sakala"] as const).some(loadFailed) && (
+        <LoadFailed what="complaint or Sakala service records" message="Some of this ward's service records couldn't load" onRetry={onRetry} />
+      )}
 
       {/* Complaint Resolution */}
       {grievances.length > 0 && (
@@ -189,8 +198,13 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala, 
             ))}
           </div>
         </div>
-      ) : (
-        <div className="border-y border-ink/15 py-4 text-center space-y-1">
+      ) : loadFailed("offices") ? (
+        <div className="space-y-2">
+          <p className={EYEBROW}>Your Local Offices</p>
+          <LoadFailed what="local offices" onRetry={onRetry} />
+        </div>
+      ) : loadDone("offices") ? null : (
+        <div aria-busy="true" className="border-y border-ink/15 py-4 text-center space-y-1">
           <p className="text-sm text-ink/60">Loading local offices...</p>
           <div className="h-2 w-full bg-ink/10 animate-pulse mt-2" />
           <div className="h-2 w-3/4 bg-ink/10 animate-pulse" />
@@ -239,8 +253,13 @@ export function ReachTab({ city, localOffices, departments, grievances, sakala, 
             })}
           </div>
         </div>
-      ) : (
+      ) : loadFailed("departments") ? (
         <div className="space-y-2">
+          <p className={EYEBROW}>Agencies &amp; Helplines</p>
+          <LoadFailed what="agencies and helplines" onRetry={onRetry} />
+        </div>
+      ) : loadDone("departments") ? null : (
+        <div aria-busy="true" className="space-y-2">
           <p className={EYEBROW}>Agencies &amp; Helplines</p>
           <div className="border-t border-ink/15">
             {[1,2,3,4].map(i => (

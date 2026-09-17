@@ -104,6 +104,11 @@ npx supabase db push --dry-run --db-url "$url"   # must list only versions added
 unset PGPASSWORD
 ```
 
+`20260918_cron_runs.sql` (the scheduled-job heartbeat) and
+`20260919_ward_profile_without_tenders.sql` are pasted into the SQL editor
+separately. Once they are live, add `20260918 20260919` to the repair list above
+and expect the dry run to list only versions after them.
+
 `repair` only records versions that are already live; it runs none of their
 SQL. On Windows PowerShell use `$env:PGPASSWORD = '…'` and
 `Remove-Item Env:PGPASSWORD`.

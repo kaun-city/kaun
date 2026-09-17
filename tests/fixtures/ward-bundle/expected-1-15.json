@@ -1,0 +1,427 @@
+{
+  "result": {
+    "found": true,
+    "city_id": "bengaluru",
+    "ward_no": null,
+    "ward_name": null,
+    "zone": "C.V. Raman Nagar",
+    "assembly_constituency": "C.V. Raman Nagar",
+    "agencies": [],
+    "primary_agency": null,
+    "gba_ward_no": 15,
+    "gba_ward_name": "Indiranagar",
+    "gba_ward_name_kn": "ಇಂದಿರಾನಗರ",
+    "gba_corporation": "Central",
+    "gba_corporation_id": 1,
+    "gba_ac": "C.V. Raman Nagar",
+    "gba_ac_no": 161,
+    "gba_zone": "Zone1",
+    "gba_zone_name": "C.V. Raman Nagar",
+    "gba_population": 19324,
+    "historical_wards": [
+      {
+        "ward_no": 121,
+        "ward_name": "Old Thippasandra",
+        "current_share": 0.3824,
+        "legacy_share": 0.5596
+      },
+      {
+        "ward_no": 119,
+        "ward_name": "New Bayappanahalli",
+        "current_share": 0.35812,
+        "legacy_share": 0.28076
+      },
+      {
+        "ward_no": 120,
+        "ward_name": "Hoysala Nagar",
+        "current_share": 0.20941,
+        "legacy_share": 0.39767
+      },
+      {
+        "ward_no": 122,
+        "ward_name": "New Thippasandra",
+        "current_share": 0.05008,
+        "legacy_share": 0.0586
+      }
+    ],
+    "historical_crosswalk_tier": "ambiguous",
+    "historical_crosswalk_version": "gba369-dm243-2026.09",
+    "lat": 12.981116295943501,
+    "lng": 77.64262060787395
+  },
+  "who": {
+    "electedReps": [
+      12,
+      30
+    ],
+    "committeeMeetings": [
+      {
+        "ward_no": 79,
+        "ward_name": "Sarvagna Nagar",
+        "assembly_constituency": "C.V. RAMAN NAGAR",
+        "meetings_count": 24,
+        "period": "2020-2022"
+      },
+      {
+        "ward_no": 80,
+        "ward_name": "Hoysala Nagar",
+        "assembly_constituency": "C.V. RAMAN NAGAR",
+        "meetings_count": 22,
+        "period": "2020-2022"
+      },
+      {
+        "ward_no": 58,
+        "ward_name": "New Tippasandra",
+        "assembly_constituency": "C.V. RAMAN NAGAR",
+        "meetings_count": 38,
+        "period": "2020-2022"
+      },
+      {
+        "ward_no": 88,
+        "ward_name": "Jeevanbhima Nagar",
+        "assembly_constituency": "C.V. RAMAN NAGAR",
+        "meetings_count": 19,
+        "period": "2020-2022"
+      }
+    ],
+    "reportCard": {
+      "role": "MLA",
+      "constituency": "C V Raman Nagar",
+      "attendance_pct": 78.3,
+      "questions_asked": 1,
+      "debates": null,
+      "bills_introduced": 0,
+      "committees": 2,
+      "lad_utilization_pct": 100,
+      "net_worth_growth_pct": 26.1,
+      "criminal_cases": 0,
+      "term": "2023-2025"
+    },
+    "ladFunds": [
+      {
+        "assembly_constituency": "C V Raman Nagar",
+        "financial_year": "2013-14",
+        "total_lakh": 200,
+        "project_count": 24,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "C V Raman Nagar",
+        "financial_year": "2014-15",
+        "total_lakh": 190,
+        "project_count": 20,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "C V Raman Nagar",
+        "financial_year": "2015-16",
+        "total_lakh": 195,
+        "project_count": 20,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "C V Raman Nagar",
+        "financial_year": "2016-17",
+        "total_lakh": 193.37,
+        "project_count": 57,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "C V Raman Nagar",
+        "financial_year": "2017-18",
+        "total_lakh": 200,
+        "project_count": 21,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "C V Raman Nagar",
+        "financial_year": "ALL",
+        "total_lakh": 978.37,
+        "project_count": 142,
+        "term": "2013-2018"
+      }
+    ],
+    "corpContacts": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "corpName": "Bengaluru Central City Corporation",
+    "officers": [],
+    "governance_alert": {
+      "body": "BBMP was dissolved in 2020. The Greater Bengaluru Authority (GBA) is administered by a state-appointed administrator. No ward-level elections have been held since.",
+      "level": "warning",
+      "title": "No elected corporator"
+    },
+    "facts": [],
+    "infraStats": {
+      "ward_no": 0,
+      "ward_name": "Indiranagar",
+      "signal_count": 21,
+      "bus_stop_count": 0,
+      "daily_trips": 0
+    },
+    "potholes": {
+      "ward_no": 0,
+      "ward_name": "Indiranagar",
+      "complaints": 82,
+      "data_year": "2022"
+    }
+  },
+  "spend": {
+    "budget": {
+      "total": 1992708,
+      "departments": 10
+    },
+    "workOrders": [
+      "460800",
+      "561543",
+      "555804",
+      "555773",
+      "112-24-000005",
+      "113-24-000014",
+      "544797",
+      "412203",
+      "385916",
+      "385911",
+      "555291",
+      "113-25-000010",
+      "113-25-000011",
+      "555272",
+      "560387",
+      "516061",
+      "113-24-000001",
+      "565730",
+      "565160",
+      "114-25-000011",
+      "108-24-000013",
+      "420061",
+      "475388",
+      "409157",
+      "409158",
+      "108-25-000017",
+      "409148",
+      "668880",
+      "108-25-000006",
+      "464191",
+      "475379",
+      "619760",
+      "471535",
+      "419929",
+      "420016",
+      "108-24-000011",
+      "110-25-000009",
+      "573758",
+      "110-25-000008",
+      "108-25-000013",
+      "430052",
+      "663804",
+      "694029",
+      "113-25-000008",
+      "113-25-000006",
+      "113-24-000011",
+      "113-25-000003",
+      "113-25-000004",
+      "113-25-000001",
+      "362857",
+      "559166",
+      "113-25-000014",
+      "113-25-000002",
+      "550986"
+    ],
+    "tradeLicenses": [],
+    "wardSpend": {
+      "ward_no": 0,
+      "ward_name": "Indiranagar",
+      "period": "2018-2023",
+      "buildings_facilities": 58225166.77019825,
+      "drainage": 39895779.85944286,
+      "roads_and_drains": 99667477.80399922,
+      "roads_and_infrastructure": 171601788.96764898,
+      "streetlighting": 21853995.3528157,
+      "waste_management": 1212605.00726756,
+      "water_and_sanitation": 15894079.279572036,
+      "grand_total": 444306652.4578835
+    },
+    "wardSpendSettled": true,
+    "propertyTax": {
+      "years": [
+        {
+          "ward_count": 7,
+          "financial_year": "2018-2019",
+          "total_applications": 45477,
+          "total_collection_lakh": 9587.81
+        },
+        {
+          "ward_count": 7,
+          "financial_year": "2017-2018",
+          "total_applications": 48375,
+          "total_collection_lakh": 9718.31
+        },
+        {
+          "ward_count": 7,
+          "financial_year": "2016-2017",
+          "total_applications": 48512,
+          "total_collection_lakh": 8968.33
+        }
+      ],
+      "assembly_constituency": "C V Raman Nagar"
+    },
+    "wardContractors": [
+      "ph_0000000000",
+      "ph_9845141339",
+      "ph_9731165077",
+      "ph_9964121710",
+      "ph_9448032450",
+      "ph_9972754772",
+      "ph_8105116644",
+      "ph_9482641999",
+      "ph_9980079495",
+      "ph_9845327879",
+      "ph_9986233330",
+      "ph_9986400576",
+      "ph_9242999572",
+      "ph_9620096296",
+      "ph_6362149462",
+      "ph_9448088965",
+      "ph_9901967054",
+      "ph_9900094714",
+      "ph_9663621992",
+      "ph_9343784525",
+      "ph_8050030921",
+      "ph_8123413136",
+      "ph_9036647204",
+      "ph_9448053466",
+      "ph_9900165808",
+      "ph_9036673220",
+      "ph_9731927307",
+      "ph_8867211848",
+      "ph_9845117217",
+      "ph_9845239239",
+      "ph_9886812199",
+      "ph_8197625244",
+      "ph_9845829575",
+      "ph_9900653375",
+      "ph_9900494225",
+      "ph_9972083836",
+      "ph_9480676222",
+      "ph_9880128224",
+      "ph_9986564885",
+      "ph_9008229229"
+    ]
+  },
+  "citizen": {
+    "wardStats": {
+      "trees": 28136,
+      "source": "Census 2011 + BBMP / KGIS via opencity.in",
+      "data_year": 2011,
+      "dwcc_count": 13,
+      "ward_count": 7,
+      "total_lakes": 5,
+      "total_parks": 86,
+      "namma_clinics": 5,
+      "total_area_sqkm": 21.6,
+      "total_bus_stops": 128,
+      "total_bus_routes": 1294,
+      "total_households": 79689,
+      "total_population": 300770,
+      "total_playgrounds": 9,
+      "total_govt_schools": 24,
+      "total_streetlights": 13823,
+      "total_fire_stations": 0,
+      "total_road_length_km": 396,
+      "assembly_constituency": "C V Raman Nagar",
+      "total_police_stations": 4,
+      "avg_population_density": 15000
+    },
+    "potholes": {
+      "ward_no": 0,
+      "ward_name": "Indiranagar",
+      "complaints": 82,
+      "data_year": "2022"
+    },
+    "infraStats": {
+      "ward_no": 0,
+      "ward_name": "Indiranagar",
+      "signal_count": 21,
+      "bus_stop_count": 0,
+      "daily_trips": 0
+    },
+    "wardBusStats": {
+      "ward_no": 0,
+      "stop_count": 12,
+      "total_trips": 4467
+    },
+    "roadCrashes": {
+      "ward_no": 0,
+      "crashes_2024": 7,
+      "fatal_2024": 1,
+      "crashes_2025": 6,
+      "fatal_2025": 1
+    },
+    "airQuality": null,
+    "amenities": {
+      "ward_no": 0,
+      "city_id": "bengaluru",
+      "data_source": "Historical 243-ward overlap estimate",
+      "updated_at": "2026-03-29T09:26:43.512+00:00",
+      "hospitals": 11,
+      "clinics": 23,
+      "pharmacies": 17,
+      "atms": 19,
+      "banks": 24,
+      "public_toilets": 2,
+      "ev_charging": 1,
+      "petrol_pumps": 2,
+      "post_offices": 3,
+      "libraries": 2,
+      "community_halls": 0,
+      "places_of_worship": 0,
+      "restaurants": 0,
+      "cafes": 25,
+      "metro_stations": 1
+    },
+    "waterQuality": []
+  },
+  "reach": {
+    "departments": [
+      "GBA",
+      "GBA-Health",
+      "GBA-SWM",
+      "KSFES",
+      "KLCDA",
+      "KSPCB",
+      "Sampark",
+      "BCP",
+      "BTP",
+      "BDA",
+      "BMRCL",
+      "BMTC",
+      "BESCOM",
+      "BWSSB",
+      "GAIL"
+    ],
+    "grievances": [
+      {
+        "year": 2025,
+        "total_complaints": 816,
+        "closed": 739,
+        "in_progress": 0,
+        "registered": 48,
+        "reopened": 5
+      },
+      {
+        "year": 2024,
+        "total_complaints": 1585,
+        "closed": 1459,
+        "in_progress": 2,
+        "registered": 27,
+        "reopened": 4
+      }
+    ],
+    "sakala": null
+  }
+}

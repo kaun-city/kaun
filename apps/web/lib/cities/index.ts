@@ -1,5 +1,5 @@
-import { bengaluru } from "./bengaluru"
-import type { CityConfig } from "./types"
+import { bengaluru } from "./bengaluru.ts"
+import type { CityConfig } from "./types.ts"
 
 export type { CityConfig, CityFeatures, CityTone } from "./types"
 

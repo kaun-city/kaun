@@ -3,6 +3,7 @@
 import type { ContractorProfile, RepReportCard, WardCommitteeMeetings, WardInfraStats } from "@/lib/types"
 import { getCity } from "@/lib/cities"
 import { formatLakh } from "@/lib/ward-utils"
+import { LoadFailed } from "@/components/shared/LoadFailed"
 
 interface Props {
   reportCard: RepReportCard | null
@@ -22,6 +23,9 @@ interface Props {
    * holds the space, so the reader never sees one finding swap for another.
    */
   settled?: boolean
+  /** An input could not be loaded: a headline without it would be a guess. */
+  failed?: boolean
+  onRetry?: () => void
 }
 
 interface Headline {
@@ -160,6 +164,9 @@ export function pickHeadline({ reportCard, committeeMeetings, infraStats, wardCo
 }
 
 export function WardHeadline(props: Props) {
+  if (props.failed && props.onRetry) {
+    return <LoadFailed what="the main finding for this ward" message="Couldn't load this ward's main finding" onRetry={props.onRetry} className="mx-5 mb-3" />
+  }
   if (props.settled === false) {
     return (
       <div aria-busy="true" className="mx-5 mb-3 h-[5.25rem] border border-ink/10 px-3.5 py-3">

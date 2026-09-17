@@ -1,0 +1,199 @@
+{
+  "result": {
+    "found": true,
+    "city_id": "bengaluru",
+    "ward_no": null,
+    "ward_name": null,
+    "zone": "Mahadevapura",
+    "assembly_constituency": "Mahadevapura",
+    "agencies": [],
+    "primary_agency": null,
+    "gba_ward_no": 28,
+    "gba_ward_name": "Byrathi",
+    "gba_ward_name_kn": "ಬೈರತಿ",
+    "gba_corporation": "East",
+    "gba_corporation_id": 3,
+    "gba_ac": "Mahadevapura",
+    "gba_ac_no": 174,
+    "gba_zone": "Zone1",
+    "gba_zone_name": "Mahadevapura",
+    "gba_population": 13969,
+    "historical_wards": [],
+    "historical_crosswalk_tier": "outside",
+    "historical_crosswalk_version": "gba369-dm243-2026.09",
+    "lat": 13.060691260651497,
+    "lng": 77.6524770833089
+  },
+  "who": {
+    "electedReps": [
+      25
+    ],
+    "committeeMeetings": [],
+    "reportCard": {
+      "role": "MLA",
+      "constituency": "Mahadevapura",
+      "attendance_pct": 82.6,
+      "questions_asked": 0,
+      "debates": null,
+      "bills_introduced": 0,
+      "committees": 1,
+      "lad_utilization_pct": 0,
+      "net_worth_growth_pct": null,
+      "criminal_cases": 0,
+      "term": "2023-2025"
+    },
+    "ladFunds": [
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2013-14",
+        "total_lakh": 117.83,
+        "project_count": 35,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2014-15",
+        "total_lakh": 320,
+        "project_count": 27,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2015-16",
+        "total_lakh": 200.59,
+        "project_count": 41,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2016-17",
+        "total_lakh": 205,
+        "project_count": 57,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2017-18",
+        "total_lakh": 168,
+        "project_count": 20,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "ALL",
+        "total_lakh": 1011.42,
+        "project_count": 180,
+        "term": "2013-2018"
+      }
+    ],
+    "corpContacts": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "corpName": "Bengaluru East City Corporation",
+    "officers": [],
+    "governance_alert": null,
+    "facts": [],
+    "infraStats": null,
+    "potholes": null
+  },
+  "spend": {
+    "budget": {
+      "total": 1992708,
+      "departments": 10
+    },
+    "workOrders": [],
+    "tradeLicenses": [],
+    "wardSpend": null,
+    "wardSpendSettled": true,
+    "propertyTax": {
+      "years": [
+        {
+          "ward_count": 8,
+          "financial_year": "2018-2019",
+          "total_applications": 125025,
+          "total_collection_lakh": 32291.41
+        },
+        {
+          "ward_count": 8,
+          "financial_year": "2017-2018",
+          "total_applications": 113623,
+          "total_collection_lakh": 29018.64
+        },
+        {
+          "ward_count": 8,
+          "financial_year": "2016-2017",
+          "total_applications": 115366,
+          "total_collection_lakh": 27406.06
+        }
+      ],
+      "assembly_constituency": "Mahadevapura"
+    },
+    "wardContractors": []
+  },
+  "citizen": {
+    "wardStats": {
+      "trees": 55795,
+      "source": "Census 2011 + BBMP / KGIS via opencity.in",
+      "data_year": 2011,
+      "dwcc_count": 10,
+      "ward_count": 8,
+      "total_lakes": 34,
+      "total_parks": 108,
+      "namma_clinics": 4,
+      "total_area_sqkm": 115.4,
+      "total_bus_stops": 311,
+      "total_bus_routes": 1435,
+      "total_households": 116304,
+      "total_population": 431976,
+      "total_playgrounds": 6,
+      "total_govt_schools": 48,
+      "total_streetlights": 26757,
+      "total_fire_stations": 2,
+      "total_road_length_km": 1181,
+      "assembly_constituency": "Mahadevapura",
+      "total_police_stations": 7,
+      "avg_population_density": 5190
+    },
+    "potholes": null,
+    "infraStats": null,
+    "wardBusStats": null,
+    "roadCrashes": null,
+    "airQuality": null,
+    "amenities": null,
+    "waterQuality": []
+  },
+  "reach": {
+    "departments": [
+      "GBA",
+      "GBA-Health",
+      "GBA-SWM",
+      "KSFES",
+      "KLCDA",
+      "KSPCB",
+      "Sampark",
+      "BCP",
+      "BTP",
+      "BDA",
+      "BMRCL",
+      "BMTC",
+      "BESCOM",
+      "BWSSB",
+      "GAIL"
+    ],
+    "grievances": [],
+    "sakala": {
+      "assembly_name": "Mahadevapura",
+      "year": 2026,
+      "intime_pct": null,
+      "delayed_pct": null,
+      "pending": null,
+      "rank_intime": 7,
+      "rank_overall": 3
+    }
+  }
+}

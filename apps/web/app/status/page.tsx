@@ -37,7 +37,7 @@ interface HealthData {
   supabase: "connected" | "error"
   tables: TableCheck[]
   cities: CityCoverage[]
-  crons: { name: string; last_data_at: string | null; status: "ok" | "stale" | "unknown" }[]
+  crons: { name: string; last_run_at: string | null; last_data_at: string | null; status: "ok" | "stale" | "unknown" }[]
   summary: {
     total_wards: number | null
     total_reps: number | null
@@ -76,7 +76,7 @@ function timeAgo(dateStr: string | null): string {
 function statusTone(status: string): { dot: string; text: string } {
   return status === "ok" || status === "healthy" || status === "connected"
     ? { dot: "bg-success", text: "text-success" }
-    : status === "stale" || status === "degraded" || status === "empty"
+    : status === "stale" || status === "degraded" || status === "empty" || status === "unknown"
       ? { dot: "bg-warning", text: "text-warning" }
       : { dot: "bg-danger", text: "text-danger" }
 }
@@ -334,7 +334,12 @@ export default function StatusPage() {
                       <span className="text-ink/80 text-xs min-w-0 truncate">{cron.name}</span>
                       <div className="flex items-center gap-3 shrink-0">
                         <StatusDot status={cron.status} showLabel />
-                        <span className="text-ink/60 text-xs font-mono">{timeAgo(cron.last_data_at)}</span>
+                        <span
+                          className="text-ink/60 text-xs font-mono"
+                          title={`Last successful run ${timeAgo(cron.last_run_at)}; newest data ${timeAgo(cron.last_data_at)}`}
+                        >
+                          ran {timeAgo(cron.last_run_at)}
+                        </span>
                       </div>
                     </div>
                   ))}
