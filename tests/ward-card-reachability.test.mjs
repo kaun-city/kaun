@@ -151,7 +151,7 @@ test("the card asks for a corporation's few latest tenders and reads the total f
 
 test("every ward-card read that can fail marks its section", () => {
   const record = read("lib/ward-record.ts")
-  const sections = [...record.matchAll(/section\(limit, failed, "(\w+)"/g)].map(match => match[1])
+  const sections = [...record.matchAll(/\brun\("(\w+)"/g)].map(match => match[1])
   assert.equal(sections.length, 28, "one guarded read per record and live section")
   assert.equal(new Set(sections).size, sections.length)
   // Offices are read per point in the hook; every other section is built here.

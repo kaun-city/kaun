@@ -1,5 +1,5 @@
 import { buildWardRecord } from "@/lib/ward-record"
-import { SERVER_WARD_SOURCES, serverGbaWard } from "@/lib/ward-record-server"
+import { SERVER_WARD_SOURCES, serverGbaWard, slowestSections } from "@/lib/ward-record-server"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
@@ -22,11 +22,12 @@ export async function GET(_request: Request, { params }: { params: Promise<{ cor
     return Response.json({ error: "No such GBA ward" }, { status: 404, headers: { "Cache-Control": "public, s-maxage=86400" } })
   }
   const started = performance.now()
-  const record = await buildWardRecord(gbaWard.result, SERVER_WARD_SOURCES, gbaWard.centre)
+  const timings = slowestSections()
+  const record = await buildWardRecord(gbaWard.result, SERVER_WARD_SOURCES, gbaWard.centre, timings.add)
   return Response.json(record, {
     headers: {
       // How long the database reads took on a cache miss (browser dev tools show it).
-      "Server-Timing": `record;dur=${Math.round(performance.now() - started)}`,
+      "Server-Timing": [`record;dur=${Math.round(performance.now() - started)}`, ...timings.entries()].join(", "),
       "Cache-Control": record.failed.length
         ? "no-store"
         : "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",

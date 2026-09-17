@@ -8,7 +8,7 @@ import gbaCrosswalkJson from "@/public/bengaluru-gba-369-to-datameet-243.json"
 import sourceCrosswalkJson from "@/public/bengaluru-ward-crosswalk.json"
 import { BBMP198_INDEX } from "./bbmp198-server"
 import { gbaWardKey, indexGbaCrosswalk, type GbaCrosswalkArtifact, type LegacySourceWardRow } from "./gba-crosswalk"
-import { gbaWardResult, type GbaWardIdentityRow, type WardRecordSources } from "./ward-record"
+import { gbaWardResult, type GbaWardIdentityRow, type LoadSection, type WardRecordSources } from "./ward-record"
 
 const IDENTITY = new Map((identityJson.wards as GbaWardIdentityRow[]).map(row => [gbaWardKey(row.corporation_id, row.ward_no), row]))
 const GBA_CROSSWALK = gbaCrosswalkJson as GbaCrosswalkArtifact
@@ -25,4 +25,13 @@ export function serverGbaWard(corporation: string, ward: string) {
   if (!/^\d{1,2}$/.test(corporation) || !/^\d{1,3}$/.test(ward)) return null
   const key = gbaWardKey(Number(corporation), Number(ward))
   return gbaWardResult(IDENTITY.get(key), GBA_INDEX.get(key), GBA_CROSSWALK.version)
+}
+
+/** Collects section durations; entries() gives the three slowest as Server-Timing metrics. */
+export function slowestSections() {
+  const durations: Array<[LoadSection, number]> = []
+  return {
+    add: (section: LoadSection, ms: number) => { durations.push([section, ms]) },
+    entries: () => durations.sort((a, b) => b[1] - a[1]).slice(0, 3).map(([section, ms]) => `${section};dur=${Math.round(ms)}`),
+  }
 }

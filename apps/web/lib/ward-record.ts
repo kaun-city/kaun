@@ -207,13 +207,17 @@ function limiter(concurrency: number) {
 
 type Limit = ReturnType<typeof limiter>
 
+/** Receives how long each section took, for Server-Timing on a cache miss. */
+export type SectionTiming = (section: LoadSection, ms: number) => void
+
 /**
  * Run one section's reads, once more if the first attempt fails (a cold
  * database can time a statement out once). A second failure records the
  * section and yields the empty value.
  */
-async function section<T>(limit: Limit, failed: LoadSection[], name: LoadSection, empty: T, load: () => Promise<T>): Promise<T> {
+async function section<T>(limit: Limit, failed: LoadSection[], name: LoadSection, empty: T, load: () => Promise<T>, timing?: SectionTiming): Promise<T> {
   return limit(async () => {
+    const started = performance.now()
     try {
       return await load()
     } catch {
@@ -224,6 +228,8 @@ async function section<T>(limit: Limit, failed: LoadSection[], name: LoadSection
         failed.push(name)
         return empty
       }
+    } finally {
+      timing?.(name, performance.now() - started)
     }
   })
 }
@@ -237,6 +243,7 @@ export async function buildWardRecord(
   result: PinResult,
   sources: WardRecordSources,
   point: { lat: number; lng: number } | null = result.lat && result.lng ? { lat: result.lat, lng: result.lng } : null,
+  timing?: SectionTiming,
 ): Promise<WardRecord> {
   const city = getCity(result.city_id)
   const historicalWards = historicalWardsFor(result)
@@ -251,6 +258,7 @@ export async function buildWardRecord(
   const currentWardName = result.gba_ward_name ?? result.ward_name ?? "Current ward"
   const failed: LoadSection[] = []
   const limit = limiter(SECTION_CONCURRENCY)
+  const run = <T>(name: LoadSection, empty: T, load: () => Promise<T>): Promise<T> => section(limit, failed, name, empty, load, timing)
   const bbmp198 = () => sources.bbmp198Index().then(requireIndex)
 
   const [
@@ -259,7 +267,7 @@ export async function buildWardRecord(
     wardStats, wardBusStats, roadCrashes, airQuality, amenities, waterQuality,
     departments, sakala, grievances, infraStats, potholes, wardContractors,
   ] = await Promise.all([
-    section(limit, failed, "profile", null, async () => {
+    run("profile", null, async () => {
       if (!wardNo) return null
       const value = await fetchWardProfile(wardNo, cityId, assemblyConstituency)
       if (!value) return null
@@ -268,8 +276,8 @@ export async function buildWardRecord(
       const { ward_no, city_id, assembly_constituency, elected_reps, officers, governance_alert } = value
       return { ward_no, city_id, assembly_constituency, elected_reps, officers, governance_alert }
     }),
-    section(limit, failed, "reps", [] as ElectedRep[], async () => assemblyConstituency ? fetchElectedReps(assemblyConstituency, cityId) : []),
-    section(limit, failed, "committee", [] as WardCommitteeMeetings[], async () => {
+    run("reps", [] as ElectedRep[], async () => assemblyConstituency ? fetchElectedReps(assemblyConstituency, cityId) : []),
+    run("committee", [] as WardCommitteeMeetings[], async () => {
       if (!(historicalWards.length && city.features.wardCommitteeMeetings && BBMP_198_RECORDS_ATTRIBUTABLE)) return []
       // A committee's meeting count belongs to that committee: name each
       // materially overlapping former 198-ward committee, never split or sum.
@@ -278,11 +286,11 @@ export async function buildWardRecord(
       const order = new Map(committees.map((committee, position) => [committee.ward_no, position]))
       return rows.sort((a, b) => (order.get(a.ward_no) ?? 0) - (order.get(b.ward_no) ?? 0))
     }),
-    section(limit, failed, "ladFunds", [] as MlaLadFunds[], async () =>
+    run("ladFunds", [] as MlaLadFunds[], async () =>
       assemblyConstituency && city.features.mlaLadFunds ? (await fetchMlaLadFunds(assemblyConstituency)) ?? [] : []),
-    section(limit, failed, "reportCard", null, async () =>
+    run("reportCard", null, async () =>
       assemblyConstituency && city.features.repReportCards ? fetchRepReportCard(assemblyConstituency) : null),
-    section(limit, failed, "corpContacts", { corpName: null as string | null, corpContacts: [] as GbaContact[] }, async () => {
+    run("corpContacts", { corpName: null as string | null, corpContacts: [] as GbaContact[] }, async () => {
       if (!point) {
         const name = result.gba_corporation ?? null
         return { corpName: name, corpContacts: name ? await fetchCorpContacts(name) : [] }
@@ -292,24 +300,24 @@ export async function buildWardRecord(
       if (!corporation) return { corpName: null, corpContacts: [] }
       return { corpName: corporation.name, corpContacts: await fetchCorpContacts(corporation.name) }
     }),
-    section(limit, failed, "budget", null, async () => city.features.budget ? fetchBudgetSummary(city.budgetYear) : null),
-    section(limit, failed, "workOrders", [] as WorkOrder[], async () => {
+    run("budget", null, async () => city.features.budget ? fetchBudgetSummary(city.budgetYear) : null),
+    run("workOrders", [] as WorkOrder[], async () => {
       if (!(recordWards.length && city.features.workOrders)) return []
       const groups = await Promise.all(recordWards.map(ref => fetchWorkOrders(ref.ward_no, cityId)))
       return uniqueBy(groups.flat(), row => row.work_order_id || row.id)
     }),
-    section(limit, failed, "tradeLicenses", [] as WardTradeLicenses[], async () => {
+    run("tradeLicenses", [] as WardTradeLicenses[], async () => {
       if (!(recordWards.length && city.features.tradeLicenses)) return []
       return (await Promise.all(recordWards.map(ref => fetchTradeLicenses(ref.ward_name, cityId)))).flat()
     }),
-    section(limit, failed, "propertyTax", null, async () =>
+    run("propertyTax", null, async () =>
       assemblyConstituency && city.features.propertyTax ? fetchPropertyTax(assemblyConstituency, cityId) : null),
-    section(limit, failed, "tenders", null, async () => {
+    run("tenders", null, async () => {
       // A few of the corporation's latest tenders, not every city tender.
       const department = corporationDepartment(result.gba_corporation)
       return department ? fetchCorporationTenders(department, CORPORATION_TENDERS_SHOWN, cityId) : null
     }),
-    section(limit, failed, "wardSpend", null, async () => {
+    run("wardSpend", null, async () => {
       if (!historicalWards.length || !city.features.wardSpend || !BBMP_198_RECORDS_ATTRIBUTABLE) return null
       // Spend is recorded on the 198-ward map: allocate each 198 ward's total
       // by legacy_share (current -> 243) x bbmp198_share (243 -> 198).
@@ -321,26 +329,26 @@ export async function buildWardRecord(
       for (const field of fields) Object.assign(estimate, { [field]: allocateBbmp198(weights, rows, row => Number(row[field])) ?? 0 })
       return estimate
     }),
-    section(limit, failed, "wardStats", null, async () => assemblyConstituency ? fetchWardStats(assemblyConstituency, cityId) : null),
-    section(limit, failed, "busStats", null, async (): Promise<WardBusStats | null> => {
+    run("wardStats", null, async () => assemblyConstituency ? fetchWardStats(assemblyConstituency, cityId) : null),
+    run("busStats", null, async (): Promise<WardBusStats | null> => {
       if (!historicalWards.length) return null
       const results = await Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardBusStats(ref.ward_no) })))
       const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardBusStats } => !!row.value)
       return rows.length ? { ward_no: 0, stop_count: Math.round(weightedNumber(rows, v => v.stop_count)), total_trips: Math.round(weightedNumber(rows, v => v.total_trips)) } : null
     }),
-    section(limit, failed, "roadCrashes", null, async (): Promise<WardRoadCrashes | null> => {
+    run("roadCrashes", null, async (): Promise<WardRoadCrashes | null> => {
       if (!historicalWards.length) return null
       const results = await Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardRoadCrashes(ref.ward_no) })))
       const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardRoadCrashes } => !!row.value)
       if (!rows.length) return null
       return { ward_no: 0, crashes_2024: Math.round(weightedNumber(rows, v => v.crashes_2024)), fatal_2024: Math.round(weightedNumber(rows, v => v.fatal_2024)), crashes_2025: Math.round(weightedNumber(rows, v => v.crashes_2025)), fatal_2025: Math.round(weightedNumber(rows, v => v.fatal_2025)) }
     }),
-    section(limit, failed, "airQuality", null, async () => {
+    run("airQuality", null, async () => {
       if (!historicalWards.length) return null
       const values = await Promise.all(recordWards.map(ref => fetchWardAirQuality(ref.ward_no)))
       return values.find(Boolean) ?? null
     }),
-    section(limit, failed, "amenities", null, async (): Promise<WardAmenities | null> => {
+    run("amenities", null, async (): Promise<WardAmenities | null> => {
       if (!(historicalWards.length && city.features.wardAmenities)) return null
       const results = await Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardAmenities(ref.ward_no, cityId) })))
       const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardAmenities } => !!row.value)
@@ -350,19 +358,19 @@ export async function buildWardRecord(
       for (const field of fields) Object.assign(estimate, { [field]: Math.round(weightedNumber(rows, value => Number(value[field]))) })
       return estimate
     }),
-    section(limit, failed, "waterQuality", [] as WardWaterQuality[], async () => {
+    run("waterQuality", [] as WardWaterQuality[], async () => {
       if (!(recordWards.length && city.features.wardWaterQuality)) return []
       const values = await Promise.all(recordWards.map(ref => fetchWardWaterQuality(ref.ward_no, cityId)))
       return uniqueBy(values.flat(), row => `${row.water_body_name}:${row.data_year}`)
     }),
-    section(limit, failed, "departments", [] as Department[], async () => (await fetchDepartments(cityId)) as Department[]),
-    section(limit, failed, "sakala", null, async () =>
+    run("departments", [] as Department[], async () => (await fetchDepartments(cityId)) as Department[]),
+    run("sakala", null, async () =>
       assemblyConstituency && city.features.sakala ? fetchSakalaPerformance(assemblyConstituency) : null),
-    section(limit, failed, "grievances", [] as WardGrievances[], async () => {
+    run("grievances", [] as WardGrievances[], async () => {
       if (!(recordWards.length && city.features.grievances)) return []
       return (await Promise.all(recordWards.map(ref => fetchWardGrievances(ref.ward_name, cityId)))).flat()
     }),
-    section(limit, failed, "infra", null, async (): Promise<WardInfraStats | null> => {
+    run("infra", null, async (): Promise<WardInfraStats | null> => {
       if (!historicalWards.length) return null
       const results = await Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardInfraStats(ref.ward_no, cityId) })))
       const rows = results.filter((row): row is { ref: HistoricalWardRef; value: WardInfraStats } => !!row.value)
@@ -370,7 +378,7 @@ export async function buildWardRecord(
       // lib/ward-data-quality.ts); only signal_count is carried. Bus figures: wardBusStats.
       return rows.length ? { ward_no: 0, ward_name: currentWardName, signal_count: Math.round(weightedNumber(rows, v => v.signal_count)), bus_stop_count: 0, daily_trips: 0 } : null
     }),
-    section(limit, failed, "potholes", null, async (): Promise<WardPotholes | null> => {
+    run("potholes", null, async (): Promise<WardPotholes | null> => {
       if (!(historicalWards.length && city.features.wardPotholes && BBMP_198_RECORDS_ATTRIBUTABLE)) return null
       // Complaints are counted on the 198-ward map: allocate like spend.
       const weights = bbmp198AllocationWeights(historicalWards, await bbmp198())
@@ -378,7 +386,7 @@ export async function buildWardRecord(
       const complaints = allocateBbmp198(weights, rows, row => row.complaints)
       return complaints != null ? { ward_no: 0, ward_name: currentWardName, complaints: Math.round(complaints), data_year: rows[0].data_year } : null
     }),
-    section(limit, failed, "contractors", [] as ContractorProfile[], async () => {
+    run("contractors", [] as ContractorProfile[], async () => {
       if (!(historicalWards.length && city.features.workOrders)) return []
       const sourceRows = await sources.legacySourceRows?.()
       const values = await Promise.all(recordWards.map(ref => fetchWardContractors(ref.ward_no, cityId, sourceRows)))
@@ -398,27 +406,28 @@ export async function buildWardRecord(
 }
 
 /** Resident reports, signals, unanswered questions and community facts. */
-export async function buildWardLive(result: PinResult): Promise<WardLive> {
+export async function buildWardLive(result: PinResult, timing?: SectionTiming): Promise<WardLive> {
   const historicalWards = historicalWardsFor(result)
   const recordWards = attributableHistoricalWards(historicalWards)
   const wardNo = historicalWards[0]?.ward_no
   const cityId = result.city_id ?? getCity(result.city_id).id
   const failed: LoadSection[] = []
   const limit = limiter(SECTION_CONCURRENCY)
+  const run = <T>(name: LoadSection, empty: T, load: () => Promise<T>): Promise<T> => section(limit, failed, name, empty, load, timing)
 
   const [reportCount, signals, unknowns, communityFacts] = await Promise.all([
-    section(limit, failed, "reportCount", 0, async () => {
+    run("reportCount", 0, async () => {
       if (!historicalWards.length) return 0
       const rows = await Promise.all(historicalWards.map(async ref => ({ ref, value: await fetchWardReportCount(ref.ward_no, cityId) })))
       return Math.round(weightedNumber(rows, value => value))
     }),
-    section(limit, failed, "signals", [] as CivicSignal[], async () => {
+    run("signals", [] as CivicSignal[], async () => {
       if (!historicalWards.length) return []
       const values = await Promise.all(recordWards.map(ref => fetchWardSignals(ref.ward_no, cityId)))
       return uniqueBy(values.flat(), row => row.id)
     }),
-    section(limit, failed, "unknowns", null, async () => wardNo ? fetchWardUnknowns(wardNo, cityId) : null),
-    section(limit, failed, "facts", [] as CommunityFact[], async () => wardNo ? fetchWardCommunityFacts(wardNo, cityId) : []),
+    run("unknowns", null, async () => wardNo ? fetchWardUnknowns(wardNo, cityId) : null),
+    run("facts", [] as CommunityFact[], async () => wardNo ? fetchWardCommunityFacts(wardNo, cityId) : []),
   ])
 
   return { reportCount, signals, unknowns, communityFacts, failed: LIVE_SECTIONS.filter(name => failed.includes(name)) }
