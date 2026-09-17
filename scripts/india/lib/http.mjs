@@ -24,6 +24,7 @@ import { mkdirSync, existsSync, readFileSync, writeFileSync, statSync } from "fs
 import { join, resolve, dirname } from "path"
 import { fileURLToPath } from "url"
 import { createHash } from "crypto"
+import { egressFetch } from "../../lib/egress.mjs"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 export const CACHE_DIR = resolve(__dirname, "../../../.cache/india")
@@ -85,7 +86,9 @@ export async function politeFetch(url, {
       const timer = setTimeout(() => ctrl.abort(), timeoutMs)
       let res
       try {
-        res = await fetch(url, {
+        // PAIMANA and other relayed hosts go through Kaun's India egress relay
+        // when the workflow configures it; everything else is a plain fetch.
+        res = await egressFetch(url, {
           method,
           headers: { "User-Agent": KAUN_UA, ...headers },
           body,
@@ -136,7 +139,7 @@ export async function fetchToFile(url, destPath, { headers = {}, timeoutMs = 300
   const ctrl = new AbortController()
   const timer = setTimeout(() => ctrl.abort(), timeoutMs)
   try {
-    const res = await fetch(url, { headers: { "User-Agent": KAUN_UA, ...headers }, signal: ctrl.signal })
+    const res = await egressFetch(url, { headers: { "User-Agent": KAUN_UA, ...headers }, signal: ctrl.signal })
     if (!res.ok) throw new Error(`${res.status} fetching ${url}`)
     writeFileSync(destPath, Buffer.from(await res.arrayBuffer()))
   } finally { clearTimeout(timer) }

@@ -3,18 +3,18 @@
 // Usage: node scripts/refresh-sakala.mjs [--year=2025] [--month=13]
 // Env:   SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_MANAGEMENT_TOKEN
 //
-// sakala.kar.nic.in blocks GitHub Actions (and other cloud) IPs but answers
-// residential IPs fine, so the scrape and the Supabase load are split:
+// sakala.kar.nic.in refuses GitHub Actions runners ("Host not in allowlist").
+// The scheduled workflow sends its requests through Kaun's India egress relay
+// (scripts/lib/egress.mjs), which Sakala answers. Two other modes remain:
 //
 //   --fetch-only --out=<path>   Scrape + parse only, write rows to a JSON
 //                                artifact (e.g. data/sakala/sakala-2026.json).
-//                                No Supabase env required. Run this locally
-//                                from a residential connection, commit the
-//                                artifact, then dispatch the `load-sakala`
-//                                workflow (CI, no site access needed) to
-//                                upsert it — see scripts/load-sakala.mjs.
-//   (no flag)                   Original behaviour: scrape and upsert to
-//                                Supabase directly, unchanged.
+//                                No Supabase env required. For a run from a
+//                                residential connection; load it with the
+//                                `load-sakala` workflow (scripts/load-sakala.mjs).
+//   (no flag)                   Scrape and upsert to Supabase directly.
+import { egressFetch } from "./lib/egress.mjs"
+
 const SAKALA_BASE = "https://sakala.kar.nic.in/gsc_rpt/gsc_Reports/"
 const YEAR  = parseInt(process.argv.find(a => a.startsWith("--year="))?.split("=")[1]  ?? new Date().getFullYear(), 10)
 const MONTH = parseInt(process.argv.find(a => a.startsWith("--month="))?.split("=")[1] ?? "13", 10)  // 13 = all months
@@ -51,7 +51,7 @@ async function main() {
   let hopUrl = "https://sakala.kar.nic.in/MISReport_Eng.aspx"
   for (let hop = 0; hop < 8; hop++) {
     const cookieStr0 = Object.entries(cookies).map(([k, v]) => `${k}=${v}`).join("; ")
-    const r0 = await fetch(hopUrl, {
+    const r0 = await egressFetch(hopUrl, {
       headers: {
         "User-Agent": "Mozilla/5.0 (compatible; KaunBot/1.0)",
         ...(cookieStr0 ? { Cookie: cookieStr0 } : {}),
@@ -73,7 +73,7 @@ async function main() {
 
   // Step 2: GET the report page for viewstate
   const pageUrl = `${SAKALA_BASE}AssemblyPerformanceIntimeReport.aspx`
-  const r1 = await fetch(pageUrl, {
+  const r1 = await egressFetch(pageUrl, {
     headers: { "User-Agent": "Mozilla/5.0", "Cookie": cookieStr },
   })
   const html1 = await r1.text()
@@ -91,7 +91,7 @@ async function main() {
     "ctl00$gsc_Contentmaster$btnProcess": "Process",
   })
 
-  const r2 = await fetch(pageUrl, {
+  const r2 = await egressFetch(pageUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",

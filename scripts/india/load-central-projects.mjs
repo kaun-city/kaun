@@ -74,6 +74,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const LOADER = "load-central-projects"
 
 const PAIMANA = "https://paimana-proj.mospi.gov.in"
+/**
+ * Exit status when the requested month has no published report yet. Kept
+ * distinct from failures so the monthly workflow can stop at the first
+ * unpublished month instead of failing (see mospi-missing-months.mjs).
+ */
+export const NO_REPORT_EXIT = 78
 const ENDPOINTS = {
   home: `${PAIMANA}/`,
   financialYears: `${PAIMANA}/ReportPage/GetArchiveFinancialYearList`,
@@ -191,17 +197,18 @@ async function discoverReports(sink, { wantMonth }) {
       // April–March financial year: Jan–Mar belong to the previous FY start.
       const fyStart = month >= 4 ? year : year - 1
       const fyear = `${fyStart}-${String((fyStart + 1) % 100).padStart(2, "0")}`
-      if (!Array.isArray(fyears) || !fyears.includes(fyear)) {
-        sink.warn(`financial year ${fyear} is not in the PAIMANA archive list`)
-      } else {
-        const body = await politeFetch(
-          `${ENDPOINTS.archiveReport}?fyear=${fyear}&month=${month}&quater=1&reportType=F`,
-          { namespace: "mospi", maxAgeMs: 24 * 3600e3 })
-        const found = parseArchiveReports(body?.html ?? "", fyear, month)
-          .map(r => ({ ...r, year }))
-        reports.push(...found)
-        sink.count(`archive reports for ${fyear} month ${month}`, found.length)
-      }
+      // PAIMANA's financial-year list lags its archive: on 2026-09-17 it
+      // stopped at 2024-25 while the archive already served June and July
+      // 2026. Ask the archive regardless; the list only explains an empty answer.
+      const listed = Array.isArray(fyears) && fyears.includes(fyear)
+      const body = await politeFetch(
+        `${ENDPOINTS.archiveReport}?fyear=${fyear}&month=${month}&quater=1&reportType=F`,
+        { namespace: "mospi", maxAgeMs: 24 * 3600e3 })
+      const found = parseArchiveReports(body?.html ?? "", fyear, month)
+        .map(r => ({ ...r, year }))
+      reports.push(...found)
+      sink.count(`archive reports for ${fyear} month ${month}`, found.length)
+      if (!found.length && !listed) sink.warn(`financial year ${fyear} is not in the PAIMANA archive list`)
     }
   }
   return reports
@@ -241,7 +248,7 @@ async function main() {
       sink.warn(`no flash report found for ${wantMonth ?? "the latest month"}. ` +
         `Available: ${reports.map(r => `${r.year}-${r.month}`).join(", ") || "none"}`)
       sink.finish({ gate: "no report found" })
-      process.exit(1)
+      process.exit(NO_REPORT_EXIT)
     }
     if (chosen.is_split_part) {
       sink.warn(`${chosen.label} is a Part-I/Part-II split report — the 2024-25 ` +

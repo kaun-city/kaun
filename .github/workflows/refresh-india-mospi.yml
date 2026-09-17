@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       month:
-        description: "report month as YYYY-MM (blank = latest published)"
+        description: "report month as YYYY-MM (blank = every month after the newest loaded)"
         required: false
         type: string
       pdf_release:
@@ -75,6 +75,11 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # gh release download (pdf mirror)
+          # PAIMANA refused GitHub's runners ("fetch failed") on the August and
+          # September 2026 scheduled runs. Its requests go through Kaun's India
+          # egress relay in Mumbai instead (apps/web/lib/egress.mjs).
+          KAUN_EGRESS_URL: https://kaun.city/api/egress
+          KAUN_EGRESS_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           set -euo pipefail
           MONTH="${{ github.event.inputs.month }}"
@@ -94,9 +99,21 @@ jobs:
               echo "=== loading $f ==="
               node scripts/india/load-central-projects.mjs --pdf "$f" $FLAG
             done
+          elif [ -n "$MONTH" ]; then
+            node scripts/india/load-central-projects.mjs --month "$MONTH" $FLAG
           else
-            if [ -n "$MONTH" ]; then TARGET="--month $MONTH"; else TARGET="--latest"; fi
-            node scripts/india/load-central-projects.mjs $TARGET $FLAG
+            # Every month after the newest one loaded, oldest first, stopping at
+            # the first month PAIMANA hasn't published (exit 78). A missed run
+            # catches up instead of skipping months.
+            MONTHS=$(node scripts/india/mospi-missing-months.mjs)
+            if [ -z "$MONTHS" ]; then echo "Nothing to load: the newest report month is already loaded."; fi
+            for m in $MONTHS; do
+              echo "=== loading $m ==="
+              status=0
+              node scripts/india/load-central-projects.mjs --month "$m" $FLAG || status=$?
+              if [ "$status" -eq 78 ]; then echo "No report for $m yet; stopping."; break; fi
+              if [ "$status" -ne 0 ]; then exit "$status"; fi
+            done
           fi
 
       - name: Upload dry-run reports and review files

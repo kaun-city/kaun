@@ -25,4 +25,9 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SUPABASE_MANAGEMENT_TOKEN: ${{ secrets.SUPABASE_MANAGEMENT_TOKEN }}
           NODE_EXTRA_CA_CERTS: scripts/adapters/ca/godaddy-g2.pem
+          # accounts.bbmp.gov.in timed out from GitHub's runners on 3 of 8
+          # weekly runs (Jul–Sep 2026). Its requests go through Kaun's India
+          # egress relay in Mumbai instead (apps/web/lib/egress.mjs).
+          KAUN_EGRESS_URL: https://kaun.city/api/egress
+          KAUN_EGRESS_SECRET: ${{ secrets.CRON_SECRET }}
         run: node scripts/adapters/ifms.mjs
