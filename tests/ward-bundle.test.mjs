@@ -33,6 +33,9 @@ function replay(overrides = () => null) {
       calls.push(key)
       const override = overrides(key, calls)
       if (override) return override
+      // Contractor tender wins (migration 20260922) came after these recordings,
+      // and the old card had none: unmatched contractors come back as no rows.
+      if (key.startsWith("POST /rest/v1/rpc/contractor_tender_wins ")) return new Response("[]", { status: 200 })
       const hit = responses[key]
       assert.ok(hit, `no recorded response for ${key}`)
       return new Response(hit.body, { status: hit.status, headers: hit.contentRange ? { "content-range": hit.contentRange } : {} })
@@ -174,6 +177,40 @@ test("a read that fails twice marks only its section; a single failure is retrie
   const retried = await withFetch(flaky.fetch, () => buildWardRecord(result, sources, centre))
   assert.deepEqual(retried.failed, [])
   assert.ok(retried.budget)
+})
+
+test("tender wins are read after the contractors, by entity_id in the POST body, and fail on their own", async () => {
+  const { result, centre } = ward(4, 31)
+  const plain = replay()
+  const record = await withFetch(plain.fetch, () => buildWardRecord(result, sources, centre))
+  const winsCalls = plain.calls.filter(key => key.includes("/rpc/contractor_tender_wins"))
+  assert.equal(winsCalls.length, 1)
+  const [, path, body] = winsCalls[0].match(/^POST (\S+) (.*)$/)
+  assert.equal(path, "/rest/v1/rpc/contractor_tender_wins", "no ids in the URL: entity_ids embed phone numbers")
+  assert.deepEqual(JSON.parse(body).p_entity_ids, record.wardContractors.map(row => row.entity_id))
+  assert.deepEqual(record.contractorTenderWins, [])
+
+  const first = record.wardContractors[0].entity_id
+  const matched = replay(key => key.includes("/rpc/contractor_tender_wins")
+    ? new Response(JSON.stringify([{
+      entity_id: first, wins: 2, with_amount: 1, award_amount_inr: "217883.50", first_year: 2019, last_year: 2023,
+      matched_names: ["X CONSTRUCTIONS"], published_as: ["X CONSTRUCTIONS"],
+      latest: [{ source: "eproc", tender_number: "T1", title: "Road", department: "BBMP", published_at: "2023-04-19T11:17:06+00:00", award_amount_inr: "217883.50" }],
+    }]), { status: 200 })
+    : null)
+  const withWins = await withFetch(matched.fetch, () => buildWardRecord(result, sources, centre))
+  assert.equal(withWins.contractorTenderWins[0].award_amount_inr, 217883.5, "numeric comes back as a string and is read as a number")
+  assert.equal(withWins.contractorTenderWins[0].latest[0].award_amount_inr, 217883.5)
+
+  const failing = replay(key => key.includes("/rpc/contractor_tender_wins") ? new Response("{}", { status: 500 }) : null)
+  const failed = await withFetch(failing.fetch, () => buildWardRecord(result, sources, centre))
+  assert.deepEqual(failed.failed, ["tenderWins"])
+  assert.deepEqual(failed.wardContractors.map(row => row.entity_id), record.wardContractors.map(row => row.entity_id), "the contractors still show")
+
+  const { result: noOverlap, centre: noOverlapCentre } = ward(3, 28)
+  const none = replay()
+  await withFetch(none.fetch, () => buildWardRecord(noOverlap, sources, noOverlapCentre))
+  assert.equal(none.calls.some(key => key.includes("/rpc/contractor_tender_wins")), false, "no contractors, no read")
 })
 
 test("a missing crosswalk fails spend, potholes and committees instead of reading as no data", async () => {

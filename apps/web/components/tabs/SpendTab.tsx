@@ -5,7 +5,7 @@ import { STATUS_STYLES } from "@/lib/constants"
 import { formatCrore, formatINR, formatLakh, timeAgo } from "@/lib/ward-utils"
 import type { CityConfig } from "@/lib/cities"
 import type {
-  BudgetSummary, ContractorProfile, PinResult, PropertyTaxData,
+  BudgetSummary, ContractorProfile, ContractorTenderWins, PinResult, PropertyTaxData,
   WardProfile, WardSpendCategory, WardTradeLicenses, WorkOrder,
 } from "@/lib/types"
 import { SkeletonBarRow, SkeletonCard } from "@/components/shared/Skeleton"
@@ -230,6 +230,67 @@ function CorporationTenders({ result, records, failed, onRetry }: { result: PinR
   )
 }
 
+const TENDER_MONTH = new Intl.DateTimeFormat("en-IN", { month: "short", year: "numeric", timeZone: "Asia/Kolkata" })
+const PORTAL = { kppp: "KPPP", eproc: "eProc" } as const
+
+/**
+ * Tenders won under a contractor's company name, from blr-tenders-bids. The
+ * link is a name match (scripts/lib/tender-supplier-matches.mjs): personal
+ * names and names shared by several firms are never matched, and the text says
+ * which name matched and how the winner was published, so a reader can judge.
+ */
+function TenderWins({ wins, canonicalName }: { wins: ContractorTenderWins; canonicalName: string }) {
+  const [open, setOpen] = useState(false)
+  const years = wins.first_year == null ? null
+    : wins.first_year === wins.last_year ? String(wins.first_year) : `${wins.first_year}–${wins.last_year}`
+  const otherNames = wins.matched_names.filter(name => name !== canonicalName)
+
+  return (
+    <div className="mt-2 border-t border-ink/10">
+      <button
+        type="button"
+        onClick={() => setOpen(value => !value)}
+        aria-expanded={open}
+        className={`flex min-h-11 w-full items-center justify-between gap-3 text-left text-xs text-ink/75 hover:text-ink ${FOCUS}`}
+      >
+        <span>
+          <span className={`text-ink ${FIGURE}`}>{wins.wins.toLocaleString("en-IN")}</span> tender{wins.wins !== 1 ? "s" : ""} won under this company name{years ? `, ${years}` : ""}
+          {wins.with_amount > 0 && (
+            <> · <span className={`text-ink ${FIGURE}`}>{formatINR(wins.award_amount_inr)}</span> awarded across the {wins.with_amount.toLocaleString("en-IN")} with a published amount</>
+          )}
+        </span>
+        <span aria-hidden="true">{open ? "\u2191" : "\u2193"}</span>
+      </button>
+      {open && (
+        <div className="pb-1">
+          <ul className="divide-y divide-ink/10 border-y border-ink/10">
+            {wins.latest.map(tender => (
+              <li key={`${tender.source}:${tender.tender_number}`} className="py-2">
+                <p className="line-clamp-2 text-xs leading-snug text-ink">{tender.title ?? tender.tender_number}</p>
+                <p className="mt-0.5 text-[11px] leading-snug text-ink/70">
+                  {[
+                    PORTAL[tender.source],
+                    tender.department,
+                    tender.published_at ? TENDER_MONTH.format(new Date(tender.published_at)) : null,
+                    tender.award_amount_inr != null ? formatINR(tender.award_amount_inr) : "amount not published",
+                  ].filter(Boolean).join(" · ")}
+                </p>
+              </li>
+            ))}
+          </ul>
+          {wins.wins > wins.latest.length && (
+            <p className="mt-1 text-[11px] text-ink/70">Latest {wins.latest.length} of {wins.wins.toLocaleString("en-IN")}</p>
+          )}
+          <p className="mt-1.5 text-[11px] leading-snug text-ink/70">
+            Matched by company name{otherNames.length ? `, through ${otherNames.join(", ")} (listed with this contractor)` : ""}.
+            Published as {wins.published_as.join("; ")}. Neither record has a registration number, so this is not confirmation that it is the same firm.
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
 interface Props {
   result: PinResult
   city: CityConfig
@@ -245,6 +306,8 @@ interface Props {
   wardSpendAttributable: boolean
   propertyTax: PropertyTaxData | null
   wardContractors: ContractorProfile[]
+  /** Tenders won under the company names of wardContractors; only matched contractors appear. */
+  contractorTenderWins: ContractorTenderWins[]
   corporationTenders: CorporationTenderRecords | null
   loadFailed: (section: LoadSection) => boolean
   loadDone: (section: LoadSection) => boolean
@@ -254,8 +317,9 @@ interface Props {
 export function SpendTab({
   result, city, profile, profileLoading, budget,
   workOrders, tradeLicenses, wardSpend, wardSpendSettled, wardSpendAttributable, propertyTax, wardContractors,
-  corporationTenders, loadFailed, loadDone, onRetry,
+  contractorTenderWins, corporationTenders, loadFailed, loadDone, onRetry,
 }: Props) {
+  const winsByContractor = new Map(contractorTenderWins.map(wins => [wins.entity_id, wins]))
   const [contractorsExpanded, setContractorsExpanded] = useState(false)
   // Flagged firms first, so a short list never hides one.
   const contractors = [...wardContractors].sort((a, b) => Number(b.blacklist_flags.length > 0) - Number(a.blacklist_flags.length > 0))
@@ -266,8 +330,8 @@ export function SpendTab({
     <div className="px-5 py-4 space-y-5 pb-safe-content">
 
       {/* Sections that simply stay hidden when empty still say when they failed. */}
-      {(["propertyTax", "tradeLicenses", "contractors"] as const).some(loadFailed) && (
-        <LoadFailed what="property tax, trade licences or contractors" message="Some of this ward's spending records couldn't load" onRetry={onRetry} />
+      {(["propertyTax", "tradeLicenses", "contractors", "tenderWins"] as const).some(loadFailed) && (
+        <LoadFailed what="property tax, trade licences, contractors or their tender wins" message="Some of this ward's spending records couldn't load" onRetry={onRetry} />
       )}
 
       {/* City-wide Budget */}
@@ -433,6 +497,7 @@ export function SpendTab({
                       <p className="text-[11px] text-ink/70">Deductions</p>
                     </div>
                   </div>
+                  {winsByContractor.has(c.entity_id) && <TenderWins wins={winsByContractor.get(c.entity_id)!} canonicalName={c.canonical_name} />}
                   {isFlagged && (
                     <div className="mt-2 border-t border-warning/25 pt-2">
                       {c.blacklist_flags.map((flag, i) => (
@@ -460,6 +525,14 @@ export function SpendTab({
             </button>
           )}
           <Provenance label="2013-25" source="BBMP / opencity.in" />
+          {contractorTenderWins.length > 0 && (
+            <p className={`mt-1 ${SOURCE}`}>
+              Tender wins: KPPP and Karnataka eProcurement via{" "}
+              <a href="https://github.com/Vonter/blr-tenders-bids" target="_blank" rel="noopener noreferrer" className={`${LINK} ${FOCUS}`}>blr-tenders-bids</a>
+              {" "}by Vonter ·{" "}
+              <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener noreferrer" className={`${LINK} ${FOCUS}`}>ODbL</a>
+            </p>
+          )}
         </section>
       )}
 

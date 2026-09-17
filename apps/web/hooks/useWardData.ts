@@ -193,6 +193,7 @@ export function useWardData(result: PinResult | null) {
     loadFailed, loadDone, retry,
     // expenses
     budget: data?.budget ?? null, workOrders: data?.workOrders ?? [], wardContractors: data?.wardContractors ?? [],
+    contractorTenderWins: data?.contractorTenderWins ?? [],
     tradeLicenses: data?.tradeLicenses ?? [], corporationTenders: data?.corporationTenders ?? null,
     // stats
     wardStats: data?.wardStats ?? null, grievances: data?.grievances ?? [], potholes: data?.potholes ?? null,

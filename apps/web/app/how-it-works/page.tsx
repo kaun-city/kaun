@@ -66,7 +66,10 @@ export default function HowItWorksPage() {
               orders published on{" "}
               <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">OpenCity.in</a>.
               A ward&apos;s work orders also include those from BBMP&apos;s IFMS accounts portal, refreshed weekly. A blacklisting flag, where shown, is a documented case that names its
-              source and date. Payment deduction percentages reflect BBMP work order data — high deductions may indicate quality disputes, delays, or scope changes.</p>
+              source and date. Tenders a contractor won come from{" "}
+              <a href="https://github.com/Vonter/blr-tenders-bids" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">blr-tenders-bids</a>{" "}
+              by Vonter (Open Database License). They are matched by company name only, because neither record carries a registration number. Personal names
+              and names shared by several firms are never matched. Payment deduction percentages reflect BBMP work order data — high deductions may indicate quality disputes, delays, or scope changes.</p>
             </div>
             <div className="py-4">
               <p className="mb-1 font-semibold text-ink">Budget and ward spending</p>
