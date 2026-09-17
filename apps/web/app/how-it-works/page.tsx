@@ -79,8 +79,7 @@ export default function HowItWorksPage() {
               <p>Ward grievance counts are sourced from BBMP&apos;s grievance portal via{" "}
               <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">OpenCity.in</a>, refreshed monthly.
               Sakala performance rankings (government service delivery timelines) come from
-              the Karnataka Sakala portal. They are loaded by hand when new figures are fetched, because the site
-              blocks automated access.</p>
+              the Karnataka Sakala portal, refreshed monthly.</p>
             </div>
             <div className="py-4">
               <p className="mb-1 font-semibold text-ink">Infrastructure & amenities</p>
@@ -224,7 +223,7 @@ export default function HowItWorksPage() {
                   ["BBMP work orders (IFMS)", "Weekly (Sundays)"],
                   ["Trade licences", "Monthly (3rd)"],
                   ["BBMP grievances", "Monthly (2nd)"],
-                  ["Sakala rankings", "By hand when new figures are fetched (the site blocks automated access)"],
+                  ["Sakala rankings", "Monthly (4th)"],
                   ["CityPulse news", "Daily (6am UTC)"],
                   ["Civic signals", "Daily (2am UTC)"],
                   ["MLA data", "On election cycle / when new records published"],
