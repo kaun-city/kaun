@@ -1,0 +1,341 @@
+{
+  "result": {
+    "found": true,
+    "city_id": "bengaluru",
+    "ward_no": null,
+    "ward_name": null,
+    "zone": "Mahadevapura",
+    "assembly_constituency": "Mahadevapura",
+    "agencies": [],
+    "primary_agency": null,
+    "gba_ward_no": 40,
+    "gba_ward_name": "Varthur",
+    "gba_ward_name_kn": "ವರ್ತೂರು",
+    "gba_corporation": "East",
+    "gba_corporation_id": 3,
+    "gba_ac": "Mahadevapura",
+    "gba_ac_no": 174,
+    "gba_zone": "Zone1",
+    "gba_zone_name": "Mahadevapura",
+    "gba_population": 20908,
+    "historical_wards": [
+      {
+        "ward_no": 112,
+        "ward_name": "Varthuru",
+        "current_share": 0.96311,
+        "legacy_share": 0.39596
+      },
+      {
+        "ward_no": 113,
+        "ward_name": "Munnekollala",
+        "current_share": 0.02869,
+        "legacy_share": 0.02752
+      },
+      {
+        "ward_no": 110,
+        "ward_name": "Whitefield",
+        "current_share": 0.00546,
+        "legacy_share": 0.00339
+      }
+    ],
+    "historical_crosswalk_tier": "clear-primary",
+    "historical_crosswalk_version": "gba369-dm243-2026.09",
+    "lat": 12.9418868791612,
+    "lng": 77.7416431592579
+  },
+  "who": {
+    "electedReps": [
+      25
+    ],
+    "committeeMeetings": [
+      {
+        "ward_no": 149,
+        "ward_name": "Varthur",
+        "assembly_constituency": "MAHADEVAPURA",
+        "meetings_count": 5,
+        "period": "2020-2022"
+      }
+    ],
+    "reportCard": {
+      "role": "MLA",
+      "constituency": "Mahadevapura",
+      "attendance_pct": 82.6,
+      "questions_asked": 0,
+      "debates": null,
+      "bills_introduced": 0,
+      "committees": 1,
+      "lad_utilization_pct": 0,
+      "net_worth_growth_pct": null,
+      "criminal_cases": 0,
+      "term": "2023-2025"
+    },
+    "ladFunds": [
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2013-14",
+        "total_lakh": 117.83,
+        "project_count": 35,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2014-15",
+        "total_lakh": 320,
+        "project_count": 27,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2015-16",
+        "total_lakh": 200.59,
+        "project_count": 41,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2016-17",
+        "total_lakh": 205,
+        "project_count": 57,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "2017-18",
+        "total_lakh": 168,
+        "project_count": 20,
+        "term": "2013-2018"
+      },
+      {
+        "assembly_constituency": "Mahadevapura",
+        "financial_year": "ALL",
+        "total_lakh": 1011.42,
+        "project_count": 180,
+        "term": "2013-2018"
+      }
+    ],
+    "corpContacts": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "corpName": "Bengaluru East City Corporation",
+    "officers": [],
+    "governance_alert": null,
+    "facts": [],
+    "infraStats": {
+      "ward_no": 0,
+      "ward_name": "Varthur",
+      "signal_count": 0,
+      "bus_stop_count": 0,
+      "daily_trips": 0
+    },
+    "potholes": {
+      "ward_no": 0,
+      "ward_name": "Varthur",
+      "complaints": 58,
+      "data_year": "2022"
+    }
+  },
+  "spend": {
+    "budget": {
+      "total": 1992708,
+      "departments": 10
+    },
+    "workOrders": [
+      "580101",
+      "513367",
+      "104-24-000001",
+      "624645",
+      "474801",
+      "470407",
+      "104-26-000008",
+      "463022",
+      "499903",
+      "572333",
+      "413589",
+      "104-25-000007",
+      "104-24-000004",
+      "104-26-000002",
+      "104-26-000003",
+      "104-26-000009",
+      "104-24-000003",
+      "104-26-000006",
+      "305588",
+      "104-24-000009"
+    ],
+    "tradeLicenses": [],
+    "wardSpend": {
+      "ward_no": 0,
+      "ward_name": "Varthur",
+      "period": "2018-2023",
+      "buildings_facilities": 684274.368856149,
+      "drainage": 9705286.848787818,
+      "roads_and_drains": 60284131.99013466,
+      "roads_and_infrastructure": 234069132.69719273,
+      "streetlighting": 7997807.096145244,
+      "waste_management": 358392.4843655562,
+      "water_and_sanitation": 26337485.9160484,
+      "grand_total": 344559855.4291212
+    },
+    "wardSpendSettled": true,
+    "propertyTax": {
+      "years": [
+        {
+          "ward_count": 8,
+          "financial_year": "2018-2019",
+          "total_applications": 125025,
+          "total_collection_lakh": 32291.41
+        },
+        {
+          "ward_count": 8,
+          "financial_year": "2017-2018",
+          "total_applications": 113623,
+          "total_collection_lakh": 29018.64
+        },
+        {
+          "ward_count": 8,
+          "financial_year": "2016-2017",
+          "total_applications": 115366,
+          "total_collection_lakh": 27406.06
+        }
+      ],
+      "assembly_constituency": "Mahadevapura"
+    },
+    "wardContractors": [
+      "ph_0000000000",
+      "ph_9900162862",
+      "ph_8073912353",
+      "ph_9901998959",
+      "ph_9845091302",
+      "ph_9448040740",
+      "ph_9448762931",
+      "ph_8884295965",
+      "ph_9036647204",
+      "ph_9611677700",
+      "ph_9343331919",
+      "ph_9945383002",
+      "ph_9740211432",
+      "ph_7829267010",
+      "ph_9880435939",
+      "ph_9066997928"
+    ]
+  },
+  "citizen": {
+    "wardStats": {
+      "trees": 55795,
+      "source": "Census 2011 + BBMP / KGIS via opencity.in",
+      "data_year": 2011,
+      "dwcc_count": 10,
+      "ward_count": 8,
+      "total_lakes": 34,
+      "total_parks": 108,
+      "namma_clinics": 4,
+      "total_area_sqkm": 115.4,
+      "total_bus_stops": 311,
+      "total_bus_routes": 1435,
+      "total_households": 116304,
+      "total_population": 431976,
+      "total_playgrounds": 6,
+      "total_govt_schools": 48,
+      "total_streetlights": 26757,
+      "total_fire_stations": 2,
+      "total_road_length_km": 1181,
+      "assembly_constituency": "Mahadevapura",
+      "total_police_stations": 7,
+      "avg_population_density": 5190
+    },
+    "potholes": {
+      "ward_no": 0,
+      "ward_name": "Varthur",
+      "complaints": 58,
+      "data_year": "2022"
+    },
+    "infraStats": {
+      "ward_no": 0,
+      "ward_name": "Varthur",
+      "signal_count": 0,
+      "bus_stop_count": 0,
+      "daily_trips": 0
+    },
+    "wardBusStats": {
+      "ward_no": 0,
+      "stop_count": 7,
+      "total_trips": 1230
+    },
+    "roadCrashes": {
+      "ward_no": 0,
+      "crashes_2024": 1,
+      "fatal_2024": 0,
+      "crashes_2025": 0,
+      "fatal_2025": 0
+    },
+    "airQuality": null,
+    "amenities": {
+      "ward_no": 0,
+      "city_id": "bengaluru",
+      "data_source": "Historical 243-ward overlap estimate",
+      "updated_at": "2026-03-29T09:26:43.512+00:00",
+      "hospitals": 2,
+      "clinics": 5,
+      "pharmacies": 7,
+      "atms": 3,
+      "banks": 3,
+      "public_toilets": 0,
+      "ev_charging": 0,
+      "petrol_pumps": 4,
+      "post_offices": 1,
+      "libraries": 1,
+      "community_halls": 0,
+      "places_of_worship": 0,
+      "restaurants": 0,
+      "cafes": 4,
+      "metro_stations": 0
+    },
+    "waterQuality": [
+      {
+        "ward_no": 112,
+        "water_body_name": "Varthur Lake",
+        "water_body_type": "lake",
+        "ph": 7.9,
+        "bod": 38,
+        "do_level": 1.2,
+        "coliform": 18000,
+        "quality_class": "E",
+        "data_year": "2023-24",
+        "data_source": "KSPCB"
+      }
+    ]
+  },
+  "reach": {
+    "departments": [
+      "GBA",
+      "GBA-Health",
+      "GBA-SWM",
+      "KSFES",
+      "KLCDA",
+      "KSPCB",
+      "Sampark",
+      "BCP",
+      "BTP",
+      "BDA",
+      "BMRCL",
+      "BMTC",
+      "BESCOM",
+      "BWSSB",
+      "GAIL"
+    ],
+    "grievances": [],
+    "sakala": {
+      "assembly_name": "Mahadevapura",
+      "year": 2026,
+      "intime_pct": null,
+      "delayed_pct": null,
+      "pending": null,
+      "rank_intime": 7,
+      "rank_overall": 3
+    }
+  }
+}

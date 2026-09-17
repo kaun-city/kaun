@@ -33,6 +33,8 @@ const headlineSource = read("components/WardHeadline.tsx")
 const grade = read("components/WardGrade.tsx")
 const card = read("components/WardCard.tsx")
 const hook = read("hooks/useWardData.ts")
+// The ward card's figures are built here (served by app/api/ward), not in the hook.
+const record = read("lib/ward-record.ts")
 const who = read("components/tabs/WhoTab.tsx")
 const spend = read("components/tabs/SpendTab.tsx")
 const citizen = read("components/tabs/CitizenTab.tsx")
@@ -116,12 +118,12 @@ test("the headline waits for every input it ranks, then renders once", () => {
   assert.match(headlineSource, /settled === false/)
   assert.match(card, /<WardHeadline\s+settled=\{ward\.headlineReady\}/)
   assert.match(card, /<WardGrade\s+settled=\{ward\.snapshotReady\}/)
-  assert.match(hook, /headlineReady: settledIdentity === wardIdentity && reportCardSettled && committeeSettled && infraSettled && contractorsSettled/)
-  // Each settled flag is reset when the ward changes.
-  for (const flag of ["ReportCard", "Committee", "Infra", "Contractors", "Potholes"]) {
-    assert.match(hook, new RegExp(`set${flag}Settled\\(false\\)`), flag)
-    assert.match(hook, new RegExp(`set${flag}Settled\\(true\\)`), flag)
-  }
+  // Every input the headline ranks arrives in one record, so it renders once.
+  assert.match(hook, /headlineReady: recordSettled,/)
+  assert.match(hook, /snapshotReady: recordSettled,/)
+  // The previous ward's record never counts as this ward's.
+  assert.match(hook, /const recordState = record\?\.identity === wardIdentity \? record : null/)
+  assert.match(hook, /const recordSettled = !!recordState/)
 })
 
 test("the evidence snapshot leaves red to the headline", () => {
@@ -132,22 +134,22 @@ test("BBMP-198-keyed tables are not looked up with 243-ward numbers", () => {
   // One switch, shared by the sheet, map layers and AI routes. It is on only
   // because every surface below goes through the spatial crosswalk.
   assert.match(read("lib/ward-data-quality.ts"), /export const BBMP_198_RECORDS_ATTRIBUTABLE = true/)
-  assert.match(hook, /import \{ BBMP_198_RECORDS_ATTRIBUTABLE \} from "@\/lib\/ward-data-quality"/)
+  assert.match(record, /import \{ BBMP_198_RECORDS_ATTRIBUTABLE \} from "\.\/ward-data-quality\.ts"/)
   const layers = read("lib/map-layers.ts")
   assert.match(layers, /BBMP_198_LAYER_IDS = new Set\(\["potholes", "ward_spend"\]\)/)
   const ask = read("app/api/ask-kaun/route.ts")
   assert.doesNotMatch(ask, /\/56`/)
   for (const fetcher of ["fetchWardSpendByBbmp198", "fetchWardPotholesByBbmp198", "fetchWardCommitteeMeetingsByBbmp198"]) {
-    const call = hook.indexOf(`${fetcher}(`)
+    const call = record.indexOf(`${fetcher}(`, record.indexOf("export async function buildWardRecord"))
     assert.ok(call > 0, fetcher)
-    const guard = hook.lastIndexOf("BBMP_198_RECORDS_ATTRIBUTABLE", call)
+    const guard = record.lastIndexOf("BBMP_198_RECORDS_ATTRIBUTABLE", call)
     assert.ok(guard > 0 && call - guard < 700, `${fetcher} must sit behind BBMP_198_RECORDS_ATTRIBUTABLE`)
     // Fed 198 numbers from the crosswalk, never a historical 243 ref's number.
-    assert.doesNotMatch(hook, new RegExp(`${fetcher}\\(ref\\.ward_no`))
+    assert.doesNotMatch(record, new RegExp(`${fetcher}\\(ref\\.ward_no`))
   }
-  assert.match(hook, /fetchWardSpendByBbmp198\(weights\.keys\(\)\)/)
-  assert.match(hook, /fetchWardPotholesByBbmp198\(weights\.keys\(\)\)/)
-  assert.match(hook, /fetchWardCommitteeMeetingsByBbmp198\(committees\.map\(committee => committee\.ward_no\)\)/)
+  assert.match(record, /fetchWardSpendByBbmp198\(weights\.keys\(\)\)/)
+  assert.match(record, /fetchWardPotholesByBbmp198\(weights\.keys\(\)\)/)
+  assert.match(record, /fetchWardCommitteeMeetingsByBbmp198\(committees\.map\(committee => committee\.ward_no\)\)/)
   // The old single-ward fetchers that took a 243 number are gone.
   assert.doesNotMatch(api, /export async function (fetchWardSpend|fetchWardPotholes|fetchWardCommitteeMeetings)\(/)
 

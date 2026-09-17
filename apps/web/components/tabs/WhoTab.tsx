@@ -103,8 +103,8 @@ export function WhoTab({
     <RTIDraftSheet request={rtiRequest} onClose={() => setRtiRequest(null)} />
     <div className="px-5 py-4 space-y-6 pb-safe-content">
 
-      {(["committee", "ladFunds", "offices"] as const).some(loadFailed) && (
-        <LoadFailed what="ward committee, MLA fund or corporation contact records" message="Some of this ward's records couldn't load" onRetry={onRetry} />
+      {(["committee", "ladFunds", "corpContacts", "facts"] as const).some(loadFailed) && (
+        <LoadFailed what="ward committee, MLA fund, corporation contact or community records" message="Some of this ward's records couldn't load" onRetry={onRetry} />
       )}
 
 

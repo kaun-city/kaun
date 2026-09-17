@@ -135,8 +135,7 @@ test("the card asks for a corporation's few latest tenders and reads the total f
   assert.equal(tenderTotal("0-2/*", 3), 3)
   assert.equal(tenderTotal(null, 2), 2)
 
-  const hook = read("hooks/useWardData.ts")
-  assert.match(hook, /fetchCorporationTenders\(tenderDepartment, CORPORATION_TENDERS_SHOWN, cityId\)/)
+  assert.match(read("lib/ward-record.ts"), /fetchCorporationTenders\(department, CORPORATION_TENDERS_SHOWN, cityId\)/)
   assert.doesNotMatch(read("components/tabs/SpendTab.tsx"), /profile\?\.tenders/)
 
   const sql = read("../../supabase/migrations/20260919_ward_profile_without_tenders.sql")
@@ -151,15 +150,20 @@ test("the card asks for a corporation's few latest tenders and reads the total f
 // ── Failed, loading and empty are different ────────────────
 
 test("every ward-card read that can fail marks its section", () => {
-  const hook = read("hooks/useWardData.ts")
-  const reads = hook.match(/void (?:fetch\w+|lookupLocalOffices|loadBbmp198Crosswalk|Promise\.all)\(/g) ?? []
-  const caught = hook.match(/\.catch\(\(\) => (?:\{|markFailed\()/g) ?? []
-  assert.ok(reads.length >= 25, `found ${reads.length} reads`)
-  assert.equal(caught.length, reads.length, "each read has a catch that marks its section failed")
-  assert.match(hook, /setAttempt\(value => value \+ 1\)/)
+  const record = read("lib/ward-record.ts")
+  const sections = [...record.matchAll(/section\(limit, failed, "(\w+)"/g)].map(match => match[1])
+  assert.equal(sections.length, 28, "one guarded read per record and live section")
+  assert.equal(new Set(sections).size, sections.length)
+  // Offices are read per point in the hook; every other section is built here.
+  const declared = [...record.match(/export type LoadSection =([\s\S]*?)\n\n/)[1].matchAll(/"(\w+)"/g)].map(match => match[1])
+  assert.deepEqual([...sections, "offices"].sort(), [...declared].sort())
   // A missing crosswalk is a failure, not "no rows".
-  assert.equal(hook.match(/requireIndex\(index\)/g)?.length, 3)
+  assert.equal(record.match(/await bbmp198\(\)/g)?.length, 3)
   assert.match(read("lib/api.ts"), /throw new DataRequestError\("ward crosswalk: unavailable"\)/)
+  const hook = read("hooks/useWardData.ts")
+  assert.match(hook, /\(\) => \{ if \(active\) setRecord\(\{ identity: wardIdentity, value: null, failed: true \}\) \}/)
+  assert.match(hook, /\(\) => \{ if \(active\) setLive\(\{ identity: wardIdentity, value: null, failed: true \}\) \}/)
+  assert.match(hook, /setAttempt\(value => value \+ 1\)/)
 })
 
 test("placeholders end in data, an empty state, or Couldn't load · Retry", () => {

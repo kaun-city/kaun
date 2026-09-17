@@ -10,14 +10,14 @@
  * (hooks/useWardData.ts). The other fetchers resolve to null or [] as before.
  */
 
-import type { BudgetSummary, CommunityFact, ElectedRep, PinResult, PropertyTaxData, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "./types"
-import { rpc, rpcOrThrow, query, queryOrThrow, insert, restRequest, restUrl, DataRequestError } from "./supabase"
-import { wardQueryScope } from "./ward-query-scope"
-import { BBMP198_CROSSWALK_URL, WARD_CROSSWALK_URL } from "./constants"
-import { bengaluruDataConstituency } from "./bengaluru-constituencies"
-import { sourceWardNosForLegacyWard, type LegacySourceWardRow } from "./gba-crosswalk"
-import { indexBbmp198Crosswalk, type Bbmp198CrosswalkArtifact, type Bbmp198Index } from "./bbmp198-crosswalk"
-import { tenderTotal } from "./corporation-tenders"
+import type { BudgetSummary, CommunityFact, ElectedRep, PinResult, PropertyTaxData, WardProfile, WardStats, WardGrievances, SakalaPerformance } from "./types.ts"
+import { rpc, rpcOrThrow, query, queryOrThrow, insert, restRequest, restUrl, DataRequestError, BROWSER_REQUEST_TIMEOUT_MS } from "./supabase.ts"
+import { wardQueryScope } from "./ward-query-scope.ts"
+import { BBMP198_CROSSWALK_URL, WARD_CROSSWALK_URL } from "./constants.ts"
+import { bengaluruDataConstituency } from "./bengaluru-constituencies.ts"
+import { sourceWardNosForLegacyWard, type LegacySourceWardRow } from "./gba-crosswalk.ts"
+import { indexBbmp198Crosswalk, type Bbmp198CrosswalkArtifact, type Bbmp198Index } from "./bbmp198-crosswalk.ts"
+import { tenderTotal } from "./corporation-tenders.ts"
 
 let sourceWardCrosswalk: Promise<LegacySourceWardRow[]> | null = null
 let bbmp198Crosswalk: Promise<Bbmp198Index | null> | null = null
@@ -231,6 +231,36 @@ export async function fetchCommunityFacts(
   return await query<CommunityFact>("community_facts", params, {
     order: "corroboration_count.desc,created_at.desc",
   })
+}
+
+/**
+ * Active community facts for a ward, with the trust level ward_profile gives
+ * them (communityFactTrust). Rejects on a failed read. Used for the ward card's
+ * live parts, so a fact does not wait for the day-long cached record.
+ */
+export async function fetchWardCommunityFacts(wardNo: number, cityId = "bengaluru"): Promise<CommunityFact[]> {
+  const rows = await queryOrThrow<Omit<CommunityFact, "trust_level">>("community_facts", {
+    "city_id": `eq.${cityId}`,
+    "ward_no": `eq.${wardNo}`,
+    "is_active": "eq.true",
+  }, {
+    // contributor_token is never read back.
+    select: "id,category,subject,field,value,source_type,source_url,source_note,corroboration_count,dispute_count,created_at",
+    order: "corroboration_count.desc",
+  })
+  return rows.map(row => ({ ...row, trust_level: communityFactTrust(row) }) as CommunityFact)
+}
+
+/**
+ * The trust level ward_profile's SQL assigns a community fact: the same tests
+ * in the same order (supabase/migrations/20260919_ward_profile_without_tenders.sql).
+ */
+export function communityFactTrust(fact: { source_type: string; corroboration_count: number; dispute_count: number }): CommunityFact["trust_level"] {
+  if (fact.source_type === "official") return "official"
+  if (fact.source_type === "rti") return "rti"
+  if (fact.dispute_count > fact.corroboration_count && fact.dispute_count >= 3) return "disputed"
+  if (fact.corroboration_count >= 5) return "community_verified"
+  return "unverified"
 }
 
 /**
@@ -511,8 +541,15 @@ export async function fetchFlaggedContractors(): Promise<import('./types').Contr
 /**
  * Fetch contractors active in a specific ward.
  */
-export async function fetchWardContractors(wardNo: number, cityId = "bengaluru"): Promise<import('./types').ContractorProfile[]> {
-  const sourceWardNos = cityId === "bengaluru" ? await sourceWardNosForHistoricalWard(wardNo) : [wardNo]
+export async function fetchWardContractors(
+  wardNo: number,
+  cityId = "bengaluru",
+  /** The BBMP-225 crosswalk rows, when the caller has them (the server bundles them); otherwise loaded here. */
+  sourceRows?: LegacySourceWardRow[],
+): Promise<import('./types').ContractorProfile[]> {
+  const sourceWardNos = cityId !== "bengaluru" ? [wardNo]
+    : sourceRows ? sourceWardNosForLegacyWard(sourceRows, wardNo)
+    : await sourceWardNosForHistoricalWard(wardNo)
   if (!sourceWardNos.length) return []
   return await queryOrThrow<import('./types').ContractorProfile>('contractor_profiles', {
     // contractor_profiles.wards stores the original BBMP-Final-225 work-order
@@ -750,3 +787,25 @@ export async function fetchCorporationTenders(department: string, limit: number,
   }
   return { tenders, total: tenderTotal(res.headers.get('content-range'), tenders.length) }
 }
+
+/**
+ * A ward's cached record or live parts from Kaun's ward route
+ * (app/api/ward/[corporation]/[ward]). Rejects with DataRequestError, so the
+ * card shows "Couldn't load · Retry" for every part the request covered.
+ */
+export async function fetchWardRoute<T>(path: string): Promise<T> {
+  let res: Response
+  try {
+    res = await fetch(path, { signal: AbortSignal.timeout(BROWSER_REQUEST_TIMEOUT_MS) })
+  } catch (error) {
+    const timedOut = error instanceof DOMException && error.name === "TimeoutError"
+    throw new DataRequestError(`${path}: ${timedOut ? "timed out" : "unreachable"}`)
+  }
+  if (!res.ok) throw new DataRequestError(`${path}: HTTP ${res.status}`)
+  try {
+    return await res.json() as T
+  } catch {
+    throw new DataRequestError(`${path}: unreadable response`)
+  }
+}
+

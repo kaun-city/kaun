@@ -5,6 +5,11 @@ import { CRON_JOBS, recordCronRun, runSucceeded } from "@/lib/cron-runs"
 
 export const runtime  = "nodejs"
 export const maxDuration = 60
+// Every other function runs in bom1, next to the database (vercel.json). This
+// one classifies each news item with a separate OpenAI call, one after another,
+// and its runtime is not visible anywhere yet: it stays where it has always run
+// rather than add an India-US round trip per item against a 60 s limit.
+export const preferredRegion = "iad1"
 
 // Vercel Cron guard - only allow cron runner or internal admin calls
 function isAuthorized(req: Request): boolean {
