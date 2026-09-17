@@ -27,6 +27,7 @@ On [kaun.city](https://kaun.city) itself, the Bengaluru experience includes the 
 |---|---|---|---|
 | [BBMP IFMS](sources/bbmp-ifms.md) | [accounts.bbmp.gov.in](https://accounts.bbmp.gov.in/vssifms/) | Work orders, payments, bills | PublicView accessible |
 | [KPPP](sources/kppp.md) | [kppp.karnataka.gov.in](https://kppp.karnataka.gov.in) | Tenders, procurement | API integrated, weekly refresh |
+| [blr-tenders-bids](sources/blr-tenders-bids.md) | [github.com/Vonter/blr-tenders-bids](https://github.com/Vonter/blr-tenders-bids) | Tenders since 2009 with awarded suppliers (KPPP + eProc), ODbL | Loaded weekly when republished; not on the map yet |
 | [OpenCity.in](sources/opencity.md) | [data.opencity.in](https://data.opencity.in) | Work orders, budgets, grievances | CSV integrated |
 | MyNeta | [myneta.info](https://myneta.info) | MLA affidavits, criminal cases | Integrated on kaun.city |
 | KGIS | [kgis.ksrsac.in](https://kgis.ksrsac.in) | Trees, clinics, waste centers | Integrated on kaun.city |

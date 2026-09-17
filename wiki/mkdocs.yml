@@ -60,6 +60,7 @@ nav:
       - Cauvery Stage V: bengaluru/projects/cauvery-water-supply-scheme-stage-v.md
     - Data Sources:
       - BBMP IFMS: bengaluru/sources/bbmp-ifms.md
+      - blr-tenders-bids (tender awards): bengaluru/sources/blr-tenders-bids.md
       - KPPP: bengaluru/sources/kppp.md
       - OpenCity.in: bengaluru/sources/opencity.md
     - Wards:
