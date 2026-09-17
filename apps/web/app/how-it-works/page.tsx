@@ -32,6 +32,10 @@ export default function HowItWorksPage() {
             awarded in your area, government spending, infrastructure, and active civic issues.
           </p>
           <p>
+            Kaun also covers India&apos;s 543 Lok Sabha constituencies: each MP&apos;s record, MPLADS
+            spending, and delays and cost overruns on central government projects.
+          </p>
+          <p>
             We are not a service portal. We don&apos;t file complaints or connect you to officials.
             We surface information that already exists in public records, aggregated in one place.
           </p>
@@ -45,15 +49,24 @@ export default function HowItWorksPage() {
               cases are sourced from <a href="https://myneta.info" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">Myneta.info</a> and
               Karnataka legislative assembly records. Data is updated when new election affidavits or
               assembly records become available.</p>
+              <p className="mt-2">For Members of Parliament, the roster comes from the Lok Sabha Secretariat
+              (<a href="https://sansad.in" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">sansad.in</a>), attendance and questions from <a href="https://prsindia.org/mptrack" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">PRS Legislative Research</a>,
+              declared assets and cases from Election Commission nomination affidavits via Myneta.info, and MPLADS
+              spending from MoSPI&apos;s <a href="https://mplads.mospi.gov.in" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">eSAKSHI</a> portal.</p>
             </div>
             <div className="py-4">
               <p className="mb-1 font-semibold text-ink">Tenders and contractors</p>
-              <p>Public works tenders are sourced from the{" "}
-              <a href="https://kppp.karnataka.gov.in" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">Karnataka Public Procurement Portal (KPPP)</a>.
-              Contractor records (total contracts, wards covered, payment deductions) are derived from BBMP work order data via{" "}
+              <p>Tenders come from the{" "}
+              <a href="https://kppp.karnataka.gov.in" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">Karnataka Public Procurement Portal (KPPP)</a>{" "}
+              for 11 Bengaluru agencies: the five GBA city corporations, BWSSB, BDA, BESCOM, BMTC, BSWML and BMRCL.
+              A ward card shows the latest tenders from its city corporation, not only that ward, because KPPP
+              tenders are not reliably tagged to wards. Tenders refresh weekly; how they are fetched is documented at{" "}
+              <a href="https://data.kaun.city/bengaluru/sources/kppp/" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">data.kaun.city</a>.</p>
+              <p className="mt-2">Contractor records (total contracts, wards covered, payment deductions) are derived from BBMP work
+              orders published on{" "}
               <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">OpenCity.in</a>.
-              Where shown, official blacklisting information is sourced from KPPP and BBMP published records.
-              Payment deduction percentages reflect BBMP work order data — high deductions may indicate quality disputes, delays, or scope changes. Tenders refresh weekly.</p>
+              A ward&apos;s work orders also include those from BBMP&apos;s IFMS accounts portal, refreshed weekly. A blacklisting flag, where shown, is a documented case that names its
+              source and date. Payment deduction percentages reflect BBMP work order data — high deductions may indicate quality disputes, delays, or scope changes.</p>
             </div>
             <div className="py-4">
               <p className="mb-1 font-semibold text-ink">Budget and ward spending</p>
@@ -66,7 +79,8 @@ export default function HowItWorksPage() {
               <p>Ward grievance counts are sourced from BBMP&apos;s grievance portal via{" "}
               <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">OpenCity.in</a>, refreshed monthly.
               Sakala performance rankings (government service delivery timelines) come from
-              the Karnataka Sakala portal, updated manually each month (the site blocks automated access).</p>
+              the Karnataka Sakala portal. They are loaded by hand when new figures are fetched, because the site
+              blocks automated access.</p>
             </div>
             <div className="py-4">
               <p className="mb-1 font-semibold text-ink">Infrastructure & amenities</p>
@@ -76,14 +90,29 @@ export default function HowItWorksPage() {
               cross-referenced with BBMP ward boundaries. Data reflects OSM contributor coverage and may be incomplete in some areas.</p>
             </div>
             <div className="py-4">
-              <p className="mb-1 font-semibold text-ink">Road crashes</p>
-              <p>Road accident data is sourced from NCRB (National Crime Records Bureau) and Karnataka state transport department records,
-              aggregated to ward level. Data reflects reported accidents only.</p>
+              <p className="mb-1 font-semibold text-ink">Road crashes and air quality</p>
+              <p>Crash counts for 2024 and 2025 come from Bengaluru Traffic Police records, aggregated to ward level;
+              they reflect reported crashes only. Air quality readings for 2024&ndash;25 come from KSPCB and CPCB
+              monitoring stations.</p>
             </div>
             <div className="py-4">
               <p className="mb-1 font-semibold text-ink">Water quality</p>
               <p>Lake water quality data (good / moderate / poor) is sourced from Karnataka State Pollution Control Board (KSPCB)
               monitoring reports, mapped to the nearest ward.</p>
+            </div>
+            <div className="py-4">
+              <p className="mb-1 font-semibold text-ink">Bus stops</p>
+              <p>Ward bus stop counts come from BMTC&apos;s published stop lists via{" "}
+              <a href="https://opencity.in" target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">OpenCity.in</a>.
+              The lists repeat a stop once for every nearby polling booth, so Kaun counts each physical stop once.</p>
+            </div>
+            <div className="py-4">
+              <p className="mb-1 font-semibold text-ink">Project records</p>
+              <p>Long-running Bengaluru projects, such as the Varthur&ndash;Gunjur corridor, the Ejipura flyover and the
+              ORR metro, are documented from government orders, court records, parliamentary answers and attributed
+              reporting. Every claim cites its source, and what is not public is stated as a gap. A project&apos;s wards
+              are worked out from its mapped route. Delays and cost overruns on central government projects in the
+              India view come from MoSPI&apos;s monthly flash reports (PAIMANA).</p>
             </div>
             <div className="py-4">
               <p className="mb-1 font-semibold text-ink">Trade licences</p>
@@ -192,13 +221,19 @@ export default function HowItWorksPage() {
               <tbody className="divide-y divide-ink/10">
                 {[
                   ["KPPP tenders", "Weekly (Sundays)"],
+                  ["BBMP work orders (IFMS)", "Weekly (Sundays)"],
                   ["Trade licences", "Monthly (3rd)"],
                   ["BBMP grievances", "Monthly (2nd)"],
-                  ["Sakala rankings", "Monthly (1st) — manually, site blocks automated access"],
+                  ["Sakala rankings", "By hand when new figures are fetched (the site blocks automated access)"],
                   ["CityPulse news", "Daily (6am UTC)"],
                   ["Civic signals", "Daily (2am UTC)"],
-                  ["Elected rep data", "On election cycle / when new records published"],
-                  ["Budget data", "Annually"],
+                  ["MLA data", "On election cycle / when new records published"],
+                  ["MP roster and activity", "Weekly (Sundays)"],
+                  ["MPLADS spending", "Monthly (6th)"],
+                  ["Central projects (MoSPI)", "Monthly (5th)"],
+                  ["Project records", "When reviewed; each record shows its review date"],
+                  ["Budget and ward spending", "Loaded once (2018–23)"],
+                  ["Road crashes, air and water quality", "Loaded once; each figure shows its year"],
                 ].map(([ds, freq]) => (
                   <tr key={ds}>
                     <td className="py-2 pr-4 text-ink">{ds}</td>
@@ -234,8 +269,8 @@ export default function HowItWorksPage() {
             <a href="mailto:hello@kaun.city" className="text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent">hello@kaun.city</a> and we will prioritise correcting it.
           </p>
           <p>
-            Contractor records shown on kaun.city are derived from BBMP work order data and the Karnataka Public Procurement Portal (KPPP).
-            Blacklist information, where shown, refers to official government blacklisting records as per KPPP / BBMP published records.
+            Contractor records shown on kaun.city are derived from BBMP work order data. Tenders shown on kaun.city come from the Karnataka Public Procurement Portal (KPPP).
+            Blacklist information, where shown, is a documented case that names its source and date.
             Payment deduction percentages reflect data in BBMP work orders and may reflect legitimate scope changes, quality disputes, or administrative adjustments.
           </p>
           <p>
