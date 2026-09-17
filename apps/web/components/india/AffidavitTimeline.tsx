@@ -10,26 +10,16 @@
  * Presented as declarations, not as a finding. No growth percentage is computed
  * and nothing is flagged: the numbers are years apart, cover different offices,
  * and are not inflation-adjusted. The reader gets the sequence and the source.
+ *
+ * An election can appear twice (two seats, or a by-election in the same term);
+ * lib/india/nominations.ts names the seat or says "separate nomination".
  */
 import { formatRupees } from "@/lib/india/format"
+import { nominationRows } from "@/lib/india/nominations"
 import type { MpAffidavit } from "@/lib/india/types"
 
 export function AffidavitTimeline({ affidavit }: { affidavit: MpAffidavit }) {
-  const history = affidavit.declared_assets_history ?? []
-  const rows = [
-    {
-      election: affidavit.election.replace(/^LokSabha/, "Lok Sabha "),
-      assets: affidavit.total_assets_inr,
-      cases: affidavit.criminal_cases,
-      current: true,
-    },
-    ...history.map(h => ({
-      election: h.election,
-      assets: h.declared_assets_inr,
-      cases: h.declared_cases,
-      current: false,
-    })),
-  ]
+  const { rows, hasRepeats } = nominationRows(affidavit)
   if (rows.length < 2) return null
 
   const max = Math.max(...rows.map(r => r.assets ?? 0), 1)
@@ -41,10 +31,10 @@ export function AffidavitTimeline({ affidavit }: { affidavit: MpAffidavit }) {
         {rows.map(r => {
           const share = r.assets !== null ? Math.max(0.02, r.assets / max) : 0
           return (
-            <div key={r.election} className="space-y-1">
+            <div key={r.key} className="space-y-1">
               <div className="flex items-baseline justify-between gap-3">
                 <span className={`font-mono text-xs ${r.current ? "text-ink font-semibold" : "text-ink/70"}`}>
-                  {r.election}{r.current ? " · current" : ""}
+                  {r.election}{r.qualifier ? ` · ${r.qualifier}` : ""}{r.current ? " · current" : ""}
                 </span>
                 <span className="text-ink text-xs font-semibold font-mono tabular-nums shrink-0">{formatRupees(r.assets)}</span>
               </div>
@@ -69,6 +59,13 @@ export function AffidavitTimeline({ affidavit }: { affidavit: MpAffidavit }) {
         Each row is a separate nomination affidavit filed by the same person. Amounts are as declared,
         not adjusted for inflation, and the elections are for different offices in some years.
       </p>
+      {hasRepeats && (
+        <p className="text-ink/60 text-xs leading-snug">
+          An election listed more than once is not a duplicate: MyNeta files a declaration for each seat
+          contested, and for a by-election held in the same term, under the same election. Where MyNeta
+          does not say which seat a row belongs to, it reads &ldquo;separate nomination&rdquo;.
+        </p>
+      )}
     </div>
   )
 }
