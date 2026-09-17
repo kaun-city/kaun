@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import OpenAI from "openai"
 import { TwitterApi } from "twitter-api-v2"
+import { CRON_JOBS, recordCronRun, runSucceeded } from "@/lib/cron-runs"
 
 export const runtime  = "nodejs"
 export const maxDuration = 60
@@ -324,9 +325,10 @@ function guessAllWardsFromText(text: string): Array<{ ward_no: number; ward_name
   return results
 }
 
+/** null when the classifier could not answer (so a dead API key is not a quiet day). */
 async function classifySignal(openai: OpenAI, title: string, body: string): Promise<{
   is_civic: boolean; issue_type: string; ward_hint: string | null
-}> {
+} | null> {
   try {
     const res = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -339,7 +341,7 @@ async function classifySignal(openai: OpenAI, title: string, body: string): Prom
     const raw = (res.choices[0]?.message?.content ?? "{}").replace(/```json|```/g, "").trim()
     return JSON.parse(raw)
   } catch {
-    return { is_civic: false, issue_type: "other", ward_hint: null }
+    return null
   }
 }
 
@@ -352,14 +354,15 @@ interface NewsItem {
   source: string
 }
 
-// Generic RSS parser — handles standard RSS 2.0 and Atom feeds
-async function fetchRSS(url: string, sourceName: string, limit = 15): Promise<NewsItem[]> {
+// Generic RSS parser — handles standard RSS 2.0 and Atom feeds.
+// null when the source could not be read; [] when it answered with no items.
+async function fetchRSS(url: string, sourceName: string, limit = 15): Promise<NewsItem[] | null> {
   try {
     const res = await fetch(url, {
       headers: { "User-Agent": "kaun-city/1.0 (https://kaun.city; civic accountability)" },
       signal: AbortSignal.timeout(8000),
     })
-    if (!res.ok) return []
+    if (!res.ok) return null
     const xml = await res.text()
     if (!xml.includes("<item") && !xml.includes("<entry")) return []
     const items: NewsItem[] = []
@@ -378,7 +381,7 @@ async function fetchRSS(url: string, sourceName: string, limit = 15): Promise<Ne
     }
     return items
   } catch {
-    return []
+    return null
   }
 }
 
@@ -413,7 +416,7 @@ const TWITTER_RSS_QUERIES = [
   "site:x.com+Bengaluru+garbage", "site:x.com+BBMP+road",
 ]
 
-async function fetchGoogleNews(query: string): Promise<NewsItem[]> {
+async function fetchGoogleNews(query: string): Promise<NewsItem[] | null> {
   return fetchRSS(
     `https://news.google.com/rss/search?q=${query}+when:7d&hl=en-IN&gl=IN&ceid=IN:en`,
     "Google News",
@@ -435,10 +438,20 @@ export async function GET(req: Request) {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
 
   const results = { twitter: 0, twitter_rss: 0, news: 0, civic_media: 0, skipped: 0, errors: 0 }
+  // For the heartbeat: a run fails only if a whole stage failed (see lib/cron-runs).
+  const sources = { tried: 0, failed: 0 }
+  const classifications = { tried: 0, failed: 0 }
+  const readSource = (items: NewsItem[] | null): NewsItem[] => {
+    sources.tried++
+    if (items === null) sources.failed++
+    return items ?? []
+  }
 
   // Helper: upsert one news/RSS item — fans out to multiple rows if multiple wards mentioned
   async function upsertNewsItem(item: NewsItem, sourceKey: string) {
     const cls = await classifySignal(openai, item.title, "")
+    classifications.tried++
+    if (!cls) { classifications.failed++; results.skipped++; return }
     if (!cls.is_civic) { results.skipped++; return }
 
     const hashId   = item.title.replace(/[^a-zA-Z0-9]/g, "").substring(0, 40).toLowerCase()
@@ -499,8 +512,7 @@ export async function GET(req: Request) {
     DIRECT_RSS_FEEDS.map(f => fetchRSS(f.url, f.name))
   )
   for (const result of feedResults) {
-    if (result.status !== "fulfilled") continue
-    for (const item of result.value) {
+    for (const item of readSource(result.status === "fulfilled" ? result.value : null)) {
       await upsertNewsItem(item, "civic_media")
     }
   }
@@ -508,7 +520,7 @@ export async function GET(req: Request) {
   // ── Google News RSS — 4 random civic queries (expanded to cover Reddit gap) ──
   const gnQueries = GOOGLE_NEWS_QUERIES.sort(() => Math.random() - 0.5).slice(0, 4)
   for (const query of gnQueries) {
-    const items = await fetchGoogleNews(query)
+    const items = readSource(await fetchGoogleNews(query))
     for (const item of items) {
       await upsertNewsItem(item, "gnews")
     }
@@ -517,7 +529,7 @@ export async function GET(req: Request) {
   // ── Twitter/X via Google News RSS — captures viral tweets cited in news ──
   const twRssQueries = TWITTER_RSS_QUERIES.sort(() => Math.random() - 0.5).slice(0, 2)
   for (const query of twRssQueries) {
-    const items = await fetchGoogleNews(query)
+    const items = readSource(await fetchGoogleNews(query))
     for (const item of items) {
       await upsertNewsItem(item, "twitter_rss")
     }
@@ -526,7 +538,14 @@ export async function GET(req: Request) {
   // ── Moderate pending ward_reports (AI runs here, not at submit time) ──
   const modResults = await moderatePendingReports(supabase, openai)
   console.log("ingest-signals:", results, "moderation:", modResults)
-  return Response.json({ ok: true, ...results, moderated: modResults })
+
+  // Every upsert that returned lands in exactly one of these counters.
+  const writes = { tried: results.news + results.twitter_rss + results.civic_media + results.errors, failed: results.errors }
+  const succeeded = runSucceeded([sources, classifications, writes])
+  await recordCronRun(supabase, CRON_JOBS.ingestSignals, succeeded, {
+    ...results, sources, classifications, moderated: modResults,
+  })
+  return Response.json({ ok: true, succeeded, ...results, sources, classifications, moderated: modResults })
 }
 
 // ─── Report moderation (runs daily at 2am) ──────────────────────────────────
