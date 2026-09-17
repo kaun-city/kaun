@@ -145,11 +145,17 @@ body {
 /* City map: the zoom buttons sit below the header strip at every width, never
  * on it. The strip is top-3.5 (14px) plus a 46px row at every width (44px
  * targets inside the switcher's 1px border), so it ends at 60px; 52px +
- * Leaflet's 10px control margin puts the buttons at 62px. On
- * phones the ticker below stops 64px from the right edge (right-16), clear of
- * the buttons' 60px. */
+ * Leaflet's 10px control margin puts the buttons at 62px. */
 .city-map .leaflet-top.leaflet-right {
   top: 52px !important;
+}
+
+/* Touch screens pinch to zoom, so the buttons only crowd the header corner.
+ * A mouse keeps them. Both maps. */
+@media (pointer: coarse) {
+  .leaflet-control-zoom {
+    display: none;
+  }
 }
 
 /* An open ward sheet covers the map on phones; its zoom buttons would only
@@ -211,8 +217,7 @@ body {
 
 .signal-ticker {
   background: var(--signal-paper);
-  border-top: 1px solid var(--signal-line);
-  border-bottom: 1px solid var(--signal-line);
+  border: 1px solid var(--signal-line);
 }
 
 /* Motion --------------------------------------------------------------------- */

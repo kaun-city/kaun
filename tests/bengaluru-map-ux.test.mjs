@@ -22,7 +22,6 @@ const home = read("components/HomePage.tsx")
 const pulse = read("components/CityPulse.tsx")
 const finder = read("components/WardFinder.tsx")
 const picker = read("components/shared/MapLayerPicker.tsx")
-const vacancy = read("components/CorporatorVacancy.tsx")
 const switcher = read("components/shared/SurfaceSwitcher.tsx")
 const css = read("app/globals.css")
 const gbaCrosswalk = JSON.parse(read("public/bengaluru-gba-369-to-datameet-243.json"))
@@ -49,9 +48,9 @@ async function load(parts) {
 }
 
 const { pulseHeadline, pulseSource } = await load([[pulse, ["decodeEntities", "pulseHeadline", "pulseSource"]]])
-const { formerWardMatches, wardUrlSearch, normalizeWardName, coveringCurrentWards, overlappedOldWards } = await load([
+const { formerWardMatches, wardUrlSearch, normalizeWardName, coveringCurrentWards, overlappedOldWards, locationProblem, locationProblemCopy } = await load([
   [finder, ["coveringCurrentWards", "overlappedOldWards"]],
-  [home, ["normalizeWardName", "formerWardMatches", "WARD_URL_PARAMS", "wardUrlSearch"]],
+  [home, ["normalizeWardName", "formerWardMatches", "WARD_URL_PARAMS", "wardUrlSearch", "locationProblem", "locationProblemCopy"]],
 ])
 
 // 1 ─ zoom control and search results never sit under/over header controls
@@ -69,6 +68,10 @@ test("zoom buttons sit below the city map header at every width", () => {
   assert.match(css, /\.signal-map:has\(\.ward-sheet\[data-sheet="expanded"\]\) \.leaflet-control-zoom/)
 })
 
+test("touch screens get no zoom buttons: they pinch", () => {
+  assert.match(css, /@media \(pointer: coarse\) \{\s*\.leaflet-control-zoom \{\s*display: none;/)
+})
+
 test("the header stacks above Leaflet controls, and above the phone sheet while searching", () => {
   const header = home.match(/city-map-header[^\n]*/)?.[0] ?? ""
   const z = [...header.matchAll(/z-\[(\d+)\]/g)].map(m => Number(m[1]))
@@ -78,15 +81,31 @@ test("the header stacks above Leaflet controls, and above the phone sheet while 
   assert.ok(Number(header.match(/searchOpen \? "z-\[(\d+)\]"/)[1]) < 1100, "search must stay under report/dialog sheets")
 })
 
-// 2 ─ find my ward after a denied location
+// 2 ─ find my ward: one line, and a failure that says what to change
 
-test("a denied location keeps a retry and a message that wraps clear of the … button", () => {
-  assert.doesNotMatch(home, /\{!geoDenied && \(/)
-  assert.match(home, /geoDenied \? "Retry location" : "Find my ward"/)
-  const message = home.match(/<p[^>]*>\s*\{geoDenied \?[^\n]*/)?.[0] ?? ""
-  assert.doesNotMatch(message, /whitespace-nowrap/)
-  assert.match(message, /max-w-\[calc\(100vw-7\.5rem\)\]/)
-  assert.match(home, /setGeoDenied\(false\)/)
+test("finding a ward is one line: my location, or tap the map", () => {
+  assert.match(home, /geoProblem \? "Try again" : "My location"/)
+  assert.match(home, />or tap the map<\/span>/)
+  assert.doesNotMatch(home, /Retry location|Find my ward|No location · tap the map/)
+  // the line and its failure message stay clear of the phone "…" button
+  assert.equal(home.match(/max-w-\[calc\(100vw-7\.5rem\)\]/g)?.length, 2)
+  assert.match(home, /role="status"/)
+  assert.match(home, /setGeoProblem\(null\)/)
+})
+
+test("a refused location says whether it was blocked, dismissed, unavailable or slow", () => {
+  assert.equal(locationProblem(1, "denied", 5000), "blocked")
+  assert.equal(locationProblem(1, "prompt", 40), "blocked", "refused before anyone could answer a prompt")
+  assert.equal(locationProblem(1, null, 40), "blocked")
+  assert.equal(locationProblem(1, "prompt", 4000), "dismissed")
+  assert.equal(locationProblem(2, "granted", 900), "unavailable")
+  assert.equal(locationProblem(3, "granted", 10000), "timeout")
+  for (const problem of ["blocked", "dismissed", "unavailable", "timeout", "unsupported"]) {
+    // the line below the message already says "or tap the map"
+    assert.ok(locationProblemCopy(problem).length > 10, problem)
+    assert.doesNotMatch(locationProblemCopy(problem), /tap the map/i, problem)
+  }
+  assert.match(locationProblemCopy("blocked"), /settings/)
 })
 
 // 3 ─ the URL names the open ward
@@ -207,12 +226,6 @@ test("the ticker keeps red to its severity marker", () => {
   assert.doesNotMatch(pulse, /isTwitter/)
 })
 
-// 7 ─ vacancy counter
-
-test("the days-without-corporator number is ink", () => {
-  assert.doesNotMatch(vacancy, /text-danger/)
-  assert.match(vacancy, /tabular-nums text-ink">/)
-})
 
 // 8 ─ legends
 
