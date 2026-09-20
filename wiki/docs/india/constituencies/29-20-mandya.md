@@ -64,7 +64,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 3 |
 | Age | 66 |
 | Gender | Male |
-| Qualification | Graduate |
 | Profession | Agriculturist; BUSINESSPERSON, POLITICAL AND SOCIAL WORKER |
 | Minister | yes — This MP is a minister. Ministers represent the government in debates, so we do not report their participation. They do not sign the attendance register, ask questions, or introduce private member bills. Data corresponds to the period from 24-06-2024 to 13-08-2026. |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/3711) |
@@ -122,16 +121,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Karnataka furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Karnataka furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
 | [Construction of Bangalore Metro Rail Project Phase 2.](https://kaun.city/india/projects/702635) | Ministry of Housing & Urban Affairs | ₹26,405 Cr | ₹30,695 Cr | +₹4,290 Cr | 66 months later | 96% |
-| [Gadag-Wadi New Railway Line [257 km]](https://kaun.city/india/projects/705490) | Ministry of Railways | ₹2,842 Cr | ₹6,700 Cr | +₹3,858 Cr | 9 months later | 40% |
-| [Nidagatta-Mysore Pkg II](https://kaun.city/india/projects/619120) | Ministry of Road Transport & Highways | ₹2,920 Cr | ₹4,114 Cr | +₹1,194 Cr | 49 months later | 99% |
-| [4L of Hubli - Hospet Section of NH-63 from Km 128.850 to Km 272.571](https://kaun.city/india/projects/619121) | Ministry of Road Transport & Highways | ₹2,532 Cr | ₹3,619 Cr | +₹1,087 Cr | 74 months later | 100% |
-| [4L PS from near Hemmige Village Periyapatna - Hassan Road Jn. to near Hunsur - KR Nagar Jn section from Km. 144.900 to Km. 169.000 of NH-275 Pkg. III](https://kaun.city/india/projects/618870) | Ministry of Road Transport & Highways | ₹884 Cr | ₹1,727 Cr | +₹843 Cr | 15 months later | 22% |
+| [Nidagatta-Mysore Pkg II](https://kaun.city/india/projects/619120) | Ministry of Road Transport & Highways | ₹2,920 Cr | ₹4,114 Cr | +₹1,194 Cr | 51 months later | 99% |
+| [4L PS from near Hemmige Village Periyapatna - Hassan Road Jn. to near Hunsur - KR Nagar Jn section from Km. 144.900 to Km. 169.000 of NH-275 Pkg. III](https://kaun.city/india/projects/618870) | Ministry of Road Transport & Highways | ₹884 Cr | ₹1,727 Cr | +₹843 Cr | 9 months later | 28% |
 | [Upper Tunga Irrigation Project](https://kaun.city/india/projects/701377) | Department of Water Resources, River Development & GR | ₹770 Cr | ₹1,606 Cr | +₹836 Cr | 75 months later | 99% |
+| [Gadag - Wadi 252 km](https://kaun.city/india/projects/705490) | Ministry of Railways | ₹2,842 Cr | ₹3,668 Cr | +₹826 Cr | 9 months later | 35% |
+| [BRT Tiger Reserve Boundary Km.287.500 to Bangalore Section Km.458.420 of NH- 209 in Karnataka](https://kaun.city/india/projects/619150) | Ministry of Road Transport & Highways | ₹2,083 Cr | ₹2,860 Cr | +₹777 Cr | 85 months later | 100% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=29)
 
@@ -149,4 +148,4 @@ The 6 projects in Karnataka furthest above sanctioned cost, as of the May 2026 r
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

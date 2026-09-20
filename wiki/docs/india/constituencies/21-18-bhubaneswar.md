@@ -63,7 +63,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 2 |
 | Age | 56 |
 | Gender | Female |
-| Qualification | Graduate |
 | Profession | Ex-Civil Servant |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/4988) |
 
@@ -106,6 +105,8 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 18 | 94.7% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 26 | 86.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 9 | 60.0% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 2 | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 2 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 21 | 80.8% | — | 70 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 16 | 80.0% | — | 202 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 14 | 87.5% | — | 95 | — | — |
@@ -131,16 +132,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Odisha furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Odisha furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
 | [Subernarekha Project, Odisha](https://kaun.city/india/projects/701402) | Department of Water Resources, River Development & GR | ₹3,056 Cr | ₹7,023 Cr | +₹3,967 Cr | 75 months later | 96% |
+| [Talcher-Bimlagarh 154 km](https://kaun.city/india/projects/705359) | Ministry of Railways | ₹1,928 Cr | ₹4,547 Cr | +₹2,619 Cr | 48 months later | 56% |
+| [Khurda Road-Bolangir 301 km](https://kaun.city/india/projects/705358) | Ministry of Railways | ₹3,792 Cr | ₹6,222 Cr | +₹2,430 Cr | on original schedule | 93% |
 | [Integrated Anandpur Barrage Project](https://kaun.city/india/projects/603945) | Department of Water Resources, River Development & GR | ₹567 Cr | ₹2,990 Cr | +₹2,423 Cr | 78 months later | 63% |
-| [Expansion of Alumina Refinery Plant with addition of 5th Stream having capacity enhancement of 1.0 Million Tonee Per Annum](https://kaun.city/india/projects/400141) | Ministry of Mines | ₹4,103 Cr | ₹5,677 Cr | +₹1,574 Cr | 42 months later | 95% |
-| [Kanupur Irrigation Project](https://kaun.city/india/projects/701404) | Department of Water Resources, River Development & GR | ₹989 Cr | ₹2,301 Cr | +₹1,312 Cr | 78 months later | 80% |
-| [Khurda-Bolangir New Broad Gauge Rail Link [301km]](https://kaun.city/india/projects/705358) | Ministry of Railways | ₹3,792 Cr | ₹5,089 Cr | +₹1,297 Cr | on original schedule | 93% |
-| [3rd & 4th Railway Line Project from Salegaon to Budhapank via Rajathgarh.](https://kaun.city/india/projects/705515) | Ministry of Railways | ₹1,173 Cr | ₹2,092 Cr | +₹919 Cr | on original schedule | 90% |
+| [Budhapank-Salegaon via Rajatgarh - 3rd & 4th line 85 85 km](https://kaun.city/india/projects/705515) | Ministry of Railways | ₹1,173 Cr | ₹3,035 Cr | +₹1,862 Cr | on original schedule | 86% |
+| [Expansion of Alumina Refinery Plant with addition of 5th Stream having capacity enhancement of 1.0 Million Tonee Per Annum](https://kaun.city/india/projects/400141) | Ministry of Mines | ₹4,103 Cr | ₹5,677 Cr | +₹1,574 Cr | 42 months later | 96% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=21)
 
@@ -158,4 +159,4 @@ The 6 projects in Odisha furthest above sanctioned cost, as of the May 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

@@ -64,7 +64,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 1 |
 | Age | 71 |
 | Gender | Male |
-| Qualification | Post Graduate |
 | Profession | BUSINESSPERSON |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5620) |
 
@@ -107,7 +106,6 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 19 | 100.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 30 | 100.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 4 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 26 | 100.0% | — | 131 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | 130 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 1 | — | — |
@@ -133,16 +131,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Rajasthan furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Rajasthan furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Rajasthan Refinery Project](https://kaun.city/india/projects/701263) | Ministry of Petroleum & Natural Gas | ₹43,129 Cr | ₹79,459 Cr | +₹36,330 Cr | 44 months later | 92% |
-| [4L Greenfield spur from Delhi-Vadodara Greenfield expressway near Bandikui to Jaipur](https://kaun.city/india/projects/619063) | Ministry of Road Transport & Highways | ₹1,636 Cr | ₹2,170 Cr | +₹534 Cr | 19 months later | 100% |
-| [Gudha-Thatha Mithri Construction of Railway Track Project](https://kaun.city/india/projects/705752) | Ministry of Railways | ₹819 Cr | ₹967 Cr | +₹148 Cr | on original schedule | 95% |
-| [Delhi-Vadodara Greenfield Alignment NH-148N Pkg-14 Ch. 388.420 to Ch. 419.000 [Junction with NH- 76 to Junction with NH-12 near village Ummedpura]](https://kaun.city/india/projects/618456) | Ministry of Road Transport & Highways | ₹1,119 Cr | ₹1,194 Cr | +₹74.82 Cr | 22 months later | 100% |
-| [Sangariya near Chautala-Rasisar near Bikaner section of NH-754K Phase-I AJ/SR- Package-7](https://kaun.city/india/projects/618611) | Ministry of Road Transport & Highways | ₹521 Cr | ₹548 Cr | +₹27.79 Cr | 36 months later | 100% |
-| [Tanot -Ramgarh-Bhadasar-Jaisalmer NH-68 and BhadasarMokal-Sarkaritala up to Pakisthan Border NH-968 Pkg-BM/5](https://kaun.city/india/projects/618796) | Ministry of Road Transport & Highways | ₹829 Cr | ₹830 Cr | +₹1.79 Cr | 62 months later | 100% |
+| [Dedicatedtest track for RDSO Phase-2 34 km Umbrella work PB22/2019-20/NR](https://kaun.city/india/projects/706836) | Ministry of Railways | ₹466 Cr | ₹619 Cr | +₹153 Cr | unchanged 0 months | 98% |
+| [Nathdwara Mavli - Devgarh Madariya 82.542 km](https://kaun.city/india/projects/611855) | Ministry of Railways | ₹969 Cr | ₹1,100 Cr | +₹131 Cr | unchanged 0 months | 75% |
+| [Sangariya near Chautala-Rasisar near Bikaner section of NH-754K Phase-I AJ/SR- Package-7](https://kaun.city/india/projects/618611) | Ministry of Road Transport & Highways | ₹521 Cr | ₹548 Cr | +₹27.79 Cr | 38 months later | 100% |
+| [Tanot -Ramgarh-Bhadasar-Jaisalmer NH-68 and BhadasarMokal-Sarkaritala up to Pakisthan Border NH-968 Pkg-BM/5](https://kaun.city/india/projects/618796) | Ministry of Road Transport & Highways | ₹829 Cr | ₹830 Cr | +₹1.79 Cr | 64 months later | 100% |
+| [Jaipur Metro Rail Project Phase 2 (Prahladpura to Todi Mod)](https://kaun.city/india/projects/245986) | Ministry of Housing & Urban Affairs | ₹13,038 Cr | ₹13,038 Cr | no change | unchanged 0 months | 2% |
+| [Development of Jodhpur Pali Marwar Industrial Area JPMIA in Rajasthan](https://kaun.city/india/projects/603210) | Department for Promotion of Industry & Internal Trade | ₹922 Cr | ₹922 Cr | no change | unchanged 0 months | 6% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=8)
 
@@ -160,4 +158,4 @@ The 6 projects in Rajasthan furthest above sanctioned cost, as of the May 2026 r
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

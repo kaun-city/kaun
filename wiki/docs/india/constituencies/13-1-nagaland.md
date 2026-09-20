@@ -116,7 +116,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 1 |
 | Age | 63 |
 | Gender | Male |
-| Qualification | Graduate |
 | Profession | Advocate; Lawyer, POLITICAL AND SOCIAL WORKER |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5567) |
 
@@ -153,7 +152,9 @@ average of them measures none of them.
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 18 | 94.7% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 24 | 80.0% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 24 | 80.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 3 | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 3 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 26 | 100.0% | — | 266 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | 2 | — | — |
@@ -180,16 +181,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Nagaland furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Nagaland furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [4-Laning of Balance work of Dimapur-Kohima Road from design km 152.490 to km 166.700 Existing km 156.000 to km 172.900 Excluding Dimapur & Kohima Bypass under SARDP-NE Package-III](https://kaun.city/india/projects/618328) | Ministry of Road Transport & Highways | ₹563 Cr | ₹795 Cr | +₹232 Cr | unchanged 2 months | 83% |
-| [Construction of 2-lane with Paved shoulder of Kohima-Bypass Road connecting NH- 39 New NH-02, NH150New NH-02, NH7-61 New NH-29 and NH-39 New NH-02 from Design km 21.000 to km 32.268 [Design length11.268 km] in the state of Nagaland Under SARDP-NE on EPC Mode Package- 3](https://kaun.city/india/projects/618291) | Ministry of Road Transport & Highways | ₹160 Cr | ₹342 Cr | +₹182 Cr | 18 months later | 37% |
-| [Construction of 2-Lane with paved shoulder of Kohima-Bypass Road connecting NH- 39New NH-02, NH-150New NH-02, NH-61New NH-29 and NH-39New NH-02 from design Km 0.00 to Km 10.500 in the State of Nagaland under SARDP-NE on EPC Mode Package-1 -Balance work](https://kaun.city/india/projects/618293) | Ministry of Road Transport & Highways | ₹232 Cr | ₹351 Cr | +₹119 Cr | on original schedule | 26% |
-| [Construction of 2 laning with Hard shoulder of Peren-Dimapur section on NH 129A from Design Km 146.208 to Km 163.592 Length- 17.384 km in the state of Nagaland on EPC mode under NHO-TSP Package-III](https://kaun.city/india/projects/618413) | Ministry of Road Transport & Highways | ₹178 Cr | ₹199 Cr | +₹21.25 Cr | 12 months later | 93% |
-| [Establishment of NIT Nagaland](https://kaun.city/india/projects/613013) | Department of Higher Education | ₹276 Cr | ₹276 Cr | no change | unchanged 1 months | 98% |
-| [Widening of existing Single lane / Intermediate lane road to 2 lane from Km 101 to Km 125 of NH 61](https://kaun.city/india/projects/617886) | Ministry of Road Transport & Highways | ₹252 Cr | ₹252 Cr | no change | 6 months later | 44% |
+| [4-Laning of Balance work of Dimapur-Kohima Road from design km 152.490 to km 166.700 Existing km 156.000 to km 172.900 Excluding Dimapur & Kohima Bypass under SARDP-NE Package-III](https://kaun.city/india/projects/618328) | Ministry of Road Transport & Highways | ₹563 Cr | ₹795 Cr | +₹232 Cr | 12 months later | 84% |
+| [Construction of 2-lane with Paved shoulder of Kohima-Bypass Road connecting NH- 39 New NH-02, NH150New NH-02, NH7-61 New NH-29 and NH-39 New NH-02 from Design km 21.000 to km 32.268 [Design length11.268 km] in the state of Nagaland Under SARDP-NE on EPC Mode Package- 3](https://kaun.city/india/projects/618291) | Ministry of Road Transport & Highways | ₹160 Cr | ₹342 Cr | +₹182 Cr | 18 months later | 40% |
+| [Construction of 2-Lane with paved shoulder of Kohima-Bypass Road connecting NH- 39New NH-02, NH-150New NH-02, NH-61New NH-29 and NH-39New NH-02 from design Km 0.00 to Km 10.500 in the State of Nagaland under SARDP-NE on EPC Mode Package-1 -Balance work](https://kaun.city/india/projects/618293) | Ministry of Road Transport & Highways | ₹232 Cr | ₹351 Cr | +₹119 Cr | on original schedule | 27% |
+| [Construction of 2 laning with Hard shoulder of Peren-Dimapur section on NH 129A from Design Km 146.208 to Km 163.592 Length- 17.384 km in the state of Nagaland on EPC mode under NHO-TSP Package-III](https://kaun.city/india/projects/618413) | Ministry of Road Transport & Highways | ₹178 Cr | ₹199 Cr | +₹21.25 Cr | 14 months later | 96% |
+| [Establishment of NIT Nagaland](https://kaun.city/india/projects/613013) | Department of Higher Education | ₹276 Cr | ₹276 Cr | no change | unchanged 3 months | 98% |
+| [Widening of existing Single lane / Intermediate lane road to 2 lane from Km 101 to Km 125 of NH 61](https://kaun.city/india/projects/617886) | Ministry of Road Transport & Highways | ₹252 Cr | ₹252 Cr | no change | 10 months later | 44% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=13)
 
@@ -207,4 +208,4 @@ The 6 projects in Nagaland furthest above sanctioned cost, as of the May 2026 re
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

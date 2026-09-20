@@ -63,7 +63,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 2 |
 | Age | 67 |
 | Gender | Male |
-| Qualification | Doctorate |
 | Profession | EDUCATIONIST; AUTHOR |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5532) |
 
@@ -106,8 +105,6 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 12 | 63.2% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 19 | 63.3% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 12 | 80.0% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 3 | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 3 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 2 | 7.7% | — | 88 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | 122 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 159 | — | — |
@@ -133,16 +130,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Kerala furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Kerala furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [6L of Taliparamba to Muzhappilangad from Km 134.650 to Km 170.6 of NH-66](https://kaun.city/india/projects/618596) | Ministry of Road Transport & Highways | ₹2,715 Cr | ₹3,558 Cr | +₹843 Cr | 43 months later | 83% |
+| [6L of Taliparamba to Muzhappilangad from Km 134.650 to Km 170.6 of NH-66](https://kaun.city/india/projects/618596) | Ministry of Road Transport & Highways | ₹2,715 Cr | ₹3,558 Cr | +₹843 Cr | 44 months later | 84% |
 | [Kottankulangara- Start of Kollam Bypass](https://kaun.city/india/projects/618607) | Ministry of Road Transport & Highways | ₹2,842 Cr | ₹3,680 Cr | +₹838 Cr | 29 months later | 74% |
 | [6L of Perole Nileshwar town to Taliparamba from Km 94.248 to Km 134.650 of NH-66](https://kaun.city/india/projects/619206) | Ministry of Road Transport & Highways | ₹3,042 Cr | ₹3,868 Cr | +₹826 Cr | 38 months later | 87% |
 | [6L of Chengala - Neeleshwaram from km. 56.200 to km. 93.468](https://kaun.city/india/projects/618595) | Ministry of Road Transport & Highways | ₹1,746 Cr | ₹2,538 Cr | +₹792 Cr | 35 months later | 91% |
-| [Kozhikode Bypass Calicut Bypass Vengalam Jn. to Ramanattukara Jn.](https://kaun.city/india/projects/619098) | Ministry of Road Transport & Highways | ₹1,425 Cr | ₹2,139 Cr | +₹714 Cr | 40 months later | 99% |
-| [6L of Azhiyur-Vengalam from km. 189.200 to km. 230.400 of NH-66](https://kaun.city/india/projects/618597) | Ministry of Road Transport & Highways | ₹3,206 Cr | ₹3,898 Cr | +₹693 Cr | 34 months later | 60% |
+| [Kozhikode Bypass Calicut Bypass Vengalam Jn. to Ramanattukara Jn.](https://kaun.city/india/projects/619098) | Ministry of Road Transport & Highways | ₹1,425 Cr | ₹2,139 Cr | +₹714 Cr | 42 months later | 99% |
+| [6L of Azhiyur-Vengalam from km. 189.200 to km. 230.400 of NH-66](https://kaun.city/india/projects/618597) | Ministry of Road Transport & Highways | ₹3,206 Cr | ₹3,898 Cr | +₹693 Cr | 44 months later | 60% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=32)
 
@@ -160,4 +157,4 @@ The 6 projects in Kerala furthest above sanctioned cost, as of the May 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

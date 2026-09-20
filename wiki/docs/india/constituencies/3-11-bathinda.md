@@ -65,7 +65,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 4 |
 | Age | 60 |
 | Gender | Female |
-| Qualification | Graduate |
 | Profession | POLITICAL AND SOCIAL WORKER |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/4433) |
 
@@ -126,15 +125,15 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Punjab furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Punjab furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
 | [Relining of Rajasthan feeder and Sirhind Feeder canal](https://kaun.city/india/projects/701410) | Department of Water Resources, River Development & GR | ₹1,441 Cr | ₹2,462 Cr | +₹1,021 Cr | 60 months later | 95% |
-| [6L Amritsar-Bathinda Greenfield section from Jn. with Bhagta Bhai Ka-Bhadaur Road near Dyalpura Bhai Ka to Jn. with Mandi Dabwali Bathinda Road on NH-54 near Sangat Kalan from km 93.000 to km 154.866 of NH-754A Pkg-3](https://kaun.city/india/projects/618618) | Ministry of Road Transport & Highways | ₹2,029 Cr | ₹2,677 Cr | +₹648 Cr | 13 months later | 72% |
-| [4L of Amritsar-Ghoman - Tanda - Una Section from Km 8.270 to Km 54.000 of NH- 503A Package-I](https://kaun.city/india/projects/618906) | Ministry of Road Transport & Highways | ₹858 Cr | ₹1,443 Cr | +₹586 Cr | 33 months later | 68% |
+| [6L Amritsar-Bathinda Greenfield section from Jn. with Bhagta Bhai Ka-Bhadaur Road near Dyalpura Bhai Ka to Jn. with Mandi Dabwali Bathinda Road on NH-54 near Sangat Kalan from km 93.000 to km 154.866 of NH-754A Pkg-3](https://kaun.city/india/projects/618618) | Ministry of Road Transport & Highways | ₹2,029 Cr | ₹2,677 Cr | +₹648 Cr | 13 months later | 74% |
+| [4L of Amritsar-Ghoman - Tanda - Una Section from Km 8.270 to Km 54.000 of NH- 503A Package-I](https://kaun.city/india/projects/618906) | Ministry of Road Transport & Highways | ₹858 Cr | ₹1,443 Cr | +₹586 Cr | 33 months later | 69% |
 | [Delhi-Amritsar-Katra Expressway Phase-I Pkg-IX from Junction with Ludhiana-Moga road NH-5 near Mullanpur Dakha to Junction with Jalandhar - Moga road NH-703 near Kang Sahibu village Km 260860 to km 303900](https://kaun.city/india/projects/618489) | Ministry of Road Transport & Highways | ₹1,851 Cr | ₹2,407 Cr | +₹556 Cr | 32 months later | 73% |
-| [6L of Jodhpur Romana Bathinda - Mandi Dabwali Punjab Haryana Border section of NH-54 from km. 0.000 to km. 27.400 of NH-54](https://kaun.city/india/projects/618610) | Ministry of Road Transport & Highways | ₹789 Cr | ₹1,319 Cr | +₹530 Cr | 10 months later | 99% |
+| [6L of Jodhpur Romana Bathinda - Mandi Dabwali Punjab Haryana Border section of NH-54 from km. 0.000 to km. 27.400 of NH-54](https://kaun.city/india/projects/618610) | Ministry of Road Transport & Highways | ₹789 Cr | ₹1,319 Cr | +₹530 Cr | 12 months later | 99% |
 | [Shahpur Kandi Dam Project](https://kaun.city/india/projects/701411) | Department of Water Resources, River Development & GR | ₹2,286 Cr | ₹2,716 Cr | +₹430 Cr | 48 months later | 88% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=3)
@@ -152,4 +151,4 @@ The 6 projects in Punjab furthest above sanctioned cost, as of the May 2026 repo
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

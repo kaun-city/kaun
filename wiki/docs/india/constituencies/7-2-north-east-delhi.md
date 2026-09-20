@@ -66,7 +66,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 3 |
 | Age | 55 |
 | Gender | Male |
-| Qualification | Post Graduate |
 | Profession | Film Artist; Singer |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/4606) |
 
@@ -136,16 +135,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Delhi furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Delhi furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Dwarka Expressway from Km -0.600 to Km 5.300 - Pkg-I Shivmurti Chowk-RuB near Dwarka Sector 21](https://kaun.city/india/projects/619202) | Ministry of Road Transport & Highways | ₹2,145 Cr | ₹3,930 Cr | +₹1,785 Cr | 45 months later | 99% |
-| [6L Access Controlled Highway from DND Maharani Bagh - Jn. with Jaitpur - Pushta Road of NH-148NA from km. 0.00 to km. 9.00 in NCR](https://kaun.city/india/projects/618578) | Ministry of Road Transport & Highways | ₹1,467 Cr | ₹2,510 Cr | +₹1,043 Cr | 23 months later | 98% |
-| [8L of Dwarka Expressway Pkg-II RuB near Dwarka Sector 21-DL/HR Border from 5.300 Km.to 9.500 Km. of NH-248BB](https://kaun.city/india/projects/619090) | Ministry of Road Transport & Highways | ₹2,068 Cr | ₹2,670 Cr | +₹603 Cr | 56 months later | 100% |
-| [Development of 6L UER II [Package - I] NH-1 Near Bakoli till Karala Kanjhawala Road from km. 0.70 to km.15.00](https://kaun.city/india/projects/618509) | Ministry of Road Transport & Highways | ₹2,090 Cr | ₹2,203 Cr | +₹114 Cr | 32 months later | 100% |
+| [Dwarka Expressway from Km -0.600 to Km 5.300 - Pkg-I Shivmurti Chowk-RuB near Dwarka Sector 21](https://kaun.city/india/projects/619202) | Ministry of Road Transport & Highways | ₹2,145 Cr | ₹3,930 Cr | +₹1,785 Cr | 47 months later | 99% |
+| [8L of Dwarka Expressway Pkg-II RuB near Dwarka Sector 21-DL/HR Border from 5.300 Km.to 9.500 Km. of NH-248BB](https://kaun.city/india/projects/619090) | Ministry of Road Transport & Highways | ₹2,068 Cr | ₹2,670 Cr | +₹603 Cr | 58 months later | 100% |
+| [Development of 6L UER II [Package - I] NH-1 Near Bakoli till Karala Kanjhawala Road from km. 0.70 to km.15.00](https://kaun.city/india/projects/618509) | Ministry of Road Transport & Highways | ₹2,090 Cr | ₹2,203 Cr | +₹114 Cr | 34 months later | 100% |
+| [Anand Vihar-Tilak Bridge - 3rd & 4th line 9.77 km](https://kaun.city/india/projects/705583) | Ministry of Railways | ₹667 Cr | ₹702 Cr | +₹34.88 Cr | 57 months later | 23% |
 | [Phase 1B - Construction of Academic Block, Hostel, Residential Tower, Directors Residence and External Development works at National Institute of Technology, Delhi Campus on Engineering, Procurement and Construction basis](https://kaun.city/india/projects/612851) | Department of Higher Education | ₹333 Cr | ₹336 Cr | +₹2.93 Cr | 4 months later | 100% |
-| [DMRTS Phase - IV [3 Priority Corridors]](https://kaun.city/india/projects/702632) | Ministry of Housing & Urban Affairs | ₹24,949 Cr | ₹24,949 Cr | +₹0.05 Cr | 21 months later | 81% |
+| [Transmission system for evacuation of Power from REZ in Rajasthan [20 GW] under phase-III Part-D Phase-II](https://kaun.city/india/projects/615336) | Ministry of Power | ₹284 Cr | ₹284 Cr | no change | 10 months later | 46% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=7)
 
@@ -163,4 +162,4 @@ The 6 projects in Delhi furthest above sanctioned cost, as of the May 2026 repor
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

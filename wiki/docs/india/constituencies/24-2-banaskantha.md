@@ -105,6 +105,7 @@ average of them measures none of them.
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 29 | 96.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 14 | 93.3% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 3 | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 3 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 22 | 84.6% | — | 588 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 14 | 70.0% | — | 2 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 506 | — | — |
@@ -130,16 +131,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Gujarat furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Gujarat furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
 | [Sardar Sarovar Project](https://kaun.city/india/projects/701372) | Department of Water Resources, River Development & GR | ₹20,718 Cr | ₹33,413 Cr | +₹12,694 Cr | 75 months later | 94% |
-| [Vadodara Mumbai Expressway Ena -Kim Phase IB - Pkg VI [Km 217.500 to Km 254.430]](https://kaun.city/india/projects/618464) | Ministry of Road Transport & Highways | ₹2,272 Cr | ₹4,297 Cr | +₹2,025 Cr | 29 months later | 99% |
-| [Vadodara Mumbai Expressway Gandeva to Ena Phase IB - Pkg VII [Km 190.00 to Km 217.500]](https://kaun.city/india/projects/618465) | Ministry of Road Transport & Highways | ₹1,710 Cr | ₹3,392 Cr | +₹1,682 Cr | 30 months later | 97% |
-| [Vadodara Mumbai Expressway Kim to Ankleshwar Phase IA - Pkg V](https://kaun.city/india/projects/618463) | Ministry of Road Transport & Highways | ₹1,325 Cr | ₹2,807 Cr | +₹1,483 Cr | 57 months later | 91% |
-| [National Maritime Heritage Complex [NMHC] Phase-I](https://kaun.city/india/projects/707215) | Ministry of Ports, Shipping and Waterways | ₹573 Cr | ₹1,238 Cr | +₹665 Cr | 24 months later | 78% |
-| [Miyagam-Karjan-Dabhoi-Samlaya [GC]](https://kaun.city/india/projects/705458) | Ministry of Railways | ₹484 Cr | ₹1,039 Cr | +₹555 Cr | 69 months later | 45% |
+| [Vadodara Mumbai Expressway Kim to Ankleshwar Phase IA - Pkg V](https://kaun.city/india/projects/618463) | Ministry of Road Transport & Highways | ₹1,325 Cr | ₹2,807 Cr | +₹1,483 Cr | 58 months later | 91% |
+| [National Maritime Heritage Complex [NMHC] Phase-I](https://kaun.city/india/projects/707215) | Ministry of Ports, Shipping and Waterways | ₹573 Cr | ₹1,238 Cr | +₹665 Cr | 8 months earlier | 80% |
+| [Miyagam-Karjan-Dabhoi-Samlaya 96.46 km- Gauge conversion with electrification](https://kaun.city/india/projects/705458) | Ministry of Railways | ₹484 Cr | ₹1,015 Cr | +₹531 Cr | on original schedule | 34% |
+| [Redevelopment of Sobhasan Complex](https://kaun.city/india/projects/400087) | Ministry of Petroleum & Natural Gas | ₹886 Cr | ₹1,348 Cr | +₹462 Cr | unchanged 0 months | 96% |
+| [Establishment of new GMC Panchmahal](https://kaun.city/india/projects/707049) | Ministry of Health & Family Welfare | ₹325 Cr | ₹664 Cr | +₹339 Cr | unchanged 0 months | 88% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=24)
 
@@ -157,4 +158,4 @@ The 6 projects in Gujarat furthest above sanctioned cost, as of the May 2026 rep
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

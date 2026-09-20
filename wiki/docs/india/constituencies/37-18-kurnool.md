@@ -63,7 +63,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 1 |
 | Age | 47 |
 | Gender | Male |
-| Qualification | Post Graduate |
 | Profession | Agriculturist; BUILDER, BUSINESSPERSON, Film Maker |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5601) |
 
@@ -101,6 +100,8 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 19 | 100.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 29 | 96.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 1 | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 1 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 21 | 80.8% | — | 279 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | 1 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 14 | 87.5% | — | 132 | — | — |
@@ -126,16 +127,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Andhra Pradesh furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Andhra Pradesh furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
 | [Polavaram Irrigation Project](https://kaun.city/india/projects/701415) | Department of Water Resources, River Development & GR | ₹10,151 Cr | ₹55,549 Cr | +₹45,398 Cr | 47 months later | 86% |
-| [Nadikudi - Srikalahasti New Line](https://kaun.city/india/projects/400298) | Ministry of Railways | ₹2,312 Cr | ₹5,932 Cr | +₹3,620 Cr | 10 months later | 55% |
+| [Nadikude-Srikalahasti 308.7 km](https://kaun.city/india/projects/400298) | Ministry of Railways | ₹2,312 Cr | ₹5,906 Cr | +₹3,594 Cr | 10 months later | 2% |
 | [Sardar Gouthu Latchanna Thotapalli Barrage Project](https://kaun.city/india/projects/400100) | Department of Water Resources, River Development & GR | ₹353 Cr | ₹1,023 Cr | +₹670 Cr | 78 months later | 96% |
 | [Renigunta - Poyya - Naidupeta km 124.60 to km 183.4 of NH 71](https://kaun.city/india/projects/618700) | Ministry of Road Transport & Highways | ₹1,863 Cr | ₹2,510 Cr | +₹647 Cr | 32 months later | 99% |
-| [Six Laning of Vijayawada Bypass from Gollapudi to Chinnakakani in Vijayawada - Gundugolanu Section from km. 30.00 to km. 47.881 Pkg-IV](https://kaun.city/india/projects/618527) | Ministry of Road Transport & Highways | ₹1,195 Cr | ₹1,758 Cr | +₹563 Cr | 29 months later | 100% |
-| [Guntur-Guntakal Doubling Project](https://kaun.city/india/projects/705633) | Ministry of Railways | ₹3,733 Cr | ₹4,295 Cr | +₹562 Cr | 12 months later | 94% |
+| [6L of Anandapuram Pendurthi Anakapalli Section from km. 681.000 to km. 731.780 of NH-16](https://kaun.city/india/projects/618579) | Ministry of Road Transport & Highways | ₹2,527 Cr | ₹2,957 Cr | +₹430 Cr | 61 months later | 100% |
+| [Six Laning of Vijayawada Bypass from Chinna Avutapalli to Gollapudi in Vijayawada - Gundugolanu Section from km. 0.00 to km. 30.00 Pkg-III](https://kaun.city/india/projects/619076) | Ministry of Road Transport & Highways | ₹1,581 Cr | ₹1,884 Cr | +₹302 Cr | 43 months later | 98% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=37)
 
@@ -153,4 +154,4 @@ The 6 projects in Andhra Pradesh furthest above sanctioned cost, as of the May 2
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

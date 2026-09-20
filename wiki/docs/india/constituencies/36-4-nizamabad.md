@@ -63,7 +63,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 2 |
 | Age | 50 |
 | Gender | Male |
-| Qualification | Post Graduate |
 | Profession | POLITICIAN; Philanthropist |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5082) |
 
@@ -106,6 +105,7 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 19 | 100.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 18 | 60.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 14 | 93.3% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 10 | 47.6% | — | — | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 22 | 84.6% | — | — | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 17 | 85.0% | — | — | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 2 | — | — |
@@ -131,16 +131,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Telangana furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Telangana furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
 | [J. Chokka Rao Devadula Lift Irrigation Scheme](https://kaun.city/india/projects/701405) | Department of Water Resources, River Development & GR | ₹8,201 Cr | ₹14,730 Cr | +₹6,529 Cr | 72 months later | 88% |
 | [Indiramma Flood Flow Canal Project](https://kaun.city/india/projects/400103) | Department of Water Resources, River Development & GR | ₹1,331 Cr | ₹5,940 Cr | +₹4,609 Cr | 84 months later | 92% |
-| [Manoharabad-Kothapalli New Rail Line [151 km]](https://kaun.city/india/projects/705437) | Ministry of Railways | ₹1,160 Cr | ₹2,781 Cr | +₹1,621 Cr | 9 months later | 72% |
-| [Rajiv Bhima Lift Irrigation Scheme](https://kaun.city/india/projects/701406) | Department of Water Resources, River Development & GR | ₹1,402 Cr | ₹2,510 Cr | +₹1,108 Cr | 75 months later | 100% |
-| [Khammam-Devarapalle Pkg I [4L Access Controlled Greenfield from Thallampadu village to Somavaram village Design Chainage 0000 to 33604]](https://kaun.city/india/projects/618746) | Ministry of Road Transport & Highways | ₹797 Cr | ₹1,337 Cr | +₹540 Cr | 24 months later | 96% |
-| [4L of Kodad Design Km 0.00/Existing Km 185.00 of NH-65 to Khammam Design Km 31.800/Existing Km 29.400 of NH-365A](https://kaun.city/india/projects/618945) | Ministry of Road Transport & Highways | ₹1,149 Cr | ₹1,607 Cr | +₹458 Cr | 25 months later | 100% |
+| [Khammam-Devarapalle Pkg I [4L Access Controlled Greenfield from Thallampadu village to Somavaram village Design Chainage 0000 to 33604]](https://kaun.city/india/projects/618746) | Ministry of Road Transport & Highways | ₹797 Cr | ₹1,337 Cr | +₹540 Cr | 24 months later | 97% |
+| [4L of Kodad Design Km 0.00/Existing Km 185.00 of NH-65 to Khammam Design Km 31.800/Existing Km 29.400 of NH-365A](https://kaun.city/india/projects/618945) | Ministry of Road Transport & Highways | ₹1,149 Cr | ₹1,607 Cr | +₹458 Cr | 27 months later | 100% |
+| [Khammam-Devarapalle Pkg II [4L Access Controlled Greenfield from Somavaram village to Chintagudem village Design Chainage 33604 to 63117]](https://kaun.city/india/projects/619128) | Ministry of Road Transport & Highways | ₹616 Cr | ₹982 Cr | +₹366 Cr | 23 months later | 98% |
+| [4L of Karimnagar-Warangal section from km 49.500 to km 117.820 of NH-563](https://kaun.city/india/projects/618765) | Ministry of Road Transport & Highways | ₹2,147 Cr | ₹2,487 Cr | +₹340 Cr | 13 months later | 92% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=36)
 
@@ -158,4 +158,4 @@ The 6 projects in Telangana furthest above sanctioned cost, as of the May 2026 r
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

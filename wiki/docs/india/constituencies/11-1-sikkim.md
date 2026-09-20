@@ -87,7 +87,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 2 |
 | Age | 37 |
 | Gender | Male |
-| Qualification | Doctorate |
 | Profession | POLITICIAN - PARLIAMENTARIAN; POLITICAL AND SOCIAL WORKER |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5111) |
 
@@ -126,7 +125,6 @@ average of them measures none of them.
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 26 | 86.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 14 | 93.3% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 1 | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 1 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 24 | 92.3% | — | 194 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 17 | 85.0% | — | 50 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 14 | 87.5% | — | 46 | — | — |
@@ -152,16 +150,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Sikkim furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Sikkim furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Rangit-IV HE Project [120 MW] executed by Jal Power Corporation Ltd. [JPCL] - A wholly owned subsidiary of NHPC Ltd. acquired through NCLT](https://kaun.city/india/projects/605156) | Ministry of Power | ₹938 Cr | ₹1,828 Cr | +₹890 Cr | 30 months later | 97% |
-| [Establishment of new GMC Gangtok](https://kaun.city/india/projects/707039) | Ministry of Health & Family Welfare | ₹250 Cr | ₹635 Cr | +₹385 Cr | unchanged 0 months | 92% |
-| [Construction/Up gradation of Existing road to 2 Lane with Paved Shoulder including Geometric Improvement from Ranipool to Pakyong Balance work from Km 2.000 to 16.167 of NH-717-A on EPC basis under SARDP-NE Phase A in the State of Sikkim](https://kaun.city/india/projects/618426) | Ministry of Road Transport & Highways | ₹265 Cr | ₹381 Cr | +₹116 Cr | 29 months later | 86% |
+| [Rangit-IV HE Project [120 MW] executed by Jal Power Corporation Ltd. [JPCL] - A wholly owned subsidiary of NHPC Ltd. acquired through NCLT](https://kaun.city/india/projects/605156) | Ministry of Power | ₹938 Cr | ₹1,828 Cr | +₹890 Cr | 30 months later | 98% |
+| [Establishment of new GMC Gangtok](https://kaun.city/india/projects/707039) | Ministry of Health & Family Welfare | ₹250 Cr | ₹635 Cr | +₹385 Cr | 5 months earlier | 92% |
+| [Construction/Up gradation of Existing road to 2 Lane with Paved Shoulder including Geometric Improvement from Ranipool to Pakyong Balance work from Km 2.000 to 16.167 of NH-717-A on EPC basis under SARDP-NE Phase A in the State of Sikkim](https://kaun.city/india/projects/618426) | Ministry of Road Transport & Highways | ₹265 Cr | ₹381 Cr | +₹116 Cr | 29 months later | 87% |
 | [Realignment of NH-717A from Design Ch.0.00 Km 77.800 of NH-10 to Design Ch.2.00 Km 3.100 of NH-717A with two lane paved shoulder including Major Bridge of 680 m in the State of Sikkim on EPC Mode-COS work](https://kaun.city/india/projects/618428) | Ministry of Road Transport & Highways | ₹265 Cr | ₹381 Cr | +₹116 Cr | 37 months later | 100% |
-| [Construction & Upgradation of existing road to 2-lane with paved shoulder from km27.200 End of Rongli bypass to km37.600New Rolep Bridge of Rhenok-Menla spur NH-717B on EPC Mode under SARDP-NE Phase-A in Sikkim Pkg-II B](https://kaun.city/india/projects/618449) | Ministry of Road Transport & Highways | ₹230 Cr | ₹245 Cr | +₹14.46 Cr | 41 months later | 84% |
-| [TEESTA-VI HE PROJECT, SIKKIM [500 MW], executed by LANCO TEESTA HYDRO POWER LIMITED [A wholly owned Subsidiary of NHPC LTD. acquired through NCLT]](https://kaun.city/india/projects/602181) | Ministry of Power | ₹5,748 Cr | ₹5,748 Cr | no change | 45 months later | 73% |
+| [Construction of Sikkim University Campus Phase-I Package-II at Yangang, South Sikkim](https://kaun.city/india/projects/609736) | Department of Higher Education | ₹314 Cr | ₹341 Cr | +₹26.49 Cr | 21 months later | 97% |
+| [Construction & Upgradation of existing road to 2-lane with paved shoulder from km27.200 End of Rongli bypass to km37.600New Rolep Bridge of Rhenok-Menla spur NH-717B on EPC Mode under SARDP-NE Phase-A in Sikkim Pkg-II B](https://kaun.city/india/projects/618449) | Ministry of Road Transport & Highways | ₹230 Cr | ₹245 Cr | +₹14.46 Cr | 41 months later | 86% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=11)
 
@@ -179,4 +177,4 @@ The 6 projects in Sikkim furthest above sanctioned cost, as of the May 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

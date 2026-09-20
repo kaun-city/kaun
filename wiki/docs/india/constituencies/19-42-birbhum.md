@@ -63,7 +63,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 4 |
 | Age | 56 |
 | Gender | Female |
-| Qualification | Graduate |
 | Profession | Film Artist; BUSINESSPERSON, Poet, Producer and Director, Writer |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/4506) |
 
@@ -127,16 +126,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in West Bengal furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in West Bengal furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Joka-BBD Bag new metro project](https://kaun.city/india/projects/705730) | Ministry of Railways | ₹4,835 Cr | ₹10,362 Cr | +₹5,527 Cr | 36 months later | 51% |
-| [Rammam-III HEPP [3x40 MW]](https://kaun.city/india/projects/602184) | Ministry of Power | ₹1,382 Cr | ₹2,866 Cr | +₹1,484 Cr | 114 months later | 56% |
-| [Durgapur - Haldia Pipeline [Section-3B of JHBDPL Project]](https://kaun.city/india/projects/617302) | Ministry of Petroleum & Natural Gas | ₹1,740 Cr | ₹2,493 Cr | +₹753 Cr | 69 months later | 95% |
-| [Baranagar-Barrackpore and Dakshineshwar- Construction of Metro Railway](https://kaun.city/india/projects/706777) | Ministry of Railways | ₹2,298 Cr | ₹2,734 Cr | +₹436 Cr | 48 months later | 17% |
-| [Tarakeshwar-Bishnupur New Line [82.47 km]](https://kaun.city/india/projects/400273) | Ministry of Railways | ₹1,189 Cr | ₹1,542 Cr | +₹353 Cr | 83 months later | 97% |
-| [Haldia Panagarh Pipeline Project](https://kaun.city/india/projects/709753) | Ministry of Petroleum & Natural Gas | ₹1,010 Cr | ₹1,107 Cr | +₹97.00 Cr | 9 months later | 96% |
+| [Paradip-Numaligarh Crude Oil Pipeline [PNCPL] & Crude Oil Import Terminal [COIT] at Paradip](https://kaun.city/india/projects/701349) | Ministry of Petroleum & Natural Gas | ₹10,228 Cr | ₹12,407 Cr | +₹2,179 Cr | 27 months later | 93% |
+| [Rammam-III HEPP [3x40 MW]](https://kaun.city/india/projects/602184) | Ministry of Power | ₹1,382 Cr | ₹2,866 Cr | +₹1,484 Cr | 120 months later | 58% |
+| [Kalinarayanpur-Krishnanagar with Krishnanagar-Shantipur-Nabadwipghat - GC, Krishnanagar-Chartala, MM for Krishnanagar-Chapra-NL, Naihati-Ranaghat-3rd line, Nabadwipghat-Nabadwipdham upto BB loop 9.58 km, Ranaghat-Lalgola- strengthening bridge No.2](https://kaun.city/india/projects/400247) | Ministry of Railways | ₹1,000 Cr | ₹2,154 Cr | +₹1,154 Cr | 13 months later | 49% |
+| [Durgapur - Haldia Pipeline [Section-3B of JHBDPL Project]](https://kaun.city/india/projects/617302) | Ministry of Petroleum & Natural Gas | ₹1,740 Cr | ₹2,583 Cr | +₹843 Cr | 69 months later | 96% |
+| [Tarakeswar-Bishnupur with extension upto Dhaniakhali, Arambagh-Irphala, Irphala- Ghatal 11.2 km, Arambagh-Champadanga 23.3 km & Bishnupur-Uparsol 31.8 km and new material modification for Mynapur-Kamarpukur via Birsha 19 km](https://kaun.city/india/projects/400273) | Ministry of Railways | ₹1,189 Cr | ₹1,879 Cr | +₹690 Cr | 83 months later | 75% |
+| [Haldia Panagarh Pipeline Project](https://kaun.city/india/projects/709753) | Ministry of Petroleum & Natural Gas | ₹1,010 Cr | ₹1,107 Cr | +₹97.00 Cr | 9 months later | 98% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=19)
 
@@ -154,4 +153,4 @@ The 6 projects in West Bengal furthest above sanctioned cost, as of the May 2026
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

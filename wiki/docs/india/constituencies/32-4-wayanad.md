@@ -63,7 +63,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 1 |
 | Age | 54 |
 | Gender | Female |
-| Qualification | Post Graduate |
 | Profession | POLITICIAN; Home Maker |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5836) |
 
@@ -72,26 +71,9 @@ geometry disagree the order's text is the fixed point — the published AC bound
 
 ## Declared record
 
-From the winning candidate's Election Commission nomination affidavit. **Self-declared** — Kaun
-reproduces the declaration, it does not verify it.
-
-| Declared | Value |
-|---|---|
-| Election | LokSabha2024 |
-| Candidate as named on the affidavit | Rahul Gandhi |
-| Pending criminal cases | ⚠ 18 |
-| Total assets | ₹20.40 Cr |
-| Liabilities | ₹49.79 L |
-| Education | Post Graduate — M.Phil. (Development Studies) from Trinity College, University of Cambridge in 1995 |
-| Profession (self-declared) | Member of Parliament |
-| Age at nomination | 53 |
-| Affidavit source | [myneta.info](https://myneta.info/LokSabha2024/candidate.php?candidate_id=2195) |
-
-!!! warning "A pending case is an accusation, not a conviction"
-    These are cases the candidate declared as pending against them when filing nomination.
-    Indian law presumes innocence until conviction, and a count says nothing about the
-    seriousness of the charges or who brought them.
-
+**No affidavit on record for this member.** They won the seat at a by-election. The seat's
+Lok Sabha 2024 nomination affidavit was filed by the previous member, so it describes them and is
+not reproduced here. By-election affidavits are not loaded yet.
 
 ---
 
@@ -130,16 +112,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Kerala furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Kerala furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [6L of Taliparamba to Muzhappilangad from Km 134.650 to Km 170.6 of NH-66](https://kaun.city/india/projects/618596) | Ministry of Road Transport & Highways | ₹2,715 Cr | ₹3,558 Cr | +₹843 Cr | 43 months later | 83% |
+| [6L of Taliparamba to Muzhappilangad from Km 134.650 to Km 170.6 of NH-66](https://kaun.city/india/projects/618596) | Ministry of Road Transport & Highways | ₹2,715 Cr | ₹3,558 Cr | +₹843 Cr | 44 months later | 84% |
 | [Kottankulangara- Start of Kollam Bypass](https://kaun.city/india/projects/618607) | Ministry of Road Transport & Highways | ₹2,842 Cr | ₹3,680 Cr | +₹838 Cr | 29 months later | 74% |
 | [6L of Perole Nileshwar town to Taliparamba from Km 94.248 to Km 134.650 of NH-66](https://kaun.city/india/projects/619206) | Ministry of Road Transport & Highways | ₹3,042 Cr | ₹3,868 Cr | +₹826 Cr | 38 months later | 87% |
 | [6L of Chengala - Neeleshwaram from km. 56.200 to km. 93.468](https://kaun.city/india/projects/618595) | Ministry of Road Transport & Highways | ₹1,746 Cr | ₹2,538 Cr | +₹792 Cr | 35 months later | 91% |
-| [Kozhikode Bypass Calicut Bypass Vengalam Jn. to Ramanattukara Jn.](https://kaun.city/india/projects/619098) | Ministry of Road Transport & Highways | ₹1,425 Cr | ₹2,139 Cr | +₹714 Cr | 40 months later | 99% |
-| [6L of Azhiyur-Vengalam from km. 189.200 to km. 230.400 of NH-66](https://kaun.city/india/projects/618597) | Ministry of Road Transport & Highways | ₹3,206 Cr | ₹3,898 Cr | +₹693 Cr | 34 months later | 60% |
+| [Kozhikode Bypass Calicut Bypass Vengalam Jn. to Ramanattukara Jn.](https://kaun.city/india/projects/619098) | Ministry of Road Transport & Highways | ₹1,425 Cr | ₹2,139 Cr | +₹714 Cr | 42 months later | 99% |
+| [6L of Azhiyur-Vengalam from km. 189.200 to km. 230.400 of NH-66](https://kaun.city/india/projects/618597) | Ministry of Road Transport & Highways | ₹3,206 Cr | ₹3,898 Cr | +₹693 Cr | 44 months later | 60% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=32)
 
@@ -152,9 +134,8 @@ The 6 projects in Kerala furthest above sanctioned cost, as of the May 2026 repo
 | Seat identity and boundaries (543) | [DataMeet + shijithpk 2024 supplement](https://github.com/datameet/maps/tree/master/parliamentary-constituencies) | 2008 delimitation, with the 2022 J&K and 2023 Assam orders applied. Assam, J&K and Ladakh outlines were re-georeferenced from ECI press-note PDFs and are not survey-grade. |
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
-| Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

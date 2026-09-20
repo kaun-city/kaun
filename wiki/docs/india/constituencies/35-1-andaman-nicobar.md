@@ -50,7 +50,6 @@ constituencies: North & Middle Andaman (43%), Nicobar (29%), South Andaman (19%)
 | Terms served | 4 |
 | Age | 76 |
 | Gender | Male |
-| Qualification | Graduate |
 | Profession | SOCIAL WORKER |
 | Constituency name at source | Andaman and Nicobar Islands |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/371) |
@@ -91,7 +90,6 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 18 | 94.7% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 30 | 100.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 12 | 80.0% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 1 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 19 | 73.1% | — | — | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 18 | 90.0% | — | 46 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 184 | — | — |
@@ -114,12 +112,12 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 4 projects in Andaman & Nicobar furthest above sanctioned cost, as of the May 2026 report.
+The 4 projects in Andaman & Nicobar furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Rehabilitation and up-gradation of section to Intermediate/2-Lane with hard shoulder from Km 107.760 to Km 129.445 After Middle strait to Humphrey, Km 130.600 to Km 138.00 After Humphrey to Kadamtala & Km 155.00 to Km 181.0 End of Jarwa to Rangat of NH-04 in UT of A&N on EPC Package-IIIA](https://kaun.city/india/projects/619184) | Ministry of Road Transport & Highways | ₹207 Cr | ₹376 Cr | +₹169 Cr | 15 months later | 78% |
-| [Rehabilitation and up-gradation and completion of balance work of section from Km 155.00 to Km 181.00 End of Jarwa to Rangat of NH -4 Total length 26 Km to Intermediate Lane/2-lane with hard shoulders in the UT of A&N Islands on EPC basis - Package-III.B Balance work](https://kaun.city/india/projects/619185) | Ministry of Road Transport & Highways | ₹184 Cr | ₹333 Cr | +₹150 Cr | 8 months later | 47% |
+| [Rehabilitation and up-gradation and completion of balance works of the section from Km 107.760 km to 129.445 km After Middle strait to Humphrey, Km 130.600 to 138.300 After Humphrey to Kadamtala of NH-4 Intermediate/2-Lane with hard shoulder in the Union Territory of Andaman & Nicobar Islands on EPC basis Package- IIIA](https://kaun.city/india/projects/619184) | Ministry of Road Transport & Highways | ₹207 Cr | ₹376 Cr | +₹169 Cr | 15 months later | 82% |
+| [Rehabilitation and up-gradation and completion of balance work of section from Km 155.00 to Km 181.00 End of Jarwa to Rangat of NH -4 Total length 26 Km to Intermediate Lane/2-lane with hard shoulders in the UT of A&N Islands on EPC basis - Package-III.B Balance work](https://kaun.city/india/projects/619185) | Ministry of Road Transport & Highways | ₹184 Cr | ₹333 Cr | +₹150 Cr | 17 months later | 50% |
 | [Construction of Balance works of Major Bridge over Middle Strait Creek between Km.106.590 to km108.553 of NH-04 connecting South Andaman & Baratang Island in the Union Territory of Andaman & Nicobar Islands on EPC basis](https://kaun.city/india/projects/619186) | Ministry of Road Transport & Highways | ₹263 Cr | ₹372 Cr | +₹109 Cr | 10 months later | 13% |
 | [Integrated Command control Center [ICCC] - Construction and Development of Integrated Command Control Center with Security, Surveillance, ITMS, Connecting Port, Ship Service, Smart Solid Waste Management, Smart Public Transport System](https://kaun.city/india/projects/707229) | Ministry of Housing & Urban Affairs | ₹210 Cr | ₹230 Cr | +₹20.12 Cr | 29 months later | 97% |
 
@@ -138,4 +136,4 @@ The 4 projects in Andaman & Nicobar furthest above sanctioned cost, as of the Ma
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
