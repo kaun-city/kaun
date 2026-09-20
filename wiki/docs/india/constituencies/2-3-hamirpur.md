@@ -73,7 +73,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 5 |
 | Age | 51 |
 | Gender | Male |
-| Qualification | Graduate |
 | Profession | Cricketer; Agriculturist, Industrialist |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/4249) |
 
@@ -117,7 +116,6 @@ average of them measures none of them.
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 27 | 90.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 13 | 86.7% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 20 | 95.2% | — | 91 | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 20 | 95.2% | — | 91 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 23 | 88.5% | — | 321 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 19 | 95.0% | — | 162 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 14 | 87.5% | — | 127 | — | — |
@@ -140,16 +138,16 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Himachal Pradesh furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Himachal Pradesh furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Luhri Stage-I Hydro Electric Project [210 MW]](https://kaun.city/india/projects/602593) | Ministry of Power | ₹1,811 Cr | ₹4,682 Cr | +₹2,871 Cr | 49 months later | 52% |
-| [Sunni Dam Hydro Electric Project [382 MW]](https://kaun.city/india/projects/611586) | Ministry of Power | ₹2,615 Cr | ₹4,926 Cr | +₹2,311 Cr | 20 months later | 34% |
+| [Luhri Stage-I Hydro Electric Project [210 MW]](https://kaun.city/india/projects/602593) | Ministry of Power | ₹1,811 Cr | ₹4,345 Cr | +₹2,535 Cr | 52 months later | 52% |
+| [Sunni Dam Hydro Electric Project [382 MW]](https://kaun.city/india/projects/611586) | Ministry of Power | ₹2,615 Cr | ₹4,555 Cr | +₹1,941 Cr | 20 months later | 35% |
+| [Dhaulasidh Hydro Electric Project [66 MW]](https://kaun.city/india/projects/602582) | Ministry of Power | ₹688 Cr | ₹1,763 Cr | +₹1,075 Cr | 16 months later | 81% |
 | [Pandoh bypass 221.305 to Takoli 242.000 of NH-21 in the state of Himachal Pradesh](https://kaun.city/india/projects/618851) | Ministry of Road Transport & Highways | ₹3,420 Cr | ₹4,466 Cr | +₹1,046 Cr | 66 months later | 96% |
-| [4L of Kathlighat to Shakral Village from Km 128.835 to Km 146.300 of NH- 5 Shimla Bypass - Pkg I](https://kaun.city/india/projects/618921) | Ministry of Road Transport & Highways | ₹1,703 Cr | ₹2,649 Cr | +₹945 Cr | 20 months later | 54% |
-| [4L of Shakral Village to Dhalli Section from Km 146.300 to Km 156.560 Shimla Bypass - Pkg II and Shimla connectivity from Km 0.000 to Km 0.725 of NH-5](https://kaun.city/india/projects/618922) | Ministry of Road Transport & Highways | ₹1,956 Cr | ₹2,881 Cr | +₹924 Cr | 9 months later | 63% |
-| [Dhaulasidh Hydro Electric Project [66 MW]](https://kaun.city/india/projects/602582) | Ministry of Power | ₹688 Cr | ₹1,561 Cr | +₹873 Cr | 16 months later | 78% |
+| [4L of Kathlighat to Shakral Village from Km 128.835 to Km 146.300 of NH- 5 Shimla Bypass - Pkg I](https://kaun.city/india/projects/618921) | Ministry of Road Transport & Highways | ₹1,703 Cr | ₹2,649 Cr | +₹945 Cr | 15 months later | 64% |
+| [4L of Shakral Village to Dhalli Section from Km 146.300 to Km 156.560 Shimla Bypass - Pkg II and Shimla connectivity from Km 0.000 to Km 0.725 of NH-5](https://kaun.city/india/projects/618922) | Ministry of Road Transport & Highways | ₹1,956 Cr | ₹2,881 Cr | +₹924 Cr | 9 months later | 60% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=2)
 
@@ -166,4 +164,4 @@ The 6 projects in Himachal Pradesh furthest above sanctioned cost, as of the May
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

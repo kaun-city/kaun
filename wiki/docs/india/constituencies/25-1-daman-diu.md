@@ -50,7 +50,6 @@ constituencies: Daman (63%), Diu (25%). _(no-assembly-ut)_
 | Terms served | 1 |
 | Age | 50 |
 | Gender | Male |
-| Qualification | Graduate |
 | Profession | BUSINESSPERSON |
 | Constituency name at source | Daman and Diu |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5714) |
@@ -97,6 +96,7 @@ average of them measures none of them.
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 31 | 100.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 60 | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 60 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 26 | 100.0% | — | 647 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 17 | 85.0% | — | 179 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 216 | — | — |
@@ -119,11 +119,11 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 1 project in Dadra and Nagar Haveli and Daman and Diu furthest above sanctioned cost, as of the May 2026 report.
+The 1 project in Dadra and Nagar Haveli and Daman and Diu furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Widening of Existing Road from Intermediate Lane 2-lane to 4-lane Between Km 19.994 to Km 35.180 of NH-848A Rakholi-Khadoli-Velugam Section in U.T. of Dadra and Nagar Haveli and Daman and Diu](https://kaun.city/india/projects/619183) | Ministry of Road Transport & Highways | ₹198 Cr | ₹240 Cr | +₹41.51 Cr | unchanged 2 months | 52% |
+| [Widening of Existing Road from Intermediate Lane 2-lane to 4-lane Between Km 19.994 to Km 35.180 of NH-848A Rakholi-Khadoli-Velugam Section in U.T. of Dadra and Nagar Haveli and Daman and Diu](https://kaun.city/india/projects/619183) | Ministry of Road Transport & Highways | ₹198 Cr | ₹240 Cr | +₹41.51 Cr | 2 months later | 80% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=25)
 
@@ -140,4 +140,4 @@ The 1 project in Dadra and Nagar Haveli and Daman and Diu furthest above sanctio
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

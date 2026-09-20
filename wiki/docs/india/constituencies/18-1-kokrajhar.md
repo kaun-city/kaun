@@ -61,7 +61,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 1 |
 | Age | 50 |
 | Gender | Male |
-| Qualification | Graduate |
 | Profession | AGRICULTURIST & POLITICS; Agriculturist |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5548) |
 
@@ -105,7 +104,6 @@ average of them measures none of them.
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 13 | 43.3% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 13 | 61.9% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 13 | 61.9% | — | — | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 25 | 96.2% | — | 376 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 19 | 95.0% | — | 128 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 162 | — | — |
@@ -131,16 +129,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Assam furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Assam furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Numaligarh Refinery Expansion Project](https://kaun.city/india/projects/604791) | Ministry of Petroleum & Natural Gas | ₹12,366 Cr | ₹25,313 Cr | +₹12,947 Cr | 32 months later | 86% |
-| [Doubling of New Bonggigaon to Kamakhya via Goalpara - 176 km](https://kaun.city/india/projects/705572) | Ministry of Railways | ₹4,060 Cr | ₹4,961 Cr | +₹901 Cr | on original schedule | 95% |
-| [Balance work of 4L of NarimbangloJatinga Junction- Harangajoroad section from Km 0.000 to Km 49.230 of NH-27](https://kaun.city/india/projects/619089) | Ministry of Road Transport & Highways | ₹1,910 Cr | ₹2,746 Cr | +₹836 Cr | 6 months later | 95% |
-| [Guwahati Airport New Integrated Terminal Building Construction Project](https://kaun.city/india/projects/706724) | Ministry of Civil Aviation | ₹1,712 Cr | ₹2,520 Cr | +₹808 Cr | 15 months later | 99% |
-| [Construction of Balance Work of 4-Laning of the Section from Jhanji to Demow of NH- 37 Old from Km 514.800 to Km 534.800 20.000 Km, under SARDP- NE under EPC Mode in the state of Assam Pkg-III Road Works](https://kaun.city/india/projects/619060) | Ministry of Road Transport & Highways | ₹345 Cr | ₹620 Cr | +₹275 Cr | unchanged 2 months | 63% |
-| [Construction of 4-Lane Panchgram Bypass from Design Chainage km 15500 on NH- 37 Old NH-53 at Kalinagar Pt.-I Village to Design Chainage km 27300 at crossing with NH-6 Old NH-44 Near Siddeswar Pt.-I Village on Silchar - Churaibari stretch in the State of Assam on EPC Mode under Bharatmala Pariyojana in Economic Corridors Silchar- Churaibari Package-2](https://kaun.city/india/projects/618308) | Ministry of Road Transport & Highways | ₹676 Cr | ₹729 Cr | +₹52.79 Cr | on original schedule | 57% |
+| [Numaligarh Refinery Expansion Project](https://kaun.city/india/projects/604791) | Ministry of Petroleum & Natural Gas | ₹12,366 Cr | ₹25,313 Cr | +₹12,947 Cr | 32 months later | 87% |
+| [New Bongaigaon - Goalpara - Guwahati Kamakhya 176 km](https://kaun.city/india/projects/705572) | Ministry of Railways | ₹4,060 Cr | ₹4,984 Cr | +₹924 Cr | on original schedule | 91% |
+| [Balance work of 4L of NarimbangloJatinga Junction- Harangajoroad section from Km 0.000 to Km 49.230 of NH-27](https://kaun.city/india/projects/619089) | Ministry of Road Transport & Highways | ₹1,910 Cr | ₹2,746 Cr | +₹836 Cr | 7 months later | 98% |
+| [Guwahati Airport New Integrated Terminal Building Construction Project](https://kaun.city/india/projects/706724) | Ministry of Civil Aviation | ₹1,712 Cr | ₹2,520 Cr | +₹808 Cr | 15 months later | 100% |
+| [Construction of Balance Work of 4-Laning of the Section from Jhanji to Demow of NH- 37 Old from Km 514.800 to Km 534.800 20.000 Km, under SARDP- NE under EPC Mode in the state of Assam Pkg-III Road Works](https://kaun.city/india/projects/619060) | Ministry of Road Transport & Highways | ₹345 Cr | ₹620 Cr | +₹275 Cr | 13 months later | 72% |
+| [Construction of 4-Lane Panchgram Bypass from Design Chainage km 15500 on NH- 37 Old NH-53 at Kalinagar Pt.-I Village to Design Chainage km 27300 at crossing with NH-6 Old NH-44 Near Siddeswar Pt.-I Village on Silchar - Churaibari stretch in the State of Assam on EPC Mode under Bharatmala Pariyojana in Economic Corridors Silchar- Churaibari Package-2](https://kaun.city/india/projects/618308) | Ministry of Road Transport & Highways | ₹676 Cr | ₹729 Cr | +₹52.79 Cr | 1 month later | 57% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=18)
 
@@ -158,4 +156,4 @@ The 6 projects in Assam furthest above sanctioned cost, as of the May 2026 repor
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

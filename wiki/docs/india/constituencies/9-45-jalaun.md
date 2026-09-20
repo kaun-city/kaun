@@ -57,7 +57,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 1 |
 | Age | 66 |
 | Gender | Male |
-| Qualification | Graduate |
 | Profession | Agriculturist; Advocate, Social Activist |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5782) |
 
@@ -94,6 +93,7 @@ average of them measures none of them.
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 19 | 100.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 31 | 100.0% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 31 | 100.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 1 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 26 | 100.0% | — | 62 | — | — |
@@ -121,16 +121,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Uttar Pradesh furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Uttar Pradesh furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
 | [Madhya Ganga canal Phase-II](https://kaun.city/india/projects/701408) | Department of Water Resources, River Development & GR | ₹1,061 Cr | ₹4,417 Cr | +₹3,357 Cr | 72 months later | 82% |
-| [Aligarh-Kanpur Pkg I [Aligarh-Bhadwas]](https://kaun.city/india/projects/618692) | Ministry of Road Transport & Highways | ₹1,227 Cr | ₹2,070 Cr | +₹843 Cr | 50 months later | 100% |
-| [Construction of 4/6 lane Highway of Southern Bareilly Bypass, starting at Ch. 237000 of NH 530 near Jhumka chauraha, Dhantiya village and ending at Ch. 267000 of NH 30 near Invertis University including Trumpet Interchange](https://kaun.city/india/projects/618869) | Ministry of Road Transport & Highways | ₹1,122 Cr | ₹1,870 Cr | +₹748 Cr | on original schedule | 13% |
+| [Janghai - Pratapgarh - Amethi 87 km](https://kaun.city/india/projects/705588) | Ministry of Railways | ₹722 Cr | ₹1,529 Cr | +₹807 Cr | 12 months later | 80% |
+| [Construction of 4/6 lane Highway of Southern Bareilly Bypass, starting at Ch. 237000 of NH 530 near Jhumka chauraha, Dhantiya village and ending at Ch. 267000 of NH 30 near Invertis University including Trumpet Interchange](https://kaun.city/india/projects/618869) | Ministry of Road Transport & Highways | ₹1,122 Cr | ₹1,870 Cr | +₹748 Cr | on original schedule | 16% |
+| [Anand Nagar - Ghughuli via Maharajganj 53.37 km](https://kaun.city/india/projects/617252) | Ministry of Railways | ₹958 Cr | ₹1,501 Cr | +₹543 Cr | unchanged 0 months | 12% |
 | [Varanasi Gorakhpur Section Packege IV from km. 149.540 to km. 215.160 Mau- Gorakhpur](https://kaun.city/india/projects/618893) | Ministry of Road Transport & Highways | ₹2,967 Cr | ₹3,476 Cr | +₹509 Cr | 82 months later | 97% |
-| [Janghai-Pratapgarh- Amethi](https://kaun.city/india/projects/705588) | Ministry of Railways | ₹722 Cr | ₹1,194 Cr | +₹472 Cr | 12 months later | 70% |
-| [4L Behsuma at Km 39.250 Ex. Km 39240 To Bijnor at Km 78.810 Ex. Km 86590 Design Length 39.560 Km of NH-119 Pkg-II](https://kaun.city/india/projects/618923) | Ministry of Road Transport & Highways | ₹2,158 Cr | ₹2,553 Cr | +₹395 Cr | 7 months later | 67% |
+| [4L Behsuma at Km 39.250 Ex. Km 39240 To Bijnor at Km 78.810 Ex. Km 86590 Design Length 39.560 Km of NH-119 Pkg-II](https://kaun.city/india/projects/618923) | Ministry of Road Transport & Highways | ₹2,158 Cr | ₹2,553 Cr | +₹395 Cr | 7 months later | 70% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=9)
 
@@ -148,4 +148,4 @@ The 6 projects in Uttar Pradesh furthest above sanctioned cost, as of the May 20
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

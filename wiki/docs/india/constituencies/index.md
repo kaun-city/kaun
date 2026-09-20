@@ -1,6 +1,6 @@
 # Constituencies — India (Lok Sabha, 543)
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
 
 Every Lok Sabha seat gets a page here: who holds it, which assembly segments and districts
 it is made of, what its MP has declared, and what Parliament records of their work. Each seat
@@ -32,7 +32,7 @@ means the pipeline has not landed yet, not that the seat has no data.
 | Nomination affidavits (publicly cleared) | `in_mp_affidavits` | 543 | 543 seats |
 | Parliamentary activity | `in_mp_activity` | 4,877 | 544 MPs |
 | MPLADS allocation and spend | `in_mplads_summary` | 553 | 516 seats |
-| Central projects ≥ ₹150 Cr | `in_central_projects` | 2,033 | latest report held: May 2026 |
+| Central projects ≥ ₹150 Cr | `in_central_projects` | 2,090 | latest report held: Jul 2026 |
 
 "Rows readable" is what the **public** anon role can see. `in_mp_affidavits` is row-restricted:
 an affidavit becomes readable only after its MyNeta↔seat join has been reviewed, so a low number
@@ -369,7 +369,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `32-1` | [Kasaragod](32-1-kasaragod.md) | — | Rajmohan Unnithan | INC | ⚠ 6 | [open →](https://kaun.city/india/c/32-1) |
 | `32-2` | [Kannur](32-2-kannur.md) | — | K Sudhakaran | INC | ⚠ 14 | [open →](https://kaun.city/india/c/32-2) |
 | `32-3` | [Vadakara](32-3-vadakara.md) | — | Shafi Parambil | INC | ⚠ 47 | [open →](https://kaun.city/india/c/32-3) |
-| `32-4` | [Wayanad](32-4-wayanad.md) | — | Priyanka Gandhi Vadra | INC | ⚠ 18 | [open →](https://kaun.city/india/c/32-4) |
+| `32-4` | [Wayanad](32-4-wayanad.md) | — | Priyanka Gandhi Vadra | INC | _pending review_ | [open →](https://kaun.city/india/c/32-4) |
 | `32-5` | [Kozhikode](32-5-kozhikode.md) | — | M K Raghavan | INC | ⚠ 4 | [open →](https://kaun.city/india/c/32-5) |
 | `32-6` | [Malappuram](32-6-malappuram.md) | — | E T Mohammed Basheer | IUML | ⚠ 1 | [open →](https://kaun.city/india/c/32-6) |
 | `32-7` | [Ponnani](32-7-ponnani.md) | — | M P Abdussamad Samadani | IUML | ⚠ 1 | [open →](https://kaun.city/india/c/32-7) |
@@ -460,7 +460,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `27-13` | [Chandrapur](27-13-chandrapur.md) | — | Dhanorkar Pratibha Suresh | INC | none declared | [open →](https://kaun.city/india/c/27-13) |
 | `27-14` | [Yavatmal-Washim](27-14-yavatmal-washim.md) | — | Sanjay Uttamrao Deshmukh | SS | none declared | [open →](https://kaun.city/india/c/27-14) |
 | `27-15` | [Hingoli](27-15-hingoli.md) | — | Aashtikar Patil Nagesh Bapurao | SS | none declared | [open →](https://kaun.city/india/c/27-15) |
-| `27-16` | [Nanded](27-16-nanded.md) | — | Chavan Ravindra Vasantrao | INC | ⚠ 1 | [open →](https://kaun.city/india/c/27-16) |
+| `27-16` | [Nanded](27-16-nanded.md) | — | Chavan Ravindra Vasantrao | INC | _pending review_ | [open →](https://kaun.city/india/c/27-16) |
 | `27-17` | [Parbhani](27-17-parbhani.md) | — | Sanjay Haribhau Jadhav | SS | ⚠ 6 | [open →](https://kaun.city/india/c/27-17) |
 | `27-18` | [Jalna](27-18-jalna.md) | — | Kalyan Vaijinathrao Kale | INC | ⚠ 2 | [open →](https://kaun.city/india/c/27-18) |
 | `27-19` | [Aurangabad](27-19-aurangabad.md) | — | Bhumare Sandipanrao Asaram | SS | ⚠ 4 | [open →](https://kaun.city/india/c/27-19) |

@@ -60,7 +60,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 1 |
 | Age | 54 |
 | Gender | Male |
-| Qualification | Inter/Higher Secondary |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5732) |
 
 
@@ -95,10 +94,7 @@ average of them measures none of them.
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 19 | 100.0% | — | — | — | — |
-| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 26 | 86.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 12 | 80.0% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | — | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 17 | 65.4% | — | 1 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | — | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | — | — | — |
@@ -124,16 +120,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Chhattisgarh furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Chhattisgarh furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [NMDC Slurry Pipeline Project Phase-1](https://kaun.city/india/projects/706811) | Ministry of Steel | ₹2,907 Cr | ₹5,427 Cr | +₹2,520 Cr | 35 months later | 95% |
+| [NMDC Slurry Pipeline Project Phase-1](https://kaun.city/india/projects/706811) | Ministry of Steel | ₹2,907 Cr | ₹5,427 Cr | +₹2,520 Cr | 38 months later | 96% |
 | [Gevra Road-Pendra Road New Railway Line [135 km]](https://kaun.city/india/projects/705444) | Ministry of Railways | ₹4,970 Cr | ₹7,449 Cr | +₹2,479 Cr | 57 months later | 83% |
 | [Dharamjaigarh-Korba](https://kaun.city/india/projects/400203) | Ministry of Coal | ₹1,686 Cr | ₹2,439 Cr | +₹752 Cr | 4 months earlier | 44% |
 | [Kharsia-Dharamjaygarh with Spur line [East Corridor-Phase 1]](https://kaun.city/india/projects/400220) | Ministry of Railways | ₹3,055 Cr | ₹3,798 Cr | +₹743 Cr | 99 months later | 95% |
-| [4L of Bilaspur to Urga km 0.00 to 70.2 of NH-130A](https://kaun.city/india/projects/618639) | Ministry of Road Transport & Highways | ₹1,856 Cr | ₹2,524 Cr | +₹668 Cr | 28 months later | 95% |
-| [4L of Urga - Pathalgaon from Km. 70.200 to km. 157.745 of NH-130A](https://kaun.city/india/projects/618640) | Ministry of Road Transport & Highways | ₹2,261 Cr | ₹2,860 Cr | +₹599 Cr | on original schedule | 74% |
+| [4L of Bilaspur to Urga km 0.00 to 70.2 of NH-130A](https://kaun.city/india/projects/618639) | Ministry of Road Transport & Highways | ₹1,856 Cr | ₹2,524 Cr | +₹668 Cr | 33 months later | 95% |
+| [4L of Urga - Pathalgaon from Km. 70.200 to km. 157.745 of NH-130A](https://kaun.city/india/projects/618640) | Ministry of Road Transport & Highways | ₹2,261 Cr | ₹2,860 Cr | +₹599 Cr | on original schedule | 82% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=22)
 
@@ -151,4 +147,4 @@ The 6 projects in Chhattisgarh furthest above sanctioned cost, as of the May 202
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

@@ -86,7 +86,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 2 |
 | Age | 75 |
 | Gender | Male |
-| Qualification | Under Graduate |
 | Profession | Agriculturist |
 | Constituency name at source | Puducherry |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5120) |
@@ -125,6 +124,7 @@ average of them measures none of them.
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 17 | 89.5% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 14 | 46.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 13 | 86.7% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | — | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 23 | 88.5% | — | 160 | — | — |
@@ -149,11 +149,11 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 1 project in Puducherry furthest above sanctioned cost, as of the May 2026 report.
+The 1 project in Puducherry furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Establishment of NIT Puducherry Permanent Campus [Phase-I and Phase-II]](https://kaun.city/india/projects/612877) | Department of Higher Education | ₹618 Cr | ₹544 Cr | −₹74.00 Cr | 17 months later | 99% |
+| [Establishment of NIT Puducherry Permanent Campus [Phase-I and Phase-II]](https://kaun.city/india/projects/612877) | Department of Higher Education | ₹618 Cr | ₹544 Cr | −₹74.00 Cr | 17 months later | 100% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=34)
 
@@ -170,4 +170,4 @@ The 1 project in Puducherry furthest above sanctioned cost, as of the May 2026 r
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

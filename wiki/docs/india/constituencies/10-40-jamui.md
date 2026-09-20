@@ -58,7 +58,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 1 |
 | Age | 50 |
 | Gender | Male |
-| Qualification | Post Graduate |
 | Profession | Entrepreneur |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5740) |
 
@@ -96,6 +95,7 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 17 | 89.5% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 14 | 93.3% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 14 | 66.7% | — | 1 | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 14 | 66.7% | — | 1 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 19 | 73.1% | — | 341 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 12 | 60.0% | — | 36 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 14 | 87.5% | — | 132 | — | — |
@@ -121,16 +121,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Bihar furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Bihar furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Buxar Thermal Power Project [1320 MW]](https://kaun.city/india/projects/602579) | Ministry of Power | ₹10,439 Cr | ₹13,757 Cr | +₹3,318 Cr | 28 months later | 95% |
-| [Barauni Refinery Capacity Expansion from 6.0 to 9.0 MMTPA](https://kaun.city/india/projects/701324) | Ministry of Petroleum & Natural Gas | ₹14,810 Cr | ₹16,724 Cr | +₹1,914 Cr | 40 months later | 91% |
-| [Fatuha-Islampur incl. MM for extn.of NL from Neora to Daniawan , Daniawan to Biharsharif, Biharsharif to Barbigha , Barbigha to Shekhpura](https://kaun.city/india/projects/705373) | Ministry of Railways | ₹1,473 Cr | ₹2,882 Cr | +₹1,409 Cr | 29 months later | 98% |
-| [Sagauli-Valmiknagar](https://kaun.city/india/projects/705527) | Ministry of Railways | ₹1,216 Cr | ₹2,222 Cr | +₹1,006 Cr | on original schedule | 93% |
-| [Araria Supaul New BG Line](https://kaun.city/india/projects/705368) | Ministry of Railways | ₹1,605 Cr | ₹2,514 Cr | +₹909 Cr | 34 months later | 47% |
-| [Bakhtiyarpur-Rajauli Pkg-III from km. 101.630 to km.152.520](https://kaun.city/india/projects/618862) | Ministry of Road Transport & Highways | ₹2,156 Cr | ₹3,047 Cr | +₹890 Cr | 24 months later | 99% |
+| [Buxar Thermal Power Project [1320 MW]](https://kaun.city/india/projects/602579) | Ministry of Power | ₹10,439 Cr | ₹13,757 Cr | +₹3,317 Cr | 28 months later | 95% |
+| [Hajipur-Sagauli via Vaishali 148.3 km](https://kaun.city/india/projects/705366) | Ministry of Railways | ₹2,067 Cr | ₹3,991 Cr | +₹1,924 Cr | 87 months later | 74% |
+| [Barauni Refinery Capacity Expansion from 6.0 to 9.0 MMTPA](https://kaun.city/india/projects/701324) | Ministry of Petroleum & Natural Gas | ₹14,810 Cr | ₹16,724 Cr | +₹1,914 Cr | 44 months later | 92% |
+| [Fatuah-Islampur incl. material modification for extension of new line from Neora to Daniawan Daniawan to Biharsharif Biharsharif to Barbigha Barbigha to Sheikhpura](https://kaun.city/india/projects/705373) | Ministry of Railways | ₹1,473 Cr | ₹3,259 Cr | +₹1,786 Cr | 29 months later | 95% |
+| [Araria-Supaul 92 km](https://kaun.city/india/projects/705368) | Ministry of Railways | ₹1,605 Cr | ₹2,621 Cr | +₹1,016 Cr | 34 months later | 40% |
+| [Bakhtiyarpur-Rajauli Pkg-III from km. 101.630 to km.152.520](https://kaun.city/india/projects/618862) | Ministry of Road Transport & Highways | ₹2,156 Cr | ₹3,047 Cr | +₹890 Cr | 26 months later | 99% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=10)
 
@@ -148,4 +148,4 @@ The 6 projects in Bihar furthest above sanctioned cost, as of the May 2026 repor
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

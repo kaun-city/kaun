@@ -89,7 +89,6 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 4 |
 | Age | 54 |
 | Gender | Male |
-| Qualification | Professional Graduate |
 | Profession | SOCIAL WORKER |
 | Minister | yes — This MP is a minister. Ministers represent the government in debates, so we do not report their participation. They do not sign the attendance register, ask questions, or introduce private member bills. Data corresponds to the period from 24-06-2024 to 13-08-2026. |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/3972) |
@@ -142,16 +141,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Arunachal Pradesh furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Arunachal Pradesh furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Dibang Multipurpose Project](https://kaun.city/india/projects/602182) | Ministry of Power | ₹31,876 Cr | ₹31,876 Cr | +₹0.01 Cr | on original schedule | 18% |
-| [240MW Heo HE Project](https://kaun.city/india/projects/611698) | Ministry of Power | ₹1,939 Cr | ₹1,939 Cr | no change | unchanged 0 months | 5% |
-| [186 MW Tato-I H E Project](https://kaun.city/india/projects/611699) | Ministry of Power | ₹1,750 Cr | ₹1,750 Cr | no change | unchanged 0 months | 5% |
-| [700 MW Tato-II HE Project](https://kaun.city/india/projects/611716) | Ministry of Power | ₹8,146 Cr | ₹8,146 Cr | no change | unchanged 0 months | 6% |
+| [Dibang Multipurpose Project](https://kaun.city/india/projects/602182) | Ministry of Power | ₹31,876 Cr | ₹31,876 Cr | no change | on original schedule | 18% |
+| [240MW Heo HE Project](https://kaun.city/india/projects/611698) | Ministry of Power | ₹1,939 Cr | ₹1,939 Cr | no change | unchanged 0 months | 7% |
+| [186 MW Tato-I H E Project](https://kaun.city/india/projects/611699) | Ministry of Power | ₹1,750 Cr | ₹1,750 Cr | no change | unchanged 0 months | 6% |
+| [700 MW Tato-II HE Project](https://kaun.city/india/projects/611716) | Ministry of Power | ₹8,146 Cr | ₹8,146 Cr | no change | unchanged 0 months | 7% |
 | [Construction of Permanent Campus of National Institute of Technology Arunachal Pradesh](https://kaun.city/india/projects/612898) | Department of Higher Education | ₹593 Cr | ₹593 Cr | no change | 24 months earlier | 80% |
-| [North Eastern Region Expansion Scheme-XXIII [NERES-XXIII]](https://kaun.city/india/projects/617375) | Ministry of Power | ₹209 Cr | ₹209 Cr | no change | unchanged 1 months | 2% |
+| [North Eastern Region Expansion Scheme-XXIII [NERES-XXIII]](https://kaun.city/india/projects/617375) | Ministry of Power | ₹209 Cr | ₹209 Cr | no change | unchanged 0 months | 4% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=12)
 
@@ -169,4 +168,4 @@ The 6 projects in Arunachal Pradesh furthest above sanctioned cost, as of the Ma
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

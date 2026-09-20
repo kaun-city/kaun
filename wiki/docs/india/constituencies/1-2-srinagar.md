@@ -72,9 +72,8 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Term | LS18 |
 | Status | Sitting |
 | Terms served | 1 |
-| Age | 49 |
+| Age | 50 |
 | Gender | Male |
-| Qualification | Graduate |
 | Profession | Other |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5761) |
 
@@ -111,7 +110,6 @@ average of them measures none of them.
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 18 | 94.7% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 27 | 90.0% | — | — | — | — |
-| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 27 | 90.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 20 | 95.2% | — | 56 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 21 | 80.8% | — | 384 | — | — |
@@ -139,16 +137,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Jammu & Kashmir furthest above sanctioned cost, as of the May 2026 report.
+The 6 projects in Jammu & Kashmir furthest above sanctioned cost, as of the Jul 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
 | [Pakal Dul [Drangdhuran] Hydroelectric Project, 1000 MW](https://kaun.city/india/projects/602525) | Ministry of Power | ₹8,112 Cr | ₹12,728 Cr | +₹4,616 Cr | 80 months later | 82% |
-| [Kiru HE Project](https://kaun.city/india/projects/602532) | Ministry of Power | ₹4,288 Cr | ₹5,409 Cr | +₹1,121 Cr | 39 months later | 86% |
-| [Delhi-Amritsar-Katra Expressway Phase-II Pkg-XV [Junction with Hiranagar Road near village Gurha Baildaran to Junction with Jammu Ring Road NH-244A near Jakh village from Km 468100 to Km 503250]](https://kaun.city/india/projects/618494) | Ministry of Road Transport & Highways | ₹2,715 Cr | ₹3,717 Cr | +₹1,002 Cr | 27 months later | 89% |
+| [Kiru HE Project](https://kaun.city/india/projects/602532) | Ministry of Power | ₹4,288 Cr | ₹5,409 Cr | +₹1,121 Cr | 39 months later | 87% |
+| [Delhi-Amritsar-Katra Expressway Phase-II Pkg-XV [Junction with Hiranagar Road near village Gurha Baildaran to Junction with Jammu Ring Road NH-244A near Jakh village from Km 468100 to Km 503250]](https://kaun.city/india/projects/618494) | Ministry of Road Transport & Highways | ₹2,715 Cr | ₹3,717 Cr | +₹1,002 Cr | 27 months later | 90% |
+| [AIIMS Kashmir at Awantipora Jammu & Kashmir](https://kaun.city/india/projects/701167) | Ministry of Health & Family Welfare | ₹1,828 Cr | ₹2,570 Cr | +₹742 Cr | 12 months later | 79% |
 | [Delhi-Amritsar-Katra Expressway Phase-II Pkg-XVI Existing Jakh Vijaypur-Kunjwani section of NH-44 including spur Connectivity to Jammu Airport NH-144A [Km 503500 to km 514500]](https://kaun.city/india/projects/618496) | Ministry of Road Transport & Highways | ₹1,822 Cr | ₹2,523 Cr | +₹701 Cr | 24 months later | 94% |
 | [Construction of twin tube tunnels on Jammu Kashmir Ring Road NH-244A Between Design Ch. 50600 to 51700 and design Ch. 53535 to 55700 on EPC mode under residual NHDP component of Bharatmala Pariyojna](https://kaun.city/india/projects/618549) | Ministry of Road Transport & Highways | ₹243 Cr | ₹732 Cr | +₹489 Cr | 18 months later | 84% |
-| [AIIMS Kashmir at Awantipora Jammu & Kashmir](https://kaun.city/india/projects/701167) | Ministry of Health & Family Welfare | ₹1,828 Cr | ₹2,161 Cr | +₹333 Cr | 12 months later | 77% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=1)
 
@@ -166,4 +164,4 @@ The 6 projects in Jammu & Kashmir furthest above sanctioned cost, as of the May 
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-09-13 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-09-20 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
