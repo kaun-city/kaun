@@ -1,6 +1,6 @@
 # Wards — Bengaluru
 
-_Auto-generated from [kaun.city](https://kaun.city) public APIs on 2026-09-13. Each ward links to its own page in this wiki, and also to the interactive kaun.city view._
+_Auto-generated from [kaun.city](https://kaun.city) public APIs on 2026-09-20. Each ward links to its own page in this wiki, and also to the interactive kaun.city view._
 
 The current published structure has **369 wards across five GBA city corporations**. Historical civic datasets remain keyed to the former 243-ward BBMP layer; Kaun keeps those records separate unless an evidenced spatial crosswalk exists. Bengaluru has been under administrator rule since September 2020, so corporator seats are vacant. A ⚠ marker means the MLA has declared pending criminal cases in their nomination affidavit (source: [MyNeta](https://myneta.info)).
 

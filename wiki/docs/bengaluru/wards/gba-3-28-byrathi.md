@@ -25,4 +25,4 @@ The MLA mapped by the published assembly-constituency field is **Manjula S (BJP)
 
 Kaun could not resolve the published ward-centre point to the historical BBMP 243-ward layer. Historical spending and contractor records therefore remain unassigned here.
 
-_Auto-generated on 2026-09-13 from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru East, Ward 28**._
+_Auto-generated on 2026-09-20 from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru East, Ward 28**._
