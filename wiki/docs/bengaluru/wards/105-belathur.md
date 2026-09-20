@@ -20,7 +20,7 @@ No MLA record matched this ward's constituency (`—`) in our current dataset.
 
 | Contractor | Total contracts (city) | Total value (city) | Wards worked | Flags |
 |---|---:|---:|---:|---|
-| KRIDL BHUSIRI ACCOU | 335 | Rs 207.15 Cr | 111 | ⚠ 1 flag |
+| KRIDL BHUSIRI ACCOU | 335 | Rs 207.15 Cr | 111 | ⚠ 3 flags |
 | STAR INFRATECH | 21 | Rs 149.01 Cr | 4 |  |
 | RAJENDRA H B | 12 | Rs 80.49 Cr | 6 |  |
 | P S G CONSTRUCTIONS | 5 | Rs 28.90 Cr | 5 |  |
@@ -28,7 +28,7 @@ No MLA record matched this ward's constituency (`—`) in our current dataset.
 
 **Flagged contractors with ward activity:**
 
-- **KRIDL BHUSIRI ACCOU** — BBMP blacklisted (2010) + Social Welfare Dept blacklisted (2018) — received Rs 4,700 crore via Section 4(g) tender exemption
+- **KRIDL BHUSIRI ACCOU** — Blacklisted by BBMP in 2010 (Deccan Herald, 24 Jun 2020); Blacklisted by Karnataka's Social Welfare Department in Oct 2018 (Deccan Herald, 24 Jun 2020); ₹4,721 Cr of BBMP projects in 2015–20 given without tender under KTPP Act Section 4(g), per a Bengaluru NavaNirmana Party analysis (Deccan Herald, 23 Sep 2020)
 
 ---
 

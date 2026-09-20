@@ -30,4 +30,4 @@ The published centre point for this current ward falls inside **historical BBMP 
 
 For grievances, amenities, infrastructure, and the complete historical record, use the linked historical page or the interactive map.
 
-_Auto-generated on 2026-09-13 from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru North, Ward 29**._
+_Auto-generated on 2026-09-20 from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru North, Ward 29**._

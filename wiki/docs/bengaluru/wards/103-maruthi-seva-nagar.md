@@ -31,13 +31,13 @@ _Source: Election Commission nomination affidavits via [MyNeta](https://myneta.i
 
 | Contractor | Total contracts (city) | Total value (city) | Wards worked | Flags |
 |---|---:|---:|---:|---|
-| KRIDL BHUSIRI ACCOU | 335 | Rs 207.15 Cr | 111 | ⚠ 1 flag |
+| KRIDL BHUSIRI ACCOU | 335 | Rs 207.15 Cr | 111 | ⚠ 3 flags |
 | RAJU C T | 7 | Rs 38.64 Cr | 3 |  |
 | CHINMAYE CONSTRUCTIO | 14 | Rs 12.74 Cr | 4 |  |
 
 **Flagged contractors with ward activity:**
 
-- **KRIDL BHUSIRI ACCOU** — BBMP blacklisted (2010) + Social Welfare Dept blacklisted (2018) — received Rs 4,700 crore via Section 4(g) tender exemption
+- **KRIDL BHUSIRI ACCOU** — Blacklisted by BBMP in 2010 (Deccan Herald, 24 Jun 2020); Blacklisted by Karnataka's Social Welfare Department in Oct 2018 (Deccan Herald, 24 Jun 2020); ₹4,721 Cr of BBMP projects in 2015–20 given without tender under KTPP Act Section 4(g), per a Bengaluru NavaNirmana Party analysis (Deccan Herald, 23 Sep 2020)
 
 ---
 
