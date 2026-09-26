@@ -6,6 +6,10 @@
     {
       "path": "/api/ingest-signals",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/telegram-digest",
+      "schedule": "0 3 * * *"
     }
   ]
 }

@@ -140,6 +140,19 @@ For migration and integration testing, use the Docker-backed local Supabase
 clone described in [`docs/local-database.md`](docs/local-database.md). Its
 privacy-filtered data snapshot is kept outside git.
 
+## Telegram Monitoring
+
+Kaun can send a Telegram message for each new civic report and a daily digest with
+pin drops, civic reports, Ask Kaun questions, and system health. Configure these
+server-side environment variables in the Vercel project:
+
+- `TELEGRAM_BOT_TOKEN` — create a bot with [@BotFather](https://t.me/BotFather)
+- `TELEGRAM_CHAT_ID` — start a chat with the bot and use that chat's ID
+- `CRON_SECRET` — a long random secret used to protect the daily digest endpoint
+
+The daily digest runs at 03:00 UTC (08:30 IST). Keep the bot token private and
+never add it to a `NEXT_PUBLIC_*` variable or commit it to the repository.
+
 ---
 
 ## Adding a City

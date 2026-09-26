@@ -54,6 +54,7 @@ interface CityCoverage {
   name: string
   state: string
   expected_wards: number
+  map_wards: number
   /** Per-table row count for this city (null = table absent or query failed). */
   wards: number | null
   ward_amenities: number | null
@@ -172,8 +173,12 @@ export async function GET() {
         countByCity("city_budget_heads", c.id),
         countByCity("elected_reps", c.id),
       ])
-      const expected = c.wardCount ?? 0
-      const wardCoverage = expected > 0 ? Math.min(1, (wards ?? 0) / expected) : 0
+      // `wards` stores the historical source geography (243 Bengaluru wards),
+      // while the city map now uses 369 current GBA boundaries. Keep these
+      // denominators distinct so the status page doesn't call the map incomplete.
+      const mapWards = c.wardCount ?? 0
+      const expectedDataWards = c.id === "bengaluru" ? 243 : mapWards
+      const wardCoverage = expectedDataWards > 0 ? Math.min(1, (wards ?? 0) / expectedDataWards) : 0
       const tablesPresent = [wardAmenities, grievances, propertyTax, budgetHeads, reps]
         .filter(v => (v ?? 0) > 0).length
       const readiness = (wardCoverage * 0.5) + ((tablesPresent / 5) * 0.5)
@@ -181,7 +186,8 @@ export async function GET() {
         city_id: c.id,
         name: c.name,
         state: c.state,
-        expected_wards: expected,
+        expected_wards: expectedDataWards,
+        map_wards: mapWards,
         wards,
         ward_amenities: wardAmenities,
         upyog_grievances: grievances,
