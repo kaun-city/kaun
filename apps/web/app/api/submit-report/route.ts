@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import { enforceRateLimit, makeReportLimiter } from "@/lib/ratelimit"
 import { publicSupabaseConfig } from "@/lib/supabase-config"
+import { sendTelegramMessage } from "@/lib/telegram"
 
 export const runtime = "nodejs"
 export const maxDuration = 20
@@ -167,6 +168,11 @@ export async function POST(req: Request) {
       console.error("DB error:", dbError)
       return Response.json({ error: "Failed to save report" }, { status: 500 })
     }
+
+    // Notifications are best-effort: Telegram outages must not block reports.
+    await sendTelegramMessage(
+      `📍 New Kaun report\nIssue: ${issue_type}\nWard: ${ward_name || (ward_no ? `#${ward_no}` : "Unknown")}\nStatus: pending moderation\nhttps://kaun.city/status`,
+    ).catch((err) => console.error("Telegram report notification failed:", err))
 
     return Response.json({ ok: true, id: report?.id ?? null })
 

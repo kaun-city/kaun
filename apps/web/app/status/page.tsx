@@ -19,6 +19,7 @@ interface CityCoverage {
   name: string
   state: string
   expected_wards: number
+  map_wards: number
   wards: number | null
   ward_amenities: number | null
   upyog_grievances: number | null
@@ -251,7 +252,8 @@ export default function StatusPage() {
                           <div className={`h-full ${barColor} transition-all`} style={{ width: `${pct}%` }} />
                         </div>
                         <div className="mt-2 grid grid-cols-2 md:grid-cols-6 gap-2 text-[11px]">
-                          <CovStat label="Wards" value={c.wards} target={c.expected_wards} pct={wardPct} />
+                          <CovStat label="Historical data wards" value={c.wards} target={c.expected_wards} pct={wardPct} />
+                          <CovStat label="GBA map wards" value={c.map_wards} />
                           <CovStat label="Amenities" value={c.ward_amenities} />
                           <CovStat label="Grievances" value={c.upyog_grievances} />
                           <CovStat label="Property Tax" value={c.upyog_property_tax} />
