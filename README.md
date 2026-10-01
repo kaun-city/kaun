@@ -167,6 +167,16 @@ and sends Telegram notices when system health changes. Delivery heartbeats appea
 in `/api/health`; Telegram credential values are never exposed there. Government
 scrapes retain the last known good dataset when an upstream site fails.
 
+The digest also includes 24-hour and seven-day activity counts, comparisons to
+the previous period, top map wards, and unresolved operational failures. New
+page-view counters wait for complete baseline windows before showing trends.
+Vercel visitor and bounce-rate statistics are separate from these page loads:
+the daily desktop maintenance check reads the visible Production / Last 7 Days
+analytics dashboard and publishes only the aggregate numbers with
+`scripts/publish-traffic-snapshot.mjs` via `vercel env run -e production`.
+Snapshots are dated and omitted when older than 36 hours. Backend activity
+counts and scheduled digests continue even when that dashboard check is unavailable.
+
 ---
 
 ## Adding a City
