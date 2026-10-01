@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js"
 import OpenAI from "openai"
 import { TwitterApi } from "twitter-api-v2"
 import { CRON_JOBS, recordCronRun, runSucceeded } from "@/lib/cron-runs"
+import { runBounded } from "@/lib/bounded-work"
 
 export const runtime  = "nodejs"
 export const maxDuration = 60
@@ -18,8 +19,6 @@ function isAuthorized(req: Request): boolean {
   const authHeader = req.headers.get("authorization") ?? ""
   if (cronSecret && authHeader === `Bearer ${cronSecret}`) return true
   if (cronSecret && req.headers.get("x-cron-secret") === cronSecret) return true
-  // Fallback: Vercel Cron also sets this header
-  if (req.headers.get("x-vercel-cron")) return true
   return false
 }
 
@@ -432,6 +431,7 @@ async function fetchGoogleNews(query: string): Promise<NewsItem[] | null> {
 // ─── Main handler ─────────────────────────────────────────────────────────────
 
 export async function GET(req: Request) {
+  const started = Date.now()
   if (!isAuthorized(req)) {
     return Response.json({ error: "Unauthorized" }, { status: 401 })
   }
@@ -439,8 +439,13 @@ export async function GET(req: Request) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { global: { fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(3000) }) } },
   )
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
+  const processingSignal = AbortSignal.timeout(51_000)
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY!, timeout: 8000, maxRetries: 0,
+    fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.any([processingSignal, ...(init?.signal ? [init.signal] : [])]) }),
+  })
 
   const results = { twitter: 0, twitter_rss: 0, news: 0, civic_media: 0, skipped: 0, errors: 0 }
   // For the heartbeat: a run fails only if a whole stage failed (see lib/cron-runs).
@@ -460,7 +465,8 @@ export async function GET(req: Request) {
     if (!cls.is_civic) { results.skipped++; return }
 
     const hashId   = item.title.replace(/[^a-zA-Z0-9]/g, "").substring(0, 40).toLowerCase()
-    const signalAt = item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString()
+    const parsedDate = Date.parse(item.pubDate)
+    const signalAt = Number.isFinite(parsedDate) ? new Date(parsedDate).toISOString() : new Date().toISOString()
     const base     = { source: sourceKey, url: item.link || null, author: item.source, title: item.title, body: null, issue_type: cls.issue_type, upvotes: 0, signal_at: signalAt }
 
     // Find ALL wards mentioned in title + GPT hint
@@ -481,6 +487,7 @@ export async function GET(req: Request) {
     } else {
       // Fan out: one row per ward
       for (const { ward_no, ward_name } of allWards) {
+        if (Date.now() >= started + 49_000) break
         const { error } = await supabase.from("civic_signals").upsert(
           { ...base, source_id: `${sourceKey}_${hashId}_w${ward_no}`, ward_no, ward_name },
           { onConflict: "source,source_id", ignoreDuplicates: true }
@@ -511,53 +518,45 @@ export async function GET(req: Request) {
   //   if (error) results.errors++; else results.twitter++
   // }
 
-  // ── Direct civic RSS feeds (citizenmatters, Deccan Herald, The Hindu, etc.) ──
-  // All feeds run every day — ignoreDuplicates handles seen items
-  const feedResults = await Promise.allSettled(
-    DIRECT_RSS_FEEDS.map(f => fetchRSS(f.url, f.name))
-  )
-  for (const result of feedResults) {
-    for (const item of readSource(result.status === "fulfilled" ? result.value : null)) {
-      await upsertNewsItem(item, "civic_media")
-    }
-  }
-
-  // ── Google News RSS — 4 random civic queries (expanded to cover Reddit gap) ──
   const gnQueries = GOOGLE_NEWS_QUERIES.sort(() => Math.random() - 0.5).slice(0, 4)
-  for (const query of gnQueries) {
-    const items = readSource(await fetchGoogleNews(query))
-    for (const item of items) {
-      await upsertNewsItem(item, "gnews")
-    }
-  }
-
-  // ── Twitter/X via Google News RSS — captures viral tweets cited in news ──
   const twRssQueries = TWITTER_RSS_QUERIES.sort(() => Math.random() - 0.5).slice(0, 2)
-  for (const query of twRssQueries) {
-    const items = readSource(await fetchGoogleNews(query))
-    for (const item of items) {
-      await upsertNewsItem(item, "twitter_rss")
-    }
-  }
+  const feeds = [
+    ...DIRECT_RSS_FEEDS.map(f => ({ source: "civic_media", load: () => fetchRSS(f.url, f.name) })),
+    ...gnQueries.map(q => ({ source: "gnews", load: () => fetchGoogleNews(q) })),
+    ...twRssQueries.map(q => ({ source: "twitter_rss", load: () => fetchGoogleNews(q) })),
+  ]
+  const feedResults = await Promise.allSettled(feeds.map(f => f.load()))
+  const batches = feedResults.map((r, i) => readSource(r.status === "fulfilled" ? r.value : null)
+    .map(item => ({ item, source: feeds[i].source })))
+  // Interleave sources so the deadline does not always drop the last feeds.
+  const items = Array.from({ length: Math.max(0, ...batches.map(b => b.length)) }, (_, i) =>
+    batches.flatMap(b => b[i] ? [b[i]] : [])).flat()
+  // Supabase writes have a timeout too; four workers have time to finish before
+  // the 60-second platform limit, leaving a window to record the heartbeat.
+  const batch = await runBounded(items, async ({ item, source }) => {
+    await upsertNewsItem(item, source)
+  }, 4, started + 38_000)
+  results.errors += batch.failed
 
   // ── Moderate pending ward_reports (AI runs here, not at submit time) ──
-  const modResults = await moderatePendingReports(supabase, openai)
+  const modResults = await moderatePendingReports(supabase, openai, started + 49_000)
   console.log("ingest-signals:", results, "moderation:", modResults)
 
   // Every upsert that returned lands in exactly one of these counters.
   const writes = { tried: results.news + results.twitter_rss + results.civic_media + results.errors, failed: results.errors }
   const succeeded = runSucceeded([sources, classifications, writes])
   await recordCronRun(supabase, CRON_JOBS.ingestSignals, succeeded, {
-    ...results, sources, classifications, moderated: modResults,
+    ...results, sources, classifications, batch, moderated: modResults,
   })
-  return Response.json({ ok: true, succeeded, ...results, sources, classifications, moderated: modResults })
+  return Response.json({ ok: true, succeeded, ...results, sources, classifications, batch, moderated: modResults })
 }
 
 // ─── Report moderation (runs daily at 2am) ──────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function moderatePendingReports(
   supabase: any,
-  openai: OpenAI
+  openai: OpenAI,
+  deadline: number,
 ): Promise<{ approved: number; rejected: number; errors: number }> {
   const out = { approved: 0, rejected: 0, errors: 0 }
 
@@ -571,6 +570,7 @@ async function moderatePendingReports(
   if (!pending || pending.length === 0) return out
 
   for (const report of pending) {
+    if (Date.now() >= deadline) break
     try {
       let ai_label: string | null = null
       let ai_person: string | null = null

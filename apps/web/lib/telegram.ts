@@ -5,15 +5,22 @@ export async function sendTelegramMessage(text: string): Promise<boolean> {
   const chatId = process.env.TELEGRAM_CHAT_ID
   if (!token || !chatId) return false
 
-  const response = await fetch(`${TELEGRAM_API}/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
-    signal: AbortSignal.timeout(5000),
-  })
-  if (!response.ok) {
-    console.error("Telegram delivery failed:", response.status)
+  try {
+    const response = await fetch(`${TELEGRAM_API}/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
+      signal: AbortSignal.timeout(5000),
+    })
+    if (!response.ok) {
+      console.error("Telegram delivery failed:", response.status)
+      return false
+    }
+    const result = await response.json()
+    return result.ok === true
+  } catch {
+    // Fetch errors can contain the token-bearing URL. Never log those errors.
+    console.error("Telegram delivery failed: network error or timeout")
     return false
   }
-  return true
 }

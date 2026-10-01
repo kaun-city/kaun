@@ -172,7 +172,7 @@ export async function POST(req: Request) {
     // Notifications are best-effort: Telegram outages must not block reports.
     await sendTelegramMessage(
       `📍 New Kaun report\nIssue: ${issue_type}\nWard: ${ward_name || (ward_no ? `#${ward_no}` : "Unknown")}\nStatus: pending moderation\nhttps://kaun.city/status`,
-    ).catch((err) => console.error("Telegram report notification failed:", err))
+    )
 
     return Response.json({ ok: true, id: report?.id ?? null })
 

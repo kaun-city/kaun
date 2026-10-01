@@ -9,6 +9,8 @@
 export const CRON_JOBS = {
   ingestSignals: "ingest-signals",
   refreshPulse: "refresh-pulse",
+  telegramDigest: "telegram-digest",
+  telegramHealth: "telegram-health",
 } as const
 
 export type CronJob = (typeof CRON_JOBS)[keyof typeof CRON_JOBS]

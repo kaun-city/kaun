@@ -52,6 +52,8 @@ interface HealthData {
     facts_active: number | null
   }
   analytics: {
+    page_views_24h: number | null
+    page_views_7d: number | null
     pin_drops_24h: number | null
     pin_drops_7d: number | null
     top_wards_7d: { ward_name: string; count: number }[]
@@ -291,7 +293,17 @@ export default function StatusPage() {
             </section>
 
             {/* User Engagement */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+              {[
+                { label: "Page views (24h)", value: data.analytics?.page_views_24h },
+                { label: "Page views (7d)", value: data.analytics?.page_views_7d },
+              ].map(stat => (
+                <div key={stat.label} className="bg-paper border border-ink/15 p-4">
+                  <p className={EYEBROW}>{stat.label}</p>
+                  <p className="font-mono tabular-nums text-2xl font-semibold mt-1">{stat.value ?? "--"}</p>
+                  <p className="text-xs text-ink/60 mt-1">Page loads and navigation</p>
+                </div>
+              ))}
               <div className="bg-paper border border-ink/15 p-4">
                 <p className={EYEBROW}>Pin Drops (24h)</p>
                 <p className={`font-mono tabular-nums text-2xl font-semibold mt-1 ${(data.analytics?.pin_drops_24h ?? 0) > 0 ? "text-ink" : "text-ink/60"}`}>

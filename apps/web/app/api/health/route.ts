@@ -78,6 +78,7 @@ interface HealthResult {
   tables: TableCheck[]
   cities: CityCoverage[]
   crons: CronHealth[]
+  telegram: { configured: boolean }
   summary: {
     total_wards: number | null
     total_reps: number | null
@@ -89,6 +90,8 @@ interface HealthResult {
     facts_active: number | null
   }
   analytics: {
+    page_views_24h: number | null
+    page_views_7d: number | null
     pin_drops_24h: number | null
     pin_drops_7d: number | null
     top_wards_7d: { ward_name: string; count: number }[]
@@ -112,6 +115,7 @@ export async function GET() {
     tables: [],
     cities: [],
     crons: [],
+    telegram: { configured: Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) },
     summary: {
       total_wards: null,
       total_reps: null,
@@ -123,6 +127,8 @@ export async function GET() {
       facts_active: null,
     },
     analytics: {
+      page_views_24h: null,
+      page_views_7d: null,
       pin_drops_24h: null,
       pin_drops_7d: null,
       top_wards_7d: [],
@@ -216,12 +222,16 @@ export async function GET() {
     try {
       const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
       const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-      const [drops24h, drops7d, topWards] = await Promise.all([
+      const [views24h, views7d, drops24h, drops7d, topWards] = await Promise.all([
+        supabase.from("analytics_events").select("*", { count: "exact", head: true }).eq("event", "page_view").gte("created_at", since24h),
+        supabase.from("analytics_events").select("*", { count: "exact", head: true }).eq("event", "page_view").gte("created_at", since7d),
         supabase.from("analytics_events").select("*", { count: "exact", head: true }).eq("event", "pin_drop").gte("created_at", since24h),
         supabase.from("analytics_events").select("*", { count: "exact", head: true }).eq("event", "pin_drop").gte("created_at", since7d),
         supabase.rpc("top_pin_drop_wards", { p_days: 7 }).then((r: { data: { ward_name: string; count: number }[] | null }) => r.data ?? []),
       ])
       result.analytics = {
+        page_views_24h: views24h.error ? null : views24h.count,
+        page_views_7d: views7d.error ? null : views7d.count,
         pin_drops_24h: drops24h.count ?? 0,
         pin_drops_7d: drops7d.count ?? 0,
         top_wards_7d: topWards.slice(0, 5),
@@ -285,6 +295,9 @@ export async function GET() {
       cron("ingest-signals (daily 2am UTC)", CRON_JOBS.ingestSignals, find("civic_signals")?.latest_at),
       cron("refresh-pulse (daily 6am UTC)", CRON_JOBS.refreshPulse, find("city_pulse_facts")?.latest_at),
     ]
+    if (result.telegram.configured) {
+      result.crons.push(cron("telegram-digest (daily 3am UTC)", CRON_JOBS.telegramDigest, null))
+    }
 
     // Overall status
     const errors = tableChecks.filter(t => t.status === "error")

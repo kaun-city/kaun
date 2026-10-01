@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next"
+import { Suspense } from "react"
 import { IBM_Plex_Mono, Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import PageActivity from "@/components/PageActivity"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -55,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.className} ${plexMono.variable}`}>
         {children}
         <Analytics />
+        <Suspense fallback={null}><PageActivity /></Suspense>
       </body>
     </html>
   )
