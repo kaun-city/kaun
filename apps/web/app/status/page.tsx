@@ -19,6 +19,7 @@ interface CityCoverage {
   name: string
   state: string
   expected_wards: number
+  map_wards: number
   wards: number | null
   ward_amenities: number | null
   upyog_grievances: number | null
@@ -51,6 +52,8 @@ interface HealthData {
     facts_active: number | null
   }
   analytics: {
+    page_views_24h: number | null
+    page_views_7d: number | null
     pin_drops_24h: number | null
     pin_drops_7d: number | null
     top_wards_7d: { ward_name: string; count: number }[]
@@ -251,7 +254,8 @@ export default function StatusPage() {
                           <div className={`h-full ${barColor} transition-all`} style={{ width: `${pct}%` }} />
                         </div>
                         <div className="mt-2 grid grid-cols-2 md:grid-cols-6 gap-2 text-[11px]">
-                          <CovStat label="Wards" value={c.wards} target={c.expected_wards} pct={wardPct} />
+                          <CovStat label="Historical data wards" value={c.wards} target={c.expected_wards} pct={wardPct} />
+                          <CovStat label="GBA map wards" value={c.map_wards} />
                           <CovStat label="Amenities" value={c.ward_amenities} />
                           <CovStat label="Grievances" value={c.upyog_grievances} />
                           <CovStat label="Property Tax" value={c.upyog_property_tax} />
@@ -289,7 +293,17 @@ export default function StatusPage() {
             </section>
 
             {/* User Engagement */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+              {[
+                { label: "Page views (24h)", value: data.analytics?.page_views_24h },
+                { label: "Page views (7d)", value: data.analytics?.page_views_7d },
+              ].map(stat => (
+                <div key={stat.label} className="bg-paper border border-ink/15 p-4">
+                  <p className={EYEBROW}>{stat.label}</p>
+                  <p className="font-mono tabular-nums text-2xl font-semibold mt-1">{stat.value ?? "--"}</p>
+                  <p className="text-xs text-ink/60 mt-1">Page loads and navigation</p>
+                </div>
+              ))}
               <div className="bg-paper border border-ink/15 p-4">
                 <p className={EYEBROW}>Pin Drops (24h)</p>
                 <p className={`font-mono tabular-nums text-2xl font-semibold mt-1 ${(data.analytics?.pin_drops_24h ?? 0) > 0 ? "text-ink" : "text-ink/60"}`}>

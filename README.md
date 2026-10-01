@@ -140,6 +140,33 @@ For migration and integration testing, use the Docker-backed local Supabase
 clone described in [`docs/local-database.md`](docs/local-database.md). Its
 privacy-filtered data snapshot is kept outside git.
 
+## Telegram Monitoring
+
+Kaun can send a Telegram message for each new civic report and a daily digest with
+page views, pin drops, civic reports, Ask Kaun questions, and system health. Page
+views count page loads and navigation; they do not identify unique visitors.
+Configure these
+server-side environment variables in the Vercel project:
+
+- `TELEGRAM_BOT_TOKEN` — create a bot with [@BotFather](https://t.me/BotFather)
+- `TELEGRAM_CHAT_ID` — start a chat with the bot and use that chat's ID
+- `CRON_SECRET` — a long random secret used to protect the daily digest endpoint
+
+The daily digest runs at 03:00 UTC (08:30 IST). Keep the bot token private and
+never add it to a `NEXT_PUBLIC_*` variable or commit it to the repository.
+
+For guided setup, run `node scripts/setup-telegram.mjs` and open the localhost
+address it prints. Sign in to Vercel, send `/start` to the bot, and enter the
+BotFather token in the masked field. The helper discovers the private chat ID,
+saves both production secrets, and sends a test message without logging the token.
+A production deployment is required for new environment variables to take effect.
+
+The Kaun Maintenance GitHub workflow checks every six hours, retries stale
+ingestion/pulse jobs at most once per 20 hours, recovers a stale Telegram digest,
+and sends Telegram notices when system health changes. Delivery heartbeats appear
+in `/api/health`; Telegram credential values are never exposed there. Government
+scrapes retain the last known good dataset when an upstream site fails.
+
 ---
 
 ## Adding a City
