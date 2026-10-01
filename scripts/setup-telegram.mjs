@@ -24,7 +24,7 @@ const reply = (res, status, body) => {
   res.writeHead(status, { "Content-Type": "application/json", "Cache-Control": "no-store" })
   res.end(JSON.stringify(body))
 }
-const html = () => `<!doctype html><html><meta name="viewport" content="width=device-width,initial-scale=1"><title>Connect Kaun Alerts</title>
+const html = () => `<!doctype html><html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Connect Kaun Alerts</title>
 <style>body{font:17px system-ui;background:#f2ede4;color:#24221f;max-width:610px;margin:55px auto;padding:24px}h1{font-size:30px}button,input{font:inherit;padding:13px;border:1px solid #aaa;border-radius:6px}input{width:95%;margin:10px 0}button{background:#263c31;color:white;cursor:pointer}a{color:#24573b}#result{padding:16px 0;white-space:pre-wrap}.muted{color:#666;font-size:14px}</style>
 <h1>Connect Kaun Alerts</h1><p>This is the one-time setup. Your token will be saved as a production Secret in the Kaun project on Vercel.</p>
 <p><b>1.</b> <button id="login">Sign in to Vercel</button> <a id="verify" target="_blank" hidden>Finish sign-in</a><span id="auth"></span></p>
@@ -40,7 +40,7 @@ document.getElementById('form').onsubmit=async e=>{e.preventDefault();document.g
 </script></html>`
 const server = http.createServer(async (req, res) => {
   if (req.method === "GET" && req.url === "/") {
-    res.writeHead(200, { "Content-Type": "text/html", "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" })
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" })
     return res.end(html())
   }
   if (req.method !== "POST" || req.headers.origin !== origin || req.headers["x-setup-nonce"] !== nonce) return reply(res, 403, { message: "Forbidden" })
