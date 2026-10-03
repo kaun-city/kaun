@@ -110,7 +110,7 @@ test("unreachable, timed out and error responses reject; the lenient helpers sti
   }
 })
 
-test("server reads go straight to Supabase, with no timeout added to cached fetches", async () => {
+test("server reads go straight to Supabase with bounded fetches and unchanged cache settings", async () => {
   assert.equal(supabase.restUrl("wards").origin, publicSupabaseConfig().url)
   const calls = []
   const savedFetch = globalThis.fetch
@@ -121,7 +121,8 @@ test("server reads go straight to Supabase, with no timeout added to cached fetc
     globalThis.fetch = savedFetch
   }
   assert.deepEqual(calls[0].next, { revalidate: 3600 })
-  assert.equal(calls[0].signal, undefined)
+  assert.ok(calls[0].signal instanceof AbortSignal)
+  assert.equal(supabase.SERVER_REQUEST_TIMEOUT_MS, 10_000)
 })
 
 // ── Tenders ─────────────────────────────────────────────────

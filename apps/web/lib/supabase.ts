@@ -19,6 +19,7 @@ const headers = {
 
 /** A browser read that has not answered by now is reported as failed, not left loading. */
 export const BROWSER_REQUEST_TIMEOUT_MS = 15_000
+export const SERVER_REQUEST_TIMEOUT_MS = 10_000
 
 /** A read that could not be completed: unreachable, timed out, or an error response. */
 export class DataRequestError extends Error {
@@ -39,18 +40,19 @@ export function restUrl(path: string): URL {
  * One PostgREST request. Throws DataRequestError instead of resolving to an
  * empty value, so callers can tell "failed" from "no rows".
  *
- * The timeout is browser-only: server reads may carry Next's `revalidate`
- * cache option, and those are left exactly as they were.
+ * Both browser and server reads are bounded. Next's explicit `revalidate`
+ * cache option passes through unchanged, including during static builds.
  */
 export async function restRequest(url: URL, init: RequestInit & { next?: { revalidate: number } } = {}): Promise<Response> {
   const label = url.pathname.replace(/^.*\/rest\/v1\//, "")
   const inBrowser = typeof window !== "undefined"
+  const deadline = AbortSignal.timeout(inBrowser ? BROWSER_REQUEST_TIMEOUT_MS : SERVER_REQUEST_TIMEOUT_MS)
   let res: Response
   try {
     res = await fetch(url.toString(), {
       ...init,
       headers: { ...headers, ...init.headers },
-      ...(inBrowser ? { signal: AbortSignal.timeout(BROWSER_REQUEST_TIMEOUT_MS) } : {}),
+      signal: init.signal ? AbortSignal.any([deadline, init.signal]) : deadline,
     })
   } catch (error) {
     const timedOut = error instanceof DOMException && error.name === "TimeoutError"
