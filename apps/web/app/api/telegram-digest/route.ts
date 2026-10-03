@@ -12,6 +12,17 @@ export async function GET(req: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 })
   }
 
+  // The desktop incident check calls this once for a new outage. It must
+  // remain independent of Supabase, including the normal deduplication store.
+  if (new URL(req.url).searchParams.get("mode") === "outage") {
+    const sent = await sendTelegramMessage([
+      "⚠️ Kaun health/database check is unavailable.",
+      "Activity statistics and the daily digest may be delayed. Existing civic data is being preserved.",
+      "Maintenance is investigating. https://kaun.city/status",
+    ].join("\n"))
+    return Response.json({ ok: sent }, { status: sent ? 200 : 502 })
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!supabaseUrl || !serviceKey) {
