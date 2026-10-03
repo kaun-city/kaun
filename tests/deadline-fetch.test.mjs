@@ -1,6 +1,11 @@
 import test from "node:test"
 import assert from "node:assert/strict"
-import { deadlineFetch } from "../apps/web/lib/deadline-fetch.ts"
+import { deadlineFetch, withDeadline } from "../apps/web/lib/deadline-fetch.ts"
+
+test("whole-operation deadline rejects even when an SDK ignores cancellation", async () => {
+  await assert.rejects(withDeadline(new Promise(() => {}), 10), { name: "TimeoutError" })
+  assert.equal(await withDeadline(Promise.resolve("complete"), 1000), "complete")
+})
 
 test("upstream calls share one deadline, including later calls", async () => {
   const original = globalThis.fetch

@@ -3,7 +3,7 @@ import { allCities } from "@/lib/cities"
 import { deriveOverallHealth } from "@/lib/health-status"
 import { CRON_JOBS, cronStatus, type CronJob, type CronStatus } from "@/lib/cron-runs"
 import { checkTable, HEALTH_TABLES, type TableCheck } from "@/lib/health-tables"
-import { deadlineFetch } from "@/lib/deadline-fetch"
+import { deadlineFetch, withDeadline } from "@/lib/deadline-fetch"
 
 export const runtime = "nodejs"
 export const maxDuration = 15
@@ -141,6 +141,7 @@ export async function GET() {
   }
 
   try {
+    await withDeadline((async () => {
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -311,6 +312,7 @@ export async function GET() {
       coreDataHealthy: !coreEmpty,
       hasStalePipelines: stalePipelines,
     })
+    })(), 10000)
 
   } catch {
     result.status = "down"
