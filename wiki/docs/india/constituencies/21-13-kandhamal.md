@@ -103,7 +103,6 @@ average of them measures none of them.
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 17 | 89.5% | — | — | — | — |
-| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 31 | 100.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 14 | 93.3% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 1 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 26 | 100.0% | — | 254 | — | — |
@@ -120,7 +119,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹19.07 Cr | ₹5.42 Cr | ₹13.65 Cr | 28.4% | 365 | 270 | 148 | 2026-09-06 |
+| eSAKSHI (official) | ₹19.07 Cr | ₹5.90 Cr | ₹13.17 Cr | 30.9% | 375 | 295 | 152 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -131,16 +130,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Odisha furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Odisha furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Subernarekha Project, Odisha](https://kaun.city/india/projects/701402) | Department of Water Resources, River Development & GR | ₹3,056 Cr | ₹7,023 Cr | +₹3,967 Cr | 75 months later | 96% |
-| [Talcher-Bimlagarh 154 km](https://kaun.city/india/projects/705359) | Ministry of Railways | ₹1,928 Cr | ₹4,547 Cr | +₹2,619 Cr | 48 months later | 56% |
-| [Khurda Road-Bolangir 301 km](https://kaun.city/india/projects/705358) | Ministry of Railways | ₹3,792 Cr | ₹6,222 Cr | +₹2,430 Cr | on original schedule | 93% |
-| [Integrated Anandpur Barrage Project](https://kaun.city/india/projects/603945) | Department of Water Resources, River Development & GR | ₹567 Cr | ₹2,990 Cr | +₹2,423 Cr | 78 months later | 63% |
-| [Budhapank-Salegaon via Rajatgarh - 3rd & 4th line 85 85 km](https://kaun.city/india/projects/705515) | Ministry of Railways | ₹1,173 Cr | ₹3,035 Cr | +₹1,862 Cr | on original schedule | 86% |
-| [Expansion of Alumina Refinery Plant with addition of 5th Stream having capacity enhancement of 1.0 Million Tonee Per Annum](https://kaun.city/india/projects/400141) | Ministry of Mines | ₹4,103 Cr | ₹5,677 Cr | +₹1,574 Cr | 42 months later | 96% |
+| [6L Flyover including RE Wall approaches with Flexible Pavement in the Elephant Corridor of Angul Sambalpur Section of NH-42 New NH-55 Km.202.533](https://kaun.city/india/projects/618704) | Ministry of Road Transport & Highways | ₹151 Cr | ₹0.00 Cr | −₹151 Cr | 3 months later | 100% |
+| [3L Major Bridge over River Brahmani at Km. 401.250 Duburi - Chandikhole Section of NH-200 New NH -53](https://kaun.city/india/projects/618908) | Ministry of Road Transport & Highways | ₹154 Cr | ₹0.00 Cr | −₹154 Cr | 32 months later | 38% |
+| [Construction of four lane ROB and its approaches in lieu of existing Level Crossing No. RV-71 at km 435 on NH-217 New NH-353 at Khariar including land acquisition under NHO in Annual Plan 2021-22 for the state of Odisha for F.Y. 2021-22 to F.Y 2033-34](https://kaun.city/india/projects/618003) | Ministry of Road Transport & Highways | ₹154 Cr | ₹0.00 Cr | −₹154 Cr | 21 months later | 90% |
+| [New Product Testing Laboratory for NPM, SPP & NHSM at RSP](https://kaun.city/india/projects/635651) | Ministry of Steel | ₹155 Cr | ₹0.00 Cr | −₹155 Cr | unchanged 0 months | 74% |
+| [Construction of Daspalla Bypass from km 195.250 To 200.635 of NH-57 including land acquisition in the state of Odisha on EPC mode under Annual Plan 2022-23.](https://kaun.city/india/projects/617923) | Ministry of Road Transport & Highways | ₹156 Cr | ₹0.00 Cr | −₹156 Cr | on original schedule | 25% |
+| [Construction of Bypass to Khordha town from Km 294/000 to 300/300 on NH-57 including LA in the State of Odisha on EPC mode.](https://kaun.city/india/projects/617925) | Ministry of Road Transport & Highways | ₹157 Cr | ₹0.00 Cr | −₹157 Cr | 23 months later | 92% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=21)
 
@@ -158,4 +157,4 @@ The 6 projects in Odisha furthest above sanctioned cost, as of the Jul 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

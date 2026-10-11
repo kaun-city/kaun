@@ -1,6 +1,6 @@
 # Constituencies — India (Lok Sabha, 543)
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
 
 Every Lok Sabha seat gets a page here: who holds it, which assembly segments and districts
 it is made of, what its MP has declared, and what Parliament records of their work. Each seat
@@ -32,7 +32,7 @@ means the pipeline has not landed yet, not that the seat has no data.
 | Nomination affidavits (publicly cleared) | `in_mp_affidavits` | 543 | 543 seats |
 | Parliamentary activity | `in_mp_activity` | 4,877 | 544 MPs |
 | MPLADS allocation and spend | `in_mplads_summary` | 553 | 516 seats |
-| Central projects ≥ ₹150 Cr | `in_central_projects` | 2,090 | latest report held: Jul 2026 |
+| Central projects ≥ ₹150 Cr | `in_central_projects` | 2,127 | latest report held: Aug 2026 |
 
 "Rows readable" is what the **public** anon role can see. `in_mp_affidavits` is row-restricted:
 an affidavit becomes readable only after its MyNeta↔seat join has been reviewed, so a low number

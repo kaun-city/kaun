@@ -130,7 +130,7 @@ _Recorded reason: Minister/Speaker: does not sign the attendance register, ask q
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹8.75 Cr | ₹5.95 Cr | 59.5% | 131 | 131 | 114 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹8.99 Cr | ₹5.71 Cr | 61.2% | 131 | 131 | 126 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -141,16 +141,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Arunachal Pradesh furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Arunachal Pradesh furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Dibang Multipurpose Project](https://kaun.city/india/projects/602182) | Ministry of Power | ₹31,876 Cr | ₹31,876 Cr | no change | on original schedule | 18% |
-| [240MW Heo HE Project](https://kaun.city/india/projects/611698) | Ministry of Power | ₹1,939 Cr | ₹1,939 Cr | no change | unchanged 0 months | 7% |
-| [186 MW Tato-I H E Project](https://kaun.city/india/projects/611699) | Ministry of Power | ₹1,750 Cr | ₹1,750 Cr | no change | unchanged 0 months | 6% |
-| [700 MW Tato-II HE Project](https://kaun.city/india/projects/611716) | Ministry of Power | ₹8,146 Cr | ₹8,146 Cr | no change | unchanged 0 months | 7% |
-| [Construction of Permanent Campus of National Institute of Technology Arunachal Pradesh](https://kaun.city/india/projects/612898) | Department of Higher Education | ₹593 Cr | ₹593 Cr | no change | 24 months earlier | 80% |
-| [North Eastern Region Expansion Scheme-XXIII [NERES-XXIII]](https://kaun.city/india/projects/617375) | Ministry of Power | ₹209 Cr | ₹209 Cr | no change | unchanged 0 months | 4% |
+| [Construction of Balance work of 2-Lane with PS of Joram Koloriang Road from existing Km122.600 to km138.00 [Design Km108.724 to Km123.714] in Arunachal Pradesh on EPC Mode under SARDP-NE Pkg-7](https://kaun.city/india/projects/618433) | Ministry of Road Transport & Highways | ₹185 Cr | ₹0.00 Cr | −₹185 Cr | 48 months later | 100% |
+| [North Eastern Region Expansion Scheme-XXIII [NERES-XXIII]](https://kaun.city/india/projects/617375) | Ministry of Power | ₹209 Cr | ₹0.00 Cr | −₹209 Cr | unchanged 0 months | 6% |
+| [Construction of Intermediate Lane Road with hard shoulder from design Km 0.000 to Km 17.387 Total length 17.387 km of Hunli to Ithun Bridge section on NH-913 Frontier Highway in State of Arunachal Pradesh on EPC mode under NHO-NE](https://kaun.city/india/projects/618403) | Ministry of Road Transport & Highways | ₹276 Cr | ₹0.00 Cr | −₹276 Cr | on original schedule | 61% |
+| [lmprovement and Widening to 2 lane with paved Shoulder of NH-15 old NH-52 from Existing Km 770.600 Design Km 24.819 to Existing km 805.750 Design Km 59.885 Kamlang T-Junction to Chowkham, Existing Length 35.150 Km, Design Length-35.066 Km in the state of Arunachal Pradesh on EPC mode Pkg-2](https://kaun.city/india/projects/619014) | Ministry of Road Transport & Highways | ₹317 Cr | ₹0.00 Cr | −₹317 Cr | on original schedule | 24% |
+| [Construction of 2-Laning with hard shoulders of Demwe-Brahmakund section of NH- 13 from Ch.0.00 km to 18.464 km on EPC under SARDP-NE NHO-NE -Balance Work](https://kaun.city/india/projects/618445) | Ministry of Road Transport & Highways | ₹354 Cr | ₹0.00 Cr | −₹354 Cr | on original schedule | 23% |
+| [lmprovement and Widening to 2-lane with Paved Shoulder of NH-13 & 15 Old NH-52 from Existing Km 745.60 Design Km 0.000 to Existing km 770.600 Design Km 24.819 Brahmakund T-junction to Kamlang T-Junction, Existing Length 25.00 Km, Design Length 24.819 Km in the state of Arunachal Pradesh on EPC mode Pkg-1](https://kaun.city/india/projects/619248) | Ministry of Road Transport & Highways | ₹441 Cr | ₹0.00 Cr | −₹441 Cr | on original schedule | 20% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=12)
 
@@ -168,4 +168,4 @@ The 6 projects in Arunachal Pradesh furthest above sanctioned cost, as of the Ju
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

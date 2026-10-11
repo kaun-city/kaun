@@ -111,7 +111,6 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 13 | 68.4% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 13 | 61.9% | — | 56 | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 13 | 61.9% | — | 56 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 12 | 46.1% | — | 101 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 12 | 60.0% | — | 176 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 9 | 56.3% | — | 156 | — | — |
@@ -134,16 +133,16 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Jammu & Kashmir furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Jammu & Kashmir furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Pakal Dul [Drangdhuran] Hydroelectric Project, 1000 MW](https://kaun.city/india/projects/602525) | Ministry of Power | ₹8,112 Cr | ₹12,728 Cr | +₹4,616 Cr | 80 months later | 82% |
-| [Kiru HE Project](https://kaun.city/india/projects/602532) | Ministry of Power | ₹4,288 Cr | ₹5,409 Cr | +₹1,121 Cr | 39 months later | 87% |
-| [Delhi-Amritsar-Katra Expressway Phase-II Pkg-XV [Junction with Hiranagar Road near village Gurha Baildaran to Junction with Jammu Ring Road NH-244A near Jakh village from Km 468100 to Km 503250]](https://kaun.city/india/projects/618494) | Ministry of Road Transport & Highways | ₹2,715 Cr | ₹3,717 Cr | +₹1,002 Cr | 27 months later | 90% |
-| [AIIMS Kashmir at Awantipora Jammu & Kashmir](https://kaun.city/india/projects/701167) | Ministry of Health & Family Welfare | ₹1,828 Cr | ₹2,570 Cr | +₹742 Cr | 12 months later | 79% |
-| [Delhi-Amritsar-Katra Expressway Phase-II Pkg-XVI Existing Jakh Vijaypur-Kunjwani section of NH-44 including spur Connectivity to Jammu Airport NH-144A [Km 503500 to km 514500]](https://kaun.city/india/projects/618496) | Ministry of Road Transport & Highways | ₹1,822 Cr | ₹2,523 Cr | +₹701 Cr | 24 months later | 94% |
-| [Construction of twin tube tunnels on Jammu Kashmir Ring Road NH-244A Between Design Ch. 50600 to 51700 and design Ch. 53535 to 55700 on EPC mode under residual NHDP component of Bharatmala Pariyojna](https://kaun.city/india/projects/618549) | Ministry of Road Transport & Highways | ₹243 Cr | ₹732 Cr | +₹489 Cr | 18 months later | 84% |
+| [Rehabilitation and up-gradation to 2 lane with paved shoulder from existing chainage km 64535 to km 85385 Design chainage km 55800 to km 74350 under 13 TF on Akhnoor-Poonch road NH-144A under Project Sampark BRO in the UT of Jammu & Kashmir on EPC mode Package-III Job no NH-144A-J&K-2019-20-79](https://kaun.city/india/projects/618223) | Ministry of Road Transport & Highways | ₹153 Cr | ₹0.00 Cr | −₹153 Cr | 39 months later | 90% |
+| [Up-gradation to 2-lane with Paved Shoulder from Km 20.300 to Km 29.030 of 8.730 Km length on Goha-Khellani section on NH-244 in UT of Jammu and Kashmir on EPC Mode Package II](https://kaun.city/india/projects/618398) | Ministry of Road Transport & Highways | ₹211 Cr | ₹0.00 Cr | −₹211 Cr | 50 months later | 97% |
+| [Transmission Scheme for evacuation of Power from Ratle HEP [850 MW] & kiru [624 MW] Part B](https://kaun.city/india/projects/617179) | Ministry of Power | ₹219 Cr | ₹0.00 Cr | −₹219 Cr | 11 months later | 2% |
+| [Up-gradation to 2-lane with Paved Shoulder from Km 12.850 to Km20.300 of 7.450Km length on Goha-Khellani section and a link road to Goha village of 2.016 km on NH- 244 in UT of Jammu and Kashmir on EPC Mode Pkg-1](https://kaun.city/india/projects/618394) | Ministry of Road Transport & Highways | ₹228 Cr | ₹0.00 Cr | −₹228 Cr | 54 months later | 94% |
+| [Construction of twin tube tunnels on Jammu Kashmir Ring Road NH-244A Between Design Ch. 50600 to 51700 and design Ch. 53535 to 55700 on EPC mode under residual NHDP component of Bharatmala Pariyojna](https://kaun.city/india/projects/618549) | Ministry of Road Transport & Highways | ₹243 Cr | ₹0.00 Cr | −₹243 Cr | 18 months later | 84% |
+| [Jammu-Akhnoor Road Pkg-I](https://kaun.city/india/projects/618407) | Ministry of Road Transport & Highways | ₹245 Cr | ₹0.00 Cr | −₹245 Cr | 21 months later | 75% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=1)
 
@@ -160,4 +159,4 @@ The 6 projects in Jammu & Kashmir furthest above sanctioned cost, as of the Jul 
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

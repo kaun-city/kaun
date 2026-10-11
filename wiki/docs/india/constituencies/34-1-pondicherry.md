@@ -84,7 +84,7 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Term | LS18 |
 | Status | Sitting |
 | Terms served | 2 |
-| Age | 75 |
+| Age | 76 |
 | Gender | Male |
 | Profession | Agriculturist |
 | Constituency name at source | Puducherry |
@@ -127,7 +127,6 @@ average of them measures none of them.
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 14 | 46.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 13 | 86.7% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | — | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 23 | 88.5% | — | 160 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 15 | 75.0% | — | 51 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 151 | — | — |
@@ -150,13 +149,9 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 1 project in Puducherry furthest above sanctioned cost, as of the Jul 2026 report.
-
-| Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
-|---|---|---:|---:|---:|---|---:|
-| [Establishment of NIT Puducherry Permanent Campus [Phase-I and Phase-II]](https://kaun.city/india/projects/612877) | Department of Higher Education | ₹618 Cr | ₹544 Cr | −₹74.00 Cr | 17 months later | 100% |
-
-[All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=34)
+**No central projects loaded for Puducherry yet.** MoSPI's Flash Report tracks every central
+project of ₹150 crore or more and publishes monthly with a ~7–8 week lag; the first load is
+pending, or this state has no projects in the latest report Kaun holds.
 
 ---
 
@@ -169,6 +164,5 @@ The 1 project in Puducherry furthest above sanctioned cost, as of the Jul 2026 r
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
 | Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
-| Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

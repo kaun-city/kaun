@@ -97,6 +97,8 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 17 | 89.5% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 26 | 86.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 13 | 86.7% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 18 | 85.7% | — | 1 | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 18 | 85.7% | — | 1 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 16 | 61.5% | — | 159 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 18 | 90.0% | — | 126 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 13 | 81.3% | — | 2 | — | — |
@@ -111,7 +113,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹6.47 Cr | ₹8.23 Cr | 44.0% | 206 | 173 | 40 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹6.62 Cr | ₹8.08 Cr | 45.0% | 240 | 184 | 43 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -122,16 +124,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Chhattisgarh furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Chhattisgarh furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [NMDC Slurry Pipeline Project Phase-1](https://kaun.city/india/projects/706811) | Ministry of Steel | ₹2,907 Cr | ₹5,427 Cr | +₹2,520 Cr | 38 months later | 96% |
-| [Gevra Road-Pendra Road New Railway Line [135 km]](https://kaun.city/india/projects/705444) | Ministry of Railways | ₹4,970 Cr | ₹7,449 Cr | +₹2,479 Cr | 57 months later | 83% |
-| [Dharamjaigarh-Korba](https://kaun.city/india/projects/400203) | Ministry of Coal | ₹1,686 Cr | ₹2,439 Cr | +₹752 Cr | 4 months earlier | 44% |
-| [Kharsia-Dharamjaygarh with Spur line [East Corridor-Phase 1]](https://kaun.city/india/projects/400220) | Ministry of Railways | ₹3,055 Cr | ₹3,798 Cr | +₹743 Cr | 99 months later | 95% |
-| [4L of Bilaspur to Urga km 0.00 to 70.2 of NH-130A](https://kaun.city/india/projects/618639) | Ministry of Road Transport & Highways | ₹1,856 Cr | ₹2,524 Cr | +₹668 Cr | 33 months later | 95% |
-| [4L of Urga - Pathalgaon from Km. 70.200 to km. 157.745 of NH-130A](https://kaun.city/india/projects/618640) | Ministry of Road Transport & Highways | ₹2,261 Cr | ₹2,860 Cr | +₹599 Cr | on original schedule | 82% |
+| [Bemetara Bypass NH 30](https://kaun.city/india/projects/617908) | Ministry of Road Transport & Highways | ₹162 Cr | ₹0.00 Cr | −₹162 Cr | on original schedule | 45% |
+| [3rd & 4th line - Saragbundia & Madwarani 12.2 km PB72/NR/2022-23](https://kaun.city/india/projects/709819) | Ministry of Railways | ₹168 Cr | ₹0.00 Cr | −₹168 Cr | on original schedule | 10% |
+| [Nipania-Bhatapra 14.4 km 4th line PB72/NR/2022-23](https://kaun.city/india/projects/612815) | Ministry of Railways | ₹170 Cr | ₹0.00 Cr | −₹170 Cr | unchanged 0 months | 3% |
+| [Super accelerated cooling system (Uniform Cooling) for high strength plates in Plate Mill at BSP](https://kaun.city/india/projects/944288) | Ministry of Steel | ₹192 Cr | ₹0.00 Cr | −₹192 Cr | — | 65% |
+| [Replacement of Hot Leveller No.1 of Plate Mill at Bhilai Steel Plant](https://kaun.city/india/projects/617243) | Ministry of Steel | ₹199 Cr | ₹0.00 Cr | −₹199 Cr | unchanged 0 months | 83% |
+| [Upgradation of Ambikapur-Ramanujganj-Garwa road of NH-343, Package-III, Badki mahri village to Ramanujganj section from existing km 80.600 to km 110.330 Design Ch. 85.370 to Ch. 114.800 of total length 29.430 km to two lane with paved shoulders udner corridor scheme under EPC Mode in the of Chhattisgarh](https://kaun.city/india/projects/618014) | Ministry of Road Transport & Highways | ₹199 Cr | ₹0.00 Cr | −₹199 Cr | on original schedule | 39% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=22)
 
@@ -149,4 +151,4 @@ The 6 projects in Chhattisgarh furthest above sanctioned cost, as of the Jul 202
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

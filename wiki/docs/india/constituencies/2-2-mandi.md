@@ -130,7 +130,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹5.74 Cr | ₹8.96 Cr | 39.0% | 316 | 309 | 75 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹6.15 Cr | ₹8.55 Cr | 41.8% | 372 | 318 | 88 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -141,16 +141,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Himachal Pradesh furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Himachal Pradesh furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Luhri Stage-I Hydro Electric Project [210 MW]](https://kaun.city/india/projects/602593) | Ministry of Power | ₹1,811 Cr | ₹4,345 Cr | +₹2,535 Cr | 52 months later | 52% |
-| [Sunni Dam Hydro Electric Project [382 MW]](https://kaun.city/india/projects/611586) | Ministry of Power | ₹2,615 Cr | ₹4,555 Cr | +₹1,941 Cr | 20 months later | 35% |
-| [Dhaulasidh Hydro Electric Project [66 MW]](https://kaun.city/india/projects/602582) | Ministry of Power | ₹688 Cr | ₹1,763 Cr | +₹1,075 Cr | 16 months later | 81% |
-| [Pandoh bypass 221.305 to Takoli 242.000 of NH-21 in the state of Himachal Pradesh](https://kaun.city/india/projects/618851) | Ministry of Road Transport & Highways | ₹3,420 Cr | ₹4,466 Cr | +₹1,046 Cr | 66 months later | 96% |
-| [4L of Kathlighat to Shakral Village from Km 128.835 to Km 146.300 of NH- 5 Shimla Bypass - Pkg I](https://kaun.city/india/projects/618921) | Ministry of Road Transport & Highways | ₹1,703 Cr | ₹2,649 Cr | +₹945 Cr | 15 months later | 64% |
-| [4L of Shakral Village to Dhalli Section from Km 146.300 to Km 156.560 Shimla Bypass - Pkg II and Shimla connectivity from Km 0.000 to Km 0.725 of NH-5](https://kaun.city/india/projects/618922) | Ministry of Road Transport & Highways | ₹1,956 Cr | ₹2,881 Cr | +₹924 Cr | 9 months later | 60% |
+| [Hostel blocks & dining hall block](https://kaun.city/india/projects/612128) | Department of Higher Education | ₹167 Cr | ₹0.00 Cr | −₹167 Cr | 6 months later | 94% |
+| [4L Sundar Nagar Bypass from Km.173.900 to Km.179.600 of NH-21](https://kaun.city/india/projects/618852) | Ministry of Road Transport & Highways | ₹191 Cr | ₹0.00 Cr | −₹191 Cr | 27 months later | 100% |
+| [Improvement/construction of existing CL-5 Road to NH Intermediate lane specification with hard shoulder from Km 133.000 to 166.000 net Length 33.000 kms of NH-505 Sumdo-Kaza-Gramphoo road in the state of Himachal Pradesh on EPC mode under project Deepak, BRO](https://kaun.city/india/projects/618216) | Ministry of Road Transport & Highways | ₹231 Cr | ₹0.00 Cr | −₹231 Cr | 15 months later | 23% |
+| [Rehabilitation and Upgradation to 2-lane configuration of Karnohal- Kalwahn Section km 181.00 to 208.950 of NH-70 in the State of Himachal Pradesh under Green National Highways Corridor Project GNHCP with the loan assistance of World Bank on EPC mode.Package-2](https://kaun.city/india/projects/618232) | Ministry of Road Transport & Highways | ₹252 Cr | ₹0.00 Cr | −₹252 Cr | 7 months later | 58% |
+| [Improvement/construction of existing CL-5 Road to NH Intermediate lane specification with hard shoulder from Km 166.000 to 203.77 net Length 37.770 kms of NH-505 Sumdo-Kaza-Gramphoo road in the state of Himachal Pradesh on EPC mode under project Deepak, BRO](https://kaun.city/india/projects/618215) | Ministry of Road Transport & Highways | ₹274 Cr | ₹0.00 Cr | −₹274 Cr | on original schedule | 25% |
+| [Rehabilitation and Upgradation to 2-lane configuration of Kalwahn-Mandi Section km 208.950 to 250.592 of NH-70 in the State of Himachal Pradesh under Green National Highways Corridor Project GNHCP with the loan assistance of World Bank on EPC mode.Package-3](https://kaun.city/india/projects/618230) | Ministry of Road Transport & Highways | ₹314 Cr | ₹0.00 Cr | −₹314 Cr | 20 months later | 71% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=2)
 
@@ -168,4 +168,4 @@ The 6 projects in Himachal Pradesh furthest above sanctioned cost, as of the Jul
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

@@ -121,7 +121,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹5.89 Cr | ₹8.81 Cr | 40.1% | 204 | 160 | 39 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹6.43 Cr | ₹8.27 Cr | 43.8% | 220 | 162 | 42 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -132,16 +132,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Karnataka furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Karnataka furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Construction of Bangalore Metro Rail Project Phase 2.](https://kaun.city/india/projects/702635) | Ministry of Housing & Urban Affairs | ₹26,405 Cr | ₹30,695 Cr | +₹4,290 Cr | 66 months later | 96% |
-| [Nidagatta-Mysore Pkg II](https://kaun.city/india/projects/619120) | Ministry of Road Transport & Highways | ₹2,920 Cr | ₹4,114 Cr | +₹1,194 Cr | 51 months later | 99% |
-| [4L PS from near Hemmige Village Periyapatna - Hassan Road Jn. to near Hunsur - KR Nagar Jn section from Km. 144.900 to Km. 169.000 of NH-275 Pkg. III](https://kaun.city/india/projects/618870) | Ministry of Road Transport & Highways | ₹884 Cr | ₹1,727 Cr | +₹843 Cr | 9 months later | 28% |
-| [Upper Tunga Irrigation Project](https://kaun.city/india/projects/701377) | Department of Water Resources, River Development & GR | ₹770 Cr | ₹1,606 Cr | +₹836 Cr | 75 months later | 99% |
-| [Gadag - Wadi 252 km](https://kaun.city/india/projects/705490) | Ministry of Railways | ₹2,842 Cr | ₹3,668 Cr | +₹826 Cr | 9 months later | 35% |
-| [BRT Tiger Reserve Boundary Km.287.500 to Bangalore Section Km.458.420 of NH- 209 in Karnataka](https://kaun.city/india/projects/619150) | Ministry of Road Transport & Highways | ₹2,083 Cr | ₹2,860 Cr | +₹777 Cr | 85 months later | 100% |
+| [Construction of 100 bed ESI Hospital and Staff Quarters [32 Nos.] at Harohalli, Karnataka](https://kaun.city/india/projects/612748) | Ministry of Labour and Employment | ₹151 Cr | ₹0.00 Cr | −₹151 Cr | unchanged 0 months | 32% |
+| [Mechanization of Berth No.14 for handling Containers and other cargo on DBFOT basis - Phase II](https://kaun.city/india/projects/617804) | Ministry of Ports, Shipping and Waterways | ₹153 Cr | ₹0.00 Cr | −₹153 Cr | unchanged 0 months | 95% |
+| [Construction of Major Bridge at Km.180.865 across river Krishna on NH 167 Hagari Jadcherla section](https://kaun.city/india/projects/617989) | Ministry of Road Transport & Highways | ₹157 Cr | ₹0.00 Cr | −₹157 Cr | 65 months later | 69% |
+| [Belgavi Improvement in Sewerage System Project](https://kaun.city/india/projects/702760) | Ministry of Housing & Urban Affairs | ₹163 Cr | ₹0.00 Cr | −₹163 Cr | 35 months later | 80% |
+| [Widening to 2 Lane with Paved Shoulders from design Km 103.200 Existing Km 103.200 to design Km 116.700 Existing Km 118.470 on AP/KNT Border to Sira Section of NH-544E in the State of Karnatakaon EPC mode under Annual plan 2022- 23](https://kaun.city/india/projects/618147) | Ministry of Road Transport & Highways | ₹167 Cr | ₹0.00 Cr | −₹167 Cr | 15 months later | 75% |
+| [Widening to existing 2 lane with paved Shoulder to 4 Lane with paved shoulder from design Km 153.00 to 168.27 Mala Gate to Karkala of NH -169 on Shimoga - Mangalore section in the state of Karnataka on EPC mode under Annula Plan 2021-22 Job No. NH-169-KNT-2021-22-949](https://kaun.city/india/projects/617998) | Ministry of Road Transport & Highways | ₹178 Cr | ₹0.00 Cr | −₹178 Cr | 21 months later | 83% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=29)
 
@@ -159,4 +159,4 @@ The 6 projects in Karnataka furthest above sanctioned cost, as of the Jul 2026 r
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

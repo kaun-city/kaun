@@ -130,6 +130,7 @@ average of them measures none of them.
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 30 | 100.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 20 | 95.2% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 20 | 95.2% | — | — | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 26 | 100.0% | — | 1 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | 1 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 1 | — | — |
@@ -144,7 +145,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹9.64 Cr | ₹5.06 Cr | 65.5% | 266 | 172 | 134 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹9.71 Cr | ₹4.99 Cr | 66.1% | 270 | 175 | 134 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -155,16 +156,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Mizoram furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Mizoram furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Construction of Permanent Campus for NIT Mizoram at Lengpui, Aizawl](https://kaun.city/india/projects/612876) | Department of Higher Education | ₹474 Cr | ₹474 Cr | no change | 93 months earlier | 4% |
-| [LPG Bottling Plant at Mualkhang](https://kaun.city/india/projects/617829) | Ministry of Petroleum & Natural Gas | ₹226 Cr | ₹226 Cr | no change | 7 months earlier | 34% |
-| [4-Laning of Vairengte - Chhimluang section Package-3 of NH-306 from Existing Chainage km 43000 to Km 59700 Design Chainage km 46000 to km 60850 on Silchar - Vairengte- Sairang road in the State of Mizoram under Bharatmala Pariyojna under NHO-NE. Package-1&2 in Assam state](https://kaun.city/india/projects/618316) | Ministry of Road Transport & Highways | ₹491 Cr | ₹491 Cr | no change | 1 month earlier | 18% |
-| [4-Laning of chhimluang-Kolasib from section pkg-4 of NH-306 & NH-6 existing chainage km 59700 to km 86000 design chainage km 61000 to km 77500 on Silchar- vairengte-sairang road in the state of Mizoram under Bharatmala Pariyojna on EPC mode Vairengte - Sairang Pkg-4](https://kaun.city/india/projects/618317) | Ministry of Road Transport & Highways | ₹562 Cr | ₹562 Cr | no change | 1 month earlier | 17% |
-| [4-Laning of Kolasib - Sethawn section Package-5 of NH-6 from Existing Chainage km 86000 to km 107850 Design Chainage km 77500 to km 95500 on silchar - vairengte - sairang road under Bharatmala Pariyojna on EPC mode under NHO-NE Vairengte - Sairang Pkg-5](https://kaun.city/india/projects/618318) | Ministry of Road Transport & Highways | ₹720 Cr | ₹720 Cr | no change | 1 month earlier | 12% |
-| [4-Laning of Sethawn - N. Kawnpui section Package-6 of NH-6 from Existing Chainage km 107850 to km 126315 Design Chainage km 95500 to km 111850 on Silchar- Vairengte- Sairang road, Vairengte - Sairang Pkg-6](https://kaun.city/india/projects/618319) | Ministry of Road Transport & Highways | ₹596 Cr | ₹596 Cr | no change | 1 month earlier | 7% |
+| [Balance work of widening to two laning/re-alignment and geometric improvement from Km. 11000 to Km. 114618 with rectification of damaged stretches and provision of protection works in vulnerable location of NH-44 in the State of Mizoram.](https://kaun.city/india/projects/619321) | Ministry of Road Transport & Highways | ₹171 Cr | ₹0.00 Cr | −₹171 Cr | unchanged 0 months | 2% |
+| [LPG Bottling Plant at Mualkhang](https://kaun.city/india/projects/617829) | Ministry of Petroleum & Natural Gas | ₹226 Cr | ₹0.00 Cr | −₹226 Cr | 5 months earlier | 35% |
+| [Construction of Permanent Campus for NIT Mizoram at Lengpui, Aizawl](https://kaun.city/india/projects/612876) | Department of Higher Education | ₹474 Cr | ₹0.00 Cr | −₹474 Cr | 93 months earlier | 4% |
+| [4-Laning of Vairengte - Chhimluang section Package-3 of NH-306 from Existing Chainage km 43000 to Km 59700 Design Chainage km 46000 to km 60850 on Silchar - Vairengte- Sairang road in the State of Mizoram under Bharatmala Pariyojna under NHO-NE. Package-1&2 in Assam state](https://kaun.city/india/projects/618316) | Ministry of Road Transport & Highways | ₹491 Cr | ₹0.00 Cr | −₹491 Cr | 1 month earlier | 18% |
+| [Up-gradation to 2 lane with paved shoutders of Pawlrang - Rulchawm section- of NH- 102B of Aizawl - Imphal Economic Corridor from Existing Chainage km 72.030 to km 104.129 including 2.459 km re-alignment section from Tuivai River to Rulchawm connecting km 48.150 of NH-6 [Design Chainage km 68.170 to km 98.579] in the State of Mizoram under Bharatmala Pariyojna on EPC mode under NHO-NE Package-3 Keifang- Tuivai Pkg-3](https://kaun.city/india/projects/619010) | Ministry of Road Transport & Highways | ₹501 Cr | ₹0.00 Cr | −₹501 Cr | 14 months later | 100% |
+| [4-Laning of chhimluang-Kolasib from section pkg-4 of NH-306 & NH-6 existing chainage km 59700 to km 86000 design chainage km 61000 to km 77500 on Silchar- vairengte-sairang road in the state of Mizoram under Bharatmala Pariyojna on EPC mode Vairengte - Sairang Pkg-4](https://kaun.city/india/projects/618317) | Ministry of Road Transport & Highways | ₹562 Cr | ₹0.00 Cr | −₹562 Cr | 1 month earlier | 17% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=15)
 
@@ -182,4 +183,4 @@ The 6 projects in Mizoram furthest above sanctioned cost, as of the Jul 2026 rep
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

@@ -95,6 +95,7 @@ average of them measures none of them.
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 18 | 94.7% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 25 | 83.3% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 25 | 83.3% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 12 | 80.0% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | 1 | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | 1 | — | — |
@@ -112,7 +113,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.85 Cr | ₹1.64 Cr | ₹13.21 Cr | 11.0% | 71 | 42 | 9 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.85 Cr | ₹1.69 Cr | ₹13.16 Cr | 11.4% | 98 | 67 | 9 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -123,16 +124,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Telangana furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Telangana furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [J. Chokka Rao Devadula Lift Irrigation Scheme](https://kaun.city/india/projects/701405) | Department of Water Resources, River Development & GR | ₹8,201 Cr | ₹14,730 Cr | +₹6,529 Cr | 72 months later | 88% |
-| [Indiramma Flood Flow Canal Project](https://kaun.city/india/projects/400103) | Department of Water Resources, River Development & GR | ₹1,331 Cr | ₹5,940 Cr | +₹4,609 Cr | 84 months later | 92% |
-| [Khammam-Devarapalle Pkg I [4L Access Controlled Greenfield from Thallampadu village to Somavaram village Design Chainage 0000 to 33604]](https://kaun.city/india/projects/618746) | Ministry of Road Transport & Highways | ₹797 Cr | ₹1,337 Cr | +₹540 Cr | 24 months later | 97% |
-| [4L of Kodad Design Km 0.00/Existing Km 185.00 of NH-65 to Khammam Design Km 31.800/Existing Km 29.400 of NH-365A](https://kaun.city/india/projects/618945) | Ministry of Road Transport & Highways | ₹1,149 Cr | ₹1,607 Cr | +₹458 Cr | 27 months later | 100% |
-| [Khammam-Devarapalle Pkg II [4L Access Controlled Greenfield from Somavaram village to Chintagudem village Design Chainage 33604 to 63117]](https://kaun.city/india/projects/619128) | Ministry of Road Transport & Highways | ₹616 Cr | ₹982 Cr | +₹366 Cr | 23 months later | 98% |
-| [4L of Karimnagar-Warangal section from km 49.500 to km 117.820 of NH-563](https://kaun.city/india/projects/618765) | Ministry of Road Transport & Highways | ₹2,147 Cr | ₹2,487 Cr | +₹340 Cr | 13 months later | 92% |
+| [Rehabiitation and upgradation from km 121/000 to 154/000 Nakrekal to Mallampally section of NH-365 to 2 lane with paved shoulders in the state of Telangana in the EPC mode](https://kaun.city/india/projects/618025) | Ministry of Road Transport & Highways | ₹193 Cr | ₹0.00 Cr | −₹193 Cr | 81 months later | 96% |
+| [ATF Pipeline from BPCLs Malkapur POL Installation to Hyderabad International airport](https://kaun.city/india/projects/617822) | Ministry of Petroleum & Natural Gas | ₹215 Cr | ₹0.00 Cr | −₹215 Cr | on original schedule | 34% |
+| [Construction of 4-lane flyover at Amberpet-X road, Hyderabad on NH-202 in the State of Telangana](https://kaun.city/india/projects/618001) | Ministry of Road Transport & Highways | ₹217 Cr | ₹0.00 Cr | −₹217 Cr | 36 months later | 92% |
+| [Widening to two/four lane with paved shoulder from Km.180.600 to Km.223.000 of NH-63 on Nizamabad-Jagadalpur road on EPC mode under NHO in the state of Telangana.](https://kaun.city/india/projects/617936) | Ministry of Road Transport & Highways | ₹254 Cr | ₹0.00 Cr | −₹254 Cr | unchanged 0 months | 100% |
+| [Construction of Precast housing and hostels at IIT Hyderabad](https://kaun.city/india/projects/609996) | Department of Higher Education | ₹262 Cr | ₹0.00 Cr | −₹262 Cr | 15 months later | 91% |
+| [6-laning of km 9.900 to km 19/948 Aramgarh to Shamshabad Section of Hyderabad- Bangalore section of NH-44 Under NHO EPC basis in the state of Telangana](https://kaun.city/india/projects/617913) | Ministry of Road Transport & Highways | ₹283 Cr | ₹0.00 Cr | −₹283 Cr | 73 months later | 93% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=36)
 
@@ -150,4 +151,4 @@ The 6 projects in Telangana furthest above sanctioned cost, as of the Jul 2026 r
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
