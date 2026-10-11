@@ -64,7 +64,7 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Term | LS18 |
 | Status | Sitting |
 | Terms served | 1 |
-| Age | 65 |
+| Age | 66 |
 | Gender | Male |
 | Profession | BUSINESSPERSON; Economist |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5661) |
@@ -104,6 +104,7 @@ average of them measures none of them.
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 31 | 100.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 31 | 100.0% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | — | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 25 | 96.2% | — | — | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | — | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 41 | — | — |
@@ -126,16 +127,16 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Delhi furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Delhi furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Dwarka Expressway from Km -0.600 to Km 5.300 - Pkg-I Shivmurti Chowk-RuB near Dwarka Sector 21](https://kaun.city/india/projects/619202) | Ministry of Road Transport & Highways | ₹2,145 Cr | ₹3,930 Cr | +₹1,785 Cr | 47 months later | 99% |
-| [8L of Dwarka Expressway Pkg-II RuB near Dwarka Sector 21-DL/HR Border from 5.300 Km.to 9.500 Km. of NH-248BB](https://kaun.city/india/projects/619090) | Ministry of Road Transport & Highways | ₹2,068 Cr | ₹2,670 Cr | +₹603 Cr | 58 months later | 100% |
-| [Development of 6L UER II [Package - I] NH-1 Near Bakoli till Karala Kanjhawala Road from km. 0.70 to km.15.00](https://kaun.city/india/projects/618509) | Ministry of Road Transport & Highways | ₹2,090 Cr | ₹2,203 Cr | +₹114 Cr | 34 months later | 100% |
-| [Anand Vihar-Tilak Bridge - 3rd & 4th line 9.77 km](https://kaun.city/india/projects/705583) | Ministry of Railways | ₹667 Cr | ₹702 Cr | +₹34.88 Cr | 57 months later | 23% |
-| [Phase 1B - Construction of Academic Block, Hostel, Residential Tower, Directors Residence and External Development works at National Institute of Technology, Delhi Campus on Engineering, Procurement and Construction basis](https://kaun.city/india/projects/612851) | Department of Higher Education | ₹333 Cr | ₹336 Cr | +₹2.93 Cr | 4 months later | 100% |
-| [Transmission system for evacuation of Power from REZ in Rajasthan [20 GW] under phase-III Part-D Phase-II](https://kaun.city/india/projects/615336) | Ministry of Power | ₹284 Cr | ₹284 Cr | no change | 10 months later | 46% |
+| [SETTING UP OF PHYSICAL INFRASTRUCTURE FOR THE NATIONAL INSTITUTE OF COMMUNICATION FINANCE [NICF] AT GHITORNI](https://kaun.city/india/projects/709859) | Department of Telecommunications | ₹248 Cr | ₹0.00 Cr | −₹248 Cr | 83 months later | 98% |
+| [Transmission system for evacuation of Power from REZ in Rajasthan [20 GW] under phase-III Part-D Phase-II](https://kaun.city/india/projects/615336) | Ministry of Power | ₹284 Cr | ₹0.00 Cr | −₹284 Cr | 10 months later | 52% |
+| [Setting up IT Infrastructure including Network Security and Hosting at AIIMS, New Delhi](https://kaun.city/india/projects/617882) | Ministry of Health & Family Welfare | ₹358 Cr | ₹0.00 Cr | −₹358 Cr | unchanged 0 months | 50% |
+| [Delhi University Eastern Campus at Surajmal Vihar](https://kaun.city/india/projects/616886) | Department of Higher Education | ₹373 Cr | ₹0.00 Cr | −₹373 Cr | unchanged 0 months | 15% |
+| [Anand Vihar-Tilak Bridge - 3rd & 4th line 9.77 km](https://kaun.city/india/projects/705583) | Ministry of Railways | ₹667 Cr | ₹0.00 Cr | −₹667 Cr | 57 months later | 23% |
+| [Development of 6L UER II [Package - I] NH-1 Near Bakoli till Karala Kanjhawala Road from km. 0.70 to km.15.00](https://kaun.city/india/projects/618509) | Ministry of Road Transport & Highways | ₹2,090 Cr | ₹0.00 Cr | −₹2,090 Cr | 35 months later | 100% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=7)
 
@@ -152,4 +153,4 @@ The 6 projects in Delhi furthest above sanctioned cost, as of the Jul 2026 repor
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

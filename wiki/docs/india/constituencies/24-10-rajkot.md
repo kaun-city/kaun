@@ -121,7 +121,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹4.15 Cr | ₹10.55 Cr | 28.3% | 305 | 201 | 94 | 2026-09-06 |
+| eSAKSHI (official) | ₹16.72 Cr | ₹4.59 Cr | ₹12.13 Cr | 27.4% | 306 | 283 | 104 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -132,16 +132,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Gujarat furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Gujarat furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Sardar Sarovar Project](https://kaun.city/india/projects/701372) | Department of Water Resources, River Development & GR | ₹20,718 Cr | ₹33,413 Cr | +₹12,694 Cr | 75 months later | 94% |
-| [Vadodara Mumbai Expressway Kim to Ankleshwar Phase IA - Pkg V](https://kaun.city/india/projects/618463) | Ministry of Road Transport & Highways | ₹1,325 Cr | ₹2,807 Cr | +₹1,483 Cr | 58 months later | 91% |
-| [National Maritime Heritage Complex [NMHC] Phase-I](https://kaun.city/india/projects/707215) | Ministry of Ports, Shipping and Waterways | ₹573 Cr | ₹1,238 Cr | +₹665 Cr | 8 months earlier | 80% |
-| [Miyagam-Karjan-Dabhoi-Samlaya 96.46 km- Gauge conversion with electrification](https://kaun.city/india/projects/705458) | Ministry of Railways | ₹484 Cr | ₹1,015 Cr | +₹531 Cr | on original schedule | 34% |
-| [Redevelopment of Sobhasan Complex](https://kaun.city/india/projects/400087) | Ministry of Petroleum & Natural Gas | ₹886 Cr | ₹1,348 Cr | +₹462 Cr | unchanged 0 months | 96% |
-| [Establishment of new GMC Panchmahal](https://kaun.city/india/projects/707049) | Ministry of Health & Family Welfare | ₹325 Cr | ₹664 Cr | +₹339 Cr | unchanged 0 months | 88% |
+| [Widening 2 lane to 4-lane from KM 92/320 to Km 115/320 Vav Chokdi-Satlasana to to Vrundavan Chokdi, Kheralu on NH-58 in the State of Gujarat.](https://kaun.city/india/projects/617928) | Ministry of Road Transport & Highways | ₹151 Cr | ₹0.00 Cr | −₹151 Cr | 5 months later | 100% |
+| [IIT Gandhinagar - Development of Faculty/Staff Housing with Associated Facilities under Phase-2A](https://kaun.city/india/projects/858179) | Department of Higher Education | ₹156 Cr | ₹0.00 Cr | −₹156 Cr | 5 months later | 45% |
+| [IIT Gandhinagar - Development of Students Hostel Buildings with Associated Facilities under Phase-2A](https://kaun.city/india/projects/304532) | Department of Higher Education | ₹163 Cr | ₹0.00 Cr | −₹163 Cr | 14 months later | 19% |
+| [Replacement and revamping of pipeline projects in oil jetty area, Kandla](https://kaun.city/india/projects/701570) | Ministry of Ports, Shipping and Waterways | ₹171 Cr | ₹0.00 Cr | −₹171 Cr | 18 months later | 92% |
+| [Augmentation of Banaskantha [Raghanesda] PS [GIS] [POWERGRID Banaskantha Transco Limited]](https://kaun.city/india/projects/617182) | Ministry of Power | ₹172 Cr | ₹0.00 Cr | −₹172 Cr | unchanged 0 months | 45% |
+| [Old Pipe Line Replacement [OPRP] Group-A](https://kaun.city/india/projects/709841) | Ministry of Petroleum & Natural Gas | ₹173 Cr | ₹0.00 Cr | −₹173 Cr | 16 months later | 95% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=24)
 
@@ -159,4 +159,4 @@ The 6 projects in Gujarat furthest above sanctioned cost, as of the Jul 2026 rep
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

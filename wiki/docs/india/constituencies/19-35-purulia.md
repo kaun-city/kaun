@@ -106,7 +106,6 @@ average of them measures none of them.
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 11 | 36.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 13 | 86.7% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 16 | 76.2% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 16 | 76.2% | — | — | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 19 | 73.1% | — | — | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 15 | 75.0% | — | — | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 14 | 87.5% | — | — | — | — |
@@ -121,7 +120,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹1.17 Cr | ₹13.53 Cr | 8.0% | 107 | 79 | 15 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹1.62 Cr | ₹13.08 Cr | 11.0% | 105 | 81 | 40 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -132,16 +131,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in West Bengal furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in West Bengal furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Paradip-Numaligarh Crude Oil Pipeline [PNCPL] & Crude Oil Import Terminal [COIT] at Paradip](https://kaun.city/india/projects/701349) | Ministry of Petroleum & Natural Gas | ₹10,228 Cr | ₹12,407 Cr | +₹2,179 Cr | 27 months later | 93% |
-| [Rammam-III HEPP [3x40 MW]](https://kaun.city/india/projects/602184) | Ministry of Power | ₹1,382 Cr | ₹2,866 Cr | +₹1,484 Cr | 120 months later | 58% |
-| [Kalinarayanpur-Krishnanagar with Krishnanagar-Shantipur-Nabadwipghat - GC, Krishnanagar-Chartala, MM for Krishnanagar-Chapra-NL, Naihati-Ranaghat-3rd line, Nabadwipghat-Nabadwipdham upto BB loop 9.58 km, Ranaghat-Lalgola- strengthening bridge No.2](https://kaun.city/india/projects/400247) | Ministry of Railways | ₹1,000 Cr | ₹2,154 Cr | +₹1,154 Cr | 13 months later | 49% |
-| [Durgapur - Haldia Pipeline [Section-3B of JHBDPL Project]](https://kaun.city/india/projects/617302) | Ministry of Petroleum & Natural Gas | ₹1,740 Cr | ₹2,583 Cr | +₹843 Cr | 69 months later | 96% |
-| [Tarakeswar-Bishnupur with extension upto Dhaniakhali, Arambagh-Irphala, Irphala- Ghatal 11.2 km, Arambagh-Champadanga 23.3 km & Bishnupur-Uparsol 31.8 km and new material modification for Mynapur-Kamarpukur via Birsha 19 km](https://kaun.city/india/projects/400273) | Ministry of Railways | ₹1,189 Cr | ₹1,879 Cr | +₹690 Cr | 83 months later | 75% |
-| [Haldia Panagarh Pipeline Project](https://kaun.city/india/projects/709753) | Ministry of Petroleum & Natural Gas | ₹1,010 Cr | ₹1,107 Cr | +₹97.00 Cr | 9 months later | 98% |
+| [Slope protection and landslide mitigation at 4 vulnerable locations km 1.950 to Km 2.100, km 11.100 to 11.450, km 22.435 to km 22.485 and km 22.610 to km 22.680 within Sevoke-Rangpo section of NH-10 old NH-31A in Darjeeling & Kalimpong district in the State of West Bengal on EPC mode](https://kaun.city/india/projects/619187) | Ministry of Road Transport & Highways | ₹152 Cr | ₹0.00 Cr | −₹152 Cr | on original schedule | 36% |
+| [Pollution Abatement works for River Ganga at Hooghly Chinsurah- Municipal Town Interception & Diversion with STP](https://kaun.city/india/projects/616604) | Department of Water Resources, River Development & GR | ₹155 Cr | ₹0.00 Cr | −₹155 Cr | 18 months later | 94% |
+| [Construction of ROB and its approaches in lieu of LC No. 10/B/T at Km 307.050 of NH-60.](https://kaun.city/india/projects/617931) | Ministry of Road Transport & Highways | ₹156 Cr | ₹0.00 Cr | −₹156 Cr | 26 months later | 17% |
+| [Revamping of Air Pollution Control Systems of SP-1 at Durgapur Steel Plant](https://kaun.city/india/projects/617251) | Ministry of Steel | ₹196 Cr | ₹0.00 Cr | −₹196 Cr | 7 months later | 57% |
+| [Development to 4-laning of the de-scoped stretches from Km 115.342 to Km 191.700 of NH-34 in Nadia District 3.962 & Murshidabad District 5.538 pertaining to Krishnagar to Berhampore section of NH-34 New NH-12 , in the state of West Bengal under NHO.](https://kaun.city/india/projects/618824) | Ministry of Road Transport & Highways | ₹201 Cr | ₹0.00 Cr | −₹201 Cr | 17 months later | 55% |
+| [Third Ladle Furnace in Secondary Refinery Unit at IISCO Steel Plant](https://kaun.city/india/projects/617248) | Ministry of Steel | ₹228 Cr | ₹0.00 Cr | −₹228 Cr | 4 months later | 73% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=19)
 
@@ -159,4 +158,4 @@ The 6 projects in West Bengal furthest above sanctioned cost, as of the Jul 2026
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

@@ -103,8 +103,8 @@ average of them measures none of them.
 | Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 16 | 84.2% | — | — | — | — |
+| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 11 | 36.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 12 | 80.0% | — | — | — | — |
-| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 5 | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 5 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 24 | 92.3% | — | 574 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | 179 | — | — |
@@ -120,7 +120,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹5.88 Cr | ₹8.82 Cr | 40.0% | 189 | 141 | 96 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹6.01 Cr | ₹8.69 Cr | 40.9% | 206 | 141 | 102 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -131,16 +131,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Kerala furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Kerala furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [6L of Taliparamba to Muzhappilangad from Km 134.650 to Km 170.6 of NH-66](https://kaun.city/india/projects/618596) | Ministry of Road Transport & Highways | ₹2,715 Cr | ₹3,558 Cr | +₹843 Cr | 44 months later | 84% |
-| [Kottankulangara- Start of Kollam Bypass](https://kaun.city/india/projects/618607) | Ministry of Road Transport & Highways | ₹2,842 Cr | ₹3,680 Cr | +₹838 Cr | 29 months later | 74% |
-| [6L of Perole Nileshwar town to Taliparamba from Km 94.248 to Km 134.650 of NH-66](https://kaun.city/india/projects/619206) | Ministry of Road Transport & Highways | ₹3,042 Cr | ₹3,868 Cr | +₹826 Cr | 38 months later | 87% |
-| [6L of Chengala - Neeleshwaram from km. 56.200 to km. 93.468](https://kaun.city/india/projects/618595) | Ministry of Road Transport & Highways | ₹1,746 Cr | ₹2,538 Cr | +₹792 Cr | 35 months later | 91% |
-| [Kozhikode Bypass Calicut Bypass Vengalam Jn. to Ramanattukara Jn.](https://kaun.city/india/projects/619098) | Ministry of Road Transport & Highways | ₹1,425 Cr | ₹2,139 Cr | +₹714 Cr | 42 months later | 99% |
-| [6L of Azhiyur-Vengalam from km. 189.200 to km. 230.400 of NH-66](https://kaun.city/india/projects/618597) | Ministry of Road Transport & Highways | ₹3,206 Cr | ₹3,898 Cr | +₹693 Cr | 44 months later | 60% |
+| [Augmentation of 1x500 MVA 400/220kV ICT [3rd] at Thrissur VSC HVDC Station in Kerala](https://kaun.city/india/projects/619028) | Ministry of Power | ₹173 Cr | ₹0.00 Cr | −₹173 Cr | 4 months later | 2% |
+| [6L Minor Bridge Paloli Palam at km. 203.160 & Major Bridge Morad at km. 204.895 and allied works](https://kaun.city/india/projects/618598) | Ministry of Road Transport & Highways | ₹210 Cr | ₹0.00 Cr | −₹210 Cr | 51 months later | 100% |
+| [Capacity Enhancement of VGOHDT unit at Kochi Refinery](https://kaun.city/india/projects/168896) | Ministry of Petroleum & Natural Gas | ₹265 Cr | ₹0.00 Cr | −₹265 Cr | unchanged 0 months | 21% |
+| [Widening to 2 Lanes with paved shoulders from Km.87/000 to 133/720 Nattukal to Thanau Jn. in Palakkad of NH-966 Old NH-213 on EPC mode Basis under NHO Annual Plan 2016-17 in the state of Kerala](https://kaun.city/india/projects/618070) | Ministry of Road Transport & Highways | ₹294 Cr | ₹0.00 Cr | −₹294 Cr | 82 months later | 98% |
+| [Development of additional RESA on either end on Runway 10-28 at Calicut Airport. Construction of embankment with slope protection, drainage system and associated works for additional RESA on either end on Runway 10-28](https://kaun.city/india/projects/612789) | Ministry of Civil Aviation | ₹485 Cr | ₹0.00 Cr | −₹485 Cr | 18 months later | 66% |
+| [Ernakulam-Kumbalam - Patch doubling 7.71 km](https://kaun.city/india/projects/705639) | Ministry of Railways | ₹601 Cr | ₹0.00 Cr | −₹601 Cr | 13 months earlier | 25% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=32)
 
@@ -158,4 +158,4 @@ The 6 projects in Kerala furthest above sanctioned cost, as of the Jul 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

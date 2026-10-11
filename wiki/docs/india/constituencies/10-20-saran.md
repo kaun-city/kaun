@@ -115,7 +115,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹0 | ₹14.70 Cr | 0.0% | 12 | 9 | 0 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹0 | ₹14.70 Cr | 0.0% | 12 | 10 | 0 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -126,16 +126,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Bihar furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Bihar furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Buxar Thermal Power Project [1320 MW]](https://kaun.city/india/projects/602579) | Ministry of Power | ₹10,439 Cr | ₹13,757 Cr | +₹3,317 Cr | 28 months later | 95% |
-| [Hajipur-Sagauli via Vaishali 148.3 km](https://kaun.city/india/projects/705366) | Ministry of Railways | ₹2,067 Cr | ₹3,991 Cr | +₹1,924 Cr | 87 months later | 74% |
-| [Barauni Refinery Capacity Expansion from 6.0 to 9.0 MMTPA](https://kaun.city/india/projects/701324) | Ministry of Petroleum & Natural Gas | ₹14,810 Cr | ₹16,724 Cr | +₹1,914 Cr | 44 months later | 92% |
-| [Fatuah-Islampur incl. material modification for extension of new line from Neora to Daniawan Daniawan to Biharsharif Biharsharif to Barbigha Barbigha to Sheikhpura](https://kaun.city/india/projects/705373) | Ministry of Railways | ₹1,473 Cr | ₹3,259 Cr | +₹1,786 Cr | 29 months later | 95% |
-| [Araria-Supaul 92 km](https://kaun.city/india/projects/705368) | Ministry of Railways | ₹1,605 Cr | ₹2,621 Cr | +₹1,016 Cr | 34 months later | 40% |
-| [Bakhtiyarpur-Rajauli Pkg-III from km. 101.630 to km.152.520](https://kaun.city/india/projects/618862) | Ministry of Road Transport & Highways | ₹2,156 Cr | ₹3,047 Cr | +₹890 Cr | 26 months later | 99% |
+| [Muzaffarpur Storm Water Drainage Phase-I Project](https://kaun.city/india/projects/702699) | Ministry of Housing & Urban Affairs | ₹159 Cr | ₹0.00 Cr | −₹159 Cr | 32 months later | 85% |
+| [Construction of Bhabhua Bypass from Ch. 10800Design Ch. 10800 to Ch. 19860 Design Ch. 18150 and Chand Bypass from Ch. 38060 Design Ch. 36250 to Ch. 40460 Design Ch. 38650 and widening of existing road to 2 - lane with Paved shoulder from Ch. 40460 Design Ch. 38650 to Ch. 46860 Design Ch. 45050 of NH-219 Total length- 16.150 Kmunder EPC mode in the state of Bihar](https://kaun.city/india/projects/618004) | Ministry of Road Transport & Highways | ₹180 Cr | ₹0.00 Cr | −₹180 Cr | on original schedule | 3% |
+| [Construction of 4 Lane ROB and its approaches at the level crossing LC No 29 B of Km 29 Ekangarsarai at NH 110 New NH 33 & Railway Km 32.63 at Fatwa FUT Islampur IPR section in the state of Bihar on EPC mode.](https://kaun.city/india/projects/617969) | Ministry of Road Transport & Highways | ₹201 Cr | ₹0.00 Cr | −₹201 Cr | 5 months later | 62% |
+| [Improvement to Two lane with Paved Shoulder from Junction of NH22 near Hajipur to Junction of NH -122 at Bachhwara via Mahnar and Mohiuddin Nagar from Km 0.00 to Km 29.730 of NH 122 B in the State of Bihar.](https://kaun.city/india/projects/618073) | Ministry of Road Transport & Highways | ₹226 Cr | ₹0.00 Cr | −₹226 Cr | 12 months later | 65% |
+| [Ara Bypass](https://kaun.city/india/projects/618775) | Ministry of Road Transport & Highways | ₹226 Cr | ₹0.00 Cr | −₹226 Cr | on original schedule | 26% |
+| [Permanent rectification of 3 nos. of black spots in project Highway NH-27 of U.P border - Dewapur - Kotwa section from Km.360.915 to km.440.000 Total Length of 79.085 Km of NH-27& Permanent rectification of 5 nos. of black spots of project Highway NH-27 of Kotwa - Mehsi - Muzaffarpur Section from km.440.000 to km.520.000 Total length 80.00Km](https://kaun.city/india/projects/618571) | Ministry of Road Transport & Highways | ₹227 Cr | ₹0.00 Cr | −₹227 Cr | 12 months later | 83% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=10)
 
@@ -153,4 +153,4 @@ The 6 projects in Bihar furthest above sanctioned cost, as of the Jul 2026 repor
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

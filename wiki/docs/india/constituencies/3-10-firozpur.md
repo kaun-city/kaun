@@ -117,7 +117,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹9.43 Cr | ₹5.27 Cr | 64.1% | 480 | 394 | 361 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹9.50 Cr | ₹5.20 Cr | 64.6% | 480 | 459 | 377 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -128,16 +128,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Punjab furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Punjab furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Relining of Rajasthan feeder and Sirhind Feeder canal](https://kaun.city/india/projects/701410) | Department of Water Resources, River Development & GR | ₹1,441 Cr | ₹2,462 Cr | +₹1,021 Cr | 60 months later | 95% |
-| [6L Amritsar-Bathinda Greenfield section from Jn. with Bhagta Bhai Ka-Bhadaur Road near Dyalpura Bhai Ka to Jn. with Mandi Dabwali Bathinda Road on NH-54 near Sangat Kalan from km 93.000 to km 154.866 of NH-754A Pkg-3](https://kaun.city/india/projects/618618) | Ministry of Road Transport & Highways | ₹2,029 Cr | ₹2,677 Cr | +₹648 Cr | 13 months later | 74% |
-| [4L of Amritsar-Ghoman - Tanda - Una Section from Km 8.270 to Km 54.000 of NH- 503A Package-I](https://kaun.city/india/projects/618906) | Ministry of Road Transport & Highways | ₹858 Cr | ₹1,443 Cr | +₹586 Cr | 33 months later | 69% |
-| [Delhi-Amritsar-Katra Expressway Phase-I Pkg-IX from Junction with Ludhiana-Moga road NH-5 near Mullanpur Dakha to Junction with Jalandhar - Moga road NH-703 near Kang Sahibu village Km 260860 to km 303900](https://kaun.city/india/projects/618489) | Ministry of Road Transport & Highways | ₹1,851 Cr | ₹2,407 Cr | +₹556 Cr | 32 months later | 73% |
-| [6L of Jodhpur Romana Bathinda - Mandi Dabwali Punjab Haryana Border section of NH-54 from km. 0.000 to km. 27.400 of NH-54](https://kaun.city/india/projects/618610) | Ministry of Road Transport & Highways | ₹789 Cr | ₹1,319 Cr | +₹530 Cr | 12 months later | 99% |
-| [Shahpur Kandi Dam Project](https://kaun.city/india/projects/701411) | Department of Water Resources, River Development & GR | ₹2,286 Cr | ₹2,716 Cr | +₹430 Cr | 48 months later | 88% |
+| [City Gas Distribution Project at Pathankot District](https://kaun.city/india/projects/709770) | Ministry of Petroleum & Natural Gas | ₹151 Cr | ₹0.00 Cr | −₹151 Cr | on original schedule | 2% |
+| [Construction of Girls Hostel 400 seater, Boys Hostel 600 seater, Academic Block, International Hostel 100 seater, VC Residence and Purchase of Equipment](https://kaun.city/india/projects/617221) | Department of Higher Education | ₹211 Cr | ₹0.00 Cr | −₹211 Cr | unchanged 0 months | 65% |
+| [Ludhiana-Kila Raipur 19 km with freight line at Gill station](https://kaun.city/india/projects/705783) | Ministry of Railways | ₹238 Cr | ₹0.00 Cr | −₹238 Cr | 23 months later | 70% |
+| [Jalandhar Water Supply Infrastructure Project](https://kaun.city/india/projects/703021) | Ministry of Housing & Urban Affairs | ₹259 Cr | ₹0.00 Cr | −₹259 Cr | 36 months later | 90% |
+| [Up-gradation to two lane with paved shoulder configuration of NH-354 Section Arifkes- Ferozepur-Muktsar-Malaut from Km 201.500 to Km 212.500 & Km 229.690 to Km 269.960 and strengthening of existing pavement from Km 212.500 to Km 229.690 excluding Km 218.500 to 223.690 of NH-354 on EPC Mode in the State of Punjab. Job No. NH-354-PB-2020-21-532](https://kaun.city/india/projects/618024) | Ministry of Road Transport & Highways | ₹263 Cr | ₹0.00 Cr | −₹263 Cr | 17 months later | 89% |
+| [Patiala Water Supply Infrastructure Part-2 Project](https://kaun.city/india/projects/703057) | Ministry of Housing & Urban Affairs | ₹287 Cr | ₹0.00 Cr | −₹287 Cr | 34 months later | 99% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=3)
 
@@ -155,4 +155,4 @@ The 6 projects in Punjab furthest above sanctioned cost, as of the Jul 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

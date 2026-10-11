@@ -64,7 +64,7 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Term | LS18 |
 | Status | Sitting |
 | Terms served | 1 |
-| Age | 47 |
+| Age | 48 |
 | Gender | Female |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5603) |
 
@@ -102,6 +102,7 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 19 | 100.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 23 | 76.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 14 | 93.3% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 2 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 25 | 96.2% | — | 1 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | — | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 96 | — | — |
@@ -116,7 +117,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹7.60 Cr | ₹7.10 Cr | 51.7% | 150 | 101 | 5 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹7.76 Cr | ₹6.94 Cr | 52.8% | 150 | 108 | 5 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -127,16 +128,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Assam furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Assam furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Numaligarh Refinery Expansion Project](https://kaun.city/india/projects/604791) | Ministry of Petroleum & Natural Gas | ₹12,366 Cr | ₹25,313 Cr | +₹12,947 Cr | 32 months later | 87% |
-| [New Bongaigaon - Goalpara - Guwahati Kamakhya 176 km](https://kaun.city/india/projects/705572) | Ministry of Railways | ₹4,060 Cr | ₹4,984 Cr | +₹924 Cr | on original schedule | 91% |
-| [Balance work of 4L of NarimbangloJatinga Junction- Harangajoroad section from Km 0.000 to Km 49.230 of NH-27](https://kaun.city/india/projects/619089) | Ministry of Road Transport & Highways | ₹1,910 Cr | ₹2,746 Cr | +₹836 Cr | 7 months later | 98% |
-| [Guwahati Airport New Integrated Terminal Building Construction Project](https://kaun.city/india/projects/706724) | Ministry of Civil Aviation | ₹1,712 Cr | ₹2,520 Cr | +₹808 Cr | 15 months later | 100% |
-| [Construction of Balance Work of 4-Laning of the Section from Jhanji to Demow of NH- 37 Old from Km 514.800 to Km 534.800 20.000 Km, under SARDP- NE under EPC Mode in the state of Assam Pkg-III Road Works](https://kaun.city/india/projects/619060) | Ministry of Road Transport & Highways | ₹345 Cr | ₹620 Cr | +₹275 Cr | 13 months later | 72% |
-| [Construction of 4-Lane Panchgram Bypass from Design Chainage km 15500 on NH- 37 Old NH-53 at Kalinagar Pt.-I Village to Design Chainage km 27300 at crossing with NH-6 Old NH-44 Near Siddeswar Pt.-I Village on Silchar - Churaibari stretch in the State of Assam on EPC Mode under Bharatmala Pariyojana in Economic Corridors Silchar- Churaibari Package-2](https://kaun.city/india/projects/618308) | Ministry of Road Transport & Highways | ₹676 Cr | ₹729 Cr | +₹52.79 Cr | 1 month later | 57% |
+| [Tezpur University Projects](https://kaun.city/india/projects/606112) | Department of Higher Education | ₹154 Cr | ₹0.00 Cr | −₹154 Cr | 25 months later | 98% |
+| [Construction of LPG Facilities at Kamardanga, Assam](https://kaun.city/india/projects/709754) | Ministry of Petroleum & Natural Gas | ₹156 Cr | ₹0.00 Cr | −₹156 Cr | on original schedule | 86% |
+| [TIKAK EXTENSION OCP](https://kaun.city/india/projects/615820) | Ministry of Coal | ₹160 Cr | ₹0.00 Cr | −₹160 Cr | unchanged 0 months | 90% |
+| [2.4 KTPA Green Hydrogen Generation Unit at Numaligarh](https://kaun.city/india/projects/891687) | Ministry of Petroleum & Natural Gas | ₹170 Cr | ₹0.00 Cr | −₹170 Cr | — | 46% |
+| [Construction of 2 lane Barpeta Bypass from Km 77900Baradi to Km 86150 Deurikuchi Length8.25Km on NH-427 in the state of Assam under EPC ModeJob No.427/AS/2022-23/245](https://kaun.city/india/projects/618034) | Ministry of Road Transport & Highways | ₹174 Cr | ₹0.00 Cr | −₹174 Cr | 7 months later | 20% |
+| [Construction of Balance Work of 4-Laning of the Section from Jhanji to Demow of NH- 37 Old from Km 490.800 to Km 534.800, under SARDP- NE on EPC Mode in the state of Assam Pkg- IV Structures & Toll Plaza](https://kaun.city/india/projects/618440) | Ministry of Road Transport & Highways | ₹187 Cr | ₹0.00 Cr | −₹187 Cr | 12 months later | 63% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=18)
 
@@ -154,4 +155,4 @@ The 6 projects in Assam furthest above sanctioned cost, as of the Jul 2026 repor
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

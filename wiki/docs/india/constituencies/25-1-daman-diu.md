@@ -118,11 +118,11 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 1 project in Dadra and Nagar Haveli and Daman and Diu furthest above sanctioned cost, as of the Jul 2026 report.
+The 1 project in Dadra and Nagar Haveli and Daman and Diu furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Widening of Existing Road from Intermediate Lane 2-lane to 4-lane Between Km 19.994 to Km 35.180 of NH-848A Rakholi-Khadoli-Velugam Section in U.T. of Dadra and Nagar Haveli and Daman and Diu](https://kaun.city/india/projects/619183) | Ministry of Road Transport & Highways | ₹198 Cr | ₹240 Cr | +₹41.51 Cr | 2 months later | 80% |
+| [Widening of Existing Road from Intermediate Lane 2-lane to 4-lane Between Km 19.994 to Km 35.180 of NH-848A Rakholi-Khadoli-Velugam Section in U.T. of Dadra and Nagar Haveli and Daman and Diu](https://kaun.city/india/projects/619183) | Ministry of Road Transport & Highways | ₹198 Cr | ₹0.00 Cr | −₹198 Cr | 3 months later | 92% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=25)
 
@@ -139,4 +139,4 @@ The 1 project in Dadra and Nagar Haveli and Daman and Diu furthest above sanctio
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

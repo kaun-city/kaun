@@ -137,7 +137,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹5.29 Cr | ₹9.41 Cr | 36.0% | 32 | 21 | 7 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹5.78 Cr | ₹8.92 Cr | 39.4% | 32 | 23 | 7 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -148,16 +148,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Tripura furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Tripura furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Rehabilitation and up-gradation of road from km 16.077 to km 43.935 total length 27.858 km of Lalchara-Kanchanpur section via Shivbari on NH-44A to 2 lane with paved shoulder in the state of Tripura on EPC Mode Pkg-2 under BharatMala Pariyojana Manu-Simlung -2](https://kaun.city/india/projects/618307) | Ministry of Road Transport & Highways | ₹457 Cr | ₹457 Cr | no change | 12 months later | 55% |
-| [Improvement & widening of existing NH-08 to 4-lane with Paved Shoulder from Champak Nagar to Khayerpur section design Km 242500 to Km 261610 in the state of Tripura on EPC basis under NHO-NE](https://kaun.city/india/projects/618350) | Ministry of Road Transport & Highways | ₹921 Cr | ₹921 Cr | no change | 6 months later | 48% |
-| [Improvement and Widening to 2-lane with paved shoulder of road from design Km 72.000 Pati Chhari to design Km 107.654 Harina Total length 35.654 Km on Teliamura to Harina section of NH 208 in the state of Tripura on EPC mode under JICA ODA Loan Phase VI Package-4](https://kaun.city/india/projects/618367) | Ministry of Road Transport & Highways | ₹727 Cr | ₹727 Cr | no change | 6 months later | 10% |
-| [Improvement and Widening to 2-lane with paved shoulder of road from design Km 36.000 Rangamati to design Km 72.000 Pati Chhari Total length 36.000 Km on Teliamura to Harina section of NH 208 in the state of Tripura on EPC mode under JICA ODA Loan Phase VI Package-3](https://kaun.city/india/projects/618368) | Ministry of Road Transport & Highways | ₹671 Cr | ₹671 Cr | no change | 8 months later | 15% |
-| [Improvement and Widening to 2-lane with paved shoulder of road from existing Km 438.170 Khowai Chowmuhani to existing Km 439.410 South Pulinpur of NH-08 and from design Km 0.000 South Pulinpur to design Km 36.00 near Rangamati of NH 208 on Khowai Teliamura- Harina section Total length 37.24 in the state of Tripura on EPC mode under JICA ODA Loan Phase VI Package-2](https://kaun.city/india/projects/618369) | Ministry of Road Transport & Highways | ₹657 Cr | ₹657 Cr | no change | 6 months later | 61% |
-| [Improvement and Widening to 2-lane with paved shoulder of road from Km 101.300 to km 127.319 Total Length 26.019 Km i.e. the Khowai Teliamura-Amarpur-Harina- Sabroom section of NH 208 in the state of Tripura on EPC under JICA ODA Loan Phase VI Package-1](https://kaun.city/india/projects/618370) | Ministry of Road Transport & Highways | ₹432 Cr | ₹432 Cr | no change | 9 months later | 63% |
+| [Rehabilitation and up-gradation of road from design km 25.250 to km 36.460 Total lengh 11.210 km of Kailashahar-Kurti Bridge section on NH-208A to 2-lane with paved shoulder on EPC basis under NHO Package-III- Balance Work](https://kaun.city/india/projects/618385) | Ministry of Road Transport & Highways | ₹174 Cr | ₹0.00 Cr | −₹174 Cr | on original schedule | 53% |
+| [Melaghar-Srimantapur section on NH-08 Spur from Km 23 to Km 34.500 11.5 Km and overlay from Km 20.30 to Km 22.00 1.7 Km Total Length 13.2 Km](https://kaun.city/india/projects/618411) | Ministry of Road Transport & Highways | ₹196 Cr | ₹0.00 Cr | −₹196 Cr | 23 months later | 72% |
+| [Creation of Gas Dehydration Facilities, Tripura Asset](https://kaun.city/india/projects/709837) | Ministry of Petroleum & Natural Gas | ₹209 Cr | ₹0.00 Cr | −₹209 Cr | 29 months later | 72% |
+| [Improvement and Widening to 2-lane with paved shoulder of road from Km 101.300 to km 127.319 Total Length 26.019 Km i.e. the Khowai Teliamura-Amarpur-Harina- Sabroom section of NH 208 in the state of Tripura on EPC under JICA ODA Loan Phase VI Package-1](https://kaun.city/india/projects/618370) | Ministry of Road Transport & Highways | ₹432 Cr | ₹0.00 Cr | −₹432 Cr | 9 months later | 63% |
+| [Rehabilitation and up-gradation of road from km 16.077 to km 43.935 total length 27.858 km of Lalchara-Kanchanpur section via Shivbari on NH-44A to 2 lane with paved shoulder in the state of Tripura on EPC Mode Pkg-2 under BharatMala Pariyojana Manu-Simlung -2](https://kaun.city/india/projects/618307) | Ministry of Road Transport & Highways | ₹457 Cr | ₹0.00 Cr | −₹457 Cr | 12 months later | 55% |
+| [Improvement and Widening to 2-lane with paved shoulder of road from existing Km 438.170 Khowai Chowmuhani to existing Km 439.410 South Pulinpur of NH-08 and from design Km 0.000 South Pulinpur to design Km 36.00 near Rangamati of NH 208 on Khowai Teliamura- Harina section Total length 37.24 in the state of Tripura on EPC mode under JICA ODA Loan Phase VI Package-2](https://kaun.city/india/projects/618369) | Ministry of Road Transport & Highways | ₹657 Cr | ₹0.00 Cr | −₹657 Cr | 6 months later | 61% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=16)
 
@@ -175,4 +175,4 @@ The 6 projects in Tripura furthest above sanctioned cost, as of the Jul 2026 rep
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

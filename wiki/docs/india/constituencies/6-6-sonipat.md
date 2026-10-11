@@ -125,16 +125,16 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Haryana furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Haryana furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Capacity Expansion of Panipat Refinery from 15 to 25 MMTPA](https://kaun.city/india/projects/701289) | Ministry of Petroleum & Natural Gas | ₹34,627 Cr | ₹36,225 Cr | +₹1,598 Cr | 27 months later | 94% |
-| [Poly Butadiene Rubber plant at Panipat](https://kaun.city/india/projects/611917) | Ministry of Petroleum & Natural Gas | ₹1,459 Cr | ₹2,531 Cr | +₹1,072 Cr | 21 months later | 90% |
-| [Indian Oil Technology Development and Deployment Centre at R&D Campus-II, Faridabad](https://kaun.city/india/projects/604853) | Ministry of Petroleum & Natural Gas | ₹2,282 Cr | ₹3,200 Cr | +₹918 Cr | 55 months later | 65% |
-| [Gohana - Sonipat PKG-2](https://kaun.city/india/projects/618580) | Ministry of Road Transport & Highways | ₹1,275 Cr | ₹1,957 Cr | +₹682 Cr | 48 months later | 98% |
-| [4L of Jind-Gohana road Package-1 from km. 0.00 to km. 40.601 of NH-352 A under NHO](https://kaun.city/india/projects/619092) | Ministry of Road Transport & Highways | ₹994 Cr | ₹1,607 Cr | +₹613 Cr | 48 months later | 100% |
-| [Delhi-Amritsar-Katra Expressway Phase-I Pkg-I from Jussur Kheri on NH-KMP Expressway to Junction with Rohtak-Panipat road NH-709 near Rukhi Paani village Km 0000 to Km 34000](https://kaun.city/india/projects/618482) | Ministry of Road Transport & Highways | ₹1,866 Cr | ₹2,430 Cr | +₹563 Cr | 31 months later | 100% |
+| [Installation of Multiple Effect Evaporator [MEE] for ETP-1, 2 & 4 of Panipat Refinery and Petrochemical Complex.](https://kaun.city/india/projects/709783) | Ministry of Petroleum & Natural Gas | ₹165 Cr | ₹0.00 Cr | −₹165 Cr | 40 months later | 93% |
+| [Sewerage Management Scheme Part-3 Implementation](https://kaun.city/india/projects/702734) | Ministry of Housing & Urban Affairs | ₹278 Cr | ₹0.00 Cr | −₹278 Cr | 36 months later | 88% |
+| [Change of service of existing Mundra-Panipat Pipeline [Panipat - Churwa section] from Crude oil to Product](https://kaun.city/india/projects/619196) | Ministry of Petroleum & Natural Gas | ₹359 Cr | ₹0.00 Cr | −₹359 Cr | on original schedule | 46% |
+| [Construction of Additional Structures, Improvement of Service Road & Maintenance of Six Lane Gurgaon-Jaipur Section of NH-48 old NH-8 between km 42700 to km 107100 in the State of Haryana](https://kaun.city/india/projects/618506) | Ministry of Road Transport & Highways | ₹402 Cr | ₹0.00 Cr | −₹402 Cr | on original schedule | 61% |
+| [Doubling between Bhiwani - Dobh Bahali PB73/2023-24/NR](https://kaun.city/india/projects/611884) | Ministry of Railways | ₹471 Cr | ₹0.00 Cr | −₹471 Cr | 8 months later | 78% |
+| [Integrated Multi Modal Logistics Hub at Nangal Chaudhary in Haryana - Other Trunk Infrastructure Development Phase 1](https://kaun.city/india/projects/707410) | Department for Promotion of Industry & Internal Trade | ₹763 Cr | ₹0.00 Cr | −₹763 Cr | 53 months later | 60% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=6)
 
@@ -151,4 +151,4 @@ The 6 projects in Haryana furthest above sanctioned cost, as of the Jul 2026 rep
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

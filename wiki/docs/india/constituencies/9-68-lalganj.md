@@ -114,7 +114,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹8.25 Cr | ₹6.45 Cr | 56.1% | 294 | 289 | 132 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹8.25 Cr | ₹6.45 Cr | 56.1% | 302 | 289 | 132 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -125,16 +125,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Uttar Pradesh furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Uttar Pradesh furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Madhya Ganga canal Phase-II](https://kaun.city/india/projects/701408) | Department of Water Resources, River Development & GR | ₹1,061 Cr | ₹4,417 Cr | +₹3,357 Cr | 72 months later | 82% |
-| [Janghai - Pratapgarh - Amethi 87 km](https://kaun.city/india/projects/705588) | Ministry of Railways | ₹722 Cr | ₹1,529 Cr | +₹807 Cr | 12 months later | 80% |
-| [Construction of 4/6 lane Highway of Southern Bareilly Bypass, starting at Ch. 237000 of NH 530 near Jhumka chauraha, Dhantiya village and ending at Ch. 267000 of NH 30 near Invertis University including Trumpet Interchange](https://kaun.city/india/projects/618869) | Ministry of Road Transport & Highways | ₹1,122 Cr | ₹1,870 Cr | +₹748 Cr | on original schedule | 16% |
-| [Anand Nagar - Ghughuli via Maharajganj 53.37 km](https://kaun.city/india/projects/617252) | Ministry of Railways | ₹958 Cr | ₹1,501 Cr | +₹543 Cr | unchanged 0 months | 12% |
-| [Varanasi Gorakhpur Section Packege IV from km. 149.540 to km. 215.160 Mau- Gorakhpur](https://kaun.city/india/projects/618893) | Ministry of Road Transport & Highways | ₹2,967 Cr | ₹3,476 Cr | +₹509 Cr | 82 months later | 97% |
-| [4L Behsuma at Km 39.250 Ex. Km 39240 To Bijnor at Km 78.810 Ex. Km 86590 Design Length 39.560 Km of NH-119 Pkg-II](https://kaun.city/india/projects/618923) | Ministry of Road Transport & Highways | ₹2,158 Cr | ₹2,553 Cr | +₹395 Cr | 7 months later | 70% |
+| [Lucknow Sewerage Management Infrastructure Project](https://kaun.city/india/projects/702958) | Ministry of Housing & Urban Affairs | ₹142 Cr | ₹0.00 Cr | −₹142 Cr | 41 months later | 95% |
+| [Construction of Four Lane Gola Flyover at Km 99.850 of NH 730 Major Junction with State Highways -93 of Engineering, Procurement and Construction EPC mode in the State of Uttar Pradesh.](https://kaun.city/india/projects/619194) | Ministry of Road Transport & Highways | ₹168 Cr | ₹0.00 Cr | −₹168 Cr | on original schedule | 16% |
+| [Rehabilitation and upgradation to 2-lane with paved sholuders configuration of Miranpur Katra to radhaita section of NH-730CKm.114.000 to Km 137.250pakage-III in state of Uttar Pradesh undergreen national Highway Corridor ProjectGNHCP with the loan assistance of world Bank on EPC mode.](https://kaun.city/india/projects/618265) | Ministry of Road Transport & Highways | ₹173 Cr | ₹0.00 Cr | −₹173 Cr | 29 months later | 92% |
+| [Doubling between Jaunpur Jn - Zaffarabad 6.28 km PB73/2023-24/NR](https://kaun.city/india/projects/617370) | Ministry of Railways | ₹181 Cr | ₹0.00 Cr | −₹181 Cr | unchanged 0 months | 22% |
+| [Bulk Loading Hub- Kanpur](https://kaun.city/india/projects/619312) | Ministry of Petroleum & Natural Gas | ₹186 Cr | ₹0.00 Cr | −₹186 Cr | on original schedule | 65% |
+| [2L PS of Najibabad Kotdwar section from 112.575 to Km. 138.635 of NH 119](https://kaun.city/india/projects/618924) | Ministry of Road Transport & Highways | ₹189 Cr | ₹0.00 Cr | −₹189 Cr | 13 months later | 56% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=9)
 
@@ -152,4 +152,4 @@ The 6 projects in Uttar Pradesh furthest above sanctioned cost, as of the Jul 20
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

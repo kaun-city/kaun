@@ -70,6 +70,7 @@ geometry disagree the order's text is the fixed point — the published AC bound
 | Terms served | 2 |
 | Age | 65 |
 | Gender | Male |
+| Profession | Advocate; Advocate |
 | Official profile | [sansad.in](https://sansad.in/ls/members/biography/5003) |
 
 
@@ -129,16 +130,16 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Uttarakhand furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Uttarakhand furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Tapovan-Vishnugad HEP [4x130 MW]](https://kaun.city/india/projects/602185) | Ministry of Power | ₹2,978 Cr | ₹10,907 Cr | +₹7,929 Cr | 196 months later | 76% |
-| [Vishnugad Pipalkoti Hydro Electric Project [444 MW]](https://kaun.city/india/projects/602195) | Ministry of Power | ₹3,860 Cr | ₹6,405 Cr | +₹2,545 Cr | 66 months later | 82% |
-| [Establishment of new GMC Pithoragarh](https://kaun.city/india/projects/707087) | Ministry of Health & Family Welfare | ₹325 Cr | ₹769 Cr | +₹444 Cr | — | 78% |
-| [CONSTRUCTION OF 300 BEDDED HOSPITAL AT HARIDWAR](https://kaun.city/india/projects/612259) | Ministry of Labour and Employment | ₹102 Cr | ₹298 Cr | +₹195 Cr | 21 months later | 91% |
-| [Green Building Development Project](https://kaun.city/india/projects/701766) | Ministry of Housing & Urban Affairs | ₹151 Cr | ₹206 Cr | +₹55.03 Cr | 37 months later | 40% |
-| [Construction of 4-lane connectivity to Banbasa ICP at India Nepal border from NH-09 old NH-125 Sitarganj-Tanakpur at Km 40.00 near Jagbuda bridge under Bharatmala Priyojana of NH-109D on EPC mode in the State of Uttarakhand](https://kaun.city/india/projects/619142) | Ministry of Road Transport & Highways | ₹217 Cr | ₹237 Cr | +₹20.04 Cr | 31 months later | 75% |
+| [CONSTRUCTION OF 300 BEDDED HOSPITAL AT HARIDWAR](https://kaun.city/india/projects/612259) | Ministry of Labour and Employment | ₹102 Cr | ₹0.00 Cr | −₹102 Cr | 21 months later | 92% |
+| [Green Building Development Project](https://kaun.city/india/projects/701766) | Ministry of Housing & Urban Affairs | ₹151 Cr | ₹0.00 Cr | −₹151 Cr | 37 months later | 40% |
+| [4L of Haridwar Nagina section Design Ch. LME from km 13.829 to km 17.110 & km 26.077 to km 27.508 and Design Ch. RME from km 13.839 to km 17.120 & km 26.078 to km 27.509 of EUP mitigation measures on NH74](https://kaun.city/india/projects/618875) | Ministry of Road Transport & Highways | ₹184 Cr | ₹0.00 Cr | −₹184 Cr | 34 months later | 70% |
+| [Treatment of landslide zone from location no. 01 to 28 km 62.860 to 152.750 on NH- 12509 in the State of Uttarakhand under EPC mode in NHO Annual Plan 2022-23](https://kaun.city/india/projects/617889) | Ministry of Road Transport & Highways | ₹192 Cr | ₹0.00 Cr | −₹192 Cr | 27 months later | 99% |
+| [Landslide treatment work on NH 58 from Kodiyala Km. 266.130 to Devprayag Km. 296.925 10 location under EPC mode in the State of Uttarakhand on EPC Mode](https://kaun.city/india/projects/617888) | Ministry of Road Transport & Highways | ₹193 Cr | ₹0.00 Cr | −₹193 Cr | 19 months later | 99% |
+| [STABILIZATION OF LAND SLIDE AND SLOPE PROTECTION AT KM 11.00 TO KM 11.08, 29,730 KM TO 30,060 KM, 30,400 KM TO 31,060 KM, 34,750 KM TO 35,300 KM, 38,950 KM TO 39,030 KM & 39,460 KM TO 39,540 KM TWO LOC CLUBBED, KM 40,400 TO KM 40,650, KM 43,500 KM 43,680, 52,460 RISHIKESH - DHARASU ROAD NH-94 ON EPC MODE IN THE STATE OF UTTARAKHAND. NOSE OF LAND SLIDE - 12 NOS](https://kaun.city/india/projects/618212) | Ministry of Road Transport & Highways | ₹197 Cr | ₹0.00 Cr | −₹197 Cr | unchanged 0 months | 22% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=5)
 
@@ -155,4 +156,4 @@ The 6 projects in Uttarakhand furthest above sanctioned cost, as of the Jul 2026
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

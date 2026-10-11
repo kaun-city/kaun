@@ -97,6 +97,8 @@ average of them measures none of them.
 | 20/07/2026 to 13/08/2026 | 19 | 19 | 100.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 28 | 93.3% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 15 | 100.0% | — | — | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 4 | — | — |
+| 21/07/2025 to 21/08/2025 | 21 | 21 | 100.0% | — | 4 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 26 | 100.0% | — | 410 | — | — |
 | 25/11/2024 to 20/12/2024 | 20 | 20 | 100.0% | — | 203 | — | — |
 | 22/07/2024 to 09/08/2024 | 16 | 15 | 93.8% | — | 192 | — | — |
@@ -111,7 +113,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹3.69 Cr | ₹11.01 Cr | 25.1% | 208 | 136 | 24 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹4.15 Cr | ₹10.55 Cr | 28.2% | 219 | 182 | 24 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -122,16 +124,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Rajasthan furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Rajasthan furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Dedicatedtest track for RDSO Phase-2 34 km Umbrella work PB22/2019-20/NR](https://kaun.city/india/projects/706836) | Ministry of Railways | ₹466 Cr | ₹619 Cr | +₹153 Cr | unchanged 0 months | 98% |
-| [Nathdwara Mavli - Devgarh Madariya 82.542 km](https://kaun.city/india/projects/611855) | Ministry of Railways | ₹969 Cr | ₹1,100 Cr | +₹131 Cr | unchanged 0 months | 75% |
-| [Sangariya near Chautala-Rasisar near Bikaner section of NH-754K Phase-I AJ/SR- Package-7](https://kaun.city/india/projects/618611) | Ministry of Road Transport & Highways | ₹521 Cr | ₹548 Cr | +₹27.79 Cr | 38 months later | 100% |
-| [Tanot -Ramgarh-Bhadasar-Jaisalmer NH-68 and BhadasarMokal-Sarkaritala up to Pakisthan Border NH-968 Pkg-BM/5](https://kaun.city/india/projects/618796) | Ministry of Road Transport & Highways | ₹829 Cr | ₹830 Cr | +₹1.79 Cr | 64 months later | 100% |
-| [Jaipur Metro Rail Project Phase 2 (Prahladpura to Todi Mod)](https://kaun.city/india/projects/245986) | Ministry of Housing & Urban Affairs | ₹13,038 Cr | ₹13,038 Cr | no change | unchanged 0 months | 2% |
-| [Development of Jodhpur Pali Marwar Industrial Area JPMIA in Rajasthan](https://kaun.city/india/projects/603210) | Department for Promotion of Industry & Internal Trade | ₹922 Cr | ₹922 Cr | no change | unchanged 0 months | 6% |
+| [Upgradation to 2-Lane with Paved Shoulder from Design Km 36300 to Design Chainage 47918 and from Design Ch 69900 to Design Ch 83940 of NH-248A Natni Ka Bara in the State of Rajasthan on EPC Mode.](https://kaun.city/india/projects/618117) | Ministry of Road Transport & Highways | ₹155 Cr | ₹0.00 Cr | −₹155 Cr | 10 months later | 23% |
+| [Construction of two lane with paved shoulder of Ghatol Bypass from km 133.250 to km 140.950 of NH-56 old NH No. 113 on EPC mode in the State of Rajasthan.](https://kaun.city/india/projects/619251) | Ministry of Road Transport & Highways | ₹170 Cr | ₹0.00 Cr | −₹170 Cr | unchanged 0 months | 24% |
+| [North Western Railway - New line between Ramdevra and Pokhran via Bhairav Gufa - Kailash Tekri 13.38 Km PB30/NR/2025-26](https://kaun.city/india/projects/617404) | Ministry of Railways | ₹189 Cr | ₹0.00 Cr | −₹189 Cr | unchanged 0 months | 3% |
+| [Widening of Pachpadra-Bagundi Section to 4 Lane from Km 73/60 to 95/70 of NH-25 on EPC mode in the state of Rajasthan.](https://kaun.city/india/projects/617901) | Ministry of Road Transport & Highways | ₹195 Cr | ₹0.00 Cr | −₹195 Cr | 19 months later | 99% |
+| [Jaipur Metro Phase 1D Project from Mansarovar to Ajmer Road Chauraha](https://kaun.city/india/projects/612068) | Ministry of Housing & Urban Affairs | ₹205 Cr | ₹0.00 Cr | −₹205 Cr | unchanged 0 months | 12% |
+| [Balance work of Rehabilitation and Up-gradation to 4-Lane configuration of Ras- Beawar Section Km 00.000 to km 30.050 of NH-158 in the State of Rajasthan under Green National Highway Corridor Project GNHCP.](https://kaun.city/india/projects/618235) | Ministry of Road Transport & Highways | ₹278 Cr | ₹0.00 Cr | −₹278 Cr | on original schedule | 58% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=8)
 
@@ -149,4 +151,4 @@ The 6 projects in Rajasthan furthest above sanctioned cost, as of the Jul 2026 r
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

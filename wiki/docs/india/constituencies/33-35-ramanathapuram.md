@@ -103,7 +103,6 @@ average of them measures none of them.
 |---|---:|---:|---:|---:|---:|---:|---:|
 | 20/07/2026 to 13/08/2026 | 19 | 15 | 79.0% | — | — | — | — |
 | 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 20 | 66.7% | — | — | — | — |
-| 28/01/2026 to 02/04/2026; 16/04/2026 to 18/04/2026 | 30 | 20 | 66.7% | — | — | — | — |
 | 01/12/2025 to 19/12/2025 | 15 | 11 | 73.3% | — | — | — | — |
 | 21/07/2025 to 21/08/2025 | 21 | 19 | 90.5% | — | 1 | — | — |
 | 31/01/2025 to 13/02/2025; 10/03/2025 to 04/04/2025 | 26 | 23 | 88.5% | — | 385 | — | — |
@@ -120,8 +119,8 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹5.49 Cr | ₹9.21 Cr | 37.3% | 109 | 87 | 68 | 2026-09-06 |
-| eSAKSHI (official) | ₹0 | ₹0 | ₹0 | — | 0 | 0 | 0 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹5.73 Cr | ₹8.97 Cr | 39.0% | 112 | 94 | 68 | 2026-10-06 |
+| eSAKSHI (official) | ₹0 | ₹0 | ₹0 | — | 0 | 0 | 0 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -132,16 +131,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Tamil Nadu furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Tamil Nadu furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [CBR 9 MMTPA Project](https://kaun.city/india/projects/604795) | Ministry of Petroleum & Natural Gas | ₹31,580 Cr | ₹36,354 Cr | +₹4,774 Cr | unchanged 0 months | 10% |
-| [Kochi - Koottanad - Bangalore - Mangalore Pipeline Phase-II](https://kaun.city/india/projects/701228) | Ministry of Petroleum & Natural Gas | ₹2,915 Cr | ₹5,909 Cr | +₹2,994 Cr | 165 months later | 97% |
-| [Madurai-Tuticorin via Aruppukkottai 143.5 km](https://kaun.city/india/projects/705489) | Ministry of Railways | ₹601 Cr | ₹2,053 Cr | +₹1,452 Cr | 114 months later | 14% |
-| [Multi Product Pipeline from Irugur to Devangonthi](https://kaun.city/india/projects/400301) | Ministry of Petroleum & Natural Gas | ₹678 Cr | ₹1,732 Cr | +₹1,054 Cr | 115 months later | 86% |
-| [ALL India Institute of Medical Sciences-AIIMS Madurai](https://kaun.city/india/projects/701168) | Ministry of Health & Family Welfare | ₹1,264 Cr | ₹2,022 Cr | +₹758 Cr | 50 months later | 54% |
-| [Mahabalipuram - Pondicherry Pkg-II [Mugaiyur to Marakkanam]](https://kaun.city/india/projects/619130) | Ministry of Road Transport & Highways | ₹1,116 Cr | ₹1,464 Cr | +₹348 Cr | 15 months later | 53% |
+| [Construction of Trumpet Interchange Connecting Bangalore Chennai Expressway km.261705 to km. 262800 with Maduravoyal to Walajapet Section of NH 48 near Sriperumbudur Toll Plaza at km. 35700](https://kaun.city/india/projects/618480) | Ministry of Road Transport & Highways | ₹163 Cr | ₹0.00 Cr | −₹163 Cr | 14 months later | 39% |
+| [25.5 MW WIND POWER PROJECT AT KAYATHAR IN TAMILNADU](https://kaun.city/india/projects/709832) | Ministry of Mines | ₹166 Cr | ₹0.00 Cr | −₹166 Cr | 12 months later | 70% |
+| [Laying of new 28 inch Desal Water Pipeline and 10 inch Reject Water Pipeline between CPCL Manali Refinery and CPCL Desalination plant at Ennore](https://kaun.city/india/projects/709750) | Ministry of Petroleum & Natural Gas | ₹205 Cr | ₹0.00 Cr | −₹205 Cr | 15 months later | 79% |
+| [Construction of Bypass to Madurai Achambathu Viratipathu in between km 6/850 10/382 of NH 49 Extn New NH 85 including Land Acquisition on Engineering, Procurement & Construction EPC basis Contract under NH O Annual Plan 2021-22 in the state of Tamil Nadu job No.NH-49 Extn New NH 85 - TN-2021-22-997](https://kaun.city/india/projects/617962) | Ministry of Road Transport & Highways | ₹239 Cr | ₹0.00 Cr | −₹239 Cr | 2 months later | 94% |
+| [Balance Works for six laning of Sriperumbudur to karaipettai section of NH-4 New NH- 48 from 37000 Existing Km 37000 to Km 71015 Existing Km 71000 in Tamilnadu on EPC mode underNHDP Phase-V](https://kaun.city/india/projects/618522) | Ministry of Road Transport & Highways | ₹411 Cr | ₹0.00 Cr | −₹411 Cr | 5 months later | 38% |
+| [Balance works of four lane from km 43.950 Thiruvallur Bypass to km 61.470 Veppampattu Bypass passing through Thannerkulam, Thozur and Sevapet Bypass 17.520 kms of Tirupathi- Tiruttani- Chennai section of NH 205](https://kaun.city/india/projects/619222) | Ministry of Road Transport & Highways | ₹468 Cr | ₹0.00 Cr | −₹468 Cr | 24 months later | 98% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=33)
 
@@ -159,4 +158,4 @@ The 6 projects in Tamil Nadu furthest above sanctioned cost, as of the Jul 2026 
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

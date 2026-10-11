@@ -139,7 +139,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹15.20 Cr | ₹9.80 Cr | ₹5.40 Cr | 64.5% | 129 | 62 | 38 | 2026-09-06 |
+| eSAKSHI (official) | ₹15.20 Cr | ₹9.89 Cr | ₹5.31 Cr | 65.1% | 129 | 65 | 38 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -150,16 +150,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Sikkim furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Sikkim furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Rangit-IV HE Project [120 MW] executed by Jal Power Corporation Ltd. [JPCL] - A wholly owned subsidiary of NHPC Ltd. acquired through NCLT](https://kaun.city/india/projects/605156) | Ministry of Power | ₹938 Cr | ₹1,828 Cr | +₹890 Cr | 30 months later | 98% |
-| [Establishment of new GMC Gangtok](https://kaun.city/india/projects/707039) | Ministry of Health & Family Welfare | ₹250 Cr | ₹635 Cr | +₹385 Cr | 5 months earlier | 92% |
-| [Construction/Up gradation of Existing road to 2 Lane with Paved Shoulder including Geometric Improvement from Ranipool to Pakyong Balance work from Km 2.000 to 16.167 of NH-717-A on EPC basis under SARDP-NE Phase A in the State of Sikkim](https://kaun.city/india/projects/618426) | Ministry of Road Transport & Highways | ₹265 Cr | ₹381 Cr | +₹116 Cr | 29 months later | 87% |
-| [Realignment of NH-717A from Design Ch.0.00 Km 77.800 of NH-10 to Design Ch.2.00 Km 3.100 of NH-717A with two lane paved shoulder including Major Bridge of 680 m in the State of Sikkim on EPC Mode-COS work](https://kaun.city/india/projects/618428) | Ministry of Road Transport & Highways | ₹265 Cr | ₹381 Cr | +₹116 Cr | 37 months later | 100% |
-| [Construction of Sikkim University Campus Phase-I Package-II at Yangang, South Sikkim](https://kaun.city/india/projects/609736) | Department of Higher Education | ₹314 Cr | ₹341 Cr | +₹26.49 Cr | 21 months later | 97% |
-| [Construction & Upgradation of existing road to 2-lane with paved shoulder from km27.200 End of Rongli bypass to km37.600New Rolep Bridge of Rhenok-Menla spur NH-717B on EPC Mode under SARDP-NE Phase-A in Sikkim Pkg-II B](https://kaun.city/india/projects/618449) | Ministry of Road Transport & Highways | ₹230 Cr | ₹245 Cr | +₹14.46 Cr | 41 months later | 86% |
+| [Construction & Upgradation of existing road to 2-lane with paved shoulder from km27.200 End of Rongli bypass to km37.600New Rolep Bridge of Rhenok-Menla spur NH-717B on EPC Mode under SARDP-NE Phase-A in Sikkim Pkg-II B](https://kaun.city/india/projects/618449) | Ministry of Road Transport & Highways | ₹230 Cr | ₹0.00 Cr | −₹230 Cr | 41 months later | 86% |
+| [Establishment of new GMC Gangtok](https://kaun.city/india/projects/707039) | Ministry of Health & Family Welfare | ₹250 Cr | ₹0.00 Cr | −₹250 Cr | 5 months earlier | 100% |
+| [Construction/Up gradation of Existing road to 2 Lane with Paved Shoulder including Geometric Improvement from Ranipool to Pakyong Balance work from Km 2.000 to 16.167 of NH-717-A on EPC basis under SARDP-NE Phase A in the State of Sikkim](https://kaun.city/india/projects/618426) | Ministry of Road Transport & Highways | ₹265 Cr | ₹0.00 Cr | −₹265 Cr | 29 months later | 87% |
+| [Realignment of NH-717A from Design Ch.0.00 Km 77.800 of NH-10 to Design Ch.2.00 Km 3.100 of NH-717A with two lane paved shoulder including Major Bridge of 680 m in the State of Sikkim on EPC Mode-COS work](https://kaun.city/india/projects/618428) | Ministry of Road Transport & Highways | ₹265 Cr | ₹0.00 Cr | −₹265 Cr | 37 months later | 100% |
+| [Rehabilitation & Upgradation of existing road to 2-lane with paved shoulder including geometric improvement of section from start of Rabangla km33.600 to km58.840 under SARDP-NE Phase A Pkg- IV](https://kaun.city/india/projects/618450) | Ministry of Road Transport & Highways | ₹293 Cr | ₹0.00 Cr | −₹293 Cr | 55 months later | 65% |
+| [Construction of Sikkim University Campus Phase-I Package-II at Yangang, South Sikkim](https://kaun.city/india/projects/609736) | Department of Higher Education | ₹314 Cr | ₹0.00 Cr | −₹314 Cr | 21 months later | 97% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=11)
 
@@ -177,4 +177,4 @@ The 6 projects in Sikkim furthest above sanctioned cost, as of the Jul 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

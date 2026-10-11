@@ -117,7 +117,7 @@ _Recorded reason: Minister/Speaker: does not sign the attendance register, ask q
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹1.55 Cr | ₹13.15 Cr | 10.5% | 114 | 26 | 1 | 2026-09-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹1.79 Cr | ₹12.91 Cr | 12.2% | 116 | 29 | 1 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -128,15 +128,15 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 5 projects in Goa furthest above sanctioned cost, as of the Jul 2026 report.
+The 5 projects in Goa furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [4-Laning from End of Zuari approaches to Start of Margao Bypass section of NH-66 from Km 536.800 to Km 543.450](https://kaun.city/india/projects/617941) | Ministry of Road Transport & Highways | ₹398 Cr | ₹398 Cr | no change | on original schedule | 1% |
-| [Construction of Six lane Elevated Corridor from Km. 508.000 to Km. 513.150 including approaches on NH-66](https://kaun.city/india/projects/617942) | Ministry of Road Transport & Highways | ₹641 Cr | ₹641 Cr | no change | 6 months later | 99% |
-| [4-laning of Navelim to Cuncolim Section of NH-66 from Km 554.245 to Km 561.480 on HAM Mode](https://kaun.city/india/projects/617943) | Ministry of Road Transport & Highways | ₹747 Cr | ₹747 Cr | no change | on original schedule | 0% |
-| [Chandorgaon-Cansaulim rail flyover 16 km Umbrella work PB57/2019-20/NR](https://kaun.city/india/projects/706865) | Ministry of Railways | ₹1,892 Cr | ₹1,892 Cr | no change | unchanged 3 months | 0% |
-| [Construction of 4L Flyover from MES College Junction to Bogmalo Junction on NH- 566 from Km. 7.106 to Km. 10.460 and 4L VUP at Queeny Nagar Junction from Km. 3.330 to Km. 4.550](https://kaun.city/india/projects/618609) | Ministry of Road Transport & Highways | ₹463 Cr | ₹316 Cr | −₹147 Cr | 10 months later | 59% |
+| [4-Laning from End of Zuari approaches to Start of Margao Bypass section of NH-66 from Km 536.800 to Km 543.450](https://kaun.city/india/projects/617941) | Ministry of Road Transport & Highways | ₹398 Cr | ₹0.00 Cr | −₹398 Cr | on original schedule | 1% |
+| [Construction of 4L Flyover from MES College Junction to Bogmalo Junction on NH- 566 from Km. 7.106 to Km. 10.460 and 4L VUP at Queeny Nagar Junction from Km. 3.330 to Km. 4.550](https://kaun.city/india/projects/618609) | Ministry of Road Transport & Highways | ₹463 Cr | ₹0.00 Cr | −₹463 Cr | 10 months later | 59% |
+| [Construction of Six lane Elevated Corridor from Km. 508.000 to Km. 513.150 including approaches on NH-66](https://kaun.city/india/projects/617942) | Ministry of Road Transport & Highways | ₹641 Cr | ₹0.00 Cr | −₹641 Cr | 6 months later | 100% |
+| [4-laning of Navelim to Cuncolim Section of NH-66 from Km 554.245 to Km 561.480 on HAM Mode](https://kaun.city/india/projects/617943) | Ministry of Road Transport & Highways | ₹747 Cr | ₹0.00 Cr | −₹747 Cr | on original schedule | 0% |
+| [Chandorgaon-Cansaulim rail flyover 16 km Umbrella work PB57/2019-20/NR](https://kaun.city/india/projects/706865) | Ministry of Railways | ₹1,892 Cr | ₹0.00 Cr | −₹1,892 Cr | — | 0% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=30)
 
@@ -154,4 +154,4 @@ The 5 projects in Goa furthest above sanctioned cost, as of the Jul 2026 report.
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

@@ -124,7 +124,7 @@ that is the difference between "not recorded" and "did nothing".
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹9.80 Cr | ₹7.16 Cr | ₹2.64 Cr | 73.0% | 241 | 229 | 98 | 2026-09-06 |
+| eSAKSHI (official) | ₹9.80 Cr | ₹7.24 Cr | ₹2.56 Cr | 73.9% | 241 | 230 | 104 | 2026-10-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -135,16 +135,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Meghalaya furthest above sanctioned cost, as of the Jul 2026 report.
+The 6 projects in Meghalaya furthest above sanctioned cost, as of the Aug 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Rehabilitation and Up-gradation of Nongstoin Wahkaji section of Project Road Km 0000 to Km 43060 to Intermediate Lane with earthern shoulder under SARDP-NE Phase-A in the State of Meghalaya on EPC mode. Job No- SARDP-NE ong-Don- Maw/MG/2020-21/294](https://kaun.city/india/projects/617885) | Ministry of Road Transport & Highways | ₹303 Cr | ₹303 Cr | no change | 36 months later | 100% |
-| [Improvement and Widening of National Highway No. 127B Darugiri - Songsak - Williamnagar Junction Section to two lane with paved shoulder from design Km 0000 to Km 36635 Design length 36.635 Km existing Km 112000 to Km 151060 of NH-1278 under Bharatmala Pariyojana Lot-1 Pkg-1B Meghalaya portion](https://kaun.city/india/projects/618294) | Ministry of Road Transport & Highways | ₹801 Cr | ₹801 Cr | no change | on original schedule | 27% |
-| [Improvement/Widening of New NH-217 Dainadubi-Darugiri section to Two lane with paved shoulder in Meghalaya from design Km 0000 to Km 40840 existing Km 8600 to Km 53000 of Old NH-62 under BMP Lot-1 Pkg-1B Meghalaya portion](https://kaun.city/india/projects/618295) | Ministry of Road Transport & Highways | ₹706 Cr | ₹706 Cr | no change | on original schedule | 46% |
-| [Improvement/Widening to 2-L with Paved Shoulder/ 4-Laning of NH-40 section from Km 151330 to Km 163400 design Km 63.530 to Km 71.520 including Dawki Bridge of length 368 m between Shillong-Dawki under JICA ODA Loan assistance Phase-II Pkg- 5 -Balance work](https://kaun.city/india/projects/618374) | Ministry of Road Transport & Highways | ₹284 Cr | ₹284 Cr | no change | on original schedule | 43% |
-| [Improvement/Widening to 2-Lane with Paved Shoulder from design Km 45.760 to Km 63.530 between Shillong-Dawki under JICA ODA Loan assistance Phase-II -Balance work Pkg-4](https://kaun.city/india/projects/618375) | Ministry of Road Transport & Highways | ₹446 Cr | ₹446 Cr | no change | 6 months later | 53% |
-| [Improvement/Widening to 2-Lane with Paved Shoulder between Shillong-Dawki road up to Bangladesh Border from design Km 10.670 to Km 37.550 under JICA ODA Loan assistance Phase-II -Balance Work-Pkg-2](https://kaun.city/india/projects/618376) | Ministry of Road Transport & Highways | ₹526 Cr | ₹526 Cr | no change | 4 months later | 53% |
+| [Improvement/Widening to 2-L with Paved Shoulder/ 4-Laning of NH-40 section from Km 151330 to Km 163400 design Km 63.530 to Km 71.520 including Dawki Bridge of length 368 m between Shillong-Dawki under JICA ODA Loan assistance Phase-II Pkg- 5 -Balance work](https://kaun.city/india/projects/618374) | Ministry of Road Transport & Highways | ₹284 Cr | ₹0.00 Cr | −₹284 Cr | on original schedule | 44% |
+| [Rehabilitation and Up-gradation of Nongstoin Wahkaji section of Project Road Km 0000 to Km 43060 to Intermediate Lane with earthern shoulder under SARDP-NE Phase-A in the State of Meghalaya on EPC mode. Job No- SARDP-NE ong-Don- Maw/MG/2020-21/294](https://kaun.city/india/projects/617885) | Ministry of Road Transport & Highways | ₹303 Cr | ₹0.00 Cr | −₹303 Cr | 37 months later | 100% |
+| [Improvement/Widening to 2-L with Paved Shoulder/4-L from Km 81740 to Km 93490 design Km 0000 to Km 10670 of NH-40 New NH-106 & 206 section & 4-L from design Km 0.00 to Km 0.930 of NH-44 section between Shillong-Dawki under JICA ODA Loan assistance Phase-II -Balance Work Pkg-1](https://kaun.city/india/projects/618377) | Ministry of Road Transport & Highways | ₹351 Cr | ₹0.00 Cr | −₹351 Cr | 8 months later | 100% |
+| [Rehabilitation and up gradation of Nongstoin-Rambrai-Kyrshai road up to Meghalaya- Assam border from Km 0.335 to km 34.039 to 2-Lane under NHO - NE in the State of Meghalaya Package-1](https://kaun.city/india/projects/618418) | Ministry of Road Transport & Highways | ₹360 Cr | ₹0.00 Cr | −₹360 Cr | 34 months later | 83% |
+| [Improvement/Widening to 2-Lane with Paved Shoulder from design Km 45.760 to Km 63.530 between Shillong-Dawki under JICA ODA Loan assistance Phase-II -Balance work Pkg-4](https://kaun.city/india/projects/618375) | Ministry of Road Transport & Highways | ₹446 Cr | ₹0.00 Cr | −₹446 Cr | 6 months later | 54% |
+| [Construction and Developement of National Institute of Technology Meghalaya Permanent Campus at Sohra](https://kaun.city/india/projects/612885) | Department of Higher Education | ₹495 Cr | ₹0.00 Cr | −₹495 Cr | 55 months later | 98% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=17)
 
@@ -161,4 +161,4 @@ The 6 projects in Meghalaya furthest above sanctioned cost, as of the Jul 2026 r
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-10-04 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-10-11 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
