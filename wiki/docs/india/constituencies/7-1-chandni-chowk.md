@@ -125,16 +125,16 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Delhi furthest above sanctioned cost, as of the Aug 2026 report.
+The 6 projects in Delhi furthest above sanctioned cost, as of the Sep 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [SETTING UP OF PHYSICAL INFRASTRUCTURE FOR THE NATIONAL INSTITUTE OF COMMUNICATION FINANCE [NICF] AT GHITORNI](https://kaun.city/india/projects/709859) | Department of Telecommunications | ₹248 Cr | ₹0.00 Cr | −₹248 Cr | 83 months later | 98% |
-| [Transmission system for evacuation of Power from REZ in Rajasthan [20 GW] under phase-III Part-D Phase-II](https://kaun.city/india/projects/615336) | Ministry of Power | ₹284 Cr | ₹0.00 Cr | −₹284 Cr | 10 months later | 52% |
-| [Setting up IT Infrastructure including Network Security and Hosting at AIIMS, New Delhi](https://kaun.city/india/projects/617882) | Ministry of Health & Family Welfare | ₹358 Cr | ₹0.00 Cr | −₹358 Cr | unchanged 0 months | 50% |
-| [Delhi University Eastern Campus at Surajmal Vihar](https://kaun.city/india/projects/616886) | Department of Higher Education | ₹373 Cr | ₹0.00 Cr | −₹373 Cr | unchanged 0 months | 15% |
-| [Anand Vihar-Tilak Bridge - 3rd & 4th line 9.77 km](https://kaun.city/india/projects/705583) | Ministry of Railways | ₹667 Cr | ₹0.00 Cr | −₹667 Cr | 57 months later | 23% |
-| [Development of 6L UER II [Package - I] NH-1 Near Bakoli till Karala Kanjhawala Road from km. 0.70 to km.15.00](https://kaun.city/india/projects/618509) | Ministry of Road Transport & Highways | ₹2,090 Cr | ₹0.00 Cr | −₹2,090 Cr | 35 months later | 100% |
+| [Dwarka Expressway from Km -0.600 to Km 5.300 - Pkg-I Shivmurti Chowk-RuB near Dwarka Sector 21](https://kaun.city/india/projects/619202) | Ministry of Road Transport & Highways | ₹2,145 Cr | ₹3,930 Cr | +₹1,785 Cr | 49 months later | 99% |
+| [Anand Vihar-Tilak Bridge - 3rd & 4th line 9.77 km](https://kaun.city/india/projects/705583) | Ministry of Railways | ₹667 Cr | ₹702 Cr | +₹34.88 Cr | 57 months later | 23% |
+| [Transmission system for evacuation of Power from REZ in Rajasthan [20 GW] under phase-III Part-D Phase-II](https://kaun.city/india/projects/615336) | Ministry of Power | ₹284 Cr | ₹284 Cr | no change | 10 months later | 57% |
+| [Delhi University Eastern Campus at Surajmal Vihar](https://kaun.city/india/projects/616886) | Department of Higher Education | ₹373 Cr | ₹373 Cr | no change | unchanged 0 months | 16% |
+| [Delhi Metro Rail Phase-IV [2 Corridors]](https://kaun.city/india/projects/617207) | Ministry of Housing & Urban Affairs | ₹8,400 Cr | ₹8,400 Cr | no change | unchanged 0 months | 5% |
+| [Northern Railway- Major upgradation of stations Bijwasan Railway Station through RLDA PB1176/NR/2022-23 Part of Umbrella Work 2021-22 - Item No.2/Supl/Dec 2021](https://kaun.city/india/projects/617379) | Ministry of Railways | ₹446 Cr | ₹446 Cr | no change | 81 months later | 67% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=7)
 
@@ -151,4 +151,4 @@ The 6 projects in Delhi furthest above sanctioned cost, as of the Aug 2026 repor
 | Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-11-01 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-11-08 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

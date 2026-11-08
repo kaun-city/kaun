@@ -111,7 +111,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹14.70 Cr | ₹5.59 Cr | ₹9.11 Cr | 38.0% | 110 | 107 | 54 | 2026-10-06 |
+| eSAKSHI (official) | ₹14.70 Cr | ₹5.86 Cr | ₹8.84 Cr | 39.9% | 111 | 107 | 54 | 2026-11-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -122,16 +122,16 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Andhra Pradesh furthest above sanctioned cost, as of the Aug 2026 report.
+The 6 projects in Andhra Pradesh furthest above sanctioned cost, as of the Sep 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [3rd & 4 th line Vadlapudi-Gate Jn. incl. tie line between Gangavaram Port- Visakhapatnam Steel Plant12.04 km PB73/2023-24/NR](https://kaun.city/india/projects/616697) | Ministry of Railways | ₹154 Cr | ₹0.00 Cr | −₹154 Cr | unchanged 0 months | 88% |
-| [HP-COAT [Crude to Olefins and Aromatics Technology] demo unit at Visakh Refinery](https://kaun.city/india/projects/709752) | Ministry of Petroleum & Natural Gas | ₹160 Cr | ₹0.00 Cr | −₹160 Cr | 32 months later | 94% |
-| [Balance works in AP Portion and punch list items in TN & AP portion of NH-205](https://kaun.city/india/projects/619160) | Ministry of Road Transport & Highways | ₹167 Cr | ₹0.00 Cr | −₹167 Cr | 12 months later | 100% |
-| [ESR - 8 nos., distribution system - 216 Km, new house service connections - 38760 nos. upgrading of feeder mains, pumping station etc. - Phase II](https://kaun.city/india/projects/702674) | Ministry of Housing & Urban Affairs | ₹172 Cr | ₹0.00 Cr | −₹172 Cr | 41 months later | 82% |
-| [Flyover between Pendurthi-Simhachalam North to avoid surface crossing at Simhachalam 7.135 km PB73/2023-24/NR](https://kaun.city/india/projects/612827) | Ministry of Railways | ₹184 Cr | ₹0.00 Cr | −₹184 Cr | unchanged 0 months | 22% |
-| [Rehabilitation and upgradation of NH 326A from km 0/0 to 41/979 excluding km 2/255 to 3/372 and km 36/820 to 38/275 Odisha border to Narasamapeta to two lane with paved Shoulders in the State of Andhra Pradesh under NHO on EPC Mode](https://kaun.city/india/projects/618125) | Ministry of Road Transport & Highways | ₹228 Cr | ₹0.00 Cr | −₹228 Cr | 67 months later | 100% |
+| [Polavaram Irrigation Project](https://kaun.city/india/projects/701415) | Department of Water Resources, River Development & GR | ₹10,151 Cr | ₹55,549 Cr | +₹45,398 Cr | 62 months later | 86% |
+| [Nadikude-Srikalahasti 308.7 km](https://kaun.city/india/projects/400298) | Ministry of Railways | ₹2,312 Cr | ₹5,906 Cr | +₹3,594 Cr | 10 months later | 42% |
+| [Guntakal - Guntur 401.47 km](https://kaun.city/india/projects/705633) | Ministry of Railways | ₹3,733 Cr | ₹4,771 Cr | +₹1,038 Cr | 12 months later | 94% |
+| [Sardar Gouthu Latchanna Thotapalli Barrage Project](https://kaun.city/india/projects/400100) | Department of Water Resources, River Development & GR | ₹353 Cr | ₹1,023 Cr | +₹670 Cr | 96 months later | 96% |
+| [Renigunta - Poyya - Naidupeta km 124.60 to km 183.4 of NH 71](https://kaun.city/india/projects/618700) | Ministry of Road Transport & Highways | ₹1,863 Cr | ₹2,510 Cr | +₹647 Cr | 33 months later | 99% |
+| [6L of Anandapuram Pendurthi Anakapalli Section from km. 681.000 to km. 731.780 of NH-16](https://kaun.city/india/projects/618579) | Ministry of Road Transport & Highways | ₹2,527 Cr | ₹2,957 Cr | +₹430 Cr | 64 months later | 100% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=37)
 
@@ -149,4 +149,4 @@ The 6 projects in Andhra Pradesh furthest above sanctioned cost, as of the Aug 2
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-11-01 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-11-08 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
