@@ -35,4 +35,4 @@ The published centre point for this current ward falls inside **historical BBMP 
 
 For grievances, amenities, infrastructure, and the complete historical record, use the linked historical page or the interactive map.
 
-_Auto-generated on 2026-11-01 from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru South, Ward 22**._
+_Auto-generated on 2026-11-08 from the checked-in final GBA boundary dataset. Corrections should identify **Bengaluru South, Ward 22**._
