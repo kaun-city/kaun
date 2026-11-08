@@ -53,46 +53,42 @@ geometry disagree the order's text is the fixed point — the published AC bound
 
 ## Who holds this seat
 
-**This seat is vacant.** The bypoll to fill it has not been held, or its result has not reached
-the roster yet. Kaun keeps the predecessor's record and names them below, but never presents a
-former member as the current MP.
+**Devasish Sharma** (Bharatiya Janata Party) holds this seat.
 
-| Previous member | Party | Left the seat as | Term |
-|---|---|---|---|
-| Pradyut Bordoloi ([profile](https://sansad.in/ls/members/biography/5108)) | Indian National Congress | Resigned | LS18 |
+| Field | Value |
+|---|---|
+| Name | Devasish Sharma |
+| Party | Bharatiya Janata Party (BJP) |
+| Term | LS18 |
+| Status | Sitting |
+| Terms served | 1 |
+| Age | 59 |
+| Gender | Male |
+| Profession | IAS Officer (Retd). |
+| Official profile | [sansad.in](https://sansad.in/ls/members/biography/5837) |
 
-_Pradyut Bordoloi is recorded with status `Resigned`. The database enforces at most one sitting member per seat, so a predecessor row can never be mistaken for the incumbent._
 
 ---
 
 ## Declared record
 
-From the winning candidate's Election Commission nomination affidavit. **Self-declared** — Kaun
-reproduces the declaration, it does not verify it.
-
-| Declared | Value |
-|---|---|
-| Election | LokSabha2024 |
-| Candidate as named on the affidavit | Pradyut Bordoloi |
-| Pending criminal cases | none declared |
-| Total assets | ₹8.39 Cr |
-| Liabilities | ₹13.00 L |
-| Education | Post Graduate — Master Degree from The School of Social Sciences, Jawaharlal Nehru University, New Delhi in 1980-81, Post Graduate Diploma in Management (Marketing) from Indian Institute of Marketing, New Delhi in 1982-83 |
-| Profession (self-declared) | M.P./ Pensioner |
-| Age at nomination | 64 |
-| Affidavit source | [myneta.info](https://myneta.info/LokSabha2024/candidate.php?candidate_id=2763) |
-
+**No affidavit on record for this member.** They won the seat at a by-election. The seat's
+Lok Sabha 2024 nomination affidavit was filed by the previous member, so it describes them and is
+not reproduced here. By-election affidavits are not loaded yet.
 
 ---
 
 ## In Parliament
 
-**Parliamentary activity has not been loaded for this seat yet.** The attendance, questions and
-debate figures come from PRS MP Track and sansad.in on a separate cadence to the roster; this
-section fills in on the next refresh once that pipeline has run.
+Components, not a score. Kaun publishes what Parliament records and does not compose it into a
+single ranking — attendance, questions and debates measure different things and a weighted
+average of them measures none of them.
 
-Nothing here is a zero. An absent figure is absent, and Kaun will not render it as 0 —
-that is the difference between "not recorded" and "did nothing".
+| Period | Sittings | Attended | Attendance | Questions | Debates | Private member bills | Committees |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Term to date (Second Term) | — | — | 75.4% | 138 | 11 | 0 | — |
+
+_A dash is a value the source does not record. It is never a zero._
 
 ---
 
@@ -108,16 +104,16 @@ come from eSAKSHI (MoSPI) on a weekly cadence, and this section fills in once th
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 6 projects in Assam furthest above sanctioned cost, as of the Aug 2026 report.
+The 6 projects in Assam furthest above sanctioned cost, as of the Sep 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Tezpur University Projects](https://kaun.city/india/projects/606112) | Department of Higher Education | ₹154 Cr | ₹0.00 Cr | −₹154 Cr | 25 months later | 98% |
-| [Construction of LPG Facilities at Kamardanga, Assam](https://kaun.city/india/projects/709754) | Ministry of Petroleum & Natural Gas | ₹156 Cr | ₹0.00 Cr | −₹156 Cr | on original schedule | 86% |
-| [TIKAK EXTENSION OCP](https://kaun.city/india/projects/615820) | Ministry of Coal | ₹160 Cr | ₹0.00 Cr | −₹160 Cr | unchanged 0 months | 90% |
-| [2.4 KTPA Green Hydrogen Generation Unit at Numaligarh](https://kaun.city/india/projects/891687) | Ministry of Petroleum & Natural Gas | ₹170 Cr | ₹0.00 Cr | −₹170 Cr | — | 46% |
-| [Construction of 2 lane Barpeta Bypass from Km 77900Baradi to Km 86150 Deurikuchi Length8.25Km on NH-427 in the state of Assam under EPC ModeJob No.427/AS/2022-23/245](https://kaun.city/india/projects/618034) | Ministry of Road Transport & Highways | ₹174 Cr | ₹0.00 Cr | −₹174 Cr | 7 months later | 20% |
-| [Construction of Balance Work of 4-Laning of the Section from Jhanji to Demow of NH- 37 Old from Km 490.800 to Km 534.800, under SARDP- NE on EPC Mode in the state of Assam Pkg- IV Structures & Toll Plaza](https://kaun.city/india/projects/618440) | Ministry of Road Transport & Highways | ₹187 Cr | ₹0.00 Cr | −₹187 Cr | 12 months later | 63% |
+| [Numaligarh Refinery Expansion Project](https://kaun.city/india/projects/604791) | Ministry of Petroleum & Natural Gas | ₹12,366 Cr | ₹25,313 Cr | +₹12,947 Cr | 32 months later | 88% |
+| [Guwahati Airport New Integrated Terminal Building Construction Project](https://kaun.city/india/projects/706724) | Ministry of Civil Aviation | ₹1,712 Cr | ₹2,889 Cr | +₹1,177 Cr | 15 months later | 100% |
+| [New Bongaigaon - Goalpara - Guwahati Kamakhya 176 km](https://kaun.city/india/projects/705572) | Ministry of Railways | ₹4,060 Cr | ₹4,984 Cr | +₹924 Cr | on original schedule | 91% |
+| [Balance work of 4L of NarimbangloJatinga Junction- Harangajoroad section from Km 0.000 to Km 49.230 of NH-27](https://kaun.city/india/projects/619089) | Ministry of Road Transport & Highways | ₹1,910 Cr | ₹2,746 Cr | +₹836 Cr | 9 months later | 98% |
+| [Guwahati-Dibrugarh via Tinsukia & Simaluguri-Dibrugarh 656 rkm](https://kaun.city/india/projects/706922) | Ministry of Railways | ₹890 Cr | ₹1,420 Cr | +₹530 Cr | 45 months later | 75% |
+| [Construction of Balance Work of 4-Laning of the Section from Jhanji to Demow of NH- 37 Old from Km 514.800 to Km 534.800 20.000 Km, under SARDP- NE under EPC Mode in the state of Assam Pkg-III Road Works](https://kaun.city/india/projects/619060) | Ministry of Road Transport & Highways | ₹345 Cr | ₹620 Cr | +₹275 Cr | 14 months later | 75% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=18)
 
@@ -130,7 +126,7 @@ The 6 projects in Assam furthest above sanctioned cost, as of the Aug 2026 repor
 | Seat identity and boundaries (543) | [DataMeet + shijithpk 2024 supplement](https://github.com/datameet/maps/tree/master/parliamentary-constituencies) | 2008 delimitation, with the 2022 J&K and 2023 Assam orders applied. Assam, J&K and Ladakh outlines were re-georeferenced from ECI press-note PDFs and are not survey-grade. |
 | Assembly segments and districts (crosswalk `2008do+2023as+2022jk-2026.07`) | [Kaun, from ECI Delimitation Orders 2008 / 2022-J&K / 2023-Assam](../pc-crosswalk.md) | Table B of the order in force for each state, parsed and then independently verified against AC/PC/district polygons. |
 | MP roster — 18th Lok Sabha | [sansad.in (Lok Sabha Secretariat)](https://sansad.in) | sansad.in publishes constituency names with no seat number. Names resolve to a `pc_code` through an alias table and exact normalized matching only — never by similarity. |
-| Criminal cases, assets, education | [ECI nomination affidavits via myneta.info (ADR)](https://myneta.info) | Self-declared by the candidate. Kaun reproduces the declaration; it does not verify it. |
+| Attendance, questions, debates | [PRS Legislative Research MP Track and sansad.in](https://prsindia.org/mptrack) | Ministers and the Speaker are excluded by the source itself; see the note above. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-11-01 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-11-08 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._

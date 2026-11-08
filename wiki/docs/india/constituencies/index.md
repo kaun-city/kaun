@@ -1,6 +1,6 @@
 # Constituencies — India (Lok Sabha, 543)
 
-_Auto-generated on 2026-11-01 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-11-08 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
 
 Every Lok Sabha seat gets a page here: who holds it, which assembly segments and districts
 it is made of, what its MP has declared, and what Parliament records of their work. Each seat
@@ -30,9 +30,9 @@ means the pipeline has not landed yet, not that the seat has no data.
 | Seats, boundaries and reservation | `in_constituencies` | 543 | complete — all 543 seats |
 | Sitting MPs (18th Lok Sabha) | `in_mps` | 540 | 540 seats matched to a sitting MP · 3 vacant |
 | Nomination affidavits (publicly cleared) | `in_mp_affidavits` | 543 | 543 seats |
-| Parliamentary activity | `in_mp_activity` | 4,877 | 544 MPs |
+| Parliamentary activity | `in_mp_activity` | 4,878 | 545 MPs |
 | MPLADS allocation and spend | `in_mplads_summary` | 553 | 516 seats |
-| Central projects ≥ ₹150 Cr | `in_central_projects` | 2,127 | latest report held: Aug 2026 |
+| Central projects ≥ ₹150 Cr | `in_central_projects` | 2,218 | latest report held: Sep 2026 |
 
 "Rows readable" is what the **public** anon role can see. `in_mp_affidavits` is row-restricted:
 an affidavit becomes readable only after its MyNeta↔seat join has been reviewed, so a low number
@@ -119,7 +119,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `18-6` | [Diphu](18-6-diphu.md) | ST | Amarsing Tisso | BJP | none declared | [open →](https://kaun.city/india/c/18-6) |
 | `18-7` | [Karimganj](18-7-karimganj.md) | — | Kripanath Mallah | BJP | none declared | [open →](https://kaun.city/india/c/18-7) |
 | `18-8` | [Silchar](18-8-silchar.md) | SC | Parimal Suklabaidya | BJP | none declared | [open →](https://kaun.city/india/c/18-8) |
-| `18-9` | [Nagaon](18-9-nagaon.md) | — | _vacant — bypoll pending_ | — | none declared | [open →](https://kaun.city/india/c/18-9) |
+| `18-9` | [Nagaon](18-9-nagaon.md) | — | Devasish Sharma | BJP | _pending review_ | [open →](https://kaun.city/india/c/18-9) |
 | `18-10` | [Kaziranga](18-10-kaziranga.md) | — | Kamakhya Prasad Tasa | BJP | none declared | [open →](https://kaun.city/india/c/18-10) |
 | `18-11` | [Sonitpur](18-11-sonitpur.md) | — | Ranjit Dutta | BJP | none declared | [open →](https://kaun.city/india/c/18-11) |
 | `18-12` | [Lakhimpur](18-12-lakhimpur.md) | — | Pradan Baruah | BJP | none declared | [open →](https://kaun.city/india/c/18-12) |
@@ -299,7 +299,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | Seat | Constituency | Reserved | Sitting MP | Party | Declared cases | Live |
 |---|---|---|---|---|---|---|
 | `1-1` | [Baramulla](1-1-baramulla.md) | — | Abdul Rashid Sheikh | Ind. | ⚠ 3 | [open →](https://kaun.city/india/c/1-1) |
-| `1-2` | [Srinagar](1-2-srinagar.md) | — | Aga Syed Ruhullah Mehdi | J&KNC | none declared | [open →](https://kaun.city/india/c/1-2) |
+| `1-2` | [Srinagar](1-2-srinagar.md) | — | _vacant — bypoll pending_ | — | none declared | [open →](https://kaun.city/india/c/1-2) |
 | `1-3` | [Anantnag-Rajouri](1-3-anantnag-rajouri.md) | — | Mian Altaf Ahmad | J&KNC | none declared | [open →](https://kaun.city/india/c/1-3) |
 | `1-4` | [Udhampur](1-4-udhampur.md) | — | Jitendra Singh ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/1-4) |
 | `1-5` | [Jammu](1-5-jammu.md) | — | Jugal Kishore | BJP | none declared | [open →](https://kaun.city/india/c/1-5) |

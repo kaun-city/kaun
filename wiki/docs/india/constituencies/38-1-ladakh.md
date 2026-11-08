@@ -100,7 +100,7 @@ _A dash is a value the source does not record. It is never a zero._
 
 | Source | Allocated | Spent | Unspent | Utilization | Works recommended | Sanctioned | Completed | As of |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| eSAKSHI (official) | ₹16.11 Cr | ₹88.46 L | ₹15.23 Cr | 5.5% | 55 | 29 | 0 | 2026-10-06 |
+| eSAKSHI (official) | ₹16.11 Cr | ₹1.08 Cr | ₹15.03 Cr | 6.7% | 55 | 32 | 3 | 2026-11-06 |
 
 _eSAKSHI is the official MPLADS portal and reports aggregates only. Where a second, unofficial
 row is present it is kept separate rather than merged, so every figure carries its own provenance._
@@ -111,14 +111,14 @@ row is present it is kept separate rather than merged, so every figure carries i
 
 MoSPI reports central projects **by state only**. These are the state's projects, not this constituency's — no district or constituency breakdown exists in the source, and Kaun does not guess one from a project's name.
 
-The 4 projects in Ladakh furthest above sanctioned cost, as of the Aug 2026 report.
+The 4 projects in Ladakh furthest above sanctioned cost, as of the Sep 2026 report.
 
 | Project | Ministry | Sanctioned | Latest cost | Overrun | Schedule | Progress |
 |---|---|---:|---:|---:|---|---:|
-| [Widening & Up-gradation to 2 lane with Paved shoulder of NH-301 Kargil- Zanskar Road from Design km 57.000 Ex. Km. 57.905 to Km 87.000 Ex. Km. 88.2491 of 30.000 Km length Pkg-lll](https://kaun.city/india/projects/618409) | Ministry of Road Transport & Highways | ₹381 Cr | ₹0.00 Cr | −₹381 Cr | 44 months later | 95% |
-| [Kargil Zanskar Road](https://kaun.city/india/projects/618408) | Ministry of Road Transport & Highways | ₹398 Cr | ₹0.00 Cr | −₹398 Cr | 44 months later | 98% |
-| [Widening & Up-gradation to 2 lane with paved shoulder of NH-301 Kargil- Zanskar Road from Design Km .30.040 Ex. Km. 30.000 to Design Km 57.000 Ex. Km. 57.905 of 26.960 Km length Pkg-II](https://kaun.city/india/projects/618410) | Ministry of Road Transport & Highways | ₹405 Cr | ₹0.00 Cr | −₹405 Cr | 45 months later | 90% |
-| [Construction of Terminal Building & Associated works at Leh Airport, Ladakh](https://kaun.city/india/projects/400010) | Ministry of Civil Aviation | ₹480 Cr | ₹0.00 Cr | −₹480 Cr | 60 months later | 93% |
+| [Construction of Terminal Building & Associated works at Leh Airport, Ladakh](https://kaun.city/india/projects/400010) | Ministry of Civil Aviation | ₹480 Cr | ₹640 Cr | +₹160 Cr | 60 months later | 98% |
+| [Kargil Zanskar Road](https://kaun.city/india/projects/618408) | Ministry of Road Transport & Highways | ₹398 Cr | ₹398 Cr | no change | 45 months later | 98% |
+| [Widening & Up-gradation to 2 lane with Paved shoulder of NH-301 Kargil- Zanskar Road from Design km 57.000 Ex. Km. 57.905 to Km 87.000 Ex. Km. 88.2491 of 30.000 Km length Pkg-lll](https://kaun.city/india/projects/618409) | Ministry of Road Transport & Highways | ₹381 Cr | ₹381 Cr | no change | 45 months later | 95% |
+| [Widening & Up-gradation to 2 lane with paved shoulder of NH-301 Kargil- Zanskar Road from Design Km .30.040 Ex. Km. 30.000 to Design Km 57.000 Ex. Km. 57.905 of 26.960 Km length Pkg-II](https://kaun.city/india/projects/618410) | Ministry of Road Transport & Highways | ₹405 Cr | ₹405 Cr | no change | 45 months later | 94% |
 
 [All central projects, ranked and filterable →](../projects.md) · [on kaun.city →](https://kaun.city/india/projects?state=38)
 
@@ -136,4 +136,4 @@ The 4 projects in Ladakh furthest above sanctioned cost, as of the Aug 2026 repo
 | MPLADS allocation and spend | [eSAKSHI (MoSPI)](https://mplads.gov.in) | eSAKSHI is the official source. Rows from Empowered Indian, where present, are labelled unofficial. |
 | Central projects ≥ ₹150 crore | [MoSPI Flash Report, Table 6 (PAIMANA)](https://www.mospi.gov.in) | Monthly, with a ~7–8 week publication lag. Published with a state column and nothing finer. |
 
-_Auto-generated on 2026-11-01 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-11-08 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
