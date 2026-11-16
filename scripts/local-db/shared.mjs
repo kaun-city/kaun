@@ -51,6 +51,8 @@ export const seedReplayedMigrations = [
   },
 ]
 
+export const infraRelocationMigration = "20261117_private_ward_infra.sql"
+
 export const replayContainerPath = file => `/tmp/kaun-replay-${file}`
 
 /**
@@ -62,10 +64,14 @@ export function seedLoadArgs(containerSeed) {
     "--set", "ON_ERROR_STOP=on",
     "--single-transaction",
     ...seedReplayedMigrations.flatMap(({ beforeSeed }) => ["--command", beforeSeed]),
+    // The BMTC replay rebuilds the old public materialized view. Temporarily
+    // restore that shape, then reapply the relocation in this same transaction.
+    "--command", "DROP VIEW public.ward_infra_stats; ALTER MATERIALIZED VIEW kaun_private.ward_infra_stats SET SCHEMA public; DROP SCHEMA kaun_private;",
     "--file", containerSeed,
     // Data dumps set session_replication_role and an empty search_path.
     "--command", "RESET ALL;",
     ...seedReplayedMigrations.flatMap(({ file }) => ["--file", replayContainerPath(file)]),
+    "--file", replayContainerPath(infraRelocationMigration),
   ]
 }
 

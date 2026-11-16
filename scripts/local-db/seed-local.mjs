@@ -2,6 +2,7 @@ import { resolve } from "node:path"
 import {
   localSeed,
   replayContainerPath,
+  infraRelocationMigration,
   requireSnapshot,
   root,
   run,
@@ -32,7 +33,7 @@ if (alreadySeeded && !force) {
 requireSnapshot()
 console.log("Copying the local civic-data seed into PostgreSQL...")
 run("docker", ["cp", localSeed, `${container}:${containerSeed}`])
-for (const { file } of seedReplayedMigrations) {
+for (const file of [...seedReplayedMigrations.map(item => item.file), infraRelocationMigration]) {
   run("docker", ["cp", resolve(root, "supabase/migrations", file), `${container}:${replayContainerPath(file)}`])
 }
 
@@ -62,7 +63,7 @@ run("docker", [
 
 // The container and these exact temporary paths are local and disposable.
 run("docker", ["exec", container, "unlink", containerSeed])
-for (const { file } of seedReplayedMigrations) {
+for (const file of [...seedReplayedMigrations.map(item => item.file), infraRelocationMigration]) {
   run("docker", ["exec", container, "unlink", replayContainerPath(file)])
 }
 console.log("Local civic-data seed loaded.")
