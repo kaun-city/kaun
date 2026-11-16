@@ -68,7 +68,7 @@ interface Props {
   corpName: string | null
   allFacts: CommunityFact[]
   officerGroups: Record<string, Record<string, CommunityFact>>
-  onCorroborate: (id: number) => Promise<void>
+  onCorroborate: (id: number) => Promise<{ corroboration_count: number; already_voted: boolean } | null>
   onNewFact: (fact: CommunityFact) => void
   infraStats: WardInfraStats | null
   potholes: WardPotholes | null

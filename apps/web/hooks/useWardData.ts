@@ -153,8 +153,8 @@ export function useWardData(result: PinResult | null) {
   const recordSettled = !!recordState
 
   // ── Handlers ──────────────────────────────────────────────
-  async function handleCorroborate(factId: number): Promise<void> {
-    await voteFact(factId, "corroborate", getVoterToken())
+  async function handleCorroborate(factId: number) {
+    return voteFact(factId, "corroborate", getVoterToken())
   }
 
   function handleNewFact(fact: CommunityFact) {
