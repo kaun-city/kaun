@@ -58,6 +58,13 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // The tracker is public and keyed by the host and filter query.
+      // The homepage streams metadata differently for social crawlers, so it
+      // must not share this cache with browser responses.
+      {
+        source: "/india/projects",
+        headers: [{ key: "Vercel-CDN-Cache-Control", value: "public, max-age=60" }],
+      },
       {
         source: "/:path*",
         headers: [{ key: "X-Content-Type-Options", value: "nosniff" }],
