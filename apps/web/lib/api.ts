@@ -295,14 +295,7 @@ export async function submitFact(payload: {
   const fact = await insert<CommunityFact>("community_facts", data)
   if (!fact) return null
 
-  // Also record the submitter's vote
-  if (payload.contributor_token) {
-    await insert("fact_votes", {
-      fact_id: fact.id,
-      vote_type: "corroborate",
-      voter_token: payload.contributor_token,
-    })
-  }
+  // The database records the contributor's initial vote with the fact.
 
   return {
     ok: true,
@@ -321,29 +314,12 @@ export async function voteFact(
   factId: number,
   voteType: "corroborate" | "dispute",
   voterToken: string
-): Promise<{ ok: boolean; corroboration_count: number; trust_level: string; already_voted: boolean } | null> {
-  // Check if already voted
-  const existing = await query("fact_votes", {
-    "fact_id": `eq.${factId}`,
-    "voter_token": `eq.${voterToken}`,
+): Promise<{ ok: boolean; corroboration_count: number; dispute_count: number; already_voted: boolean } | null> {
+  return rpc("cast_fact_vote", {
+    p_fact_id: factId,
+    p_vote_type: voteType,
+    p_voter_token: voterToken,
   })
-
-  if (existing.length > 0) {
-    return { ok: true, corroboration_count: 0, trust_level: "unverified", already_voted: true }
-  }
-
-  // Record vote
-  await insert("fact_votes", {
-    fact_id: factId,
-    vote_type: voteType,
-    voter_token: voterToken,
-  })
-
-  // Update the fact's counter via RPC
-  const col = voteType === "corroborate" ? "corroboration_count" : "dispute_count"
-  await rpc("increment_fact_counter", { p_fact_id: factId, p_column: col })
-
-  return { ok: true, corroboration_count: 0, trust_level: "unverified", already_voted: false }
 }
 
 /**

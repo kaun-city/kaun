@@ -6,21 +6,29 @@ import { TrustBadge } from "./TrustBadge"
 
 interface Props {
   fact: CommunityFact
-  onCorroborate: (id: number) => Promise<void>
+  onCorroborate: (id: number) => Promise<{ corroboration_count: number; already_voted: boolean } | null>
 }
 
 export function FactCard({ fact, onCorroborate }: Props) {
   const [voting, setVoting] = useState(false)
   const [count, setCount] = useState(fact.corroboration_count)
   const [voted, setVoted] = useState(false)
+  const [error, setError] = useState(false)
 
   async function handleCorroborate() {
     if (voted || voting) return
     setVoting(true)
-    await onCorroborate(fact.id)
-    setVoting(false)
-    setVoted(true)
-    setCount(c => c + 1)
+    setError(false)
+    try {
+      const result = await onCorroborate(fact.id)
+      if (!result) { setError(true); return }
+      setVoted(true)
+      setCount(result.corroboration_count)
+    } catch {
+      setError(true)
+    } finally {
+      setVoting(false)
+    }
   }
 
   return (
@@ -30,6 +38,7 @@ export function FactCard({ fact, onCorroborate }: Props) {
         <p className="text-ink text-sm font-medium truncate">{fact.value}</p>
       </div>
       <div className="flex items-center gap-2 shrink-0">
+        {error && <span role="alert" className="text-xs text-ink/70">Could not verify. Try again.</span>}
         <TrustBadge level={fact.trust_level} />
         <button
           onClick={handleCorroborate}
