@@ -77,10 +77,24 @@ BEGIN
     RAISE EXCEPTION 'Invalid vote' USING ERRCODE = '22023';
   END IF;
 
-  INSERT INTO public.fact_votes (fact_id, vote_type, voter_token)
-  VALUES (p_fact_id, p_vote_type, p_voter_token)
-  ON CONFLICT (fact_id, voter_token) DO NOTHING
-  RETURNING id INTO inserted_id;
+  -- RLS checks an attempted insert before ON CONFLICT, so an existing vote
+  -- must be detected before trying to insert when the token is at its limit.
+  IF NOT EXISTS (SELECT 1 FROM public.fact_votes
+                 WHERE fact_id = p_fact_id AND voter_token = p_voter_token) THEN
+    BEGIN
+      INSERT INTO public.fact_votes (fact_id, vote_type, voter_token)
+      VALUES (p_fact_id, p_vote_type, p_voter_token)
+      ON CONFLICT (fact_id, voter_token) DO NOTHING
+      RETURNING id INTO inserted_id;
+    EXCEPTION WHEN insufficient_privilege THEN
+      -- A concurrent request may have inserted this vote after the precheck.
+      -- Suppress a policy error only if that exact vote is now visible.
+      IF NOT EXISTS (SELECT 1 FROM public.fact_votes
+                     WHERE fact_id = p_fact_id AND voter_token = p_voter_token) THEN
+        RAISE;
+      END IF;
+    END;
+  END IF;
 
   SELECT * INTO STRICT fact FROM public.community_facts WHERE id = p_fact_id;
   RETURN jsonb_build_object(

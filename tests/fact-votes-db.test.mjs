@@ -22,7 +22,13 @@ test('unique fact votes are counted once for current and legacy clients', { skip
       CREATE TABLE community_facts (id integer PRIMARY KEY, ward_no integer DEFAULT 1, contributor_token text, corroboration_count integer NOT NULL DEFAULT 0, dispute_count integer NOT NULL DEFAULT 0, created_at timestamp DEFAULT now());
       CREATE TABLE fact_votes (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, fact_id integer NOT NULL REFERENCES community_facts, vote_type varchar(16) NOT NULL, voter_token varchar(128) NOT NULL, created_at timestamp DEFAULT now(), UNIQUE(fact_id,voter_token));
       GRANT SELECT, INSERT ON community_facts TO anon; GRANT SELECT, INSERT ON fact_votes TO anon; GRANT USAGE, SELECT ON SEQUENCE fact_votes_id_seq TO anon;
-      ALTER TABLE community_facts ENABLE ROW LEVEL SECURITY; CREATE POLICY read_facts ON community_facts FOR SELECT USING (true); CREATE POLICY insert_facts ON community_facts FOR INSERT TO anon WITH CHECK (true); ALTER TABLE fact_votes ENABLE ROW LEVEL SECURITY; CREATE POLICY read_votes ON fact_votes FOR SELECT USING (true); CREATE POLICY insert_votes ON fact_votes FOR INSERT TO anon WITH CHECK ((SELECT count(*) FROM fact_votes f WHERE f.voter_token = f.voter_token AND f.created_at > now() - interval '1 hour') < 20);`])
+      ALTER TABLE community_facts ENABLE ROW LEVEL SECURITY; CREATE POLICY read_facts ON community_facts FOR SELECT USING (true); CREATE POLICY insert_facts ON community_facts FOR INSERT TO anon WITH CHECK (true); ALTER TABLE fact_votes ENABLE ROW LEVEL SECURITY; CREATE POLICY read_votes ON fact_votes FOR SELECT USING (true); CREATE POLICY insert_votes ON fact_votes FOR INSERT TO anon WITH CHECK ((SELECT count(*) FROM fact_votes f WHERE f.voter_token = f.voter_token AND f.created_at > now() - interval '1 hour') < 20);
+      CREATE FUNCTION increment_fact_counter(p_fact_id integer, p_column text) RETURNS void LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN IF p_column = 'corroboration_count' THEN UPDATE community_facts SET corroboration_count = corroboration_count + 1 WHERE id = p_fact_id; ELSIF p_column = 'dispute_count' THEN UPDATE community_facts SET dispute_count = dispute_count + 1 WHERE id = p_fact_id; END IF; END $$;`])
+    // The baseline legacy sequence works before migration and its vote survives rollback.
+    pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id) VALUES (50); INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (50,'corroborate','before-migration'); SELECT increment_fact_counter(50,'corroboration_count')"])
+    assert.equal(pg(['-c', 'SELECT corroboration_count FROM community_facts WHERE id=50']), '1')
+    // New code requires the migration first; old code can still run afterwards.
+    assert.throws(() => pg(['-c', "SET ROLE anon; SELECT cast_fact_vote(1,'corroborate','pre-migration')"]), /does not exist/)
     pg(['-f', resolve('supabase/migrations/20261116_safe_fact_votes.sql')])
     assert.equal(pg(['-c', `SET ROLE anon;
       INSERT INTO community_facts(id,contributor_token,corroboration_count,dispute_count) VALUES (1,'creator',999,999)
@@ -58,6 +64,28 @@ test('unique fact votes are counted once for current and legacy clients', { skip
     }))
     await Promise.all(parallel)
     assert.equal(pg(['-c', 'SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=2) FROM community_facts WHERE id=2']), '10|10')
+    // Simulate an app rollback with old and new clients both still active.
+    // The bridge changes no vote rows or counters, including votes added since migration.
+    const snapshot = pg(['-c', "SELECT (SELECT md5(jsonb_agg(to_jsonb(v) ORDER BY id)::text) FROM fact_votes v),(SELECT md5(jsonb_agg(to_jsonb(f) ORDER BY id)::text) FROM community_facts f)"])
+    pg(['-c', 'ALTER TABLE fact_votes DISABLE TRIGGER count_inserted_fact_vote'])
+    assert.throws(() => pg(['-f', resolve('supabase/rollbacks/20261116_fact_votes_app_rollback_bridge.sql')]), /compatibility bridge missing/)
+    pg(['-c', 'ALTER TABLE fact_votes ENABLE TRIGGER count_inserted_fact_vote'])
+    pg(['-f', resolve('supabase/rollbacks/20261116_fact_votes_app_rollback_bridge.sql')])
+    assert.equal(pg(['-c', "SELECT (SELECT md5(jsonb_agg(to_jsonb(v) ORDER BY id)::text) FROM fact_votes v),(SELECT md5(jsonb_agg(to_jsonb(f) ORDER BY id)::text) FROM community_facts f)"]), snapshot)
+    pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (2,'corroborate','legacy-after-rollback'); SELECT increment_fact_counter(2,'corroboration_count')"])
+    assert.equal(pg(['-c', 'SELECT corroboration_count FROM community_facts WHERE id=2']), '11')
+    const postRollback = JSON.parse(pg(['-c', "SET ROLE anon; SELECT cast_fact_vote(2,'corroborate','new-after-rollback')"]))
+    assert.equal(postRollback.already_voted, false)
+    assert.equal(postRollback.corroboration_count, 12)
+    assert.equal(JSON.parse(pg(['-c', "SET ROLE anon; SELECT cast_fact_vote(2,'corroborate','new-after-rollback')"])).already_voted, true)
+    assert.equal(pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id,contributor_token,corroboration_count) VALUES (51,'legacy-creator',1) RETURNING corroboration_count"]), '1')
+    assert.throws(() => pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (51,'corroborate','legacy-creator')"]), /duplicate key/)
+    assert.equal(pg(['-c', "SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=51) FROM community_facts WHERE id=51"]), '1|1')
+    assert.equal(pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id,contributor_token,corroboration_count) VALUES (52,'new-creator',1) RETURNING corroboration_count"]), '1')
+    assert.equal(pg(['-c', "SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=52) FROM community_facts WHERE id=52"]), '1|1')
+    assert.equal(pg(['-c', "SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=50) FROM community_facts WHERE id=50"]), '1|1')
+
+
     // Exercise the migrated policy itself, not a test-only replacement. The
     // same token reaches 20 across distinct facts; another token remains free.
     pg(['-c', 'INSERT INTO community_facts(id) SELECT n FROM generate_series(100,125) n'])
@@ -66,6 +94,11 @@ test('unique fact votes are counted once for current and legacy clients', { skip
     }
     const twentieth = JSON.parse(pg(['-c', "SET ROLE anon; SELECT cast_fact_vote(119,'corroborate','limited-token')"]))
     assert.equal(twentieth.already_voted, false)
+    const retry = JSON.parse(pg(['-c', "SET ROLE anon; SELECT cast_fact_vote(119,'dispute','limited-token')"]))
+    assert.equal(retry.already_voted, true)
+    assert.equal(retry.corroboration_count, twentieth.corroboration_count)
+    assert.equal(retry.dispute_count, twentieth.dispute_count)
+    assert.throws(() => pg(['-c', "SET ROLE anon; SELECT cast_fact_vote(120,'corroborate','limited-token')"]), /row-level security/)
     assert.throws(() => pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (120,'corroborate','limited-token')"]), /row-level security/)
     pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (120,'corroborate','other-token')"])
     assert.equal(pg(['-c', "SELECT count(*) FROM fact_votes WHERE voter_token='limited-token'"]), '20')
