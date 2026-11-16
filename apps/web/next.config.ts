@@ -58,6 +58,12 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Vercel keys its CDN cache by host and query string. Keep browser
+      // responses private while reusing these public renders at the edge.
+      ...["/", "/india/projects"].map(source => ({
+        source,
+        headers: [{ key: "Vercel-CDN-Cache-Control", value: "public, max-age=60" }],
+      })),
       {
         source: "/:path*",
         headers: [{ key: "X-Content-Type-Options", value: "nosniff" }],
