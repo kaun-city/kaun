@@ -1,3 +1,20 @@
+-- Legacy writes span separate HTTP transactions and carry no operation ID.
+-- Only cut over an empty dataset: otherwise a pending legacy counter call or
+-- creator vote cannot be distinguished safely from completed historical work.
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+SET LOCAL lock_timeout = '5s';
+SET LOCAL row_security = off;
+LOCK TABLE public.community_facts, public.fact_votes IN ACCESS EXCLUSIVE MODE;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM public.community_facts)
+     OR EXISTS (SELECT 1 FROM public.fact_votes) THEN
+    RAISE EXCEPTION 'Unsafe vote cutover: fact or vote rows exist; abort and review';
+  END IF;
+END;
+$$;
+
 -- Count only successfully inserted unique votes. Legacy clients insert directly
 -- and then call increment_fact_counter; the trigger covers those inserts too.
 CREATE OR REPLACE FUNCTION public.count_inserted_fact_vote()
@@ -116,3 +133,5 @@ WITH CHECK ((
   WHERE recent_vote.voter_token = fact_votes.voter_token
     AND recent_vote.created_at > now() - interval '1 hour'
 ) < 20);
+
+COMMIT;

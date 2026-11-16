@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync, spawn } from 'node:child_process'
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -24,12 +24,61 @@ test('unique fact votes are counted once for current and legacy clients', { skip
       GRANT SELECT, INSERT ON community_facts TO anon; GRANT SELECT, INSERT ON fact_votes TO anon; GRANT USAGE, SELECT ON SEQUENCE fact_votes_id_seq TO anon;
       ALTER TABLE community_facts ENABLE ROW LEVEL SECURITY; CREATE POLICY read_facts ON community_facts FOR SELECT USING (true); CREATE POLICY insert_facts ON community_facts FOR INSERT TO anon WITH CHECK (true); ALTER TABLE fact_votes ENABLE ROW LEVEL SECURITY; CREATE POLICY read_votes ON fact_votes FOR SELECT USING (true); CREATE POLICY insert_votes ON fact_votes FOR INSERT TO anon WITH CHECK ((SELECT count(*) FROM fact_votes f WHERE f.voter_token = f.voter_token AND f.created_at > now() - interval '1 hour') < 20);
       CREATE FUNCTION increment_fact_counter(p_fact_id integer, p_column text) RETURNS void LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN IF p_column = 'corroboration_count' THEN UPDATE community_facts SET corroboration_count = corroboration_count + 1 WHERE id = p_fact_id; ELSIF p_column = 'dispute_count' THEN UPDATE community_facts SET dispute_count = dispute_count + 1 WHERE id = p_fact_id; END IF; END $$;`])
-    // The baseline legacy sequence works before migration and its vote survives rollback.
-    pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id) VALUES (50); INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (50,'corroborate','before-migration'); SELECT increment_fact_counter(50,'corroboration_count')"])
-    assert.equal(pg(['-c', 'SELECT corroboration_count FROM community_facts WHERE id=50']), '1')
+    const migration = resolve('supabase/migrations/20261116_safe_fact_votes.sql')
+    // A legacy fact committed before its creator vote: the cutover must abort,
+    // leaving the old schema and fact intact until the client finishes.
+    pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id,contributor_token,corroboration_count) VALUES (50,'before-migration',1)"])
+    assert.throws(() => pg(['-f', migration]), /Unsafe vote cutover/)
+    assert.equal(pg(['-c', "SELECT to_regprocedure('public.cast_fact_vote(integer,text,text)') IS NULL"]), 't')
+    pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (50,'corroborate','before-migration')"])
+    assert.equal(pg(['-c', "SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=50) FROM community_facts WHERE id=50"]), '1|1')
+    // A legacy vote committed before its separate increment: abort, then the
+    // original RPC still increments exactly once after the failed cutover.
+    pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (50,'corroborate','pending-voter')"])
+    assert.throws(() => pg(['-f', migration]), /Unsafe vote cutover/)
+    pg(['-c', "SET ROLE anon; SELECT increment_fact_counter(50,'corroboration_count')"])
+    assert.equal(pg(['-c', "SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=50) FROM community_facts WHERE id=50"]), '2|2')
+    // Cleanup is confined to this disposable local PostgreSQL cluster.
+    pg(['-c', 'TRUNCATE fact_votes, community_facts'])
+    // A transaction holding an uncommitted insert makes the migration wait;
+    // once it commits, the guard sees the row and aborts without changes.
+    const holding = spawn('psql', ['-X', '-h', dir, '-p', '55440', '-U', 'postgres', '-v', 'ON_ERROR_STOP=1', '-qAt', '-c', "BEGIN; INSERT INTO community_facts(id,contributor_token,corroboration_count) VALUES (60,'in-flight',1); SELECT pg_sleep(2); COMMIT"], { stdio: 'ignore' })
+    const held = new Promise((resolvePromise, reject) => { holding.on('error', reject); holding.on('exit', code => code === 0 ? resolvePromise() : reject(new Error(`psql exited ${code}`))) })
+    let active = false
+    for (let i = 0; i < 50 && !active; i++) {
+      active = pg(['-c', "SELECT EXISTS (SELECT 1 FROM pg_stat_activity WHERE pid <> pg_backend_pid() AND state='active' AND query LIKE '%pg_sleep(2)%')"]) === 't'
+      if (!active) await new Promise(resolvePromise => setTimeout(resolvePromise, 20))
+    }
+    assert.equal(active, true, 'legacy transaction started')
+    assert.throws(() => pg(['-f', migration]), /Unsafe vote cutover/)
+    await held
+    assert.equal(pg(['-c', "SELECT corroboration_count FROM community_facts WHERE id=60"]), '1')
+    assert.equal(pg(['-c', "SELECT to_regprocedure('public.cast_fact_vote(integer,text,text)') IS NULL"]), 't')
+    pg(['-c', 'TRUNCATE fact_votes, community_facts'])
     // New code requires the migration first; old code can still run afterwards.
     assert.throws(() => pg(['-c', "SET ROLE anon; SELECT cast_fact_vote(1,'corroborate','pre-migration')"]), /does not exist/)
-    pg(['-f', resolve('supabase/migrations/20261116_safe_fact_votes.sql')])
+    // Hold the migration after its empty check. An old fact INSERT arriving
+    // while the locks are held must use the newly installed triggers on release.
+    const slowMigration = join(dir, 'slow-migration.sql')
+    const sql = readFileSync(migration, 'utf8')
+    const marker = "END;\n$$;\n\n-- Count only"
+    assert.ok(sql.includes(marker))
+    writeFileSync(slowMigration, sql.replace(marker, () => "END;\n$$;\nSELECT pg_sleep(3);\n\n-- Count only"))
+    const installing = spawn('psql', ['-X', '-h', dir, '-p', '55440', '-U', 'postgres', '-v', 'ON_ERROR_STOP=1', '-qAt', '-f', slowMigration], { stdio: ['ignore', 'ignore', 'pipe'] })
+    let migrationError = ''
+    installing.stderr.on('data', data => { migrationError += data })
+    const installed = new Promise((resolvePromise, reject) => { installing.on('error', reject); installing.on('exit', code => code === 0 ? resolvePromise() : reject(new Error(`migration exited ${code}: ${migrationError}`))) })
+    let locked = false
+    for (let i = 0; i < 50 && !locked; i++) {
+      locked = pg(['-c', "SELECT EXISTS (SELECT 1 FROM pg_stat_activity WHERE pid <> pg_backend_pid() AND state='active' AND query LIKE '%pg_sleep(3)%')"]) === 't'
+      if (!locked) await new Promise(resolvePromise => setTimeout(resolvePromise, 20))
+    }
+    assert.equal(locked, true, 'migration holds cutover locks')
+    assert.equal(pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id,contributor_token,corroboration_count) VALUES (70,'across-cutover',1) RETURNING corroboration_count"]), '1')
+    await installed
+    assert.throws(() => pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (70,'corroborate','across-cutover')"]), /duplicate key/)
+    pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (70,'corroborate','legacy-after'); SELECT increment_fact_counter(70,'corroboration_count')"])
+    assert.equal(pg(['-c', "SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=70) FROM community_facts WHERE id=70"]), '2|2')
     assert.equal(pg(['-c', `SET ROLE anon;
       INSERT INTO community_facts(id,contributor_token,corroboration_count,dispute_count) VALUES (1,'creator',999,999)
       RETURNING corroboration_count,dispute_count`]), '1|0')
@@ -83,9 +132,6 @@ test('unique fact votes are counted once for current and legacy clients', { skip
     assert.equal(pg(['-c', "SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=51) FROM community_facts WHERE id=51"]), '1|1')
     assert.equal(pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id,contributor_token,corroboration_count) VALUES (52,'new-creator',1) RETURNING corroboration_count"]), '1')
     assert.equal(pg(['-c', "SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=52) FROM community_facts WHERE id=52"]), '1|1')
-    assert.equal(pg(['-c', "SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=50) FROM community_facts WHERE id=50"]), '1|1')
-
-
     // Exercise the migrated policy itself, not a test-only replacement. The
     // same token reaches 20 across distinct facts; another token remains free.
     pg(['-c', 'INSERT INTO community_facts(id) SELECT n FROM generate_series(100,125) n'])

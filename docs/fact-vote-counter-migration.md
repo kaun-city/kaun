@@ -1,6 +1,16 @@
 # Community fact vote counter rollout
 
-Apply `20261116_safe_fact_votes.sql` before deploying the matching web code. The migration is intended for a database where the earlier worktree version of this migration has not been applied. Inspect the live functions, triggers, grants, RLS policies and migration history immediately before rollout. Apply the migration transactionally. Do not run a historical counter backfill as part of this change.
+Apply `20261116_safe_fact_votes.sql` before deploying the matching web code, only when the earlier worktree version has not been applied. Inspect live functions, triggers, grants, RLS policies and migration history immediately before rollout. Validate the exact migration runner and its transaction and migration-ledger behavior on staging: this SQL explicitly begins and commits its own transaction, and must not be run inside a wrapper whose commit or ledger semantics it would disrupt. Do not backfill counters or delete data.
+
+## Fail-closed cutover
+
+The legacy client performs fact creation and creator-vote insertion as separate requests, and performs ordinary vote insertion and counter increment as separate requests. The counter RPC does not carry a voter token or request ID. A browser can pause for an unbounded time between these requests, so waiting a fixed interval or locking only individual statements cannot establish that all requests have finished. Existing counters may already be inaccurate; votes and totals alone cannot identify every pending operation.
+
+The migration takes `ACCESS EXCLUSIVE` locks on both tables, with a five-second lock-acquisition timeout, before installing any functions or triggers. It disables row-security filtering for its checks, and aborts if either table contains any row. Run it only with a role that can lock and see every row; permission or RLS errors must abort. Locks briefly block reads and writes as well as DDL. A pre-cutover write that has committed causes an abort, leaving the old schema and data intact. A write waiting behind a successful empty cutover runs against the new triggers after commit. No rows are deleted, and no existing counters are rewritten.
+
+**If either table is nonempty, do not clear, archive, or overwrite data to pass the guard.** Stop the rollout; this migration does not implement a safe nonempty-data transition. A separately reviewed plan must account for historical uncertainty and in-flight operations. A previous read showing empty tables is not permission or evidence to bypass the locked check. Legacy requests may still fail or show optimistic UI during a lock or timeout; the guard prevents a successful unsafe cutover, not all disruption.
+
+As a read-only observation on 2026-11-16, the live public API returned zero visible rows for each table. This does not prove privileged table contents, in-flight workload, actual policies, schema identity, or future state. The locked privileged check is decisive at execution time.
 
 New fact inserts still accept legacy payloads, but ignore supplied corroboration and dispute totals. A nonblank contributor token gives an initial corroboration and a matching vote in the same transaction; failure to create the vote rolls back the fact. The internal creator-vote insert runs as the function owner and bypasses the vote table's RLS; the original fact insert remains subject to its own RLS. Legacy clients' subsequent duplicate vote insert may fail, as their code already tolerates, and their counter RPC remains a no-op.
 
@@ -8,7 +18,7 @@ The baseline vote policy uses a self-comparison, imposing a global hourly cap. T
 
 This is a best-effort check, not a strict rate limiter: simultaneous or multi-row inserts can see the same prior count, and clients can supply `created_at` for direct vote inserts. Tokens can also be freely changed. Do not present this as abuse prevention or a guaranteed 20-vote ceiling.
 
-Counts on existing facts are not repaired or verified. In particular, an old fact can have a creator count but no creator vote; a later successful vote by that token will be counted, potentially leaving a historical overcount. Conversely, pre-existing discrepancies remain. A separate evidence-based reconciliation would be required.
+The empty-table guard means this rollout does not migrate or reconcile existing fact or vote rows. If the guard fails, existing counts and any ambiguous pending operations require a separate evidence-based plan.
 
 Tokens are anonymous client-supplied identifiers, not authenticated identities or secrets. Anyone able to learn or guess one can cast a vote with it, including claiming a creator token on a new fact; the uniqueness constraint then occupies that token for that fact. New tokens can also be generated freely. This change prevents arbitrary supplied totals and avoids exempting later votes just because a token matches the contributor; it does not prevent impersonation, ballot stuffing, fraudulent submissions or misuse of other fact fields.
 
