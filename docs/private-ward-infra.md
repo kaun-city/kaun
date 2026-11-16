@@ -46,10 +46,12 @@ real PostGIS: compare all rows and types from both public endpoints as anon,
 authenticated and service_role; test filters, ordering and single-row reads;
 change fixture source rows and invoke the service-role refresh; confirm both
 endpoints update, anon refresh is denied, and the private schema has no REST
-endpoint. Run the full seed/reset workflow and the advisor. Plain PostgreSQL
-role tests do not prove PostgREST, PostGIS, advisor or seed replay behavior.
+endpoint. Run the full seed/reset workflow and the advisor. The local PostgREST rehearsal uses a small PostGIS fixture and the official
+PostgREST executable supplied through `KAUN_POSTGREST_BIN`. It does not prove
+hosted configuration, full Supabase reset/seed, or advisor behavior.
 
-Rollback must be separately reviewed against the actual state. In one
+The accompanying rollback SQL was tested locally against the reviewed
+baseline. Rollback must be separately reviewed against the actual state. In one
 transaction, restore the prior `ward_bus_stops` definition only after moving
 its dependency back: drop `ward_bus_stops` and the public wrapper, move the
 materialized view to public, recreate `ward_bus_stops` and its prior grants,
