@@ -16,20 +16,27 @@ export async function POST(req: Request) {
     const event = body.event as string
     if (!event) return Response.json({ ok: false }, { status: 400 })
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    )
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!url || !key) {
+      console.error("Tracking database is not configured")
+      return Response.json({ ok: false }, { status: 503 })
+    }
+    const supabase = createClient(url, key)
 
-    await supabase.from("analytics_events").insert({
+    const { error } = await supabase.from("analytics_events").insert({
       event,
       ward_no: body.ward_no ?? null,
       ward_name: body.ward_name ?? null,
       meta: body.meta ?? null,
     })
 
+    if (error) {
+      console.error("Tracking insert failed", error.code)
+      return Response.json({ ok: false }, { status: 503 })
+    }
     return Response.json({ ok: true })
   } catch {
-    return Response.json({ ok: true }) // fail silently — never block the user
+    return Response.json({ ok: false }, { status: 503 })
   }
 }

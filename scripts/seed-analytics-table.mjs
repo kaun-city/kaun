@@ -39,17 +39,10 @@ await dbQuery(`
 `)
 console.log("RPC top_pin_drop_wards ready.")
 
-// Enable RLS but allow anon inserts (tracking is public)
+// Tracking writes use the server-only service role.
 await dbQuery(`
   ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
-
   DROP POLICY IF EXISTS "Allow anon inserts" ON analytics_events;
-  CREATE POLICY "Allow anon inserts" ON analytics_events
-    FOR INSERT TO anon WITH CHECK (true);
-
-  DROP POLICY IF EXISTS "Allow service reads" ON analytics_events;
-  CREATE POLICY "Allow service reads" ON analytics_events
-    FOR SELECT TO service_role USING (true);
+  REVOKE INSERT ON public.analytics_events FROM PUBLIC, anon, authenticated;
 `)
-console.log("RLS policies set.")
-console.log("Done. Run the seed once, then pin drops will be tracked automatically.")
+console.log("RLS enabled; anonymous tracking writes disabled.")
