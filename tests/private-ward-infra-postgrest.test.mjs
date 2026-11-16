@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync, spawn } from 'node:child_process'
 import { createHmac } from 'node:crypto'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:net'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
@@ -75,8 +75,31 @@ test('PostgREST preserves public reads, refresh permissions and rollback', { ski
     const expected = [{ward_no:1,ward_name:'First',signal_count:1,bus_stop_count:1,daily_trips:12},{ward_no:2,ward_name:'Empty',signal_count:0,bus_stop_count:0,daily_trips:0}]
     await until(async () => (await request(path)).status === 200)
     for (const role of ['anon','authenticated','service_role']) assert.deepEqual(await request(path,role), {status:200,body:expected})
-    pg(['--single-transaction', '-f', resolve('supabase/migrations/20261117_private_ward_infra.sql')])
-    await until(async () => pg(['-c', "SELECT relkind FROM pg_class WHERE oid='public.ward_infra_stats'::regclass"]) === 'v' && (await request(path)).status === 200)
+    // A 200 can come from the old cache. Count completed cache-load messages,
+    // then prove the check detects a migration whose NOTIFY is missing.
+    const reloadCount = () => (logs.match(/Schema cache loaded in [^\n]+/g) ?? []).length
+    await until(() => reloadCount() >= 1)
+    const migration = resolve('supabase/migrations/20261117_private_ward_infra.sql')
+    const rollback = resolve('supabase/rollbacks/20261117_private_ward_infra.sql')
+    const withoutNotify = join(dir, 'migration-without-notify.sql')
+    const sql = readFileSync(migration, 'utf8')
+    assert.match(sql, /NOTIFY pgrst, 'reload schema';/)
+    writeFileSync(withoutNotify, sql.replace("NOTIFY pgrst, 'reload schema';", ''))
+    const startupCount = reloadCount()
+    pg(['--single-transaction', '-f', withoutNotify])
+    await new Promise(ok => setTimeout(ok, 500))
+    assert.equal(reloadCount(), startupCount, 'negative control unexpectedly reloaded cache')
+    assert.equal((await request(path)).status, 200, 'old cache still serves a successful read')
+    pg(['-c', "NOTIFY pgrst, 'reload schema'"])
+    await until(() => reloadCount() > startupCount)
+    let previous = reloadCount()
+    pg(['--single-transaction', '-f', rollback])
+    await until(() => reloadCount() > previous)
+    previous = reloadCount()
+    pg(['--single-transaction', '-f', migration])
+    await until(() => reloadCount() > previous)
+    const migrationCount = reloadCount()
+    assert.equal(pg(['-c', "SELECT relkind FROM pg_class WHERE oid='public.ward_infra_stats'::regclass"]), 'v')
     for (const role of ['anon','authenticated','service_role']) assert.deepEqual(await request(path,role), {status:200,body:expected})
     assert.deepEqual(await request('ward_bus_stops?ward_no=eq.1&select=ward_no,stop_count,total_trips','anon',{headers:{Accept:'application/vnd.pgrst.object+json'}}), {status:200,body:{ward_no:1,stop_count:1,total_trips:12}})
     const hidden = await request('ward_infra_stats','anon',{headers:{'Accept-Profile':'kaun_private'}})
@@ -95,8 +118,10 @@ test('PostgREST preserves public reads, refresh permissions and rollback', { ski
     assert.equal(refreshed.status, 204)
     assert.deepEqual((await request('ward_bus_stops?ward_no=eq.1')).body,[{ward_no:1,stop_count:1,total_trips:30}])
     assert.equal((await request('ward_infra_stats?ward_no=eq.1')).body[0].daily_trips,30)
-    pg(['--single-transaction', '-f', resolve('supabase/rollbacks/20261117_private_ward_infra.sql')])
-    await until(async () => (await request(path)).status === 200)
+    previous = reloadCount()
+    pg(['--single-transaction', '-f', rollback])
+    await until(() => reloadCount() > previous)
+    const rollbackCount = reloadCount()
     for (const role of ['anon','authenticated','service_role']) {
       assert.equal((await request('ward_infra_stats?ward_no=eq.1',role)).body[0].daily_trips,30)
       assert.deepEqual((await request('ward_bus_stops?ward_no=eq.1',role)).body,[{ward_no:1,stop_count:1,total_trips:30}])
@@ -106,7 +131,7 @@ test('PostgREST preserves public reads, refresh permissions and rollback', { ski
     pg(['-c','UPDATE public.bmtc_stops SET trips=45 WHERE id=1'])
     assert.equal((await request('rpc/refresh_ward_infra_stats','service_role',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,204)
     assert.equal((await request('ward_bus_stops?ward_no=eq.1')).body[0].total_trips,45)
-    t.diagnostic(`before/after roles: 200; single bus: 200; private schema: ${hidden.status}; anon/auth refresh: ${denial.status}/${authDenial.status}; anon PATCH: ${writeDenial.status}; service refresh: ${refreshed.status}; trips: 12 -> 30 -> rollback -> 45`)
+    t.diagnostic(`cache loads: startup ${startupCount}, negative control unchanged, migration ${migrationCount}, rollback ${rollbackCount}; before/after roles: 200; single bus: 200; private schema: ${hidden.status}; anon/auth refresh: ${denial.status}/${authDenial.status}; anon PATCH: ${writeDenial.status}; service refresh: ${refreshed.status}; trips: 12 -> 30 -> rollback -> 45`)
   } finally {
     if (server && server.exitCode === null && server.signalCode === null) { const exited = new Promise(ok => server.once('exit', ok)); server.kill('SIGKILL'); await exited }
     if (started) execFileSync('pg_ctl', ['-D', db, '-m', 'immediate', 'stop'], { stdio: 'ignore' })
