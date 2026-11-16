@@ -92,3 +92,13 @@ END;
 $$;
 REVOKE ALL ON FUNCTION public.cast_fact_vote(integer, text, text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.cast_fact_vote(integer, text, text) TO anon, authenticated, service_role;
+
+-- Qualify the outer row: the previous self-comparison imposed a global cap.
+-- SELECT uses the existing read_votes policy, avoiding a recursive insert check.
+DROP POLICY IF EXISTS insert_votes ON public.fact_votes;
+CREATE POLICY insert_votes ON public.fact_votes FOR INSERT TO anon
+WITH CHECK ((
+  SELECT count(*) FROM public.fact_votes AS recent_vote
+  WHERE recent_vote.voter_token = fact_votes.voter_token
+    AND recent_vote.created_at > now() - interval '1 hour'
+) < 20);

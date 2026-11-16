@@ -22,7 +22,7 @@ test('unique fact votes are counted once for current and legacy clients', { skip
       CREATE TABLE community_facts (id integer PRIMARY KEY, ward_no integer DEFAULT 1, contributor_token text, corroboration_count integer NOT NULL DEFAULT 0, dispute_count integer NOT NULL DEFAULT 0, created_at timestamp DEFAULT now());
       CREATE TABLE fact_votes (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, fact_id integer NOT NULL REFERENCES community_facts, vote_type varchar(16) NOT NULL, voter_token varchar(128) NOT NULL, created_at timestamp DEFAULT now(), UNIQUE(fact_id,voter_token));
       GRANT SELECT, INSERT ON community_facts TO anon; GRANT SELECT, INSERT ON fact_votes TO anon; GRANT USAGE, SELECT ON SEQUENCE fact_votes_id_seq TO anon;
-      ALTER TABLE community_facts ENABLE ROW LEVEL SECURITY; CREATE POLICY read_facts ON community_facts FOR SELECT USING (true); CREATE POLICY insert_facts ON community_facts FOR INSERT TO anon WITH CHECK (true); ALTER TABLE fact_votes ENABLE ROW LEVEL SECURITY; CREATE POLICY read_votes ON fact_votes FOR SELECT USING (true); CREATE POLICY insert_votes ON fact_votes FOR INSERT TO anon WITH CHECK (true);`])
+      ALTER TABLE community_facts ENABLE ROW LEVEL SECURITY; CREATE POLICY read_facts ON community_facts FOR SELECT USING (true); CREATE POLICY insert_facts ON community_facts FOR INSERT TO anon WITH CHECK (true); ALTER TABLE fact_votes ENABLE ROW LEVEL SECURITY; CREATE POLICY read_votes ON fact_votes FOR SELECT USING (true); CREATE POLICY insert_votes ON fact_votes FOR INSERT TO anon WITH CHECK ((SELECT count(*) FROM fact_votes f WHERE f.voter_token = f.voter_token AND f.created_at > now() - interval '1 hour') < 20);`])
     pg(['-f', resolve('supabase/migrations/20261116_safe_fact_votes.sql')])
     assert.equal(pg(['-c', `SET ROLE anon;
       INSERT INTO community_facts(id,contributor_token,corroboration_count,dispute_count) VALUES (1,'creator',999,999)
@@ -58,15 +58,27 @@ test('unique fact votes are counted once for current and legacy clients', { skip
     }))
     await Promise.all(parallel)
     assert.equal(pg(['-c', 'SELECT corroboration_count,(SELECT count(*) FROM fact_votes WHERE fact_id=2) FROM community_facts WHERE id=2']), '10|10')
-    // Mirror the existing global-hour policies, including their self comparisons.
-    pg(['-c', `DROP POLICY insert_votes ON fact_votes;
-      CREATE POLICY insert_votes ON fact_votes FOR INSERT TO anon WITH CHECK ((SELECT count(*) FROM fact_votes f WHERE f.voter_token = f.voter_token AND f.created_at > now() - interval '1 hour') < 20);
-      DROP POLICY insert_facts ON community_facts;
+    // Exercise the migrated policy itself, not a test-only replacement. The
+    // same token reaches 20 across distinct facts; another token remains free.
+    pg(['-c', 'INSERT INTO community_facts(id) SELECT n FROM generate_series(100,125) n'])
+    for (let n = 100; n < 119; n++) {
+      pg(['-c', `SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (${n},'corroborate','limited-token')`])
+    }
+    const twentieth = JSON.parse(pg(['-c', "SET ROLE anon; SELECT cast_fact_vote(119,'corroborate','limited-token')"]))
+    assert.equal(twentieth.already_voted, false)
+    assert.throws(() => pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (120,'corroborate','limited-token')"]), /row-level security/)
+    pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (120,'corroborate','other-token')"])
+    assert.equal(pg(['-c', "SELECT count(*) FROM fact_votes WHERE voter_token='limited-token'"]), '20')
+    assert.equal(pg(['-c', "SELECT count(*) FROM fact_votes WHERE voter_token='other-token'"]), '1')
+    // Old votes do not count towards the current hour.
+    pg(['-c', "INSERT INTO fact_votes(fact_id,vote_type,voter_token,created_at) SELECT n,'corroborate','old-token',now() - interval '2 hours' FROM generate_series(100,119) n"])
+    pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (120,'corroborate','old-token')"])
+    // Creator vote bypasses votes RLS, while fact insertion still obeys its own policy.
+    pg(['-c', `DROP POLICY insert_facts ON community_facts;
       CREATE POLICY insert_facts ON community_facts FOR INSERT TO anon WITH CHECK ((SELECT count(*) FROM community_facts f WHERE f.ward_no = f.ward_no AND f.created_at > now() - interval '1 hour') < 10);
-      INSERT INTO fact_votes(fact_id,vote_type,voter_token) SELECT 3,'dispute','filler-' || n FROM generate_series(1,20) n;`])
-    assert.throws(() => pg(['-c', "SET ROLE anon; INSERT INTO fact_votes(fact_id,vote_type,voter_token) VALUES (3,'dispute','blocked')"]), /row-level security/)
-    assert.equal(pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id,contributor_token,corroboration_count) VALUES (5,'creator-2',999) RETURNING corroboration_count"]), '1')
-    assert.equal(pg(['-c', "SELECT count(*) FROM fact_votes WHERE fact_id=5 AND voter_token='creator-2'"]), '1')
+      UPDATE community_facts SET created_at = now() - interval '2 hours';`])
+    assert.equal(pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id,contributor_token,corroboration_count) VALUES (5,'limited-token',999) RETURNING corroboration_count"]), '1')
+    assert.equal(pg(['-c', "SELECT count(*) FROM fact_votes WHERE fact_id=5 AND voter_token='limited-token'"]), '1')
     pg(['-c', 'INSERT INTO community_facts(id) SELECT n FROM generate_series(10,20) n'])
     assert.throws(() => pg(['-c', "SET ROLE anon; INSERT INTO community_facts(id) VALUES (21)"]), /row-level security/)
 
