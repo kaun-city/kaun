@@ -9,8 +9,7 @@ BEGIN
 
   UPDATE public.community_facts
   SET corroboration_count = corroboration_count + CASE
-        -- Fact creation already counts its contributor before inserting this row.
-        WHEN NEW.vote_type = 'corroborate' AND contributor_token IS DISTINCT FROM NEW.voter_token THEN 1 ELSE 0 END,
+        WHEN NEW.vote_type = 'corroborate' THEN 1 ELSE 0 END,
       dispute_count = dispute_count + CASE WHEN NEW.vote_type = 'dispute' THEN 1 ELSE 0 END
   WHERE id = NEW.fact_id;
   RETURN NEW;
@@ -20,6 +19,43 @@ $$;
 CREATE TRIGGER count_inserted_fact_vote
 AFTER INSERT ON public.fact_votes
 FOR EACH ROW EXECUTE FUNCTION public.count_inserted_fact_vote();
+
+-- Ignore caller-supplied totals while preserving legacy INSERT payloads and
+-- their returned initial count. The matching vote is recorded in the same
+-- transaction, so a later vote is never exempted merely because its token
+-- matches contributor_token.
+CREATE OR REPLACE FUNCTION public.initialize_fact_counts()
+RETURNS trigger LANGUAGE plpgsql SET search_path = pg_catalog, public AS $$
+BEGIN
+  NEW.corroboration_count := CASE
+    WHEN NEW.contributor_token IS NOT NULL AND length(trim(NEW.contributor_token)) > 0 THEN 1 ELSE 0 END;
+  NEW.dispute_count := 0;
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER initialize_fact_counts
+BEFORE INSERT ON public.community_facts
+FOR EACH ROW EXECUTE FUNCTION public.initialize_fact_counts();
+
+CREATE OR REPLACE FUNCTION public.record_fact_creator_vote()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, public AS $$
+BEGIN
+  IF NEW.contributor_token IS NOT NULL AND length(trim(NEW.contributor_token)) > 0 THEN
+    -- This narrowly scoped insert bypasses the separate votes RLS limit; fact
+    -- insertion still obeys its own RLS policy. A failure rolls back the fact.
+    INSERT INTO public.fact_votes (fact_id, vote_type, voter_token)
+    VALUES (NEW.id, 'corroborate', NEW.contributor_token);
+    -- The vote trigger incremented the already initialized creator count.
+    UPDATE public.community_facts SET corroboration_count = corroboration_count - 1 WHERE id = NEW.id;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER record_fact_creator_vote
+AFTER INSERT ON public.community_facts
+FOR EACH ROW EXECUTE FUNCTION public.record_fact_creator_vote();
 
 -- Old clients still call this after inserting. Counting again would double count;
 -- keeping the signature avoids breaking clients already in the field.

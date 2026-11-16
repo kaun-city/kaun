@@ -295,14 +295,7 @@ export async function submitFact(payload: {
   const fact = await insert<CommunityFact>("community_facts", data)
   if (!fact) return null
 
-  // Also record the submitter's vote
-  if (payload.contributor_token) {
-    await insert("fact_votes", {
-      fact_id: fact.id,
-      vote_type: "corroborate",
-      voter_token: payload.contributor_token,
-    })
-  }
+  // The database records the contributor's initial vote with the fact.
 
   return {
     ok: true,

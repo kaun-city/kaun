@@ -1,0 +1,11 @@
+# Community fact vote counter rollout
+
+Apply `20261116_safe_fact_votes.sql` before deploying the matching web code. The migration is intended for a database where the earlier worktree version of this migration has not been applied. Inspect the live functions, triggers, grants, RLS policies and migration history immediately before rollout. Apply the migration transactionally. Do not run a historical counter backfill as part of this change.
+
+New fact inserts still accept legacy payloads, but ignore supplied corroboration and dispute totals. A nonblank contributor token gives an initial corroboration and a matching vote in the same transaction; failure to create the vote rolls back the fact. The internal creator-vote insert runs as the function owner and bypasses the vote table's RLS; the original fact insert remains subject to its own RLS. Legacy clients' subsequent duplicate vote insert may fail, as their code already tolerates, and their counter RPC remains a no-op.
+
+The checked-in baseline and the reported live policies use self-comparisons in the insert checks: they count all qualifying recent rows, not rows per voter or ward. Their nominal limits are fewer than 20 votes and fewer than 10 facts in the preceding hour, respectively. This migration leaves those policies unchanged. The internal creator vote bypasses the vote policy; ordinary direct inserts and RPC votes remain subject to it. These checks are not reliable strict concurrent rate limits.
+
+Counts on existing facts are not repaired or verified. In particular, an old fact can have a creator count but no creator vote; a later successful vote by that token will be counted, potentially leaving a historical overcount. Conversely, pre-existing discrepancies remain. A separate evidence-based reconciliation would be required.
+
+Tokens are anonymous client-supplied identifiers, not authenticated identities or secrets. Anyone able to learn or guess one can cast a vote with it, including claiming a creator token on a new fact; the uniqueness constraint then occupies that token for that fact. New tokens can also be generated freely. This change prevents arbitrary supplied totals and avoids exempting later votes just because a token matches the contributor; it does not prevent impersonation, ballot stuffing, fraudulent submissions or misuse of other fact fields.
