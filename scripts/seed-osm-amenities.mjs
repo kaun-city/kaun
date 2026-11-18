@@ -24,7 +24,10 @@
  * Env:    SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_MANAGEMENT_TOKEN
  */
 
-import { dbQuery, upsertRows, selectRows } from "./lib/db.mjs"
+import { dbQuery as query, upsertRows, selectRows } from "./lib/db.mjs"
+import { spatialSql } from "./lib/spatial-sql.mjs"
+
+const dbQuery = sql => query(spatialSql(sql))
 
 const OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 

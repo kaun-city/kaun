@@ -17,7 +17,7 @@ import assert from "node:assert/strict"
 import { existsSync } from "fs"
 
 import {
-  sqlLiteral, quote, ident, buildUpsertSql, toCsv, SupabaseBackend,
+  sqlLiteral, quote, ident, buildUpsertSql, toCsv, SupabaseBackend, Sink,
 } from "../scripts/india/lib/sink.mjs"
 import {
   normalizeStateName, PcReference, aliasCandidate, stateKey, stateAliasKey,
@@ -27,6 +27,32 @@ import {
   toMultiPolygon, ringArea, sanitizeMultiPolygon, geomSql,
   indexDatameet, indexShijithpk, buildRows, REDELIMITED_ST_CODES,
 } from "../scripts/india/seed-constituencies.mjs"
+
+test("spatial constituency batches set their own management request path", async () => {
+  const originalFetch = globalThis.fetch
+  const requests = []
+  globalThis.fetch = async (_url, options) => {
+    requests.push(JSON.parse(options.body).query)
+    return { ok: true, text: async () => "[]" }
+  }
+  try {
+    const backend = new SupabaseBackend({ url: "https://example.supabase.co", serviceKey: "key", mgmtToken: "token" })
+    const sink = new Sink({ loader: "test", apply: true, backend })
+    const polygon = { type: "Polygon", coordinates: [SQUARE] }
+    await sink.upsert("in_constituencies", [{ pc_code: "a" }, { pc_code: "b" }], {
+      conflict: ["pc_code"], raw: { geom: () => geomSql(polygon) }, spatial: true, batch: 1,
+    })
+    assert.equal(requests.length, 2)
+    for (const sql of requests) {
+      assert.match(sql, /^SET LOCAL search_path = public, extensions, pg_temp;\nINSERT INTO "in_constituencies"/)
+      assert.match(sql, /ST_GeomFromGeoJSON/)
+    }
+    await backend.runSql("SELECT 1")
+    assert.equal(requests[2], "SELECT 1")
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
 import {
   clean, parseDate, parseTimestamp, rsDisplayName, lsMemberRow, rsMemberRow,
   parsePrsMpTrack, MINISTER_NOTE_RE,

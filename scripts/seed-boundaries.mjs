@@ -10,6 +10,7 @@ import { readFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import * as topojson from 'topojson-client'
+import { spatialSql } from './lib/spatial-sql.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -28,7 +29,7 @@ async function dbq(sql) {
   const res = await fetch(MGMT, {
     method: 'POST',
     headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: sql }),
+    body: JSON.stringify({ query: spatialSql(sql) }),
   })
   const text = await res.text()
   if (!res.ok) throw new Error(`DB ${res.status}: ${text.slice(0,200)}`)
