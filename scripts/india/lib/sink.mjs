@@ -36,6 +36,7 @@ import { resolve, dirname, join } from "path"
 import { fileURLToPath } from "url"
 import { execFileSync } from "child_process"
 import { tmpdir } from "os"
+import { spatialSql } from "../../lib/spatial-sql.mjs"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 export const REPO_ROOT = resolve(__dirname, "../../..")
@@ -145,10 +146,10 @@ function psql(url, args, input) {
 class PostgresBackend {
   constructor(url) { this.url = url; assertLocalPgUrl(url); this.label = "postgres (local)" }
 
-  async runSql(sql) {
+  async runSql(sql, { spatial = false } = {}) {
     const f = join(tmpdir(), `kaun-india-${process.pid}-${Date.now()}.sql`)
-    writeFileSync(f, sql)
-    try { psql(this.url, ["-f", f]) } finally { rmSync(f, { force: true }) }
+    writeFileSync(f, spatial ? spatialSql(sql) : sql)
+    try { psql(this.url, [...(spatial ? ["--single-transaction"] : []), "-f", f]) } finally { rmSync(f, { force: true }) }
   }
 
   async selectJson(sql) {
@@ -195,14 +196,14 @@ export class SupabaseBackend {
 
   /** Management API — needed only where a column takes a SQL expression
    *  (in_constituencies.geom). Same mechanism as scripts/seed-boundaries.mjs. */
-  async runSql(sql) {
+  async runSql(sql, { spatial = false } = {}) {
     if (!this.mgmtToken) {
       throw new Error("SUPABASE_MANAGEMENT_TOKEN is required for geometry writes (raw SQL columns)")
     }
     const r = await fetch(`https://api.supabase.com/v1/projects/${this.project}/database/query`, {
       method: "POST",
       headers: { Authorization: `Bearer ${this.mgmtToken}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ query: sql }),
+      body: JSON.stringify({ query: spatial ? spatialSql(sql) : sql }),
     })
     const t = await r.text()
     if (!r.ok) throw new Error(`DB ${r.status}: ${t.slice(0, 600)}`)
@@ -293,7 +294,7 @@ export class Sink {
    *                uses 10 for ward-sized polygons; PC polygons are bigger).
    */
   async upsert(table, rows, opts = {}) {
-    const { conflict = [], raw = {}, preview = null, batch = 500,
+    const { conflict = [], raw = {}, preview = null, batch = 500, spatial = false,
             updateColumns = null, updateExpressions = {} } = opts
     if (!rows.length) { this.note(`${table}: nothing to write`); return }
     if (conflict.length) rows = this.#dedupe(table, rows, conflict)
@@ -316,7 +317,7 @@ export class Sink {
         await this.backend.upsertRest(table, chunk, conflict)
       } else {
         const sql = buildUpsertSql(table, chunk, { conflict, raw, updateColumns, updateExpressions })
-        await this.backend.runSql(sql)
+        await this.backend.runSql(sql, { spatial })
       }
       // Progress on a terminal only — a \r-per-batch progress bar turns into
       // hundreds of lines in a GitHub Actions log.

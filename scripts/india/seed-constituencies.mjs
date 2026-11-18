@@ -327,6 +327,7 @@ async function main() {
     conflict: ["pc_code"],
     // geom is a PostGIS expression, not a value — see geomSql().
     raw: { geom: row => geomSql(geomByCode.get(row.pc_code)) },
+    spatial: true,
     // Small batches: PC polygons are far larger than the ward polygons
     // seed-boundaries.mjs sends 10 at a time, and both the Management API and
     // psql are happier with modest statement sizes.

@@ -23,7 +23,10 @@
  * Env:    SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_MANAGEMENT_TOKEN
  */
 
-import { dbQuery, upsertRows } from "./lib/db.mjs"
+import { dbQuery as query, upsertRows } from "./lib/db.mjs"
+import { spatialSql } from "./lib/spatial-sql.mjs"
+
+const dbQuery = sql => query(spatialSql(sql))
 
 // Known Bengaluru lake monitoring stations with coordinates (from KSPCB/CPCB reports)
 // This is the seed dataset — can be expanded via RTI responses or CPCB API
