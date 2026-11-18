@@ -71,7 +71,7 @@ async function query(sql) {
     method: "POST",
     headers: { Authorization: `Bearer ${TOKEN}`, "Content-Type": "application/json" },
     // Every management API request has its own transaction and session.
-    body: JSON.stringify({ query: `SET LOCAL search_path = pg_catalog, public, extensions, pg_temp;\n${sql}` }),
+    body: JSON.stringify({ query: `SET LOCAL search_path = public, extensions, pg_temp;\n${sql}` }),
   })
   if (!response.ok) throw new Error(`Database ${response.status}: ${(await response.text()).slice(0, 500)}`)
   return response.json()
