@@ -70,7 +70,8 @@ async function query(sql) {
   const response = await fetch(`https://api.supabase.com/v1/projects/${PROJECT_ID}/database/query`, {
     method: "POST",
     headers: { Authorization: `Bearer ${TOKEN}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ query: sql }),
+    // Every management API request has its own transaction and session.
+    body: JSON.stringify({ query: `SET LOCAL search_path = pg_catalog, public, extensions, pg_temp;\n${sql}` }),
   })
   if (!response.ok) throw new Error(`Database ${response.status}: ${(await response.text()).slice(0, 500)}`)
   return response.json()
