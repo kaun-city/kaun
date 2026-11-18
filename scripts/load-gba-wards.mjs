@@ -126,7 +126,10 @@ async function main() {
     await query(upsertSql(collection.features.slice(i, i + 20), collection))
     console.log(`Loaded ${Math.min(i + 20, collection.features.length)}/${collection.features.length}`)
   }
-  await query(pinLookupSql)
+  // CREATE OR REPLACE resets function settings. Restore the hardened path in
+  // the same transaction so future loads continue to resolve PostGIS after
+  // the extension moves out of public.
+  await query(`${pinLookupSql}\nALTER FUNCTION public.pin_lookup(double precision, double precision) SET search_path = pg_catalog, public, extensions, pg_temp;`)
   console.log("Updated pin_lookup for independent legacy and GBA boundary matching")
   const result = await query("SELECT count(*)::int AS wards, count(DISTINCT gba_corporation_id)::int AS corporations FROM gba_wards;")
   console.log("Post-state:", JSON.stringify(result))
