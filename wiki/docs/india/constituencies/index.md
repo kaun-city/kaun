@@ -1,6 +1,6 @@
 # Constituencies — India (Lok Sabha, 543)
 
-_Auto-generated on 2026-11-15 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
+_Auto-generated on 2026-11-22 by [`scripts/generate-wiki/india-index.mjs`](https://github.com/kaun-city/kaun/blob/master/scripts/generate-wiki/india-index.mjs), reading the kaun.city Supabase tables with the public anon key. Refreshed weekly by the `refresh-india-wiki` workflow; if something looks wrong the source of truth is the database, so please [open an issue](https://github.com/kaun-city/kaun/issues/new) with the seat code and the correction._
 
 Every Lok Sabha seat gets a page here: who holds it, which assembly segments and districts
 it is made of, what its MP has declared, and what Parliament records of their work. Each seat
@@ -71,18 +71,18 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | Seat | Constituency | Reserved | Sitting MP | Party | Declared cases | Live |
 |---|---|---|---|---|---|---|
 | `37-1` | [Araku](37-1-araku.md) | ST | Gumma Thanuja Rani | YSR Congress Party | none declared | [open →](https://kaun.city/india/c/37-1) |
-| `37-2` | [Srikakulam](37-2-srikakulam.md) | — | Kinjarapu Rammohan Naidu ·&nbsp;minister | TDP | ⚠ 4 | [open →](https://kaun.city/india/c/37-2) |
+| `37-2` | [Srikakulam](37-2-srikakulam.md) | — | Kinjarapu Rammohan Naidu | TDP | ⚠ 4 | [open →](https://kaun.city/india/c/37-2) |
 | `37-3` | [Vizianagaram](37-3-vizianagaram.md) | — | Appalanaidu Kalisetti | TDP | none declared | [open →](https://kaun.city/india/c/37-3) |
 | `37-4` | [Visakhapatnam](37-4-visakhapatnam.md) | — | Sribharat Mathukumilli | TDP | ⚠ 2 | [open →](https://kaun.city/india/c/37-4) |
 | `37-5` | [Anakapalle](37-5-anakapalle.md) | — | C M Ramesh | BJP | ⚠ 5 | [open →](https://kaun.city/india/c/37-5) |
 | `37-6` | [Kakinada](37-6-kakinada.md) | — | Tangella Uday Srinivas | JSP | ⚠ 1 | [open →](https://kaun.city/india/c/37-6) |
 | `37-7` | [Amalapuram](37-7-amalapuram.md) | SC | G M Harish Balayogi | TDP | none declared | [open →](https://kaun.city/india/c/37-7) |
 | `37-8` | [Rajahmundry](37-8-rajahmundry.md) | — | D. Purandeswari | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/37-8) |
-| `37-9` | [Narsapuram](37-9-narsapuram.md) | — | Srinivasa Varma B J P Varma Bhupathiraju ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/37-9) |
+| `37-9` | [Narsapuram](37-9-narsapuram.md) | — | Srinivasa Varma B J P Varma Bhupathiraju | BJP | none declared | [open →](https://kaun.city/india/c/37-9) |
 | `37-10` | [Eluru](37-10-eluru.md) | — | Putta Mahesh Kumar | TDP | ⚠ 1 | [open →](https://kaun.city/india/c/37-10) |
 | `37-11` | [Machilipatnam](37-11-machilipatnam.md) | — | Balashowry Vallabhaneni | JSP | ⚠ 2 | [open →](https://kaun.city/india/c/37-11) |
 | `37-12` | [Vijayawada](37-12-vijayawada.md) | — | Kesineni Sivanath | TDP | none declared | [open →](https://kaun.city/india/c/37-12) |
-| `37-13` | [Guntur](37-13-guntur.md) | — | Chandra Sekhar Pemmasani ·&nbsp;minister | TDP | ⚠ 1 | [open →](https://kaun.city/india/c/37-13) |
+| `37-13` | [Guntur](37-13-guntur.md) | — | Chandra Sekhar Pemmasani | TDP | ⚠ 1 | [open →](https://kaun.city/india/c/37-13) |
 | `37-14` | [Narasaraopet](37-14-narasaraopet.md) | — | Lavu Sri Krishna Devarayalu | TDP | none declared | [open →](https://kaun.city/india/c/37-14) |
 | `37-15` | [Bapatla](37-15-bapatla.md) | SC | Krishna Prasad Tenneti | TDP | none declared | [open →](https://kaun.city/india/c/37-15) |
 | `37-16` | [Ongole](37-16-ongole.md) | — | Magunta Sreenivasulu Reddy | TDP | none declared | [open →](https://kaun.city/india/c/37-16) |
@@ -102,7 +102,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 
 | Seat | Constituency | Reserved | Sitting MP | Party | Declared cases | Live |
 |---|---|---|---|---|---|---|
-| `12-1` | [Arunachal West](12-1-arunachal-west.md) | — | Kiren Rijiju ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/12-1) |
+| `12-1` | [Arunachal West](12-1-arunachal-west.md) | — | Kiren Rijiju | BJP | none declared | [open →](https://kaun.city/india/c/12-1) |
 | `12-2` | [Arunachal East](12-2-arunachal-east.md) | — | Tapir Gao | BJP | none declared | [open →](https://kaun.city/india/c/12-2) |
 
 ### Assam
@@ -123,7 +123,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `18-10` | [Kaziranga](18-10-kaziranga.md) | — | Kamakhya Prasad Tasa | BJP | none declared | [open →](https://kaun.city/india/c/18-10) |
 | `18-11` | [Sonitpur](18-11-sonitpur.md) | — | Ranjit Dutta | BJP | none declared | [open →](https://kaun.city/india/c/18-11) |
 | `18-12` | [Lakhimpur](18-12-lakhimpur.md) | — | Pradan Baruah | BJP | none declared | [open →](https://kaun.city/india/c/18-12) |
-| `18-13` | [Dibrugarh](18-13-dibrugarh.md) | — | Sarbananda Sonowal ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/18-13) |
+| `18-13` | [Dibrugarh](18-13-dibrugarh.md) | — | Sarbananda Sonowal | BJP | none declared | [open →](https://kaun.city/india/c/18-13) |
 | `18-14` | [Jorhat](18-14-jorhat.md) | — | Gaurav Gogoi | INC | ⚠ 1 | [open →](https://kaun.city/india/c/18-14) |
 
 ### Bihar
@@ -146,20 +146,20 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `10-12` | [Purnia](10-12-purnia.md) | — | Rajesh Ranjan | Ind. | ⚠ 41 | [open →](https://kaun.city/india/c/10-12) |
 | `10-13` | [Madhepura](10-13-madhepura.md) | — | Dinesh Chandra Yadav | JD(U) | none declared | [open →](https://kaun.city/india/c/10-13) |
 | `10-14` | [Darbhanga](10-14-darbhanga.md) | — | Gopal Jee Thakur | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/10-14) |
-| `10-15` | [Muzaffarpur](10-15-muzaffarpur.md) | — | Raj Bhushan Choudhary ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/10-15) |
+| `10-15` | [Muzaffarpur](10-15-muzaffarpur.md) | — | Raj Bhushan Choudhary | BJP | none declared | [open →](https://kaun.city/india/c/10-15) |
 | `10-16` | [Vaishali](10-16-vaishali.md) | — | Veena Devi | LJSP(RV) | ⚠ 3 | [open →](https://kaun.city/india/c/10-16) |
 | `10-17` | [Gopalganj](10-17-gopalganj.md) | SC | Alok Kumar Suman | JD(U) | none declared | [open →](https://kaun.city/india/c/10-17) |
 | `10-18` | [Siwan](10-18-siwan.md) | — | Vijaylakshmi Devi | JD(U) | none declared | [open →](https://kaun.city/india/c/10-18) |
 | `10-19` | [Maharajganj](10-19-maharajganj.md) | — | Janardan Singh Sigriwal | BJP | ⚠ 5 | [open →](https://kaun.city/india/c/10-19) |
 | `10-20` | [Saran](10-20-saran.md) | — | Rajiv Pratap Rudy | BJP | none declared | [open →](https://kaun.city/india/c/10-20) |
-| `10-21` | [Hajipur](10-21-hajipur.md) | SC | Chirag Paswan ·&nbsp;minister | LJSP(RV) | none declared | [open →](https://kaun.city/india/c/10-21) |
-| `10-22` | [Ujiarpur](10-22-ujiarpur.md) | — | Nityanand Rai ·&nbsp;minister | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/10-22) |
+| `10-21` | [Hajipur](10-21-hajipur.md) | SC | Chirag Paswan | LJSP(RV) | none declared | [open →](https://kaun.city/india/c/10-21) |
+| `10-22` | [Ujiarpur](10-22-ujiarpur.md) | — | Nityanand Rai | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/10-22) |
 | `10-23` | [Samastipur](10-23-samastipur.md) | SC | Shambhavi | LJSP(RV) | none declared | [open →](https://kaun.city/india/c/10-23) |
-| `10-24` | [Begusarai](10-24-begusarai.md) | — | Giriraj Singh ·&nbsp;minister | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/10-24) |
+| `10-24` | [Begusarai](10-24-begusarai.md) | — | Giriraj Singh | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/10-24) |
 | `10-25` | [Khagaria](10-25-khagaria.md) | — | Rajesh Verma | LJSP(RV) | ⚠ 12 | [open →](https://kaun.city/india/c/10-25) |
 | `10-26` | [Bhagalpur](10-26-bhagalpur.md) | — | Ajay Kumar Mandal | JD(U) | none declared | [open →](https://kaun.city/india/c/10-26) |
 | `10-27` | [Banka](10-27-banka.md) | — | Giridhari Yadav | JD(U) | none declared | [open →](https://kaun.city/india/c/10-27) |
-| `10-28` | [Munger](10-28-munger.md) | — | Rajiv Ranjan Singh ·&nbsp;minister | JD(U) | none declared | [open →](https://kaun.city/india/c/10-28) |
+| `10-28` | [Munger](10-28-munger.md) | — | Rajiv Ranjan Singh | JD(U) | none declared | [open →](https://kaun.city/india/c/10-28) |
 | `10-29` | [Nalanda](10-29-nalanda.md) | — | Kaushalendra Kumar | JD(U) | none declared | [open →](https://kaun.city/india/c/10-29) |
 | `10-30` | [Patna Sahib](10-30-patna-sahib.md) | — | Ravi Shankar Prasad | BJP | none declared | [open →](https://kaun.city/india/c/10-30) |
 | `10-31` | [Pataliputra](10-31-pataliputra.md) | — | Misha Bharti | RJD | ⚠ 6 | [open →](https://kaun.city/india/c/10-31) |
@@ -169,7 +169,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `10-35` | [Karakat](10-35-karakat.md) | — | Raja Ram Singh | CPI(ML)(L) | ⚠ 3 | [open →](https://kaun.city/india/c/10-35) |
 | `10-36` | [Jahanabad](10-36-jahanabad.md) | — | Surendra Prasad Yadav | RJD | ⚠ 7 | [open →](https://kaun.city/india/c/10-36) |
 | `10-37` | [Aurangabad](10-37-aurangabad.md) | — | Abhay Kumar Sinha | RJD | ⚠ 16 | [open →](https://kaun.city/india/c/10-37) |
-| `10-38` | [Gaya](10-38-gaya.md) | SC | Jitan Ram Manjhi ·&nbsp;minister | HAM (S) | ⚠ 6 | [open →](https://kaun.city/india/c/10-38) |
+| `10-38` | [Gaya](10-38-gaya.md) | SC | Jitan Ram Manjhi | HAM (S) | ⚠ 6 | [open →](https://kaun.city/india/c/10-38) |
 | `10-39` | [Nawada](10-39-nawada.md) | — | Vivek Thakur | BJP | none declared | [open →](https://kaun.city/india/c/10-39) |
 | `10-40` | [Jamui](10-40-jamui.md) | SC | Arun Bharti | LJSP(RV) | none declared | [open →](https://kaun.city/india/c/10-40) |
 
@@ -191,7 +191,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `22-2` | [Raigarh](22-2-raigarh.md) | ST | Radheshyam Rathiya | BJP | none declared | [open →](https://kaun.city/india/c/22-2) |
 | `22-3` | [Janjgir-Champa](22-3-janjgir-champa.md) | SC | Kamlesh Jangde | BJP | none declared | [open →](https://kaun.city/india/c/22-3) |
 | `22-4` | [Korba](22-4-korba.md) | — | Jyotsna Charandas Mahant | INC | none declared | [open →](https://kaun.city/india/c/22-4) |
-| `22-5` | [Bilaspur](22-5-bilaspur.md) | — | Tokhan Sahu ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/22-5) |
+| `22-5` | [Bilaspur](22-5-bilaspur.md) | — | Tokhan Sahu | BJP | none declared | [open →](https://kaun.city/india/c/22-5) |
 | `22-6` | [Rajnandgaon](22-6-rajnandgaon.md) | — | Santosh Pandey | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/22-6) |
 | `22-7` | [Durg](22-7-durg.md) | — | Vijay Baghel | BJP | none declared | [open →](https://kaun.city/india/c/22-7) |
 | `22-8` | [Raipur](22-8-raipur.md) | — | Brijmohan Agrawal | BJP | none declared | [open →](https://kaun.city/india/c/22-8) |
@@ -216,7 +216,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 |---|---|---|---|---|---|---|
 | `7-1` | [Chandni Chowk](7-1-chandni-chowk.md) | — | Praveen Khandelwal | BJP | none declared | [open →](https://kaun.city/india/c/7-1) |
 | `7-2` | [North East Delhi](7-2-north-east-delhi.md) | — | Manoj Tiwari | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/7-2) |
-| `7-3` | [East Delhi](7-3-east-delhi.md) | — | Harsh Malhotra ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/7-3) |
+| `7-3` | [East Delhi](7-3-east-delhi.md) | — | Harsh Malhotra | BJP | none declared | [open →](https://kaun.city/india/c/7-3) |
 | `7-4` | [New Delhi](7-4-new-delhi.md) | — | Bansuri Swaraj | BJP | none declared | [open →](https://kaun.city/india/c/7-4) |
 | `7-5` | [North West Delhi](7-5-north-west-delhi.md) | SC | Yogender Chandolia | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/7-5) |
 | `7-6` | [West Delhi](7-6-west-delhi.md) | — | Kamaljeet Sehrawat | BJP | none declared | [open →](https://kaun.city/india/c/7-6) |
@@ -228,7 +228,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 
 | Seat | Constituency | Reserved | Sitting MP | Party | Declared cases | Live |
 |---|---|---|---|---|---|---|
-| `30-1` | [North Goa](30-1-north-goa.md) | — | Shripad Yesso Naik ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/30-1) |
+| `30-1` | [North Goa](30-1-north-goa.md) | — | Shripad Yesso Naik | BJP | none declared | [open →](https://kaun.city/india/c/30-1) |
 | `30-2` | [South Goa](30-2-south-goa.md) | — | Captain Viriato Fernandes | INC | ⚠ 1 | [open →](https://kaun.city/india/c/30-2) |
 
 ### Gujarat
@@ -242,16 +242,16 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `24-3` | [Patan](24-3-patan.md) | — | Bharatsinhji Shankarji Dabhi | BJP | none declared | [open →](https://kaun.city/india/c/24-3) |
 | `24-4` | [Mahesana](24-4-mahesana.md) | — | Haribhai Patel | BJP | none declared | [open →](https://kaun.city/india/c/24-4) |
 | `24-5` | [Sabarkantha](24-5-sabarkantha.md) | — | Shobhanaben Mahendrasinh Baraiya | BJP | none declared | [open →](https://kaun.city/india/c/24-5) |
-| `24-6` | [Gandhinagar](24-6-gandhinagar.md) | — | Amit Shah ·&nbsp;minister | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/24-6) |
+| `24-6` | [Gandhinagar](24-6-gandhinagar.md) | — | Amit Shah | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/24-6) |
 | `24-7` | [Ahmedabad East](24-7-ahmedabad-east.md) | — | Hasmukhbhai Somabhai Patel | BJP | none declared | [open →](https://kaun.city/india/c/24-7) |
 | `24-8` | [Ahmedabad West](24-8-ahmedabad-west.md) | SC | Dineshbhai Makwana | BJP | none declared | [open →](https://kaun.city/india/c/24-8) |
 | `24-9` | [Surendranagar](24-9-surendranagar.md) | — | Chandubhai Chhaganbhai Shihora | BJP | none declared | [open →](https://kaun.city/india/c/24-9) |
 | `24-10` | [Rajkot](24-10-rajkot.md) | — | Parshottambhai Rupala | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/24-10) |
-| `24-11` | [Porbandar](24-11-porbandar.md) | — | Mansukh Mandaviya ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/24-11) |
+| `24-11` | [Porbandar](24-11-porbandar.md) | — | Mansukh Mandaviya | BJP | none declared | [open →](https://kaun.city/india/c/24-11) |
 | `24-12` | [Jamnagar](24-12-jamnagar.md) | — | Poonamben Hematbhai Maadam | BJP | none declared | [open →](https://kaun.city/india/c/24-12) |
 | `24-13` | [Junagadh](24-13-junagadh.md) | — | Rajesh Naranbhai Chudasama | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/24-13) |
 | `24-14` | [Amreli](24-14-amreli.md) | — | Bharatbhai Manubhai Sutariya | BJP | none declared | [open →](https://kaun.city/india/c/24-14) |
-| `24-15` | [Bhavnagar](24-15-bhavnagar.md) | — | Nimuben Jayantibhai Bambhaniya ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/24-15) |
+| `24-15` | [Bhavnagar](24-15-bhavnagar.md) | — | Nimuben Jayantibhai Bambhaniya | BJP | none declared | [open →](https://kaun.city/india/c/24-15) |
 | `24-16` | [Anand](24-16-anand.md) | — | Miteshbhai Rameshbhai Patel | BJP | none declared | [open →](https://kaun.city/india/c/24-16) |
 | `24-17` | [Kheda](24-17-kheda.md) | — | Devusinh Chauhan | BJP | none declared | [open →](https://kaun.city/india/c/24-17) |
 | `24-18` | [Panchmahal](24-18-panchmahal.md) | — | Rajpalsinh Mahendrasinh Jadav | BJP | none declared | [open →](https://kaun.city/india/c/24-18) |
@@ -261,7 +261,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `24-22` | [Bharuch](24-22-bharuch.md) | — | Mansukhbhai Dhanjibhai Vasava | BJP | none declared | [open →](https://kaun.city/india/c/24-22) |
 | `24-23` | [Bardoli](24-23-bardoli.md) | ST | Parbhubhai Nagarbhai Vasava | BJP | none declared | [open →](https://kaun.city/india/c/24-23) |
 | `24-24` | [Surat](24-24-surat.md) | — | Mukeshkumar Chandrakaant Dalal | BJP | none declared | [open →](https://kaun.city/india/c/24-24) |
-| `24-25` | [Navsari](24-25-navsari.md) | — | Chandrakant Raghunath Patil ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/24-25) |
+| `24-25` | [Navsari](24-25-navsari.md) | — | Chandrakant Raghunath Patil | BJP | none declared | [open →](https://kaun.city/india/c/24-25) |
 | `24-26` | [Valsad](24-26-valsad.md) | ST | Dhaval Laxmanbhai Patel | BJP | none declared | [open →](https://kaun.city/india/c/24-26) |
 
 ### Haryana
@@ -274,12 +274,12 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `6-2` | [Kurukshetra](6-2-kurukshetra.md) | — | Naveen Jindal | BJP | ⚠ 9 | [open →](https://kaun.city/india/c/6-2) |
 | `6-3` | [Sirsa](6-3-sirsa.md) | SC | Kumari Selja | INC | none declared | [open →](https://kaun.city/india/c/6-3) |
 | `6-4` | [Hisar](6-4-hisar.md) | — | Jai Parkash | INC | none declared | [open →](https://kaun.city/india/c/6-4) |
-| `6-5` | [Karnal](6-5-karnal.md) | — | Manohar Lal ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/6-5) |
+| `6-5` | [Karnal](6-5-karnal.md) | — | Manohar Lal | BJP | none declared | [open →](https://kaun.city/india/c/6-5) |
 | `6-6` | [Sonipat](6-6-sonipat.md) | — | Satpal Brahamchari | INC | none declared | [open →](https://kaun.city/india/c/6-6) |
 | `6-7` | [Rohtak](6-7-rohtak.md) | — | Deepender Singh Hooda | INC | none declared | [open →](https://kaun.city/india/c/6-7) |
 | `6-8` | [Bhiwani-Mahendragarh](6-8-bhiwani-mahendragarh.md) | — | Dharambir Singh | BJP | none declared | [open →](https://kaun.city/india/c/6-8) |
-| `6-9` | [Gurgaon](6-9-gurgaon.md) | — | Rao Inderjit Singh ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/6-9) |
-| `6-10` | [Faridabad](6-10-faridabad.md) | — | Krishan Pal Gurjar ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/6-10) |
+| `6-9` | [Gurgaon](6-9-gurgaon.md) | — | Rao Inderjit Singh | BJP | none declared | [open →](https://kaun.city/india/c/6-9) |
+| `6-10` | [Faridabad](6-10-faridabad.md) | — | Krishan Pal Gurjar | BJP | none declared | [open →](https://kaun.city/india/c/6-10) |
 
 ### Himachal Pradesh
 
@@ -301,7 +301,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `1-1` | [Baramulla](1-1-baramulla.md) | — | Abdul Rashid Sheikh | Ind. | ⚠ 3 | [open →](https://kaun.city/india/c/1-1) |
 | `1-2` | [Srinagar](1-2-srinagar.md) | — | _vacant — bypoll pending_ | — | none declared | [open →](https://kaun.city/india/c/1-2) |
 | `1-3` | [Anantnag-Rajouri](1-3-anantnag-rajouri.md) | — | Mian Altaf Ahmad | J&KNC | none declared | [open →](https://kaun.city/india/c/1-3) |
-| `1-4` | [Udhampur](1-4-udhampur.md) | — | Jitendra Singh ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/1-4) |
+| `1-4` | [Udhampur](1-4-udhampur.md) | — | Jitendra Singh | BJP | none declared | [open →](https://kaun.city/india/c/1-4) |
 | `1-5` | [Jammu](1-5-jammu.md) | — | Jugal Kishore | BJP | none declared | [open →](https://kaun.city/india/c/1-5) |
 
 ### Jharkhand
@@ -314,10 +314,10 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `20-2` | [Dumka](20-2-dumka.md) | ST | Nalin Soren | JMM | ⚠ 2 | [open →](https://kaun.city/india/c/20-2) |
 | `20-3` | [Godda](20-3-godda.md) | — | Nishikant Dubey | BJP | ⚠ 8 | [open →](https://kaun.city/india/c/20-3) |
 | `20-4` | [Chatra](20-4-chatra.md) | — | Kali Charan Singh | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/20-4) |
-| `20-5` | [Kodarma](20-5-kodarma.md) | — | Annpurna Devi ·&nbsp;minister | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/20-5) |
+| `20-5` | [Kodarma](20-5-kodarma.md) | — | Annpurna Devi | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/20-5) |
 | `20-6` | [Giridih](20-6-giridih.md) | — | Chandra Prakash Choudhary | AJSU | ⚠ 2 | [open →](https://kaun.city/india/c/20-6) |
 | `20-7` | [Dhanbad](20-7-dhanbad.md) | — | Dulu Mahato | BJP | ⚠ 22 | [open →](https://kaun.city/india/c/20-7) |
-| `20-8` | [Ranchi](20-8-ranchi.md) | — | Sanjay Seth ·&nbsp;minister | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/20-8) |
+| `20-8` | [Ranchi](20-8-ranchi.md) | — | Sanjay Seth | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/20-8) |
 | `20-9` | [Jamshedpur](20-9-jamshedpur.md) | — | Bidyut Baran Mahato | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/20-9) |
 | `20-10` | [Singhbhum](20-10-singhbhum.md) | ST | Joba Majhi | JMM | none declared | [open →](https://kaun.city/india/c/20-10) |
 | `20-11` | [Khunti](20-11-khunti.md) | ST | Kali Charan Munda | INC | none declared | [open →](https://kaun.city/india/c/20-11) |
@@ -341,7 +341,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `29-8` | [Koppal](29-8-koppal.md) | — | K Rajashekar Basavaraj Hitnal | INC | ⚠ 3 | [open →](https://kaun.city/india/c/29-8) |
 | `29-9` | [Bellary](29-9-bellary.md) | ST | E Tukaram | INC | none declared | [open →](https://kaun.city/india/c/29-9) |
 | `29-10` | [Haveri](29-10-haveri.md) | — | Basavaraj Bommai | BJP | none declared | [open →](https://kaun.city/india/c/29-10) |
-| `29-11` | [Dharwad](29-11-dharwad.md) | — | Pralhad Joshi ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/29-11) |
+| `29-11` | [Dharwad](29-11-dharwad.md) | — | Pralhad Joshi | BJP | none declared | [open →](https://kaun.city/india/c/29-11) |
 | `29-12` | [Uttara Kannada](29-12-uttara-kannada.md) | — | Vishweshwar Hegde Kageri | BJP | none declared | [open →](https://kaun.city/india/c/29-12) |
 | `29-13` | [Davanagere](29-13-davanagere.md) | — | Prabha Mallikarjun | INC | none declared | [open →](https://kaun.city/india/c/29-13) |
 | `29-14` | [Shimoga](29-14-shimoga.md) | — | B Y Raghavendra | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/29-14) |
@@ -349,12 +349,12 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `29-16` | [Hassan](29-16-hassan.md) | — | Shreyas M Patel | INC | ⚠ 1 | [open →](https://kaun.city/india/c/29-16) |
 | `29-17` | [Dakshina Kannada](29-17-dakshina-kannada.md) | — | Captain Brijesh Chowta | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/29-17) |
 | `29-18` | [Chitradurga](29-18-chitradurga.md) | SC | Govind Makthappa Karjol | BJP | none declared | [open →](https://kaun.city/india/c/29-18) |
-| `29-19` | [Tumkur](29-19-tumkur.md) | — | V Somanna ·&nbsp;minister | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/29-19) |
-| `29-20` | [Mandya](29-20-mandya.md) | — | H D Kumaraswamy ·&nbsp;minister | JD(S) | ⚠ 3 | [open →](https://kaun.city/india/c/29-20) |
+| `29-19` | [Tumkur](29-19-tumkur.md) | — | V Somanna | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/29-19) |
+| `29-20` | [Mandya](29-20-mandya.md) | — | H D Kumaraswamy | JD(S) | ⚠ 3 | [open →](https://kaun.city/india/c/29-20) |
 | `29-21` | [Mysore](29-21-mysore.md) | — | Yaduveer Wadiyar | BJP | none declared | [open →](https://kaun.city/india/c/29-21) |
 | `29-22` | [Chamarajanagar](29-22-chamarajanagar.md) | SC | Sunil Bose | INC | ⚠ 1 | [open →](https://kaun.city/india/c/29-22) |
 | `29-23` | [Bangalore Rural](29-23-bangalore-rural.md) | — | C N Manjunath | BJP | none declared | [open →](https://kaun.city/india/c/29-23) |
-| `29-24` | [Bangalore North](29-24-bangalore-north.md) | — | Shobha Karandlaje ·&nbsp;minister | BJP | ⚠ 5 | [open →](https://kaun.city/india/c/29-24) |
+| `29-24` | [Bangalore North](29-24-bangalore-north.md) | — | Shobha Karandlaje | BJP | ⚠ 5 | [open →](https://kaun.city/india/c/29-24) |
 | `29-25` | [Bangalore Central](29-25-bangalore-central.md) | — | P C Mohan | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/29-25) |
 | `29-26` | [Bangalore South](29-26-bangalore-south.md) | — | Tejasvi Surya | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/29-26) |
 | `29-27` | [Chikkballapur](29-27-chikkballapur.md) | — | K Sudhakar | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/29-27) |
@@ -375,7 +375,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `32-7` | [Ponnani](32-7-ponnani.md) | — | M P Abdussamad Samadani | IUML | ⚠ 1 | [open →](https://kaun.city/india/c/32-7) |
 | `32-8` | [Palakkad](32-8-palakkad.md) | — | V K Sreekandan | INC | ⚠ 5 | [open →](https://kaun.city/india/c/32-8) |
 | `32-9` | [Alathur](32-9-alathur.md) | SC | K Radhakrishnan | CPI(M) | none declared | [open →](https://kaun.city/india/c/32-9) |
-| `32-10` | [Thrissur](32-10-thrissur.md) | — | Suresh Gopi ·&nbsp;minister | BJP | ⚠ 4 | [open →](https://kaun.city/india/c/32-10) |
+| `32-10` | [Thrissur](32-10-thrissur.md) | — | Suresh Gopi | BJP | ⚠ 4 | [open →](https://kaun.city/india/c/32-10) |
 | `32-11` | [Chalakudy](32-11-chalakudy.md) | — | Benny Behanan | INC | ⚠ 5 | [open →](https://kaun.city/india/c/32-11) |
 | `32-12` | [Ernakulam](32-12-ernakulam.md) | — | Hibi Eden | INC | ⚠ 10 | [open →](https://kaun.city/india/c/32-12) |
 | `32-13` | [Idukki](32-13-idukki.md) | — | Dean Kuriakose | INC | ⚠ 88 | [open →](https://kaun.city/india/c/32-13) |
@@ -412,9 +412,9 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `23-1` | [Morena](23-1-morena.md) | — | Shivmangal Singh Tomar | BJP | none declared | [open →](https://kaun.city/india/c/23-1) |
 | `23-2` | [Bhind](23-2-bhind.md) | SC | Sandhya Ray | BJP | none declared | [open →](https://kaun.city/india/c/23-2) |
 | `23-3` | [Gwalior](23-3-gwalior.md) | — | Bharat Singh Kushwah | BJP | none declared | [open →](https://kaun.city/india/c/23-3) |
-| `23-4` | [Guna](23-4-guna.md) | — | Jyotiraditya M Scindia ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/23-4) |
+| `23-4` | [Guna](23-4-guna.md) | — | Jyotiraditya M Scindia | BJP | none declared | [open →](https://kaun.city/india/c/23-4) |
 | `23-5` | [Sagar](23-5-sagar.md) | — | Lata Wankhede | BJP | none declared | [open →](https://kaun.city/india/c/23-5) |
-| `23-6` | [Tikamgarh](23-6-tikamgarh.md) | SC | Virendra Kumar ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/23-6) |
+| `23-6` | [Tikamgarh](23-6-tikamgarh.md) | SC | Virendra Kumar | BJP | none declared | [open →](https://kaun.city/india/c/23-6) |
 | `23-7` | [Damoh](23-7-damoh.md) | — | Rahul Singh Lodhi | BJP | none declared | [open →](https://kaun.city/india/c/23-7) |
 | `23-8` | [Khajuraho](23-8-khajuraho.md) | — | Vishnu Datt Sharma | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/23-8) |
 | `23-9` | [Satna](23-9-satna.md) | — | Ganesh Singh | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/23-9) |
@@ -426,18 +426,18 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `23-15` | [Balaghat](23-15-balaghat.md) | — | Bharti Pardhi | BJP | none declared | [open →](https://kaun.city/india/c/23-15) |
 | `23-16` | [Chhindwara](23-16-chhindwara.md) | — | Bunty Vivek Sahu | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/23-16) |
 | `23-17` | [Hoshangabad](23-17-hoshangabad.md) | — | Darshan Singh Choudhary | BJP | none declared | [open →](https://kaun.city/india/c/23-17) |
-| `23-18` | [Vidisha](23-18-vidisha.md) | — | Shivraj Singh Chouhan ·&nbsp;minister | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/23-18) |
+| `23-18` | [Vidisha](23-18-vidisha.md) | — | Shivraj Singh Chouhan | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/23-18) |
 | `23-19` | [Bhopal](23-19-bhopal.md) | — | Alok Sharma | BJP | ⚠ 4 | [open →](https://kaun.city/india/c/23-19) |
 | `23-20` | [Rajgarh](23-20-rajgarh.md) | — | Rodmal Nagar | BJP | none declared | [open →](https://kaun.city/india/c/23-20) |
 | `23-21` | [Dewas](23-21-dewas.md) | SC | Mahendra Singh Solanky | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/23-21) |
 | `23-22` | [Ujjain](23-22-ujjain.md) | SC | Anil Firojiya | BJP | none declared | [open →](https://kaun.city/india/c/23-22) |
 | `23-23` | [Mandsour](23-23-mandsour.md) | — | Sudheer Gupta | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/23-23) |
 | `23-24` | [Ratlam](23-24-ratlam.md) | ST | Anita Nagarsingh Chouhan | BJP | none declared | [open →](https://kaun.city/india/c/23-24) |
-| `23-25` | [Dhar](23-25-dhar.md) | ST | Savitri Thakur ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/23-25) |
+| `23-25` | [Dhar](23-25-dhar.md) | ST | Savitri Thakur | BJP | none declared | [open →](https://kaun.city/india/c/23-25) |
 | `23-26` | [Indore](23-26-indore.md) | — | Shankar Lalwani | BJP | none declared | [open →](https://kaun.city/india/c/23-26) |
 | `23-27` | [Khargone](23-27-khargone.md) | ST | Gajendra Singh Patel | BJP | none declared | [open →](https://kaun.city/india/c/23-27) |
 | `23-28` | [Khandwa](23-28-khandwa.md) | — | Gyaneshwar Patil | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/23-28) |
-| `23-29` | [Betul](23-29-betul.md) | ST | Durgadas D D Uikey ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/23-29) |
+| `23-29` | [Betul](23-29-betul.md) | ST | Durgadas D D Uikey | BJP | none declared | [open →](https://kaun.city/india/c/23-29) |
 
 ### Maharashtra
 
@@ -448,13 +448,13 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `27-1` | [Nandurbar](27-1-nandurbar.md) | ST | Gowaal Kagada Padavi | INC | none declared | [open →](https://kaun.city/india/c/27-1) |
 | `27-2` | [Dhule](27-2-dhule.md) | — | Bachhav Shobha Dinesh | INC | ⚠ 2 | [open →](https://kaun.city/india/c/27-2) |
 | `27-3` | [Jalgaon](27-3-jalgaon.md) | — | Smita Uday Wagh | BJP | none declared | [open →](https://kaun.city/india/c/27-3) |
-| `27-4` | [Raver](27-4-raver.md) | — | Raksha Nikhil Khadse ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/27-4) |
-| `27-5` | [Buldhana](27-5-buldhana.md) | — | Prataprao Ganpatrao Jadhav ·&nbsp;minister | SS | ⚠ 2 | [open →](https://kaun.city/india/c/27-5) |
+| `27-4` | [Raver](27-4-raver.md) | — | Raksha Nikhil Khadse | BJP | none declared | [open →](https://kaun.city/india/c/27-4) |
+| `27-5` | [Buldhana](27-5-buldhana.md) | — | Prataprao Ganpatrao Jadhav | SS | ⚠ 2 | [open →](https://kaun.city/india/c/27-5) |
 | `27-6` | [Akola](27-6-akola.md) | — | Anup Sanjay Dhotre | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/27-6) |
 | `27-7` | [Amravati](27-7-amravati.md) | SC | Balwant Baswant Wankhade | INC | ⚠ 1 | [open →](https://kaun.city/india/c/27-7) |
 | `27-8` | [Wardha](27-8-wardha.md) | — | Amar Sharadrao Kale | NCPSP | none declared | [open →](https://kaun.city/india/c/27-8) |
 | `27-9` | [Ramtek](27-9-ramtek.md) | SC | Shyamkumar Daulat Barve | INC | ⚠ 2 | [open →](https://kaun.city/india/c/27-9) |
-| `27-10` | [Nagpur](27-10-nagpur.md) | — | Nitin Jairam Gadkari ·&nbsp;minister | BJP | ⚠ 10 | [open →](https://kaun.city/india/c/27-10) |
+| `27-10` | [Nagpur](27-10-nagpur.md) | — | Nitin Jairam Gadkari | BJP | ⚠ 10 | [open →](https://kaun.city/india/c/27-10) |
 | `27-11` | [Bhandara-Gondiya](27-11-bhandara-gondiya.md) | — | Prashant Yadaorao Padole | INC | none declared | [open →](https://kaun.city/india/c/27-11) |
 | `27-12` | [Gadchiroli-Chimur](27-12-gadchiroli-chimur.md) | ST | Kirsan Namdeo | INC | none declared | [open →](https://kaun.city/india/c/27-12) |
 | `27-13` | [Chandrapur](27-13-chandrapur.md) | — | Dhanorkar Pratibha Suresh | INC | none declared | [open →](https://kaun.city/india/c/27-13) |
@@ -470,7 +470,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `27-23` | [Bhiwandi](27-23-bhiwandi.md) | — | Balya Mama Suresh Gopinath Mhatre | NCPSP | none declared | [open →](https://kaun.city/india/c/27-23) |
 | `27-24` | [Kalyan](27-24-kalyan.md) | — | Shrikant Eknath Shinde | SS | none declared | [open →](https://kaun.city/india/c/27-24) |
 | `27-25` | [Thane](27-25-thane.md) | — | Naresh Ganpat Mhaske | SS | ⚠ 2 | [open →](https://kaun.city/india/c/27-25) |
-| `27-26` | [Mumbai North](27-26-mumbai-north.md) | — | Piyush Vedprakash Goyal ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/27-26) |
+| `27-26` | [Mumbai North](27-26-mumbai-north.md) | — | Piyush Vedprakash Goyal | BJP | none declared | [open →](https://kaun.city/india/c/27-26) |
 | `27-27` | [Mumbai North-West](27-27-mumbai-north-west.md) | — | Ravindra Dattaram Waikar | SS | ⚠ 3 | [open →](https://kaun.city/india/c/27-27) |
 | `27-28` | [Mumbai North-East](27-28-mumbai-north-east.md) | — | Sanjay Dina Patil | SS | none declared | [open →](https://kaun.city/india/c/27-28) |
 | `27-29` | [Mumbai North-Central](27-29-mumbai-north-central.md) | — | Varsha Eknath Gaikwad | INC | ⚠ 7 | [open →](https://kaun.city/india/c/27-29) |
@@ -478,7 +478,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `27-31` | [Mumbai South](27-31-mumbai-south.md) | — | Arvind Ganpat Sawant | SHSUBT | ⚠ 1 | [open →](https://kaun.city/india/c/27-31) |
 | `27-32` | [Raigad](27-32-raigad.md) | — | Tatkare Sunil Dattatrey | NCP | none declared | [open →](https://kaun.city/india/c/27-32) |
 | `27-33` | [Maval](27-33-maval.md) | — | Shrirang Appa Chandu Barne | SS | ⚠ 3 | [open →](https://kaun.city/india/c/27-33) |
-| `27-34` | [Pune](27-34-pune.md) | — | Murlidhar Mohol ·&nbsp;minister | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/27-34) |
+| `27-34` | [Pune](27-34-pune.md) | — | Murlidhar Mohol | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/27-34) |
 | `27-35` | [Baramati](27-35-baramati.md) | — | Supriya Sule | NCPSP | none declared | [open →](https://kaun.city/india/c/27-35) |
 | `27-36` | [Shirur](27-36-shirur.md) | — | Amol Ramsing Kolhe | NCPSP | none declared | [open →](https://kaun.city/india/c/27-36) |
 | `27-37` | [Ahmednagar](27-37-ahmednagar.md) | — | Nilesh Dnyandev Lanke | NCPSP | ⚠ 2 | [open →](https://kaun.city/india/c/27-37) |
@@ -535,7 +535,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | Seat | Constituency | Reserved | Sitting MP | Party | Declared cases | Live |
 |---|---|---|---|---|---|---|
 | `21-1` | [Bargarh](21-1-bargarh.md) | — | Pradeep Purohit | BJP | ⚠ 8 | [open →](https://kaun.city/india/c/21-1) |
-| `21-2` | [Sundargarh](21-2-sundargarh.md) | ST | Jual Oram ·&nbsp;minister | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/21-2) |
+| `21-2` | [Sundargarh](21-2-sundargarh.md) | ST | Jual Oram | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/21-2) |
 | `21-3` | [Sambalpur](21-3-sambalpur.md) | — | Dharmendra Pradhan | BJP | ⚠ 5 | [open →](https://kaun.city/india/c/21-3) |
 | `21-4` | [Keonjhar](21-4-keonjhar.md) | ST | Ananta Nayak | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/21-4) |
 | `21-5` | [Mayurbhanj](21-5-mayurbhanj.md) | ST | Naba Charan Majhi | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/21-5) |
@@ -591,21 +591,21 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | Seat | Constituency | Reserved | Sitting MP | Party | Declared cases | Live |
 |---|---|---|---|---|---|---|
 | `8-1` | [Ganganagar](8-1-ganganagar.md) | SC | Kuldeep Indora | INC | none declared | [open →](https://kaun.city/india/c/8-1) |
-| `8-2` | [Bikaner](8-2-bikaner.md) | SC | Arjun Ram Meghwal ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/8-2) |
+| `8-2` | [Bikaner](8-2-bikaner.md) | SC | Arjun Ram Meghwal | BJP | none declared | [open →](https://kaun.city/india/c/8-2) |
 | `8-3` | [Churu](8-3-churu.md) | — | Rahul Kaswan | INC | none declared | [open →](https://kaun.city/india/c/8-3) |
 | `8-4` | [Jhunjhunu](8-4-jhunjhunu.md) | — | Brijendra Singh Ola | INC | none declared | [open →](https://kaun.city/india/c/8-4) |
 | `8-5` | [Sikar](8-5-sikar.md) | — | Amra Ram | CPI(M) | none declared | [open →](https://kaun.city/india/c/8-5) |
 | `8-6` | [Jaipur Rural](8-6-jaipur-rural.md) | — | Rao Rajendra Singh | BJP | none declared | [open →](https://kaun.city/india/c/8-6) |
 | `8-7` | [Jaipur](8-7-jaipur.md) | — | Manju Sharma | BJP | none declared | [open →](https://kaun.city/india/c/8-7) |
-| `8-8` | [Alwar](8-8-alwar.md) | — | Bhupender Yadav ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/8-8) |
+| `8-8` | [Alwar](8-8-alwar.md) | — | Bhupender Yadav | BJP | none declared | [open →](https://kaun.city/india/c/8-8) |
 | `8-9` | [Bharatpur](8-9-bharatpur.md) | SC | Sanjna Jatav | INC | none declared | [open →](https://kaun.city/india/c/8-9) |
 | `8-10` | [Karauli -Dholpur](8-10-karauli-dholpur.md) | SC | Bhajan Lal Jatav | INC | ⚠ 1 | [open →](https://kaun.city/india/c/8-10) |
 | `8-11` | [Dausa](8-11-dausa.md) | ST | Murari Lal Meena | INC | none declared | [open →](https://kaun.city/india/c/8-11) |
 | `8-12` | [Tonk - Sawai Madhopur](8-12-tonk-sawai-madhopur.md) | — | Harish Chandra Meena | INC | none declared | [open →](https://kaun.city/india/c/8-12) |
-| `8-13` | [Ajmer](8-13-ajmer.md) | — | Bhagirath Choudhary ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/8-13) |
+| `8-13` | [Ajmer](8-13-ajmer.md) | — | Bhagirath Choudhary | BJP | none declared | [open →](https://kaun.city/india/c/8-13) |
 | `8-14` | [Nagaur](8-14-nagaur.md) | — | Hanuman Beniwal | RLP | ⚠ 1 | [open →](https://kaun.city/india/c/8-14) |
 | `8-15` | [Pali](8-15-pali.md) | — | P P Chaudhary | BJP | none declared | [open →](https://kaun.city/india/c/8-15) |
-| `8-16` | [Jodhpur](8-16-jodhpur.md) | — | Gajendra Singh Shekhawat ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/8-16) |
+| `8-16` | [Jodhpur](8-16-jodhpur.md) | — | Gajendra Singh Shekhawat | BJP | none declared | [open →](https://kaun.city/india/c/8-16) |
 | `8-17` | [Barmer](8-17-barmer.md) | — | Ummeda Ram Beniwal | INC | none declared | [open →](https://kaun.city/india/c/8-17) |
 | `8-18` | [Jalore](8-18-jalore.md) | — | Lumbaram Choudhary | BJP | none declared | [open →](https://kaun.city/india/c/8-18) |
 | `8-19` | [Udaipur](8-19-udaipur.md) | ST | Manna Lal Rawat | BJP | none declared | [open →](https://kaun.city/india/c/8-19) |
@@ -678,12 +678,12 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 |---|---|---|---|---|---|---|
 | `36-1` | [Adilabad](36-1-adilabad.md) | ST | Godam Nagesh | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/36-1) |
 | `36-2` | [Peddapalle](36-2-peddapalle.md) | SC | Vamsi Krishna Gaddam | INC | none declared | [open →](https://kaun.city/india/c/36-2) |
-| `36-3` | [Karimnagar](36-3-karimnagar.md) | — | Bandi Sanjay Kumar ·&nbsp;minister | BJP | ⚠ 42 | [open →](https://kaun.city/india/c/36-3) |
+| `36-3` | [Karimnagar](36-3-karimnagar.md) | — | Bandi Sanjay Kumar | BJP | ⚠ 42 | [open →](https://kaun.city/india/c/36-3) |
 | `36-4` | [Nizamabad](36-4-nizamabad.md) | — | Arvind Dharmapuri | BJP | ⚠ 22 | [open →](https://kaun.city/india/c/36-4) |
 | `36-5` | [Zahirabad](36-5-zahirabad.md) | — | Suresh Kumar Shetkar | INC | ⚠ 1 | [open →](https://kaun.city/india/c/36-5) |
 | `36-6` | [Medak](36-6-medak.md) | — | Madhavaneni Raghunandan Rao | BJP | ⚠ 29 | [open →](https://kaun.city/india/c/36-6) |
 | `36-7` | [Malkajgiri](36-7-malkajgiri.md) | — | Eatala Rajender | BJP | ⚠ 45 | [open →](https://kaun.city/india/c/36-7) |
-| `36-8` | [Secunderabad](36-8-secunderabad.md) | — | G Kishan Reddy ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/36-8) |
+| `36-8` | [Secunderabad](36-8-secunderabad.md) | — | G Kishan Reddy | BJP | none declared | [open →](https://kaun.city/india/c/36-8) |
 | `36-9` | [Hyderabad](36-9-hyderabad.md) | — | Asaduddin Owaisi | AIMIM | ⚠ 5 | [open →](https://kaun.city/india/c/36-9) |
 | `36-10` | [Chevella](36-10-chevella.md) | — | Konda Vishweshwar Reddy | BJP | ⚠ 4 | [open →](https://kaun.city/india/c/36-10) |
 | `36-11` | [Mahbubnagar](36-11-mahbubnagar.md) | — | D K Aruna | BJP | ⚠ 6 | [open →](https://kaun.city/india/c/36-11) |
@@ -726,7 +726,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `9-15` | [Aligarh](9-15-aligarh.md) | — | Satish Kumar Gautam | BJP | none declared | [open →](https://kaun.city/india/c/9-15) |
 | `9-16` | [Hathras](9-16-hathras.md) | SC | Anoop Pradhan Valmiki | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/9-16) |
 | `9-17` | [Mathura](9-17-mathura.md) | — | Hema Malini | BJP | none declared | [open →](https://kaun.city/india/c/9-17) |
-| `9-18` | [Agra](9-18-agra.md) | SC | S P Singh Baghel ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/9-18) |
+| `9-18` | [Agra](9-18-agra.md) | SC | S P Singh Baghel | BJP | none declared | [open →](https://kaun.city/india/c/9-18) |
 | `9-19` | [Fatehpur Sikri](9-19-fatehpur-sikri.md) | — | Rajkumar Chahar | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/9-19) |
 | `9-20` | [Firozabad](9-20-firozabad.md) | — | Akshay Yadav | SP | ⚠ 3 | [open →](https://kaun.city/india/c/9-20) |
 | `9-21` | [Mainpuri](9-21-mainpuri.md) | — | Dimple Yadav | SP | none declared | [open →](https://kaun.city/india/c/9-21) |
@@ -734,7 +734,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `9-23` | [Badaun](9-23-badaun.md) | — | Aditya Yadav | SP | none declared | [open →](https://kaun.city/india/c/9-23) |
 | `9-24` | [Aonla](9-24-aonla.md) | — | Neeraj Maurya | SP | none declared | [open →](https://kaun.city/india/c/9-24) |
 | `9-25` | [Bareilly](9-25-bareilly.md) | — | Chhatrapal Singh Gangwar | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/9-25) |
-| `9-26` | [Pilibhit](9-26-pilibhit.md) | — | Jitin Prasada ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/9-26) |
+| `9-26` | [Pilibhit](9-26-pilibhit.md) | — | Jitin Prasada | BJP | none declared | [open →](https://kaun.city/india/c/9-26) |
 | `9-27` | [Shahjahanpur](9-27-shahjahanpur.md) | SC | Arun Kumar Sagar | BJP | none declared | [open →](https://kaun.city/india/c/9-27) |
 | `9-28` | [Kheri](9-28-kheri.md) | — | Utkarsh Verma Madhur | SP | none declared | [open →](https://kaun.city/india/c/9-28) |
 | `9-29` | [Dhaurahra](9-29-dhaurahra.md) | — | Anand Bhadauria | SP | ⚠ 4 | [open →](https://kaun.city/india/c/9-29) |
@@ -743,7 +743,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `9-32` | [Misrikh](9-32-misrikh.md) | SC | Ashok Kumar Rawat | BJP | none declared | [open →](https://kaun.city/india/c/9-32) |
 | `9-33` | [Unnao](9-33-unnao.md) | — | Swami Sachidanand Hari Sakshi | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/9-33) |
 | `9-34` | [Mohanlalganj](9-34-mohanlalganj.md) | SC | R K Chaudhary | SP | ⚠ 2 | [open →](https://kaun.city/india/c/9-34) |
-| `9-35` | [Lucknow](9-35-lucknow.md) | — | Rajnath Singh ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/9-35) |
+| `9-35` | [Lucknow](9-35-lucknow.md) | — | Rajnath Singh | BJP | none declared | [open →](https://kaun.city/india/c/9-35) |
 | `9-36` | [Rae Bareli](9-36-rae-bareli.md) | — | Rahul Gandhi | INC | ⚠ 18 | [open →](https://kaun.city/india/c/9-36) |
 | `9-37` | [Amethi](9-37-amethi.md) | — | Kishori Lal | INC | none declared | [open →](https://kaun.city/india/c/9-37) |
 | `9-38` | [Sultanpur](9-38-sultanpur.md) | — | Rambhual Nishad | SP | ⚠ 8 | [open →](https://kaun.city/india/c/9-38) |
@@ -767,15 +767,15 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `9-56` | [Bahraich](9-56-bahraich.md) | SC | Anand Kumar | BJP | none declared | [open →](https://kaun.city/india/c/9-56) |
 | `9-57` | [Kaiserganj](9-57-kaiserganj.md) | — | Karan Bhushan Singh | BJP | none declared | [open →](https://kaun.city/india/c/9-57) |
 | `9-58` | [Shrawasti](9-58-shrawasti.md) | — | Ram Shiromani Verma | SP | none declared | [open →](https://kaun.city/india/c/9-58) |
-| `9-59` | [Gonda](9-59-gonda.md) | — | Kirti Vardhan Singh ·&nbsp;minister | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/9-59) |
+| `9-59` | [Gonda](9-59-gonda.md) | — | Kirti Vardhan Singh | BJP | ⚠ 3 | [open →](https://kaun.city/india/c/9-59) |
 | `9-60` | [Domariyaganj](9-60-domariyaganj.md) | — | Jagdambika Pal | BJP | ⚠ 1 | [open →](https://kaun.city/india/c/9-60) |
 | `9-61` | [Basti](9-61-basti.md) | — | Ram Prasad Chaudhary | SP | ⚠ 4 | [open →](https://kaun.city/india/c/9-61) |
 | `9-62` | [Sant Kabir Nagar](9-62-sant-kabir-nagar.md) | — | Laxmikant Pappu Nishad | SP | ⚠ 3 | [open →](https://kaun.city/india/c/9-62) |
-| `9-63` | [Maharajganj](9-63-maharajganj.md) | — | Pankaj Choudhary ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/9-63) |
+| `9-63` | [Maharajganj](9-63-maharajganj.md) | — | Pankaj Choudhary | BJP | none declared | [open →](https://kaun.city/india/c/9-63) |
 | `9-64` | [Gorakhpur](9-64-gorakhpur.md) | — | Ravindra Shukla Alias Ravi Kishan | BJP | none declared | [open →](https://kaun.city/india/c/9-64) |
 | `9-65` | [Kushi Nagar](9-65-kushi-nagar.md) | — | Vijay Kumar Dubey | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/9-65) |
 | `9-66` | [Deoria](9-66-deoria.md) | — | Shashank Mani | BJP | none declared | [open →](https://kaun.city/india/c/9-66) |
-| `9-67` | [Bansgaon](9-67-bansgaon.md) | SC | Kamlesh Paswan ·&nbsp;minister | BJP | ⚠ 9 | [open →](https://kaun.city/india/c/9-67) |
+| `9-67` | [Bansgaon](9-67-bansgaon.md) | SC | Kamlesh Paswan | BJP | ⚠ 9 | [open →](https://kaun.city/india/c/9-67) |
 | `9-68` | [Lalganj](9-68-lalganj.md) | SC | Daroga Prasad Saroj | SP | ⚠ 3 | [open →](https://kaun.city/india/c/9-68) |
 | `9-69` | [Azamgarh](9-69-azamgarh.md) | — | Dharmendra Yadav | SP | ⚠ 4 | [open →](https://kaun.city/india/c/9-69) |
 | `9-70` | [Ghosi](9-70-ghosi.md) | — | Rajeev Rai | SP | ⚠ 1 | [open →](https://kaun.city/india/c/9-70) |
@@ -785,9 +785,9 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `9-74` | [Machhlishahr](9-74-machhlishahr.md) | SC | Priya Saroj | SP | ⚠ 2 | [open →](https://kaun.city/india/c/9-74) |
 | `9-75` | [Ghazipur](9-75-ghazipur.md) | — | Afzal Ansari | SP | ⚠ 5 | [open →](https://kaun.city/india/c/9-75) |
 | `9-76` | [Chandauli](9-76-chandauli.md) | — | Virendra Singh | SP | ⚠ 3 | [open →](https://kaun.city/india/c/9-76) |
-| `9-77` | [Varanasi](9-77-varanasi.md) | — | Narendra Modi ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/9-77) |
+| `9-77` | [Varanasi](9-77-varanasi.md) | — | Narendra Modi | BJP | none declared | [open →](https://kaun.city/india/c/9-77) |
 | `9-78` | [Bhadohi](9-78-bhadohi.md) | — | Vinod Kumar Bind | BJP | none declared | [open →](https://kaun.city/india/c/9-78) |
-| `9-79` | [Mirzapur](9-79-mirzapur.md) | — | Anupriya Patel ·&nbsp;minister | Apna Dal (S) | ⚠ 2 | [open →](https://kaun.city/india/c/9-79) |
+| `9-79` | [Mirzapur](9-79-mirzapur.md) | — | Anupriya Patel | Apna Dal (S) | ⚠ 2 | [open →](https://kaun.city/india/c/9-79) |
 | `9-80` | [Robertsganj](9-80-robertsganj.md) | SC | Chhotelal | SP | none declared | [open →](https://kaun.city/india/c/9-80) |
 
 ### Uttarakhand
@@ -798,7 +798,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 |---|---|---|---|---|---|---|
 | `5-1` | [Tehri Garhwal](5-1-tehri-garhwal.md) | — | Mala Rajya Laxmi Shah | BJP | none declared | [open →](https://kaun.city/india/c/5-1) |
 | `5-2` | [Garhwal](5-2-garhwal.md) | — | Anil Baluni | BJP | none declared | [open →](https://kaun.city/india/c/5-2) |
-| `5-3` | [Almora](5-3-almora.md) | SC | Ajay Tamta ·&nbsp;minister | BJP | none declared | [open →](https://kaun.city/india/c/5-3) |
+| `5-3` | [Almora](5-3-almora.md) | SC | Ajay Tamta | BJP | none declared | [open →](https://kaun.city/india/c/5-3) |
 | `5-4` | [Nainital-Udhamsingh Nagar](5-4-nainital-udhamsingh-nagar.md) | — | Ajay Bhatt | BJP | none declared | [open →](https://kaun.city/india/c/5-4) |
 | `5-5` | [Hardwar](5-5-hardwar.md) | — | Trivendra Singh Rawat | BJP | none declared | [open →](https://kaun.city/india/c/5-5) |
 
@@ -813,7 +813,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `19-3` | [Jalpaiguri](19-3-jalpaiguri.md) | SC | Jayanta Kumar Roy | BJP | none declared | [open →](https://kaun.city/india/c/19-3) |
 | `19-4` | [Darjeeling](19-4-darjeeling.md) | — | Raju Bista | BJP | ⚠ 2 | [open →](https://kaun.city/india/c/19-4) |
 | `19-5` | [Raiganj](19-5-raiganj.md) | — | Kartick Chandra Paul | BJP | none declared | [open →](https://kaun.city/india/c/19-5) |
-| `19-6` | [Balurghat](19-6-balurghat.md) | — | Sukanta Majumdar ·&nbsp;minister | BJP | ⚠ 16 | [open →](https://kaun.city/india/c/19-6) |
+| `19-6` | [Balurghat](19-6-balurghat.md) | — | Sukanta Majumdar | BJP | ⚠ 16 | [open →](https://kaun.city/india/c/19-6) |
 | `19-7` | [Maldaha Uttar](19-7-maldaha-uttar.md) | — | Khagen Murmu | BJP | ⚠ 7 | [open →](https://kaun.city/india/c/19-7) |
 | `19-8` | [Maldaha Dakshin](19-8-maldaha-dakshin.md) | — | Isha Khan Choudhury | INC | none declared | [open →](https://kaun.city/india/c/19-8) |
 | `19-9` | [Jangipur](19-9-jangipur.md) | — | Khalilur Rahaman | AITC | none declared | [open →](https://kaun.city/india/c/19-9) |
@@ -821,7 +821,7 @@ Jump to: [Andaman & Nicobar](#andaman-nicobar) · [Andhra Pradesh](#andhra-prade
 | `19-11` | [Murshidabad](19-11-murshidabad.md) | — | Abu Taher Khan | AITC | ⚠ 3 | [open →](https://kaun.city/india/c/19-11) |
 | `19-12` | [Krishnanagar](19-12-krishnanagar.md) | — | Mahua Moitra | AITC | ⚠ 1 | [open →](https://kaun.city/india/c/19-12) |
 | `19-13` | [Ranaghat](19-13-ranaghat.md) | SC | Jagannath Sarkar | BJP | ⚠ 4 | [open →](https://kaun.city/india/c/19-13) |
-| `19-14` | [Bangaon](19-14-bangaon.md) | SC | Shantanu Thakur ·&nbsp;minister | BJP | ⚠ 23 | [open →](https://kaun.city/india/c/19-14) |
+| `19-14` | [Bangaon](19-14-bangaon.md) | SC | Shantanu Thakur | BJP | ⚠ 23 | [open →](https://kaun.city/india/c/19-14) |
 | `19-15` | [Barrackpur](19-15-barrackpur.md) | — | Partha Bhowmick | AITC | ⚠ 2 | [open →](https://kaun.city/india/c/19-15) |
 | `19-16` | [Dum Dum](19-16-dum-dum.md) | — | Sougata Ray | AITC | ⚠ 1 | [open →](https://kaun.city/india/c/19-16) |
 | `19-17` | [Barasat](19-17-barasat.md) | — | Kakoli Ghosh Dastidar | AITC | ⚠ 2 | [open →](https://kaun.city/india/c/19-17) |
